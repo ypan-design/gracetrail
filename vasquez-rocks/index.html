@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vasquez Rocks · Grace&rsquo;s Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-screen viewer. Model fills the screen on an organic island base; left panel holds the view switch and content; callouts in two columns either side; liquid-glass cards float over the model. Single light "illustration board" theme, chosen deliberately. */
+:root{
+  color-scheme:light;
+  --paper:#EEF4F1; --sheet:#FFFFFF; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9;
+  --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --panel:372px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.dragging{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#labels{position:absolute;inset:0;pointer-events:none}
+
+/* badges */
+.bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
+.bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.ic{padding:0;width:22px;border-color:var(--rule)}
+.bd.ic svg{width:14px;height:14px}
+.kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
+.kn .tx{background:color-mix(in srgb,var(--paper) 86%,transparent);padding:2px 6px;border-radius:4px}
+.kn.f .tx{font-style:italic;color:var(--muted)}
+.kn.left{flex-direction:row-reverse}
+.kn.dot .tx{display:none}
+.kn.on .tx{font-weight:600;color:var(--ink)}
+.kn.on .bd{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+
+/* liquid glass */
+.glass{background:linear-gradient(140deg,rgba(255,255,255,.62),rgba(255,255,255,.26));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 10px 30px rgba(29,43,38,.16),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);border-radius:16px}
+#card{position:absolute;left:0;top:0;width:250px;padding:12px 14px 13px;z-index:3;pointer-events:auto;transform-origin:50% 100%;transition:opacity .25s}
+#card .row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#card h4{margin:0 0 3px;font-family:var(--display);font-stretch:108%;font-weight:500;font-size:17px;line-height:1.15}
+#card p{margin:0;font-size:12.5px;line-height:1.45;color:#33443E}
+#card .meta{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+#card{transition:opacity .25s,width .3s}
+#card.big{width:340px}
+#card .gal{display:none;margin-top:10px}
+#card.big .gal{display:block}
+#card .gal .main{width:100%;height:200px;object-fit:cover;border-radius:10px;display:block;background:#E3EFEA}
+#card .cr{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+#card .cr a,.detail .cap a{color:inherit}
+#card .thumbs{display:flex;gap:5px;margin-top:6px;overflow-x:auto}
+#card .th{border:0;padding:0;background:none;cursor:pointer;border-radius:6px;outline:2px solid transparent;flex:none}
+#card .th.on{outline-color:var(--ink)}
+#card .th img{width:52px;height:38px;object-fit:cover;border-radius:6px;display:block}
+#card .none{font-size:12px;color:var(--muted)}
+#card .more{margin-top:7px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;cursor:pointer}
+#card.big .more{display:none}
+#card{cursor:pointer}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);padding:4px}
+#card::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+
+/* panel */
+.panel{position:absolute;left:0;top:0;bottom:0;width:var(--panel);display:flex;flex-direction:column;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-right:1px solid var(--rule);z-index:2}
+.head{padding:18px 22px 12px;display:flex;flex-direction:column;gap:4px}
+.head h1{font-family:var(--display);font-stretch:116%;font-weight:300;font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:-.01em}
+.switch{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:6px 22px 12px;border-bottom:1px solid var(--rule)}
+.switch button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 8px 8px;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.switch button:hover{border-color:var(--ink)}
+.switch button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.switch .sl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.switch .sn{font-size:12.5px;font-weight:600;line-height:1.15}
+.switch .bd{min-width:18px;height:18px;font-size:10px}
+.body{flex:1;overflow-y:auto;padding:16px 22px 28px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin}
+.body h2{font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.body h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 6px}
+.body p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin:0}
+.stat{padding:7px 9px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat dd{margin:1px 0 0;font-family:var(--display);font-stretch:106%;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.list>li{border-bottom:1px solid var(--rule)}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:1px 10px;align-items:center;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer}
+.item:hover .nm,.list>li.on .nm{text-decoration:underline;text-underline-offset:3px}
+.item>.bd,.item>.ico{grid-row:1/3;justify-self:start}
+.item .nm{font-weight:600}
+.item .nm .mono{font-weight:400;font-size:10.5px;color:var(--muted);margin-left:6px}
+.item .lt{font-style:italic;color:var(--muted);font-weight:400}
+.item .ds{grid-column:2;font-size:13px;color:var(--muted)}
+.item .bm{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:right;grid-row:1/3;grid-column:3}
+.item .now{color:var(--tA);font-weight:500}
+.item .chev{grid-row:1/3;grid-column:3;font-family:var(--mono);color:var(--muted);transition:transform .25s}
+.list>li.open .chev{transform:rotate(90deg)}
+.detail{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;margin:0 0 10px;padding:10px;overflow:hidden}
+.detail img{width:118px;height:92px;object-fit:cover;border-radius:10px;background:linear-gradient(180deg,#F7FBF9,#E3EFEA);display:block}
+.detail p{font-size:12.5px;line-height:1.45;color:#33443E}
+.detail .cap{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+.ico{width:18px;height:18px;flex:none}
+.tcard{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
+.tcard:hover .tn{text-decoration:underline;text-underline-offset:3px}
+.tcard .tn{font-weight:600}
+.tcard .tm{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tcard svg{grid-row:1/3;grid-column:3}
+.cards{border-top:1px solid var(--rule)}
+.prof svg{display:block;width:100%;height:96px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:9px}
+.links{display:grid;gap:4px;font-size:13px}
+.links a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--rule)}
+
+/* controls */
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:flex-end;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.grp{display:flex;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.grp button{border:0;background:none;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;min-width:32px;display:flex;align-items:center;gap:6px}
+.grp button+button{border-left:1px solid var(--rule)}
+.grp button:hover{background:var(--paper)}
+.grp button .sq{width:8px;height:8px;border-radius:2px;background:var(--ink)}
+.grp button[aria-pressed="false"]{color:var(--muted)}
+.grp button[aria-pressed="false"] .sq{background:transparent;outline:1px solid var(--muted)}
+.hint{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);z-index:2;pointer-events:none}
+
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;overflow:visible}
+  #stage{position:relative;height:58svh;min-height:340px}
+  .panel{position:relative;width:auto;bottom:auto;border-right:0;border-top:1px solid var(--rule);backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+  .switch{position:sticky;top:0;background:var(--paper);z-index:3}
+  .body{overflow:visible;padding:16px 16px 40px}
+  .head,.switch{padding-inline:16px}
+  .ctrls{bottom:auto;top:calc(58svh - 46px);right:10px}
+  .hint{display:none}
+  #card{width:210px}
+}
+@media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+</style>
+
+<div class="app" id="app">
+  <div id="stage" aria-label="Interactive model of Vasquez Rocks Natural Area">
+    <canvas id="gl"></canvas>
+    <svg id="lead" aria-hidden="true"></svg>
+    <div id="labels"></div>
+    <div id="card" class="glass" hidden role="dialog" aria-live="polite"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="head">
+      <a class="eyebrow" href="../" style="text-decoration:none;color:inherit">← Grace&rsquo;s Trail · Explore more trails</a>
+      <h1>Vasquez Rocks</h1>
+    </div>
+    <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
+    <div class="body" id="pbody" aria-live="polite"></div>
+  </aside>
+  <div class="hint">Drag to turn · scroll to zoom · click anything, tap the card for photos</div>
+  <div class="ctrls">
+    <div class="grp" role="group" aria-label="Layers">
+      <button id="tgTopo" aria-pressed="true"><span class="sq"></span>Topo</button>
+      <button id="tgTrees" aria-pressed="true"><span class="sq"></span>Trees</button>
+      <button id="tgAnimals" aria-pressed="true"><span class="sq"></span>Wildlife</button>
+      <button id="tgFlowers" aria-pressed="true"><span class="sq"></span>Flowers</button>
+      <button id="tgBase" aria-pressed="true"><span class="sq"></span>Base</button>
+    </div>
+    <div class="grp" role="group" aria-label="View">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" aria-label="Reset view">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NOW_MONTH=new Date().getMonth()+1;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
+  band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};
+
+/* ================= data ================= */
+const CANYONS=[{"pts":[[5159,-4344,2376],[5007,-4327,2357],[4899,-4459,2354],[4700,-4391,2350],[4592,-4265,2349],[4421,-4276,2350],[4263,-4174,2345],[4173,-4015,2343],[3851,-4067,2341],[3677,-3941,2340],[3587,-3819,2333],[3427,-3847,2332],[3191,-3869,2332],[3080,-3989,2333],[2999,-4124,2331],[2841,-4161,2310],[2740,-4324,2307],[2638,-4502,2305],[2522,-4643,2304],[2343,-4687,2305],[2192,-4712,2308],[2074,-4878,2301],[1956,-4978,2300],[1942,-5147,2302],[1937,-5313,2297],[2001,-5460,2275],[2025,-5618,2271],[2040,-5734,2263]],"minor":true,"id":"lowercanyon"}];
+const TRAILS=[{"id":"A","name":"Geology and Nature Heritage Trails","short":"Famous Rocks","official":1.1,"unit":"loop","route":"Loop","time":"45 min","level":"Easy","color":"--tA","desc":"From the Interpretive Center, the Geology Trail runs east past signs on how the rocks formed, then the park road leads to the Famous Rocks. The Nature Heritage Trail brings you back past the Tataviam grinding site and the Witch’s Hat. Mostly flat.","anchors":[[448,-245,2501,0.0],[503,-167,2502,0.02],[564,-69,2503,0.047],[564,37,2507,0.067],[590,126,2511,0.087],[740,244,2512,0.123],[761,327,2516,0.146],[829,143,2516,0.183],[892,63,2517,0.203],[1008,44,2519,0.227],[1081,-51,2524,0.25],[1221,-71,2526,0.277],[1518,-4,2529,0.335],[1657,14,2531,0.362],[1852,-130,2533,0.409],[1850,-247,2530,0.431],[1849,-365,2528,0.453],[1913,-442,2528,0.473],[2028,-442,2533,0.495],[2138,-499,2539,0.519],[2232,-550,2547,0.54],[2323,-602,2552,0.559],[2414,-719,2552,0.588],[2359,-632,2552,0.607],[2265,-565,2550,0.629],[2167,-521,2541,0.65],[2067,-453,2537,0.673],[1936,-446,2529,0.698],[1849,-388,2525,0.718],[1836,-499,2520,0.74],[1746,-591,2513,0.765],[1643,-630,2508,0.786],[1560,-689,2511,0.806],[1478,-692,2512,0.831],[1433,-593,2513,0.852],[1342,-547,2511,0.871],[1244,-505,2510,0.892],[1061,-449,2508,0.928],[921,-398,2507,0.956],[779,-364,2506,0.984],[642,-347,2504,1.01],[534,-283,2502,1.034],[448,-245,2502,1.055]]},
+ {"id":"B","name":"Pacific Crest Trail","short":"PCT","official":2.3,"unit":"one way","route":"One way","time":"1–1.5 hr","level":"Moderate","color":"--tB","desc":"The park’s 2.3-mile piece of the 2,650-mile Pacific Crest Trail. From the front gate it rolls east behind the rock formations, passes the Pepper Tree picnic area, then descends into the lower canyon and ends at the tunnel under the 14 Freeway. Double the distance if you walk back.","anchors":[[735,336,2517,0.0],[829,143,2516,0.043],[892,63,2517,0.063],[1008,44,2519,0.086],[1081,-51,2524,0.11],[1221,-71,2526,0.137],[1518,-4,2529,0.194],[1657,14,2532,0.221],[1852,-130,2536,0.268],[1977,-163,2543,0.293],[2106,-208,2549,0.319],[2182,-278,2552,0.339],[2283,-325,2556,0.36],[2391,-297,2565,0.383],[2500,-306,2565,0.405],[2563,-201,2568,0.428],[2665,-163,2586,0.451],[2779,-208,2603,0.474],[2874,-274,2611,0.496],[2983,-279,2611,0.517],[2874,-274,2605,0.538],[2968,-349,2595,0.56],[3049,-401,2582,0.579],[3085,-505,2546,0.601],[3109,-624,2530,0.624],[3116,-743,2516,0.647],[3120,-852,2508,0.668],[3178,-961,2497,0.692],[3227,-1069,2491,0.715],[3281,-1152,2485,0.735],[3309,-1282,2487,0.761],[3369,-1394,2488,0.787],[3598,-1427,2491,0.831],[3697,-1553,2498,0.862],[3790,-1599,2507,0.882],[3925,-1572,2516,0.908],[4034,-1574,2519,0.929],[4045,-1840,2512,0.987],[3968,-2095,2505,1.038],[3834,-2343,2497,1.091],[3771,-2424,2489,1.11],[3657,-2505,2482,1.137],[3540,-2656,2475,1.173],[3405,-2960,2467,1.236],[3311,-3046,2464,1.26],[3054,-3343,2457,1.335],[2944,-3508,2450,1.372],[2706,-3672,2441,1.427],[2598,-3788,2427,1.457],[2479,-3865,2411,1.484],[2406,-3935,2395,1.503],[2293,-4092,2379,1.54],[2115,-4257,2364,1.585],[2047,-4333,2341,1.605],[2088,-4442,2326,1.63],[2175,-4507,2326,1.651],[2303,-4532,2325,1.678],[2418,-4597,2315,1.704],[2643,-4461,2309,1.757],[2717,-4300,2310,1.791],[2792,-4201,2314,1.817],[2881,-4123,2319,1.839],[3004,-4106,2324,1.863],[3101,-4037,2331,1.888],[3189,-3879,2333,1.923],[3295,-3816,2333,1.949],[3412,-3826,2335,1.972],[3535,-3849,2355,1.997],[3613,-3922,2358,2.019],[3666,-4088,2360,2.053],[3822,-4084,2360,2.083],[3938,-4049,2358,2.106],[4079,-4007,2353,2.134],[4186,-4051,2347,2.157],[4273,-4131,2347,2.179],[4531,-4180,2349,2.229],[4619,-4229,2353,2.249],[4670,-4323,2355,2.269],[4739,-4399,2358,2.288],[4855,-4404,2360,2.31],[4964,-4288,2362,2.341],[5078,-4194,2373,2.369],[5158,-4286,2379,2.394],[5375,-4799,2379,2.5]]},
+ {"id":"C","name":"Apwinga Loop Trail","short":"Apwinga Loop","official":3.4,"unit":"loop","route":"Loop","time":"1.5–2 hr","level":"Moderate","color":"--tC","desc":"The park’s longest loop. It climbs from the Nature Heritage Trail onto the western ridge, follows the tilted rock bands south, then joins the Pacific Crest Trail and returns north past Juniper Meadow and the Famous Rocks. Short climbs, no shade.","anchors":[[448,-245,2502,0.0],[534,-283,2502,0.02],[642,-347,2504,0.045],[779,-364,2506,0.071],[921,-398,2507,0.099],[1061,-449,2508,0.127],[1244,-505,2510,0.163],[1342,-547,2511,0.183],[1433,-593,2513,0.203],[1478,-692,2517,0.223],[1442,-795,2524,0.247],[1356,-855,2543,0.267],[1333,-951,2559,0.286],[1259,-1034,2564,0.308],[1121,-1122,2537,0.339],[1032,-1174,2516,0.359],[942,-1247,2515,0.381],[852,-1301,2509,0.403],[748,-1322,2499,0.423],[669,-1439,2499,0.451],[597,-1515,2501,0.471],[527,-1603,2501,0.494],[449,-1672,2495,0.516],[307,-1755,2483,0.548],[190,-1794,2484,0.573],[97,-1875,2497,0.597],[198,-1959,2528,0.626],[319,-2013,2543,0.651],[477,-2057,2574,0.683],[625,-2164,2603,0.717],[717,-2229,2609,0.739],[712,-2473,2619,0.794],[710,-2617,2622,0.821],[726,-2777,2615,0.853],[828,-2977,2604,0.896],[934,-3152,2595,0.936],[869,-3293,2582,0.965],[889,-3419,2575,0.989],[875,-3530,2568,1.011],[894,-3652,2552,1.034],[935,-3767,2543,1.057],[1014,-3878,2531,1.084],[1010,-4028,2513,1.113],[1084,-4178,2508,1.145],[1136,-4341,2499,1.177],[1154,-4464,2496,1.201],[1128,-4572,2490,1.222],[1091,-4664,2484,1.241],[1127,-4769,2485,1.263],[1216,-4850,2482,1.286],[1254,-4965,2480,1.309],[1282,-5110,2477,1.338],[1271,-5244,2477,1.365],[1278,-5363,2478,1.387],[1241,-5473,2470,1.411],[1289,-5370,2452,1.433],[1326,-5274,2443,1.452],[1387,-5146,2427,1.48],[1442,-4997,2405,1.51],[1509,-4927,2393,1.541],[1598,-4992,2384,1.562],[1710,-4931,2371,1.586],[1822,-4888,2365,1.609],[1844,-4769,2350,1.632],[1919,-4581,2328,1.672],[1975,-4474,2320,1.696],[2042,-4400,2326,1.717],[2071,-4285,2349,1.74],[2293,-4092,2379,1.795],[2406,-3935,2395,1.832],[2479,-3865,2411,1.851],[2598,-3788,2427,1.878],[2706,-3672,2441,1.908],[2944,-3508,2448,1.963],[3054,-3343,2451,2.0],[3311,-3046,2453,2.075],[3334,-2947,2453,2.094],[3331,-2668,2453,2.148],[3236,-2505,2454,2.184],[3137,-2397,2456,2.212],[3119,-2184,2460,2.252],[3091,-2036,2463,2.281],[3084,-1901,2467,2.306],[3071,-1758,2475,2.334],[3022,-1616,2478,2.362],[3120,-1541,2482,2.386],[3219,-1466,2484,2.409],[3317,-1392,2486,2.432],[3216,-1325,2487,2.462],[3056,-1266,2486,2.494],[2955,-1223,2485,2.515],[2857,-1183,2485,2.535],[2752,-1140,2484,2.557],[2638,-1075,2513,2.583],[2515,-864,2521,2.629],[2457,-770,2536,2.65],[2390,-672,2551,2.673],[2304,-589,2552,2.695],[2208,-543,2545,2.716],[2067,-453,2537,2.748],[1936,-446,2529,2.773],[1849,-388,2525,2.793],[1836,-499,2520,2.815],[1746,-591,2513,2.839],[1643,-630,2508,2.861],[1560,-689,2511,2.88],[1478,-692,2512,2.906],[1433,-593,2513,2.927],[1342,-547,2511,2.946],[1244,-505,2510,2.966],[1061,-449,2508,3.003],[921,-398,2507,3.031],[779,-364,2506,3.058],[642,-347,2504,3.085],[534,-283,2502,3.109],[448,-245,2502,3.129]]}];
+const STOPS=[{"id":"1","trails":["A","C"],"x":448,"n":-245,"name":"Interpretive Center","desc":"The park’s visitor center by the first parking lot, with exhibits on the Tataviam, geology and wildlife, restrooms and a gift shop. Open Tuesday to Sunday, 8 am to 4 pm."},
+ {"id":"5","trails":["A","C"],"x":1244,"n":-505,"name":"Tataviam grinding site","desc":"Bedrock grinding holes where Tataviam people processed acorns and seeds. The park sits on the site of the Tataviam village of Mapipinga."},
+ {"id":"6","trails":["A","C"],"x":779,"n":-364,"name":"Witch’s Hat","desc":"A small rock formation beside the Nature Heritage Trail, named for its pointed, hat-like shape."},
+ {"id":"4","trails":["A","C"],"x":2414,"n":-719,"name":"Famous Rocks","desc":"Sandstone slabs tilted to about 50 degrees, rising some 150 ft. Seen in four original Star Trek episodes, it is often called Kirk’s Rock. Parking lot 3 is next to it."},
+ {"id":"7","trails":["B","C"],"x":3369,"n":-1394,"name":"Pepper Tree picnic area","desc":"The historic Pepper Tree picnic area near parking lot 4, where the Pacific Crest Trail, the Homestead Trail and the Juniper Meadow loop meet."},
+ {"id":"8","trails":["B","C"],"x":2042,"n":-4400,"name":"Lower canyon junction","desc":"The Apwinga Loop turns north here. The Pacific Crest Trail drops east into the lower canyon toward the freeway."},
+ {"id":"3","trails":["A","B"],"x":1273,"n":-66,"name":"Geology Trail","desc":"A short path beside the Pacific Crest Trail with interpretive signs on the park’s sedimentary layers, how the sandstone formed, and why the rock changes color."},
+ {"id":"2","trails":["A","B"],"x":735,"n":336,"name":"Front gate","desc":"The Pacific Crest Trail enters the park at the front gate on Escondido Canyon Road, next to the first parking lot. The Geology Trail starts nearby."},
+ {"id":"B1","trails":["B"],"x":5375,"n":-4799,"name":"Freeway tunnel","desc":"The trail passes under the Antelope Valley Freeway (CA 14) through a tunnel at the park’s south edge, then continues toward the Angeles National Forest."},
+ {"id":"C1","trails":["C"],"x":710,"n":-2617,"name":"Ridge view","desc":"The loop’s high point on the western ridge, with a wide view over the tilted rock bands and the Soledad Basin."},
+ {"id":"C2","trails":["C"],"x":1241,"n":-5473,"name":"South end of the loop","desc":"The loop’s southern tip, close to the freeway. From here the trail turns northeast toward the Pacific Crest Trail."},
+ {"id":"C3","trails":["C"],"x":3137,"n":-2397,"name":"Juniper Meadow","desc":"An open flat ringed by California junipers. The easy Juniper Meadow Walking Loop, 0.44 mi, circles it."}];
+const ORDER={"A":["1","2","3","4","5","6"],"B":["2","3","7","8","B1"],"C":["1","6","5","C1","C2","8","C3","7","4"]};
+const SPECIES={
+ juniper:{name:"California juniper",latin:"Juniperus californica",color:"#9DB3B8",shape:"berry",bloom:[1,2,3,10,11,12],sum:"A shaggy, blue-green shrubby tree of the high desert edge. Its bluish berry-like cones ripen in fall and feed birds and coyotes. The park’s Juniper Meadow is named for it.",rule:(d,e,g,s)=>d>100&&g<0.5},
+ chamise:{name:"Chamise",latin:"Adenostoma fasciculatum",color:"#F3EEDD",shape:"dome",bloom:[4,5,6],sum:"The most common chaparral shrub in California, with tiny needle-like leaves and sprays of small white flowers in late spring.",rule:(d,e,g,s)=>s>-0.3&&d>120},
+ yucca:{name:"Chaparral yucca",latin:"Hesperoyucca whipplei",color:"#FFF4CF",shape:"yucca",bloom:[4,5,6],sum:"A spiky rosette that sends up one tall stalk of cream flowers, then dies. Old stalks stay standing for years.",rule:(d,e,g,s)=>s>0.2&&g>0.3&&d>240},
+ buckwheat:{name:"California buckwheat",latin:"Eriogonum fasciculatum",color:"#F5E6DC",shape:"dome",bloom:[4,5,6,7,8,9,10],sum:"Round clusters of tiny white-pink flowers that dry to rust brown in fall. Important food for native bees.",rule:(d,e,g,s)=>s>-0.1&&d>160},
+ sagebrush:{name:"California sagebrush",latin:"Artemisia californica",color:"#C9CFA0",shape:"dome",bloom:[8,9,10],sum:"A soft, gray-green shrub with a strong sweet smell, the base of coastal sage scrub. Tiny pale flowers in late summer.",rule:(d,e,g,s)=>d>100}
+};
+const FLORA={"A":["juniper","buckwheat","yucca","sagebrush"],"B":["juniper","chamise","yucca","buckwheat"],"C":["juniper","chamise","yucca","sagebrush","buckwheat"]};
+const WILD={
+ coyote:{name:"Coyote",color:"#A88B6A",sum:"A lean, gray-tan wild dog. Often heard at dusk; usually keeps its distance from people."},
+ bobcat:{name:"Bobcat",color:"#C49A6C",sum:"A short-tailed wild cat about twice the size of a house cat. One of the park’s trails is named for it; it rests in rock crevices and hunts rabbits and rodents."},
+ squirrel:{name:"California ground squirrel",color:"#9A9A96",sum:"A mottled gray-brown squirrel that lives in burrows and sits up on rocks beside the trail."},
+ snake:{name:"Rattlesnake",color:"#B49867",sum:"Rattlesnakes live among the rocks and brush here and sun on the trail on warm days. Watch where you put your hands when climbing."},
+ quail:{name:"California quail",color:"#7D8A9A",sum:"California's state bird. Plump, with a curled black topknot; runs through the brush in small groups."},
+ hawk:{name:"Red-tailed hawk",color:"#A8572F",sum:"The red-tailed hawk circles over the rocks on rising warm air and perches on the slab tops."},
+ jay:{name:"California scrub-jay",color:"#3D78C4",sum:"A loud blue-and-gray bird of the brush and junipers, the California scrub-jay."},
+ raven:{name:"Common raven",color:"#262626",sum:"A big black bird that rolls and tumbles over the ridgelines, often in pairs."}
+};
+
+const PHOTOS={"stop":{"4":[{"f":"../photos/pl_vasquez_4_0.jpg","by":"jim.choate59","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/137864562@N06/49365700921","t":"Vasquez Rocks 8450 A"},{"f":"../photos/pl_vasquez_4_1.jpg","by":"tkksummers","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/12806074@N08/2414997962","t":"Vasquez Rocks"},{"f":"../photos/pl_vasquez_4_2.jpg","by":"jim.choate59","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/137864562@N06/49551199161","t":"Vasquez Rocks 8534 A"},{"f":"../photos/pl_vasquez_4_3.jpg","by":"On Location in Los Angeles","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/23927487@N05/4705323648","t":"Vasquez Rocks"}],"1":[{"f":"../photos/pl_vasquez_1_0.jpg","by":"Jeff Hester","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/49503179907@N01/10616063456","t":"Vasquez Rocks Visitor Center"}],"6":[{"f":"../photos/pl_vasquez_6_0.jpg","by":"www78","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/40243520@N02/26010278988","t":"Witches' Hat"}]},"animal":{"bobcat":[{"f":"../photos/sp_bobcat_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14252467743","t":"Bobcat (Lynx rufus)"}],"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_squirrel_1.jpg","by":"sonstroem","lic":"BY 2.0","src":"https://www.flickr.com/photos/96964826@N05/19792172568","t":"Western Gray Squirrel"}],"quail":[{"f":"../photos/sp_quail_2.jpg","by":"SidPix","lic":"BY 2.0","src":"https://www.flickr.com/photos/22357152@N02/6401999787","t":"California Quail"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"jay":[{"f":"../photos/sp_jay_1.jpg","by":"Becky Matsubara","lic":"BY 2.0","src":"https://www.flickr.com/photos/130819719@N05/30644196597","t":"California Scrub-Jay"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}]},"flower":{"buckwheat":[{"f":"../photos/sp_buckwheat_1.jpg","by":"pellaea","lic":"BY 2.0","src":"https://www.flickr.com/photos/7147684@N03/4776487528","t":"California Buckwheat"}],"yucca":[{"f":"../photos/sp_yucca_0.jpg","by":"Jim Morefield","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/127605180@N04/16524048182","t":"chaparral yucca, Hesperoyucca whipplei"}],"juniper":[{"f":"../photos/sp_juniper_1.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14212355528","t":"California juniper (Juniperus californica)"},{"f":"../photos/sp_juniper_3.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14419113733","t":"California juniper (Juniperus californica)"},{"f":"../photos/sp_juniper_0.jpg","by":"John Rusk","lic":"BY 2.0","src":"https://www.flickr.com/photos/12303842@N00/15217756374","t":"H20121206-6046—Juniperus californica—RPBG"}]}};
+/* ================= terrain ================= */
+const X0=-900,X1=6300,N0=-6300,N1=1000,STEP=50;
+const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
+function hash(i,j){let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return (a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v)*2-1;}
+function fbm(x,y){let s=0,a=.5,f=1;for(let o=0;o<4;o++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5;}return s;}
+function closest(pts,x,n){let bd=1e9,bf=0;for(let k=0;k<pts.length-1;k++){const a=pts[k],b=pts[k+1];const dx=b[0]-a[0],dn=b[1]-a[1];let t=((x-a[0])*dx+(n-a[1])*dn)/(dx*dx+dn*dn);t=t<0?0:t>1?1:t;const d=Math.hypot(x-(a[0]+dx*t),n-(a[1]+dn*t));if(d<bd){bd=d;bf=a[2]+(b[2]-a[2])*t;}}return {d:bd,f:bf};}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25;}
+function creekDist(x,n){let m=1e9;for(const c of CANYONS){const r=closest(c.pts,x,n);if(r.d<m)m=r.d;}return m;}
+function interpField(A,idx,cum){const known=[];A.forEach((a,i)=>{if(a[idx]!==null)known.push(i);});return A.map((a,i)=>{if(a[idx]!==null)return a[idx];const lo=known.filter(k=>k<i).pop(),hi=known.find(k=>k>i);const t=(cum[i]-cum[lo])/(cum[hi]-cum[lo]);return A[lo][idx]+(A[hi][idx]-A[lo][idx])*t;});}
+TRAILS.forEach(T=>{const A=T.anchors,cum=[0];for(let i=1;i<A.length;i++)cum.push(cum[i-1]+Math.hypot(A[i][0]-A[i-1][0],A[i][1]-A[i-1][1]));
+  const E=interpField(A,2,cum),M=interpField(A,3,cum),pts=[];
+  for(let i=0;i<A.length-1;i++){const L=cum[i+1]-cum[i],st=Math.max(1,Math.ceil(L/30));for(let s=0;s<st;s++){const t=s/st;pts.push({x:A[i][0]+(A[i+1][0]-A[i][0])*t,n:A[i][1]+(A[i+1][1]-A[i][1])*t,e:E[i]+(E[i+1]-E[i])*t,m:M[i]+(M[i+1]-M[i])*t});}}
+  const L=A.length-1;pts.push({x:A[L][0],n:A[L][1],e:E[L],m:M[L]});T.pts=pts;
+  let gain=0,hi=-1e9,lo=1e9;pts.forEach((p,i)=>{if(i&&p.e>pts[i-1].e)gain+=p.e-pts[i-1].e;hi=Math.max(hi,p.e);lo=Math.min(lo,p.e);});T.gain=gain;T.hi=hi;T.lo=lo;T.total=pts[pts.length-1].m;});
+const TR=Object.fromEntries(TRAILS.map(t=>[t.id,t]));
+const Hg=new Float32Array(NX*NN);
+const DEM_B64="ywnZCeYJ8wkCCg4KGgooCjEKOAo8CjwKOgoxCh0K/wnhCc0JuwmwCbkJxwnXCeMJ5QniCd0J0Am/CbIJoQmLCX0JcAltCXUJbglmCVgJPAk1CSsJIAkTCQUJ/Qj8CAcJEQkVCRUJDAkFCfsI7gjeCMUItQizCMYI7ggKCSQJQAlYCXwJlgmrCb4J0AnfCfIJBAoVCiIKHwoTCgkKDQoJCv8J+An6Cf0J7gnfCdoJ1gnRCdkJ4gnhCdsJ1wncCekJ9wkECg4KGQogCiMKKwo/Ck8KSAo3CigKJgowCkAKUApfCnMKhQqZCrAKyArVCsgKswqlCo8KewphCkoKMAorCicKGgoJCv4J8QniCdYJzAnACbUJtAnRCeMJ6AnnCegJ8wnDCdEJ3gnsCfoJBwoUCiIKLwo0CjsKPwpCCjcKKAoJCu0J2AnJCb8JyAnYCeYJ8gn1Ce4J5wnbCc4JwAmvCZcJhgl/CXwJdwlsCWMJUwlCCT8JNgkkCRIJEQkPCQ8JGgkhCSQJIgkcCRYJDgn8COYIxAi0CLUI0Qj3CBEJKQlDCV0JhgmdCbEJwAnRCeEJ8AkBCgoKDAoECvYJ6wnwCfAJ6QniCeIJ6QnfCc8JygnKCc8J2QngCdwJ2AnVCdsJ6An3CQQKDQoVChwKIgorCjYKRAo9CjAKJAojCiwKOQpIClQKZgp3CosKnwq6CtIKxgqjCpEKgwp5CmIKTwovCiIKGQoOCgoKAQrxCeQJ2QnLCb0JsgmuCcMJ3AnfCdoJ2wnyCb0JyQnXCeQJ8An9CQsKGQonCjAKNgo+CkMKPQovChkKAQroCdUJ0AnTCeQJ9wkECgMK+QnyCegJ3QnNCbsJpQmNCYUJhAl9CW0JYQlWCUwJRQk+CS0JFwkbCRkJHAkrCTMJNgk0CS4JKAkbCQAJ3wi/CLMIuAjbCPsIEQkpCUMJXwmHCZ0Jsgm+Cc0J3QnmCe4J9Qn1Ce0J4AnUCdMJ1gnUCdEJ1gnhCdUJvAm1Cb8JywnZCd4J2gnVCdMJ2gnnCfkJBgoOChAKGAoiCisKMwo3CjMKKAocCh4KJwo0CkEKTApYCm0KfwqVCrAK1QrFCqEKhQpvCmYKXwpXCjwKJwoTCgEK/wn6Ce8J5QnbCcsJugmvCasJtQnKCdIJ0gneCfIJtAm/CcwJ2gnkCfIJAQoNCh4KKgoyCjwKQwpCCjcKKgoTCvgJ3wneCdsJ8wkGCg4KDQoACv4J/QnrCdYJwwmvCZoJkAmOCYEJbglgCVcJUQlKCUMJNwkrCTEJLQkuCTsJPwlACT4JPAk5CSMJAwneCLwIswi7COII/QgPCSgJQwlgCYcJmAmmCbEJuQnICdUJ2AneCeAJ2AnOCcMJwgnECcQJwwnKCdMJwgmuCbAJvAnJCdgJ3QnYCdIJ0gnZCeUJ+gkHCgoKBgoRCiAKKwoxCjIKLQocCgoKEQohCi8KPApIClQKawp/CpMKrgrTCsIKoQqBClwKUApOCkoKPgouChkKAwr6CfEJ6AnjCdwJyAm0CawJqQmxCbkJwAnNCdwJ7gmjCbEJvAnNCdcJ5wn6CQQKGQopCjIKPgpGCkcKQAozCiAKAwrzCfQJ9QkAChUKIAocChYKEgoLCvgJ3wnLCbcJqAmeCZMJgwltCV8JWglZCVIJRgk7CTcJPgk3CTUJQAlGCUcJRQlDCT8JKgkLCecIwQizCLwI5Aj+CBAJKQlDCV8JhQmLCYwJlQmkCbcJvwnACcMJyAnFCbwJsAmwCbQJtAmyCbcJwQm1CaEJpgm4CcMJ1AncCdQJzAnQCdYJ4An1CQUKBQoBCgsKGQonCi0KKgodCgsK/wkLChwKKwo5CkcKVgpuCoQKlQquCscKswqfCoEKXwpICjIKLAotCisKGwoJCv0J6AneCdwJ1QnACa8JqQmlCasJrgm3CcwJ1QnkCY4JpQmzCcgJ2AnqCfwJCQoZCigKMgo9CkkKSwpGCjkKKQoJCv4JCAoFCggKIgovCisKLAomChMK/wnlCdEJvwm0CaYJlAmECW4JYwlkCWMJWwlLCT0JOwlACTkJPAlICU4JTQlLCUcJQAkrCQ0J6gjDCLQIvgjiCP0IEgkrCUMJXAlxCXgJewmDCY4JoAmpCaoJrAm4CbgJqwmcCZoJoAmjCaoJtAm7Ca4JkAmTCa4JuwnGCdEJzgnICcwJ0gnYCesJAwoBCvwJBQoSCh4KHwoYCgwK/wn+CQoKGgopCjgKRwpYCnAKiAqdCq4KqwqbCo0KgwpmCkkKMgokChsKGAoRCgkK/AnmCdgJ0gnKCb0JsQmpCaMJpwmuCcMJ2QncCeIJkQmoCboJywndCfEJAwoNChoKJwoyCj4KSgpPCkwKRAozChYKDQoZCh0KHgotCjkKOAo1Ci0KGQoBCuoJ1gnHCboJqgmVCYUJewlyCW4JaQlfCVAJQQlCCUYJRglMCVQJWglZCVEJSQk/CSgJCwntCNEIvgjCCNwI+AgQCScJPglQCV8JYwlmCW8JfAmLCZIJkQmaCaQJogmUCYkJiQmMCZMJqQm3CboJoAmDCYgJmwmuCbkJwAnECcMJwgnJCdIJ3wn2CfcJ9wkACgkKDwoLCgQK/wn5Cf0JCQoZCiYKNgpIClkKcQqNCqYKrgqkCo4KeApxCmUKTQo1CiEKDAoDCgMKAAr2CeUJ2QnPCcQJuQmxCacJogmpCbYJ0AnjCesJ9wmbCbEJvgnPCeEJ9gkICg8KGQomCjEKPApKClQKVQpTCkEKJgogCioKNAo0CkIKSQpBCjkKMAobCgMK7QnbCcoJuwmsCZcJiAmGCYAJcgloCV4JUglMCUoJTwlbCV4JYAlkCWAJVQlJCT4JJgkLCfwI5QjLCM8I2wjuCAgJHgk1CUIJRglLCVMJYAluCXgJfQmACYsJjwmKCYEJfgmACYQJkgmrCboJsgmTCX0JggmOCaAJtAm5Cb4JvQm2CbsJzQncCecJ6wnqCfYJAgoDCvsJ8gnsCfQJAAoMChsKJwo4CkkKWQpxCpAKrAqsCp0KgwpkClIKVQpMCjUKIgoOCv4J+AnzCe0J5gnbCdAJwwmzCaoJoQmaCaMJtAnOCeEJ7wkECpwJrgm9Cc4J3wnzCQQKCwoTCh8KLAo4CkYKVQpbCl4KVQoxCisKQQpUClQKWApSCkMKMwonChMK/wnqCdkJywm6CawJnwmVCZEJhglwCWMJXAlYCVQJVAlYCWQJaQlrCWoJYglXCUsJPwksCRoJDwn5COAI1gjXCOQI/QgTCSUJLwkyCTUJQAlQCVwJZQlmCWsJdwl6CXMJaQlqCXwJhwmXCawJtQmhCYYJdAl4CYIJjgmoCbYJuwm3CbEJtAnGCdoJ5AniCdgJ4wnuCe8J6AnfCd0J8wkGChAKHwouCj8KUQphCnMKkwqqCqIKkAp2ClcKPAo2CjwKNAokChAKAAruCeEJ4wnjCd4J0wnDCbcJqwmbCZEJmAmqCbsJ0wnmCQAKmAmoCbgJxwnZCegJ9gkCCgoKFAoiCjAKPgpOClgKXwpfCkgKQwpVCmAKXwpdClMKOwonChkKCAr2CeMJ1gnKCbsJswmtCZsJjwmECW4JYQlfCVwJWglXCV4Jagl3CXgJcQljCVgJTQlCCTsJKwkcCQUJ6QjaCNcI3wjyCAUJFAkZCSEJKwk2CUAJRglOCVQJXAloCWoJYwlfCWoJfQmOCZsJpwmfCY0JdglkCW0JewmJCaEJtQm4CbQJrQmvCb8J1wnhCdsJ1AnYCd8J3wnZCdUJ3QnyCQcKEQogCi4KQApVCmgKewqVCpsKkAqDCmwKTQouCiYKLgouCh8KCwr7CegJ2QnXCdoJ2QnQCcIJugmtCZYJigmRCaMJsAnPCeQJ+gmQCZwJrAm3CcgJ2gnkCfUJ/wkGChYKJwo1CkcKVApdCmYKWwpbCmUKawpoClwKTQozCiAKDQr/CfAJ2wnUCcwJwwm7CbEJlwmICYAJdAlrCWcJYglbCVoJZAl0CYUJhwl2CWMJWQlRCUkJQAk5CSgJCAnrCNkI1wjcCOYI8Qj9CAYJFAkeCSgJLwk0CTgJQQlQCVwJXQlYCV8JbQl/CY8JmQmXCYwJewlpCV4JaAl9CZAJowm1CbQJrgmoCa8JvgnVCd0J0gnLCc8J0wnVCdIJ0wncCe0JAAoKCiAKKgo+Ck8KawqDCoUKfQp5Cm4KWgo4Ch8KDwoWCh0KEgoCCvMJ5QnXCc0JywnKCcUJvQm2CaEJjAmGCZAJqAnACd8J8AkBCoIJiQmaCawJuwnSCdsJ8QkACgMKEwojCi0KQgpQClwKaQp1CnkKeAp4CnAKVgpECisKHgoJCvwJ8QniCdwJ1AnGCboJrQmVCYYJgwl9CXQJawliCVwJXAlqCX0JjQmOCXkJYglZCVYJVAlMCUYJMgkLCeoI2AjXCNwI4QjlCOsI9QgFCRMJGQkfCSYJLwk5CUQJSglKCU0JWgloCXkJiwmUCZIJggltCWAJXAlpCYUJkwmcCakJpwmfCacJswm/Cc0JywnCCbwJwAnECcsJzgnTCdcJ7QkCChIKJwo1CkUKVApwCoQKgwplClQKTwpECioKEwoBCgIKCgoKCv4J7AncCdAJwgm3CboJugm1CagJjQmFCYcJmQmxCcsJ5An4CQgKfwmKCZ8JtgnECdYJ4wn2CQcKDwocCioKMwpACk8KWwpoCncKfwqBCoMKcwpTCkMKLgofChAKBQr4CeoJ4gnXCcoJuAmvCacJmAmOCYoJgQlqCV8JXAldCW8JhQmSCZAJfglkCVwJWwlgCV8JTQk1CRIJ6wjZCNkI4wjoCOYI5QjoCPMIBgkOCREJGwkmCTEJPAk8CToJPAlOCV4JcAmDCY8JjQl1CV8JWQlaCWMJeAmJCYwJkwmQCZAJqAm3Cb0Juwm2CbIJsAm0CbsJxgnOCdQJ4Qn/CRIKJQozCkIKUQphCnYKgwqCCl8KNgoqCikKHwoJCvsJ9gn6Cf8J+AnmCdcJygm8CbAJrwmwCakJmAmICYUJjQmiCbsJ0gnoCf4JCQqGCZcJqwm7CckJ2wnnCfUJAgoLChwKLgo2Cj8KTgpaCmQKcwp+CoMKhgp8CmQKSwo3CiYKFQoICvsJ7wnjCdcJzwnCCbsJtwmpCZgJkAmDCWcJYAliCWUJeAmOCZsJlAmDCW0JYgljCWcJZglQCTYJEgntCN0I3gjqCPQI9gj0CPMI9Aj9CAYJDQkUCRwJJQksCS8JMAk4CUcJVwlnCXYJgQl7CWgJWAlWCVwJYAllCXoJggmHCYgJkgmtCbgJtwmyCa4JqwmuCbUJvQnICc8J2AnsCQgKHAovCjsKTgpbCmgKeAp9CnYKXAo0CiAKFwoPCgEK8AnhCekJ7QntCeUJ2AnGCbQJrAmnCaUJnQmTCYgJhQmRCakJwgnbCegJ9gn2CYcJmAmpCbgJyAnbCeQJ7wn5CQQKEwojCi8KNgpEClEKXwpuCnoKgQqGCokKeApYCjwKJwoVCgUK+wnyCeYJ3gnZCc0JwAm4CasJmQmNCX8JdQl2CXsJfwmFCZwJrgmgCYgJewlwCW8JbQllCVAJNQkPCe8I4AjgCO0IBgkRCQ0JCgkMCQsJBAkICQ4JEgkXCRwJIQkoCTMJQAlNCVwJZwlrCWcJVwlKCVUJYwloCW4JegmECYkJjgmaCa4JtQmzCawJpwmtCbMJvQnJCdEJ0wnZCfEJCQoeCjAKPwpPClwKaQp0Cm8KYwpYCjkKHAoECgQK+QnnCdcJ2gngCeMJ4gnaCcYJswmqCaQJngmVCY0JhwmGCZEJrQnFCd0J3wneCdYJhQmVCaQJswnCCdIJ3gnnCfEJ/QkGCg4KHwopCjoKTwpdCmoKdQp+CoQKiwp9Cl0KOAojChUKAgr9CfcJ7gnlCd8J0Am+CbQJpwmXCYkJhgmKCY4JkQmSCZoJrAm4CasJkAmDCX0JeAlvCWcJTgkwCQ8J8AjhCOEI8wgRCR4JIQkfCR4JFwkLCQUJCAkMCQ4JEQkVCR4JKgk2CT8JSAlQCVMJSAk9CUEJUgljCWgJbQmBCY0JjgmRCZgJowmpCaYJpAmqCbEJuQnGCdUJ3gnbCdwJ9AkKCiAKMQpBCk4KWQpnCm0KYwpPCkQKNgobCgEK9gntCeEJ0AnFCcwJ0wnXCdUJyAm6Ca8JpAmaCZAJiQmDCYUJkQmlCbQJvAnACb8Jtgl/CZEJnwmtCbsJyAnUCeAJ6AnyCfoJAAoQCiQKNgpPClwKZApvCnsKggqHCn8KXAo4CiUKGgoNCgYKAAr1CeYJ3AnMCbkJrwmnCZ4JlQmTCZYJmQmbCZ8JqAmyCbsJsAmbCYsJiAmACW4JYwlKCS4JEQnwCOEI4wj8CBgJJgkxCTgJMwkkCREJCAkICQkJCQkMCQ8JFAkfCSsJMwk4CToJOgk0CTIJPAlHCVUJXglkCXcJhgmGCYgJjwmUCZgJmAmiCawJtQm/CcwJ2wnmCekJ7gn8CQ8KJQo2CkUKUgpbCmYKaQpfCkUKJwomChUK/wnoCeEJ2wnFCbAJsQm2CcAJwgnACbkJrwmgCZYJjwmICYIJhAmKCY4JmwmjCagJqgmmCXcJiwmXCaQJswm+CccJ1AnbCeMJ9wkFChEKIQoxCkcKVQpbCmcKdQp/CoQKfgpiCkoKNQomChgKDgoHCvgJ4wnWCcsJugmyCa8JrQmpCaQJogmkCagJqgmtCbQJtwmwCaAJlQmQCYUJbAlWCTgJJgkMCe4I4wjoCAUJHwkxCT0JSAlDCTYJKAkXCREJEQkOCRIJEwkSCRcJIwkqCS4JLwkwCTMJMgk3CT4JTAlYCV8JZwlwCXoJgwmHCYkJigmUCaUJrAm2CcQJ0QneCfAJ+wn8CQIKGAosCjsKSgpWCl0KZApgClcKOAodChIKCwr6CeEJ0wnJCbkJrAmmCagJrgm1CbYJsQmkCZgJkAmKCYQJfwmBCYMJhgmKCZEJmAmgCacJbAmDCY4JmAmlCa4JtAnBCdIJ4An0CQUKEAodCigKOQpICk8KXQpvCnsKgwqDCncKXwpGCi0KHQoOCgIK9QngCdgJ1AnNCccJvwm7CbcJrwmrCa4Jswm0CbAJqQmmCZ0JkAmPCY4JfAlnCU0JLQkTCQAJ6wjnCPEIDwklCTsJSwlZCVsJTQlBCS4JIgkdCRgJHAkeCR0JHQkgCSUJKwkxCTYJOAk5CUYJUAlYCVsJXglkCXMJgQmDCYQJhgmLCZ8JsAmxCbgJygnYCegJ+wkHCgkKDgoiCjIKQApOClcKXgpiClYKQAowChEKAQoFCvcJ4wnTCboJrAmkCZ4JnQmhCaUJpQmfCZYJjQmGCYMJfQl7CX4JgwmGCYYJiAmXCawJswlqCXsJhQmJCY4JmQmsCbwJ0AnhCfAJ/wkMChgKJAoxCj8KTApaCmoKeAqBCogKhApuCk8KMAofCg8KAAr3Ce4J6AnkCeEJ3QnSCckJwwm6CbgJwAnBCboJqgmZCZAJiQl+CXUJcglpCVsJRQkqCQ0J/AjyCO8IAAkWCSkJPglXCWcJaglkCVEJPAkzCS0JMAkuCSkJKAkoCSoJLQkvCTIJOAk/CUoJYwloCWsJbglzCXcJgAmMCY4JjgmPCZ0Jrgm7Cb8JxAnRCeAJ8QkDCg8KFgoeCikKOgpGClEKWgpdClwKTQoqChwKCAr8CfkJ8QnlCdoJvwmnCZMJkQmQCY8JkwmTCY8Jhwl9CXYJcglzCXgJggmNCZgJngmkCaoJuAnHCXMJfAmCCYUJhwmSCaoJuQnLCd0J6wn7CQkKFQoiCjAKOwpKClkKZgp1CoAKhgqGCnIKUgo0CiMKFgoFCv8JAQr8CfMJ7AnmCdwJ1AnPCc0J0QnaCc8JtwmbCYYJgQl4CW0JYAlcCVkJUAlECTEJEgn/CPoI/QgJCRgJKQk+CWAJcQlyCWoJWQlICTkJNgk/CTsJNAk0CTEJMgk1CTcJOAk6CUUJVAloCXgJhwmMCY4JjQmICZoJqgmwCbMJtgm/CckJzwnQCdUJ5An3CQkKGQolCicKNApIClEKVgpUCk0KRgo4CiUKCwr+CfcJ8AnqCeQJ3AnFCakJigmGCYQJgwmFCYUJfwl1CWsJZAlkCW0JegmGCZYJrAm3CbwJxgnRCdoJeQmCCYoJjAmMCZUJpwmyCcIJ1gnnCfcJBgoRCh0KKgo2CkUKUgpgCnEKfQqFCoYKdQpWCkIKLwogChEKCwoNCgkK/wn4CfMJ7AniCdoJ3AnfCeAJzwm1CZgJgglwCWkJYAlXCVAJTAlGCT8JMQkaCQYJ/Qj+CAgJGAkpCTsJWglvCXIJaAlcCU8JPwk+CUcJQwlBCUAJOQk6CT8JQQlCCUUJTAlZCWoJgAmRCZgJnwmfCZ4JrQm6CcEJyAnQCdMJ2gnfCd0J2AnoCfsJDwoiCjAKNQpFClUKWgpbCj8KKgooCh4KFAoJCvwJ7wnjCeIJ4QnZCcQJrAmNCX8JeAl4CXcJdAlsCWQJXgleCWQJbwl7CYkJmAmxCbkJwwnTCeEJ6Ql9CYYJkAmXCaAJpgmqCa4JuAnQCeIJ8An+CQoKFwojCi4KQQpNClwKcAp8CoUKiQp9CmoKVAo9CikKHwobChkKEwoKCgQKAgr/CfgJ8AnoCeUJ4AnPCbYJmgmACWYJXAlXCU4JQgk/CTsJMwknCRwJDAn+CP0ICQkZCSkJOAlUCWkJcAlpCWQJXAlPCU4JVglaCVUJTQlFCUUJSwlPCVIJVQlXCVgJaQmCCZUJogmtCbMJrwm3CcIJzAnYCeIJ5QnoCeoJ6AnjCfMJAwoZCiwKNQo+CksKUwpZClYKMQoYCgkKBgoCCgAK9gnpCdwJ2AnaCdQJwQmrCYwJdAlqCW0JbQloCWIJXQlYCV4JZgluCXYJhQmRCZ4Jqgm4CcoJ2wnqCX8JhgmSCaAJrwm2CbUJtAm1CcoJ2gnmCfYJBAoSCiIKLwpCClMKYApxCn4KhgqNCocKeQpfCkgKNAonCioKJwogChwKGAoTCg0KBgr8CfEJ6AngCdAJtwmbCX8JZQlZCVAJRgk7CTQJLwkjCRoJFAkKCf0I/ggLCRoJKwk3CVAJZglvCWsJZgljCVsJYAlkCWcJYwlZCVQJVAlZCV8JYQliCWIJXwlmCYQJmAmrCbUJuwm7CcIJzAnUCeAJ6wn2Cf4J/Qn0CfUJ/gkOCiIKMQo7CkMKSwpMCk8KRQonCgwK+wn2CfQJ8wntCeUJ2wnGCccJyAm9CaoJiwlvCWAJZAlkCWEJXAlXCVUJXglkCWgJawlzCX8JigmaCa4JwQnWCeAJgwmKCZYJpgm0Cb0JwQnFCcsJ0wnXCd0J8QkACg4KIAoxCkEKVApgCnEKfwqHCo4Kiwp+CmoKUwpBCjYKOAo0Ci8KLQosCiQKFAoHCvwJ8gnpCd8J0Am3CZoJfgllCVgJSwlACTcJMAkqCRsJEAkLCf4I/AgACREJIAktCTYJTwlkCWsJZwliCV8JXQljCWoJbAlnCWEJYAldCWIJZwlpCWoJbAlnCWYJhgmaCbAJuQnACccJ0AnWCd0J6Qn1Cf8JCAoICgAK/AkGChcKKQozCj8KRQpACjcKOQo0ChwKAgrxCeEJ5AnnCeUJ4AnRCbQJtAm9CboJqQmPCXIJXglcCVwJWwlXCVQJVQleCV8JYAlgCWEJbgl+CZEJpQm3CcIJyQmGCY8JnAmrCbkJwwnMCdQJ3QnhCeMJ5QnzCf4JBAoVCiwKPApLClkKbgp9CoYKkAqMCoEKdApfCk4KSgpICkcKRQo9CjMKKQoWCgYK+wnyCegJ4AnPCbYJmAl+CWYJWglJCTsJNwk3CTMJIQkSCQcJ/Aj8CAMJFwkoCTcJOwlRCWQJaglkCWAJXglgCWQJagluCWsJaAlnCWQJZglrCXAJcgl3CXgJeQmGCZUJrQm5CcIJzwnaCeEJ6Qn0Cf8JBwoOChAKBQoBChIKIwovCjkKPwo/CjgKKQonCiEKDAr5CegJ2AnYCd4J4AnZCcUJsQmsCbQJtAmjCZAJcglcCVcJUwlTCVQJVAlYCVcJVwlYCVgJWAlhCXUJigmaCaYJqgmuCYkJlAmgCa4JvAnJCdUJ3gnmCe4J8gn1CfkJ/gkCCg8KJQo2CkgKWAprCnsKhgqRCpAKiAp/CnIKZQpeClsKWApVCkUKNAomChQKBgr6CfEJ5wnfCc0JtQmaCYMJbQldCU4JQglRCVMJQwktCRUJCQn8CPwIAgkVCSkJPAlWCWIJaQlqCWMJXAlgCWMJZglqCXAJcQlwCWwJaQlpCWwJcQl4CYAJhwmICYQJigmgCbQJvwnPCdwJ5gnxCf8JCgoSChoKGQoNChAKJAovCjUKPAo4CjEKMgojCgkKCAr/CfAJ4QnOCb0JywnUCc0JuwmsCaMJpQmmCZkJiAluCVsJUQlPCVAJUwlWCVYJVglYCVYJVglVCVkJaAl/CYwJkwmRCZgJigmWCaMJsQm/Cc4J3AnlCe8J+gkBCgQKBQoJChEKGQolCjYKSQpaCmwKfAqKCpgKmQqRCogKggp+CncKbQpdClEKPQorCh0KDgoBCvYJ7QnnCd4Jywm0CZ4JjAlxCV8JUQlSCWQJaAlUCTYJIQkTCQcJ/Qj/CAsJGgkxCVEJZwlwCWgJYAlZCWMJagl0CXMJeAl7CXgJcAlpCWMJZQlsCXUJgQmMCY8JiQmICZcJrAm6CcsJ1wniCfIJAQoRCiEKKgojCiAKKQovCjcKPQo/CjYKKAojChUKAAr3CfAJ5wnaCcIJsQm4CcUJwQm1CaMJjwmVCZgJkQl+CWUJVwlMCUwJUwlYCVwJXglgCV8JXwldCVcJVglgCXIJfgmDCYEJhAmMCZkJpgmzCcIJ1AngCesJ9wkDCgsKEAoXCh0KIwomCioKOApKCloKcAqBCpAKnQqhCpsKlAqOCogKgQpxClgKRwoyCiEKEgoDCvcJ6gngCeIJ3QnHCbEJmgmGCWsJXQlSCV4JbQluCV8JRQk2CSMJDQn/CPwI/ggBCRMJNQlRCWcJYglKCVAJYgltCXgJeQl5CXkJcAlmCV4JWQldCWMJbgmACY0JlQmUCY8JnQmvCbsJyAnSCdsJ7wn/CRIKJwowCisKKgotCjQKOQo6Cj0KNwokCgsKCAr8CeYJ4QndCc0JuQmtCa8JuQm7CbAJmgmGCYgJkAmICW4JXAlRCUwJTwlaCWAJZQlpCWsJawlpCWQJWwlVCVoJaAltCXAJcgl1CZAJnQmpCbQJxQnWCeMJ7wn9CQgKEQoaCiQKLAoyCjUKOgpDCkwKWwp0CoUKlAqjCqcKowqfCpgKjQqBCmwKUgpACi0KGwoJCvsJ7wnhCdYJ2QnRCbkJogmMCXcJYwlXCVUJYwl+CXwJawlaCUYJLQkTCQUJ/gj9CPwIAgkXCTEJSAlICTcJQAlTCWcJcAlxCW8JbgliCUsJRwlLCVUJXwluCYAJjgmZCaEJoQmmCa8JugnGCdYJ4wn2CQQKEwooCjAKMAovCjAKNQo1CjUKLwoyChwK/QnzCeoJ3AnOCcMJvQmyCagJqQm2CbgJqwmSCYEJbwl0CXIJYglUCUoJSwlVCV8JZglvCXcJfAl7CXYJbQlhCVYJVwlcCV8JYAljCWcJmwmmCa8JuAnHCdYJ4wnwCf4JCwoXCiMKLgo4CkAKQwpHClAKWQpjCnMKgwqWCqUKqwqqCqcKnwqOCn8KZQpMCjsKKAoXCgYK9wnpCdsJzwnKCb4JpgmMCXkJZQlaCVkJYwl4CY8JiQl3CWQJSgkwCRgJCwkCCf4I/Qj8CAEJDAkhCS0JLAkxCT0JTwlcCVwJWglWCUIJMwk3CUIJUglgCXIJhAmSCaAJrAmwCawJrAm0CcIJ2AnoCfwJCgoUCiEKKgotCjMKLgoqCi4KMwoiChwKDQr1CdwJ1QnNCb0JrQmnCZUJlgmhCa0JtAmpCY8JfglpCV8JYAlZCU8JSQlMCVoJYwltCXgJgwmMCYsJhAl6CWwJXglXCVcJXAldCWAJZQmoCa4Jtwm+CcoJ1gnjCfAJ/QkLChwKKwo3CkQKTwpSClIKXApnCnEKdwp/CpcKpgqtCq0KpwqdCo0KfQpkCkwKOgooChUKAwr0CeUJ1wnLCcEJtgmfCYYJcAleCVgJZgmBCY8JlwmPCXkJYAlECSwJFQkKCQMJAAn9CP0I/wgCCQgJEwkYCRgJIwkyCT4JPQk5CTgJMAktCTYJRAlUCWMJdgmJCZgJqAmzCbkJtgmzCbEJvwnWCeUJ+AkHCg8KGQoiCioKMgouCh0KKgorCgkKAQr6CeoJ1Qm/CbYJsQmjCZUJhwmMCZYJngmkCaIJlgmICW4JXQlVCU8JSglKCVEJXQlmCXMJfQmKCZAJkQmPCYkJfwlwCWcJYwlkCWYJaAlpCa4JtAm8CcMJzAnWCeIJ8An9CQsKHwowCkAKUQpbCmEKZwptCnUKfwqFCo4KmgqlCq0KqwqkCpcKigp8CmMKTAo6CiwKFAoACvIJ4QnTCcUJugmuCZkJhglyCWEJXgl2CZEJngmcCY0JdAlXCTwJKgkWCQsJBAkFCQkJCQkFCQEJAQkDCQQJBAkGCQ8JHgkiCSAJGwkcCSwJNwlHCVsJbAl9CY4JnwmvCbkJvwnCCcAJwQnHCdQJ3QntCfsJBgoSCh0KKAowCiwKBgoUChUK/gniCd4J3QnNCbYJqAmiCZcJigl4CXgJhQmNCZEJmAmUCYcJcAlfCVIJSQlJCU8JWQlgCW0JewmECY0JkwmWCZUJkgmOCYcJfwl+CX0JeQl3CXQJtAm5CcEJyQnQCdYJ4wnyCf4JDQohCjIKRApWCmEKbgp5Cn4KgwqKCpIKmgqiCqcKrQqpCp8KkQqECnMKVgpFCjUKJwoOCv0J8QngCdEJvAmwCagJlAmGCXoJaglpCYEJlAmjCZgJjAlzCVYJOgkqCRoJDgkHCQoJEQkTCQ8JCAkCCQAJAAkACQAJAgkHCQ0JEAkSCRkJKwk5CUwJYQl1CYYJlQmmCbUJvwnHCcwJzgnSCdUJ1gnZCeIJ9gkECg8KGgomCjAKKwoBCv8JBQr0CdgJwQnCCb4JsQmiCZcJjAl7CWYJYAlrCXcJiwmVCZAJgQlqCV0JTwlJCU8JWQlhCWwJfAmGCYwJkQmWCZoJmwmYCZUJkQmPCZAJjwmKCYUJgQm6Cb8JxgnPCdcJ3QnpCfgJAgoSCiMKMwpGClYKZQp0CoEKiQqRCpcKnwqlCqoKrwqtCqUKmgqLCnwKXwpICjkKLAohCgsK/wn1CeQJ0wm9Ca4JpgmZCZEJiwl9CXgJigmXCZ8JlQmLCXIJWQlACTEJHAkOCQcJDwkTCRkJFgkRCQwJBQkECQQJAwkACQEJAwkOCRgJIgkvCT4JVAloCX4JkAmeCa4JuwnGCdEJ1gnZCd8J4gnjCeQJ7An4CQMKCwoTCh4KJQoYCvkJ4wniCdwJwAmlCagJqwmjCZgJjQl+CWwJXAlXCVkJZAmECY0Jiwl3CWIJVglMCUgJVAlfCWkJfQmMCZEJlQmZCZ0JoAmgCZ4JnQmbCZwJnQmcCZkJkwmMCb8JxAnKCdMJ3gnmCfMJAQoMChkKJgo1CkcKVwpmCnYKgwqQCp0KowqoCq4Kswq5Cq0KogqWCoUKcApTCjwKLQolCh0KEgoJCv4J6wnaCcYJtgmrCaAJmAmQCYcJhAmNCZkJmQmQCYYJbwlaCUkJOQkdCQ4JCQkNCRQJHAkfCRwJFwkQCQ4JEQkMCQQJAAkCCQwJGQkkCTQJRAlaCW0JgAmRCaIJtAnACc0J2QnhCeUJ6wnvCfEJ8wn8CQAKAAoECgkKDQoKCgAK5wnECbgJsgmcCYkJkgmVCZEJjAl/CW0JXQlQCUgJTAleCXAJdwl7CW0JXQlQCUkJTglZCWAJbAmCCZEJlwmeCaQJpwmnCaYJpQmkCaUJqAmsCa0JqwmlCZ0JxwnKCc0J1AnfCeoJ+AkGChEKHwotCjoKSwpZCmcKdAqCCpYKpQqrCrEKuAq+CsMKtAqkCpcKgwprCk8KNAooCiYKIwoaCg8KBAryCd4JzQm9Ca8JpgmcCZIJiAmJCZAJmQmSCYUJcgllCVYJRgk5CRwJDAkICQoJEAkXCSgJLwkqCR4JGgkcCRUJCgkBCQEJBgkTCSIJMglDCVkJbQl8CY4JoQmyCcEJ0QneCecJ8An4Cf4JAQr9CQUKBAoACv8J+An0Ce4J4wnQCasJlgmNCXgJdgmBCYEJegl1CWwJWglGCTsJNgk3CT8JUAlhCWsJZglZCUsJSglRCVkJXglnCX4JjAmYCagJsAmvCa4JrQmsCasJqwmvCbUJuQm4CbQJrwnQCdAJ0wnWCdwJ6wn5CQQKEgohCi8KPApMCloKZgpzCoMKmQqoCrEKuArACskKyQq8CqwKnQqKCnQKWgpGCjkKNAouCiIKFAoGCvYJ4wnTCcUJswmtCaQJlQmMCY8JlAmUCYwJeAlhCVkJTQk+CS0JFwkKCQgJCQkMCRUJKQk4CT0JMgkuCS8JIwkTCQUJAgkDCQoJGgkrCTgJTwljCXkJjAmfCbAJwgnSCd8J7An5CQMKCgoLCgYKBwoCCgIKBQroCdIJygnBCbEJkwl3CWkJXQlkCWsJZQldCWEJWwlHCTIJLwktCS4JMgk2CUsJWwlaCU8JSglOCVUJXAlhCWwJfAmGCZcJqQm1CbgJtwm2CbUJswmyCbgJvwnCCcIJvwm7CdYJ1wnZCdsJ4AnwCfwJBAoTCiEKKwo5CkoKVwpjCnQKhQqbCqoKtAq9CsYKzQrPCsMKtAqlCpIKfwpqClUKSwpBCjQKJgoZCgsK/wnvCd8J0QnBCbYJqQmeCZkJmQmWCZEJiAltCVsJUQlHCTkJJQkSCQkJCQkNCRQJIQkxCT8JRwk9CTkJQQk0CR4JCwkGCQMJBgkSCSYJNglJCV8JeQmQCZ8JsQnCCdQJ4gnwCf8JCAoTCiEKKQoJCv4JBgoECtQJrQmiCZwJjwl5CWEJWQlWCVkJWwlXCVMJTglFCTcJLgkuCTEJNAk1CTQJOglFCUYJSAlMCVIJWQlgCWsJeAmCCYkJmQmsCbYJvwnBCcEJwAnACcEJxQnJCcwJzgnNCccJ2QndCeEJ5gnuCfoJBAoPChsKJQorCjkKSApPClwKcgqDCpkKqgq1CsIKywrRCtIKyAq6CqoKmQqJCnoKaQpbCkwKOwoqCiAKFAoJCvkJ5wnZCccJtwmsCaQJnQmXCZMJjwmACWYJVglKCUIJMwkeCQ4JCAkJCQ8JGgksCTwJTAlcCVcJTwlPCUMJNAkoCRIJBAkECQwJHwk2CUkJXQl0CYwJnQmwCcAJ0QndCecJ+QkEChMKIgojCvMJ3gnrCeQJwQmfCYEJdQltCWAJUglKCUoJSQlHCUYJRglBCTcJLwkvCTUJOgk+CToJNQk1CTwJQAlFCVIJVglbCWMJdAmGCZAJmwmqCbQJuwnECcwJzQnNCc0JzwnUCdcJ2AnZCdsJ1QnbCeEJ5wnvCfkJAwoMChgKJQovCjcKQgpLClIKXApwCnoKkAqiCrIKxQrPCtUK1QrOCsEKrwqfCpAKgwp1CmMKUgpDCjQKKwocCgoK+gnpCdkJyAm4CawJowmaCZQJjgmJCXcJYglPCUAJOAkoCRYJCwkICQkJDgkZCS8JQwlYCWgJaQljCWMJWglQCUUJKgkJCQMJBQkUCTAJRglYCW4JigmXCaMJsAm5Cc0J4Qn1CQUKDgoQCvUJyQm2Cb8JuQmrCZoJfQlcCVgJTwlCCToJPgk6CTQJNAk1CTQJMAkuCTYJPQlFCU4JSgk6CTcJOQk+CUoJVglcCWAJaQl9CY8JngmsCbUJugnBCcwJ1QnYCdgJ2AnZCd0J3wngCeAJ4QnfCdsJ5AnsCfUJAAoJChIKIAouCjgKQwpLClUKXwppCnIKeQqNCp8KsgrHCtEK2ArZCtMKyAq1CqQKlAqGCnoKZwpYCkoKOgoxCiAKCgr5CecJ2AnHCbcJqwmaCZMJkAmICXMJZwlXCUUJNwktCRwJEQkLCQoJCQkKCRIJJgk6CVEJZwlvCXIJcQlsCWgJVgk9CRUJBAkECQoJJglBCVYJawl8CYQJhgmLCacJxQndCegJ+QkGCvQJ0AmuCaMJowmbCZEJjQl7CVkJRgk/CTgJMQkxCS4JLAktCSwJLAksCS4JOwlECVEJYQlfCU8JRQk/CUMJUQlaCWEJaQl3CYgJkQmlCbUJugm9CcEJzgncCd8J4AnfCeAJ4gnkCeUJ5wnnCeUJ3gnmCe4J+AkBCgsKFQojCjAKQApPClYKYApsCnUKfQqFCpQKpAq1CsgK0grZCtsK1QrKCrYKpAqUCoYKeQpnClgKSQo7Ci8KHQoICvYJ5QnUCcUJuAmqCZUJiQmGCXYJXAlFCUMJOwkyCSYJFwkTCRMJEAkLCQkJEAkhCTIJRQleCWoJewmBCXsJbwldCUUJHgkFCQQJBwkYCTIJQAlZCWUJZQl0CYsJpQm2CcUJ2gnvCe8J0gmuCY0JjgmQCYYJcglmCWkJWglACTQJLwkrCSsJLQkuCTEJMQkyCS8JMQk3CUAJUglhCWUJYwlbCUsJSQlPCVkJYwltCX8JjQmTCZ8JqwmvCa8Jsgm+CdAJ3QniCeQJ5wnnCekJ6wnsCe0J6wnnCesJ8gn5CQEKCQoUCiEKLgpCClYKXQppCnkKgAqGCo8KmwqpCrkKygrSCtoK2ArQCsIKrwqfCo8Kggp2CmMKUwpECjcKKwoWCgMK7wneCc4JvwmzCacJlQmICXsJZQlCCTEJMwkwCSsJIgkgCSgJHgkQCQkJCgkSCSEJMQlCCVYJZwl7CYsJhwl1CV4JRwkrCRYJCAkHCQsJFQkgCSgJOQlVCXAJjwmWCaMJuQnVCeMJ0wm8CZkJdQlnCWkJXwlQCUMJSAlJCT4JMQkpCSkJLgk0CTcJOwk/CUEJPwk7CT8JRwlVCV0JZgloCWQJWAlSCVQJWgliCWsJeAmDCYgJiQmOCZYJogmrCbEJugnHCdIJ2wnfCeMJ6QnvCfMJ9gn2Ce8J8Qn0CfgJ/QkEChEKHwoqCj0KUgpcCmoKewqDCooKlQqhCq0KuwrJCtIK2ArTCskKtgqjCpQKhgp5CmsKXApLCjkKLAoeCg0K+wnnCdYJxgm2Ca0JpQmoCZoJgQlmCUAJNAkvCS0JLQksCTUJOgkoCRAJCQkKCRIJIQkzCUQJVglpCXoJjAmQCX4JYAlMCTsJMwkWCQwJDQkTCRwJHAkmCVIJbwmBCYYJmwm4CdAJ1Qm4CaEJgwlhCUAJOQkyCTAJLgk0CTsJOgkuCSYJKwk3CUAJRwlNCVMJWQlXCU8JTglYCWEJYglnCWwJZQlfCVsJVglaCV8JZAluCXoJgQmFCYgJjwmcCacJrAmtCbIJuwnICdcJ2gnhCe8J9wn9CQAK9An3CfkJ+gn+CQQKEgofCiUKMgpGClYKZApyCn8KiAqYCqcKsQq9CsgK0ArXCtAKwgqsCpsKigp6Cm0KXgpPCjwKKwocCg0K/wnsCdoJzgm9CbEJqQmvCbQJrgmKCWsJRwk3CTcJNAkwCTYJOwk/CTEJFwkJCQoJEQkeCS0JPglRCWQJdgmJCZMJiQltCWEJVAlCCTAJJwklCSwJJwkcCR4JPAlhCXAJigmbCasJtQm3CZoJfwliCT8JKAkjCSIJIgkiCSQJLQkwCSkJJwkvCT0JTgldCWEJZAloCWgJYglbCV8JaAlrCWwJbglpCWMJXAlXCVoJXwljCW0JgQmICY0JlgmgCakJrQmwCa4Jrwm1CcsJ1wnXCd0J7An4Cf8JBwr9Cf0JAAoACgIKDgodCiUKKAosCkEKTgpYCmgKeAqDCpUKpgqzCr8KyQrRCtcK0QrDCqwKmgqHCnUKZQpUCj4KKgohCg4K/wn1CeIJ1AnJCboJsAmuCbMJtAmwCY0JcAlKCToJPgk4CTMJPAlBCUIJOAkeCQ0JCAkNCRYJIwk1CUgJXQlxCYQJkQmQCYEJcgliCVEJSwlKCUYJQwkyCSEJHAklCUQJaQmHCY8JjAmTCZoJiQlsCUUJKwkiCSUJKAkoCSUJIgkjCSYJJgktCTUJQAlYCWcJbAluCW8JbwlrCWYJZgltCXIJdAlyCW0JZAlcCVkJXAliCWoJewmLCZEJnAmpCbMJugm+CcEJxgnLCdMJ2wnhCd8J3gnsCfoJAgoLCgIKAwoICgkKCwobCioKMAozCjkKRgpOClMKZQp1Cn4KlAqkCrcKxQrNCtQK2wrVCsoKswqeCooKdgpjCk8KOAomCh8KEAoACvUJ5QnWCckJuwmxCbIJtAm3CbEJkAlvCVQJRwlFCTkJOAlICVEJRwk8CSEJDwkICQkJDQkXCSwJPglYCWwJfQmOCZMJjQl/CW0JZAllCWEJXQlQCTwJKQkdCR0JNAlYCWEJYglnCXAJdglvCVYJMAkiCSIJJAkvCTQJNQkwCSoJKgkqCToJSAlOCVwJawlzCXcJeQl5CXYJdQl2CXkJfQl9CXkJcglmCV4JXQlfCWEJaAl9CY0JkwmkCbUJvAnICdYJ3QnfCeEJ5AnoCe0J7wnyCfYJ/AkHChQKBgoKCg8KEwoZCiUKMAo3Cj4KSApSClsKZApyCnsKhAqZCqgKvArNCtQK3AriCtoKzgq5CqIKjQp4CmkKWApCCjAKLAofCgoK+wnnCdYJ0QnFCbIJsgm4CboJswmRCW4JWwlVCUgJOglFCVwJXQlICTIJGgkLCQoJCwkMCRMJJwk6CVAJYQl1CYkJkwmTCYoJfQlzCW4JbAlpCWAJSQkyCSAJHAkkCScJJwknCS4JOQlGCUgJNAkjCSAJIgkwCTcJOQlCCUYJQAlBCUsJXQlgCV0JYglwCXsJgAmDCYUJggmBCYMJhwmHCYUJgQl7CW4JYwllCWkJawluCXgJhAmMCZsJrQm5CcoJ3AniCeYJ6gnvCfMJ+gkBCgAK/Qn+CQsKIAoMChQKGAobCh8KJwoxCjwKRwpQClwKaAp0Cn8KhAqPCp4KrQq/CtAK2grlCucK3QrQCrwKpAqSCoIKdQpiClIKPwozCiMKDwoCCugJ2gndCdQJtQm3Cb8JuwmxCY4JbAliCWUJUglBCVcJZwleCUkJMwkWCQ4JEgkTCREJEgkjCTgJSwldCXAJhwmTCZYJjwmGCX4JdwlzCW4JZQlXCUAJLAkfCRwJHAkcCRsJGwkdCSEJJAkhCR0JIAkoCTQJOwlCCU8JXAlfCWAJZglsCWoJZwluCXkJhAmJCYsJjQmLCYkJiwmNCY4JjAmJCYcJfgl3CXgJewl9CX8JgQl/CYYJjgmgCbEJxAnUCd8J5wnwCfkJ/QkCCgoKDgoICgIKDAolChMKHwojCiMKJQonCjIKQQpPClgKZQpzCn0KhQqLCpUKnwquCr8KzwrfCu4K7QrhCtEKvwqqCpoKjAp+CmsKVwpBCioKHQoMCv8J7QnkCeAJ0wnCCcQJyAm9CbEJjQl4CXAJaQlcCVgJZAlqCV4JSgk2CRsJFAkaCRwJGgkXCSQJNQlICWMJcgmHCZEJlQmRCYsJhAl+CXoJdQluCWkJYwlSCTgJLwkqCSYJIAkdCR4JHQkcCR0JIwknCSsJMQk5CUEJUglkCWwJbglwCWsJawlyCX4JhgmNCY8JkAmQCY4JjgmPCZAJkQmRCZAJjwmLCYkJigmMCYwJjQmLCYcJhQmICZYJrQm9CckJ1wniCe8J/wkHCg4KGAoeChsKFQoZCigKGQooCiwKKwouCi0KNQpHClQKXgptCnsKggqJCpAKlwqfCq4KvwrNCuEK8grzCuYK1wrHCrQKogqRCoEKbwpXCkMKLgodCgUK+gnxCeYJ3AnSCcwJzwnVCcUJsgmVCYQJdQlnCV8JYgloCWgJWwlGCTcJIQkgCSkJLwkmCSAJJwkzCUQJYAlvCXwJigmSCZIJjgmJCYMJgAl/CX4JfAl3CXEJZQlZCUUJNQksCSsJKwkiCR8JIQksCTEJMgkyCTcJOglCCVMJZQlrCWYJYQljCWoJcgmDCYwJiwmNCY4JjQmMCYwJjAmNCY8JkgmSCZAJkAmRCZMJlgmVCZQJkAmMCYsJkQmnCbQJvAnNCd4J6Qn4CQcKFgomCi4KLAolCiIKKQoeCisKMQozCjUKNwo/CksKVQpgCnAKfQqECosKlQqcCqMKsgrBCtAK4wryCvcK7QrdCs8KuQqjCpEKgQpwCl0KSwo0Ch8KCwr9CfEJ5AnZCdMJ0QnZCdwJywm1CZ4Jigl6CWYJZAlqCWoJZAlTCTsJMgksCS4JNwk7CTIJKQkoCTMJQQlWCWIJZwl9CY0JkwmRCYwJigmJCYgJigmMCYoJhQl4CW0JXAlBCTUJNwk5CTIJJwknCTIJOgk8CTkJNwk2CTYJOAlACUwJUAlPCVAJWAliCWsJdwl7CX8JhQmCCYQJhgmHCYkJiwmOCZMJlAmWCZgJnAmeCaAJoQmgCZ4JmwmXCaIJqwmwCb0J0wnbCecJ/gkRCigKMgo2Ci8KKAoqCh8KKwoyCjcKOgo+CkUKSwpTCl8KbAp4CoIKjAqaCqQKrQq6CscK1grpCvYK+wrxCuAKzwq4CqEKkAqACnAKXwpOCjQKIAoPCgAK8QnjCdgJ1QnYCd4J3gnMCbEJnwmLCYAJdAlxCXAJZwleCU4JOwk0CTQJOQk8CTsJNwk1CS4JMQk4CUEJUwlgCXQJiAmTCZQJkQmPCY8JjwmQCZMJkwmPCYQJdQloCVUJRAlJCUQJOQkwCSgJNQlBCVAJSAk5CTYJNgk2CTYJNgk6CTwJOQk6CU0JXAloCW0JcAl0CXYJfQmBCYMJhgmJCY0JkgmYCZsJnwmjCaYJqgmuCa4JsAmuCaYJpwmtCbQJwAnSCdgJ3wn4CQYKIAoxCj4KQQo5CjgKHwosCjQKOQpACkQKSApLClEKWwpoCnMKfwqLCpsKqAqzCsUK0QrfCvAK+gr+CvMK3grLCrMKngqNCn4KbgpeCk0KMwofCg0K/wn6CeoJ2QnYCd8J5wnfCcsJrwmhCY4JhwmCCXsJcgloCV0JUAlACTgJOgk9CT0JOgk6CTsJNAkvCTQJPAlNCVwJbwmECZAJlwmYCZUJlgmWCZQJmAmXCZAJiAl8CXAJZQlhCWAJTwk4CSwJKAk1CUcJYglkCVQJRwk/CTsJNwk2CTYJNgk2CTcJPwlNCVoJYAlhCWUJbgl3CXwJfwmDCYcJiwmRCZkJoAmmCakJrAmwCbYJuAm5CbgJsQmqCbAJuwnMCd0J5gnvCfwJAQoZCiwKQgpRClEKUAogCi0KNAo8CkQKSgpOCk8KUApWCmYKcgp8CooKmgqnCrQKxwrUCuIK8wr6Cv0K7QrTCr8KqgqXCoUKdgpnClsKRwotCh0KBwoCCgYK+AngCeQJ7An0CeUJzgmwCaUJmAmQCYgJfwl1CWwJYQlUCUUJQAlCCUAJOwk7CTsJOwk2CS8JNAk8CUsJWQloCX8JjQmUCZoJmgmcCZ0JlgmZCZgJkgmLCYQJeQlwCWwJaQlVCTIJKAkrCTUJSgljCW8JaQliCVkJVAlKCToJOgk7CTcJNgk6CUUJUAlZCWAJZgluCXkJgAmDCYQJhgmJCY0JlgmhCagJrAmxCbYJuwm/CcMJwAm2Ca0JsAm8Cc4J4AnuCf0JCAoPCh0KKAo/ClUKWApXCiMKLQo3CkEKSQpPClUKWApYCloKaQpzCnwKiQqYCqUKswrDCtIK4QrtCvYK+grpCswKtAqeCo0KewprClwKTgo5CicKHAoMCgsKCgoBCvcJ8gn4CQMK+AnWCbgJqgmeCZQJigmBCXkJbglkCVgJSglECUAJPAk6CTsJOwk5CTAJLwk0CTwJTAlcCWkJewmKCZAJlAmWCZsJmwmcCZsJmwmVCZEJjAmBCXcJbwloCU8JLwkpCTEJPglUCWgJdQl2CXIJbglsCWQJUwlTCVUJRQk4CTwJSAlWCV4JZAlrCXYJfwmHCYsJiwmKCYoJiwmVCaAJqwmxCbYJuwnBCcoJzwnNCcAJsAmvCboJzQneCfAJBAoOChoKKAowCkAKUApXClwKJwovCjsKRApNClUKWwpgCmMKZQptCnMKfAqICpYKoQqwCsAK0ArfCuwK9gr7CuoKzQqtCpgKgwpzCl4KTgpECi4KJQoeChYKEwoPCggKAgr7CQIKBgr0CdgJuwmsCaAJlQmOCYkJfQluCWMJVQlFCTwJOgk5CTkJOgk6CTgJNAkvCTIJOwlNCWQJbQl4CYMJiwmOCZAJlAmZCZwJnAmcCZkJlAmOCYQJeAlrCV4JQgktCSoJNQlFCVwJdQmBCYMJgwl/CXsJcQloCWgJaglaCUMJQAlLCV0JZQlpCW8JewmICYwJjwmPCY4JjgmQCZgJowmtCbMJuQm/CccJ0gnZCdsJzgm7CbAJuAnJCdkJ7AkCCgwKGwosCjUKPwpLClMKWQoxCjgKQQpJClEKWQphCmcKbApuCnIKdQp7CokKlwqfCq0KvwrPCuAK8Ar5Cv4K7QrPCrEKmgqDCnQKYApSCkkKMwonCiAKGgoZCiAKFQoHCgEKBgr+CegJzgmzCakJnwmXCZIJjQl7CWkJXQlOCT8JNwk1CTMJMwk8CUYJRQk4CS8JMQk3CUoJZAlsCXEJeAl+CYQJigmOCZQJmgmcCZwJmwmWCY8Jhwl8CWUJVAk7CS0JKgkyCUEJVwl+CY8JjgmQCY0JiwmECYEJdwlvCWMJWAlPCVEJYAlmCWoJbwl7CYcJjQmPCZIJlAmUCZYJngmlCasJsAmzCbsJxwnTCdwJ3wnaCcgJugm+CcgJ1QniCfUJAwoSCiYKMwo9CkcKTwpVCjoKQgpICk4KVQpeCmYKbwp1CngKegp7CoAKjgqZCp8KrQrACs8K4wrzCvsKAAv0CtUKugqlCpEKfwpwCl4KVQo+CioKIgoeCiYKLAohCgsKBwoDCu8J2Am/Ca0JowmYCZUJkQmLCXAJXwlUCUgJOwk0CTAJMQk5CUsJYglWCTYJLwkvCTMJPglWCWUJZglsCXIJcwl+CYoJkQmWCZoJnAmbCZYJkgmNCYcJcwleCU0JOAkrCSwJOAlNCWYJigmWCZgJlgmTCY8JjgmCCXkJbQlkCV0JWAldCWIJZglsCXYJgQmHCYsJjQmSCZYJmwmjCakJrAmtCbAJswnCCdIJ2gneCd4J0wnPCdIJ0gnVCdoJ6gn6CQkKIAovCjsKRQpOClUKQwpMClEKVQpbCmIKbAp2Cn0KgQqDCogKjgqYCqAKqgq4CsUK0wroCvYK/QoBC/oK3Aq/CqkKlQqDCnQKYwpVCkEKKwokCiAKKgoqCiIKEgoJCvoJ4AnGCbIJpwmaCY4JjAmKCYEJaQlaCUwJQAk4CTIJMgk8CU4JYglqCVMJNQkvCS8JLwk0CTwJSglWCWEJYwlhCXAJhQmOCZQJmQmeCZsJmQmYCZsJlAmMCXwJaAlKCTAJKQkvCT8JVAlrCY0JnwmeCZoJlgmNCYgJigl9CWwJYAlaCVkJXgliCWcJcAl6CX8JgwmJCYwJkwmaCaUJrwmzCbMJtAm6CcQJzwnWCdwJ4QnbCdkJ3QndCd0J3QnqCfoJBwocCi4KOgpFCk4KVQpIClMKVgpaCl4KZApwCnoKgAqECogKjwqXCqAKqQq0CsUK0ArbCuwK9gr1CvcK8wrWCrwKpAqOCnkKcApjClYKQQosCiQKIAolCiUKHAoRCgcK7gnLCbMJqwmhCZYJigl+CXkJcQlnCVYJQwk4CTYJOAk6CUoJXwloCWAJQwkxCS8JMAk1CTUJNQk9CUsJVglcCWQJcQmCCY0JkAmVCZgJmQmaCZ0JpAmcCZQJjgl3CVcJOAkrCSwJOglPCWoJkAmhCaUJoQmZCZAJjwmOCYAJbglhCV8JYAldCV8JYglqCXsJhAmECYUJigmQCZgJpAmvCbYJuQm9CcEJyAnQCdYJ3QniCeIJ4QnjCeUJ5wnsCfUJ/QkHCh4KLgo7CkgKUQpWCkYKTwpWClkKWgpbCmQKeQp/CoMKiAqQCpkKoQqrCrYKxgrQCtkK5grsCusK6wroCtEKuwqlCo4KeQpvCmMKVwpBCisKJwolCiAKGgoTCg0KBQrfCbcJrQmnCZwJkgmICXUJaAljCVkJSwk7CTUJOglCCUgJWAlmCWQJVglACTUJMQk5CTwJOQk1CToJRglWCWEJaQlyCX4JhgmMCZAJlAmZCZoJnQmgCaMJnQmUCYQJawlOCS8JKgk0CUgJXgl9CZUJogmiCZ8JmAmRCYsJgAlwCWcJaQlnCWAJXQlgCWsJgAmLCY0JiwmKCYwJlwmlCawJsQm3Cb0JxQnMCdQJ2wngCeUJ6QnqCesJ7gnyCfgJ/wkHChMKJQoyCj4KSwpVClkKOwpECk0KTwpQCk8KUgprCnoKgQqICo8KlwqfCqcKrwq7CsgK1ArcCuAK2wrbCtoKzwq7CqcKkgp+CnEKZQpYCkIKKgotCigKIAoWCg4KCQr7CdUJsgmqCaQJmQmNCYcJcwleCVcJSgk+CTYJOAlACUoJVAlfCWUJXglQCUUJOAk0CTwJQgk/CTgJNwlBCVkJZwltCXAJdAl7CYIJigmQCZMJlwmaCZ0JnQmcCZkJkAl7CV0JOAkrCS0JOglMCWoJggmQCZ8JpAmWCY0JhgmACXYJdgl/CXoJaglhCWIJbQl/CYwJkAmQCZAJkQmYCaMJqgmuCbMJugnFCdAJ2QnfCeUJ6gnwCfIJ8gn1CfkJ/gkIChMKHgopCjYKQgpNClYKWwovCjcKOgo6Cj0KRgpPCmIKeAqACoYKjAqTCpkKnQqhCqsKvgrOCtQK1QrOCsoK0QrPCrwKpgqUCoMKdQpnCloKSgo1CjMKKAofChQKCwoDCuwJyQmwCagJoQmYCZEJjgl+CWQJVQlCCTYJNgk9CUgJUglbCWQJYwlbCVgJSgk5CTcJQwlRCU0JQwk7CT8JVglmCWcJZwlnCW0JeAmFCY0JkQmUCZcJmgmcCZ8JmwmUCX8JXglACS4JKgktCToJTgldCX0JmgmdCZEJiAmHCX8JewmCCYwJjQl+CXAJbAltCXsJhwmPCZQJlwmcCaIJpQmnCasJsAm3CcUJ0wndCeQJ6gnxCfYJ+An4CfkJ/QkEChMKIQopCjAKOwpGCk8KVgpcCh4KIwojCiYKLgo/CkwKWwp1CoAKhAqGCokKiwqOCpQKngquCr8KxgrKCsMKvArECsoKtgqjCpQKhQp3CmcKWQpMCj4KNAooCh4KEgoICvkJ1wm0CawJpgmgCZkJlQmQCYcJaglWCUAJNQk6CUUJUwldCWIJZAlhCWEJZglfCVAJRQlQCWMJYAlPCUcJRAlQCV8JYQlgCWAJYwluCYEJiwmPCZIJlgmYCZwJogmcCZIJgQlgCUcJNgkwCSsJKwkwCUQJawmCCYcJfgl3CXsJfgmACYgJjgmSCYoJfgl9CXkJfQmICY4JkgmaCaQJqgmuCasJqgmvCbYJwwnVCeAJ5wnvCfgJ/gkBCgAK/wkBCg0KIAotCjEKOApBCkwKVApYCl4KBQoJCgYKGAouCjwKSQpXCnIKfQp9Cn0Kfgp+Cn0KggqRCp8KqgquCrMKsAqkCqgKswqtCp4KkgqFCncKZQpVCkkKPgo0CikKHAoPCgUK4gnACa4JqQmjCZwJmAmUCY8JhQltCVoJRAk5CUAJTAlcCWYJaAlkCWIJZwltCWoJYglSCVcJZQliCVkJVwlRCVMJWAlZCVwJYglkCWsJfQmHCYwJjwmSCZYJmgmdCZwJkQmCCWcJUglHCUIJOAkwCSoJLglCCVkJYgliCWMJbQl+CYUJjAmRCZUJjQmICYsJiQmFCYUJiQmPCZwJqQmyCbMJsQmtCa4Jswm/CdMJ4AnoCfQJ/QkDCgYKBgoFCggKFwomCi8KNQo7CkUKTwpWClsKXQrsCe8J+wkWCi4KPQpKClgKagpxCnAKcAptCmsKawp1CoQKkQqYCpsKoAqbCpcKmgqmCqYKmQqNCoIKdApgClEKSgpCCi8KJgoYCgwK+QnRCbUJrQmoCaAJlgmTCZAJjAl+CW4JYQlICUIJSAlSCV8JaQluCWcJagl3CXoJcQljCVgJXAllCWQJXwliCWIJWglXCVwJYglmCWoJbwl3CYIJiAmLCY0JkAmVCZgJlwmRCYsJdglhCWEJXglMCToJLwksCTAJNglFCVQJYQl8CYkJiwmQCZUJmQmUCZMJlQmSCYsJhQmICZEJnwmrCbUJuAm1CbIJrwmwCbYJyQnZCeMJ9AkCCgcKCQoMCg4KEgoaCiUKLgo1CjwKRQpNClUKWwpbCtUJ3An7CRgKLwo+Ck4KWgpiCmMKYwpiClwKVgpVCmYKeQqFCoYKiQqLCoQKfwqKCpoKmwqRCoYKfQpuCloKUApTCk0KKAofChMKCArsCcwJtAmwCasJnwmPCYsJiQl/CXMJaQlgCVMJUAlUCVkJYQlqCXEJcwmACYoJgwl1CWMJXAldCWQJawlqCW4JaAlbCVcJXglkCWoJbglyCXcJfAmDCYgJiwmMCY8JkwmVCZIJjgmHCXcJbwlpCVcJQgk3CTQJMAkxCT4JWAl1CZEJjgmSCZcJnAmeCaIJogmgCZ0JkwmICYkJlAmkCa0JtQm8CbwJuAmzCbAJsQm8Cc0J2gnrCQIKCAoJCgYKBgoOChYKIgotCjMKOQpCCksKVApaClgKygnfCQAKGgowCkAKUQpaClkKUwpVClYKTApCCkgKWQppCncKdQp2CnoKdQpzCn0KiAqJCoQKfAp1CmoKVgpSClcKTgorChsKDgoCCuMJ0gnCCbgJrQmgCZMJiAl+CW0JZAlfCVsJWwlaCVwJYAlmCW0JdAl8CYcJjgmJCXkJaAlgCVwJYAlvCX4JhQl6CWAJWwlgCWYJbAlwCXYJeQl6CX4JhAmICYsJjQmQCZQJkwmRCYwJgwl4CW4JXwlSCUkJQQk3CTQJOwlZCXoJkAmUCZgJmwmjCaMJqQmsCa0JrAmhCZIJigmbCa8JtAm4CcAJwwnECb4JtwmzCbYJxgnUCeEJ8wkACgAK+wn+CQQKCgoVCiYKMAo0CjsKRQpQClQKUQrFCeEJ/wkbCjEKQApOClIKTwpGCkIKQAozCisKOQpMClcKVQpdCmYKaApnCmoKcwp8CnwKeAp0CnAKaQpYClUKUwpBCioKFwoHCvoJ6QnZCcgJuwmuCaIJlwmOCYAJaQleCVsJXAlhCWIJYgllCWoJcAl4CYAJhwmNCY0JgQlyCWQJXglhCXMJhQmOCYkJcAljCWEJZQlsCXIJewmBCYIJggmCCYUJiQmLCY4JkgmXCZIJjgmJCYIJdwlsCWQJXAlQCUMJOQk7CU0JagmFCZIJkwmWCZ8JpQmtCbMJtQm3Ca8JoQmXCaUJtQm5Cb4JxAnKCc8JzwnKCcQJwQnFCdQJ3AnjCegJ7AntCfMJ+gn/CQYKFwonCiwKMAo1Cj8KQwpDCsoJ4gkAChwKMQo8CkMKRApBCjcKKgopCh0KGgosCjoKQQpFCk8KVgpXClYKWgpkCmgKawptCmwKaQpkCl8KVgpDCi0KIAoSCgIK9gnoCdgJzgm6CawJowmaCZEJggltCWAJXAlgCWMJaAlqCWsJbwl1CXoJgAmHCY0JjwmJCYAJZwleCWMJewmNCZEJjgl+CW0JZglnCW4Jdgl+CYcJigmKCYkJiAmHCYoJjgmTCZgJmQmPCY4JjAmECX0JdQlqCVsJTwlBCT4JQglVCWsJggmDCYcJkwmbCacJsAm3CbsJtwmvCakJqwmzCboJwgnJCc8J1QnbCdsJ1AnRCc8J0QnWCdcJ2AnbCeEJ6Qn2CfwJ/wkHChIKGgohCiYKLgoxCjIK0AnrCQcKHQouCjYKNQo1CjYKLQoYCgwKBAoGChwKKworCjQKPwpHCkoKSwpPClYKVApWCmEKYQpeCl8KXQpSCjUKJAobCg8KAQr2CekJ3gncCcMJrwmrCZ4JkAmBCWwJXwldCWIJaAltCXEJdAl3CXkJfAmCCYgJjAmSCZIJiAlkCV4JYgl+CY4JkQmOCYQJcQlwCW8Jcwl5CX4JhwmMCYwJjAmLCYoJiQmMCZMJmwmcCZkJlAmTCY8JjgmHCXUJYgldCVIJQglHCUoJUgleCWIJagmICZMJmwmgCZ8JqQm6CbYJsgmwCbEJuAnDCc0J0wnaCd8J4AndCdoJ2AnYCdQJ1QnXCdgJ3AnlCfEJ+An6Cf4JAQoKChQKHQojCiUKKArbCfYJDQobCisKLwolCiEKKQoeCgcK+wn5Cf4JCQoPChoKJgouCjcKPwpCCkYKSApKClQKWgpYClUKWQpcCkwKLwonCiYKEQoACvsJ+QnvCeIJ2Am/CbYJnwmJCXwJagleCV8JZAltCXMJfAmBCYEJfAl+CYMJiQmNCZEJjQl1CWAJYQlqCYEJjQmPCYwJhAl5CXoJfAl8CXwJgAmHCYwJjgmOCY0JiwmKCYsJkAmYCZ4JogmmCaQJnwmYCZEJgQlxCWsJZQlVCU8JTglLCUwJUglZCWsJfgmICYMJfAmJCagJtwm2CbUJtgm6CcYJ0QnYCd0J4QniCeIJ4AngCd0J2QnZCd0J4AnlCe0J9An4CfsJ+Qn8CQEKCwoTChsKIgoqCuYJ/QkMCgkKCAoOCgYKAgoOCgsK+gnqCesJ9Qn8CQAKDgoeCicKMQo3CjgKNgo2Cj4KTwpQCk8KUQpkCm8KTwo0CjEKLgoUCgAKBgoDCvsJ8AngCcgJrwmZCYgJfAlpCV8JYglqCXMJewmDCYoJhgmCCYEJhAmJCYwJiQl6CWEJYQltCXsJiQmMCYwJiwmCCX8JgAmFCYYJgwmACYcJjAmPCZAJjwmMCYsJigmOCZYJnQmkCa4JswmrCaEJlgmICYAJfAluCV0JUwlWCVoJVAlLCU0JVAlcCWEJXQleCW0JggmXCa4Jtwm8CcIJyQnUCdsJ3wnhCd8J4QnjCeUJ4wncCeAJ5gnsCfEJ9gn9CQAKBQoBCvoJ/gkFCg4KGgojCisK3AnzCf8J+Qn1CfcJ9gnzCfUJ8gnmCdoJ3gnsCfgJAwoQChsKJwoxCjIKMAorCicKLgpACkcKTgpaCnEKfQpcCkcKOwouChsKDgoNCgUKBgr2Cd4JvgmpCZsJkAl/CWoJYgloCXAJeQmBCYoJjQmJCYcJhAmHCYkJjAmHCW4JXwlqCXoJhwmMCY0JiwmKCYMJhAmGCYoJiwmJCYQJhwmMCY8JkgmSCY4JiwmKCYwJlAmcCaUJrQmzCbMJqgmfCZIJjwmMCXoJZAlXCVQJXglhCVoJUAlJCUsJTAlLCU0JVQllCYEJogm3CbwJwgnJCdIJ2wngCd0J2wnbCdsJ4gnoCegJ7AnyCfYJ+wkBCgkKFQoeChwKEQoKCgYKDgocCiQKLArKCdkJ4gngCeEJ5AnkCeMJ2wnYCdgJ1gnfCe0J+gkGCg8KGAohCiMKHAoSChkKJgowCjoKRwpVCmAKbQplClIKSgpGCiwKIgobChcKDwoECu4J0wmzCaMJlwmMCX0JagloCW8Jdwl/CYcJkQmQCY0JiwmICYwJjgmMCYAJaglkCXkJigmMCY4JjAmKCYoJiQmKCYsJjAmMCYsJiAmICYwJjwmSCZMJkAmNCYsJjAmUCZ0JpgmsCbIJtAmzCasJoQmaCZQJhQlsCV0JWAlbCWUJdwlqCVkJUwlRCU8JTAlNCVwJeAmXCa4Jtgm7CcIJygnQCdUJ1gnVCdUJ2AnfCekJ8wn5CfwJAQoIChQKIQotCjMKMgovCiYKFwoRChkKIworCrsJyAnOCc4J0AnTCdUJ1AnNCcwJ0QnXCeIJ7wn8CQgKDgoPCg0KCAoBCgEKFworCjQKNgo8CksKVwpTClAKUQpTClYKNAolCiYKJgoPCv4J4wnFCaoJmAmOCYcJfAlyCW8Jdgl9CYUJjgmZCZ4JlwmLCY4JkwmPCYkJfwlqCXMJhgmRCZAJjwmLCYoJiwmMCYwJjQmOCY0JiwmJCYkJjAmPCZIJlAmTCY8JjgmPCZYJnwmnCa0JsQm0CbUJswmqCaMJmgmNCXgJZgldCVcJWgl9CY4JgAlxCWcJYAlVCU0JVAlsCYwJmQmlCbEJugm+Cb4JvwnHCc0J0wnaCeIJ7An3Cf8JBgoPChwKKQo0CjwKQAo9CjcKMQonCh8KHAojCioKrgm6Cb4Juwm8CcAJwgnACb0JvgnOCdgJ4wnvCf0JBgoHCgUKAAr7CfwJBwohCjAKMAosCikKNgo9CkkKSgpQClYKUwo9Ci8KMAooCgoK8gnYCbkJngmJCYUJgAl7CXcJdQl8CYMJiwmYCaQJrQmlCZoJmAmbCZMJjQmECYEJgwmOCZcJmQmPCYoJiwmMCY0JjgmPCY8JjQmLCYkJiQmLCY4JkgmUCZQJkwmUCZYJmgmiCacJqwmwCbQJtwm1CbIJrgmnCZcJhQl2CWcJWwlXCWgJjwmSCYwJgQlyCV4JUAlOCVsJcgmCCY8JngmqCa0JrQmyCcAJzwnWCd0J5gnwCfkJAwoOChsKKgo2CkIKTwpSCkoKQAo2Ci0KJgohCiEKKAqaCagJrAmpCasJsQmyCbEJsAm5CcoJ1wnhCewJ+Qn8CfwJ+Qn1CfUJAAoKChMKGgoUChIKGAojCisKPQpJClMKVgpQCkQKOAoxChwK/gnrCc4JrwmbCYkJhAl+CXgJeQl6CYEJigmWCaMJrwm1CbEJqQmlCZ4JkQmKCYYJiAmMCZcJowmhCZEJigmLCY0JjgmPCZEJkQmPCYsJiwmJCYoJjQmRCZQJlgmXCZgJmwmeCaIJpwmrCbAJswm5CbgJtgm2CbQJqAmQCYUJeAliCVcJYAl+CZAJlQmQCYQJaQlVCU4JUglcCWkJfQmLCZMJmAmnCbMJxgnVCdwJ4wnqCfMJ/AkFChQKIQowCj8KTQpXClgKUApFCjsKMgoqCiYKJAolCoIJjAmTCZMJkgmdCagJsAm1CcEJzgnZCeAJ6QntCecJ4wnoCekJ6wnzCfoJ+An4CfkJ/gkECh8KMgo+CkoKVQpUCksKQQo0CikKFwoGCucJwgmqCZ0JkwmJCYAJeAl7CYAJiAmUCaMJsAm3CbkJswmwCbAJoAmLCYcJigmOCZgJowmtCacJkgmKCYsJjgmPCZAJkgmSCZAJjAmLCYoJigmNCZEJlAmXCZoJmgmcCZ8JowmpCawJsAm0CbkJvAm7CbsJugm0CaIJlgmMCXQJXAldCXAJiAmXCaAJkwl5CWIJVwlUCVcJXQltCX8JhwmSCakJuAnQCd4J4gnnCe4J9wn/CQsKGgomCjYKSApVClwKWQpTCkoKQgo7CjQKLwosCigKaglyCXsJgQmHCZcJrwm4Cb8JyQnWCd8J5AnkCeEJ2wnXCdwJ3wneCd0J3gngCeQJ8Qn5CQwKKgo2CkAKSgpPCksKRwo/CjIKKgonCgwK6AnACasJoQmRCYgJfwl4CX0JhQmRCaIJsQm4CbwJvgm1CbcJsgmhCZEJiAmOCZoJpAmvCbYJqAmRCYoJjAmOCZAJkQmTCZQJkQmOCY0JiwmLCY0JkQmUCZcJmgmbCZ4JogmkCakJrQmxCbUJugm+CcEJwwnACbcJqwmjCZsJjgl0CWYJbgmACZMJrgmrCZUJgAltCWMJYglhCWYJewmNCaAJsgm+CdEJ2wneCeQJ7wn6CQUKEwohCi4KPQpPClkKXgpaClUKTQpICkYKQgo8CjgKMwpfCV4JZQl7CYsJnwm0CboJwgnNCdgJ3wniCd4J2QnRCdAJ0AnSCdIJ0gnTCdUJ3wnwCf4JGAoyCjgKPQpACkAKPAo6CjgKMgouChwK/QnbCcUJtgmpCYsJgwl9CXoJggmOCZ8JsAm5Cb4JwwnCCcEJugmvCa8JlwmKCZgJpQmwCbgJuAmlCY4JiwmMCY8JkQmSCZMJlAmTCZEJjwmNCY0JjwmSCZUJmQmcCZ4JoQmkCacJqQmtCbAJswm3Cb0JxQnMCc4JwgmzCbIJsQmfCYcJcwlzCXsJjAmrCbsJsQmcCYkJfwl/CXcJcAl2CYwJogm1Cb0JwgnKCdQJ4AnsCfoJCAoZCioKMwpACkwKUwpUClMKUQpPCksKTQpMCkoKRgpECl8JXwltCYUJkgmgCa4JtgnBCcwJ1QncCd0J1wnPCccJwgnCCcQJxgnICcwJ2AnlCfYJCAojCjEKMQo1CjgKNAowCioKMgosChgK8wndCc4Jwgm4CZ0JhQl8CXsJfwmJCZsJrgm5Cb8JxAnICcoJzgm8CbMJtgmfCZQJpQmyCb8JxAmzCaEJjQmLCYwJjwmRCZMJlAmVCZUJkwmRCZEJkQmSCZQJlwmZCZ0JnwmiCaUJpgmnCasJrgmxCbIJuQnECc8J1gnZCcwJxAm9CasJjwl9CXQJeQmGCaUJuwm7CbIJoQmYCZgJkQmBCXcJhAmYCaoJsAmwCbYJyQnaCegJ9gkFChoKLQo0CjQKOQpACkIKQQpBCkcKTgpTClUKVgpTClIKXwlfCXAJjAmXCaEJrQm3CcEJygnRCdYJ1QnPCcYJuwmzCbUJuAm6Cb0JygnZCeMJ+gkMChMKFwokCjAKMworChkKIwovCiIKBQrYCcEJvAm4CaYJiwl9CXsJfAmECZUJrAm4CcAJxwnNCc8J0gnVCdcJ0wm5CawJrQm6CcsJ2QnPCbAJnwmOCYsJjAmPCZEJkwmVCZUJlgmVCZUJlQmVCZgJmAmZCZ4JnwmhCaMJpQmnCagJqgmuCa8JsQm3CcIJzgnYCd4J3gnSCcAJrgmRCYAJdwl5CYYJoQm3Cb8JuwmzCbEJsgmgCYcJeAl8CYkJlQmWCZYJqAm9CdAJ4QnvCf8JFQosCi0KJgomCiwKLwouCi0KOApHClUKXApiCmUKZQpfCV4JaQmECZIJnwmxCbkJvgnDCcgJzAnKCccJvwm0CbAJsAmwCbEJswnDCdQJ3Qn2CQEK/gkGChoKJwonChMKAgoYCiIKEgrxCcoJsQmpCaMJjwmBCX0JgAmDCYkJoQm3Cb8JyAnSCdYJ1QnZCeYJ7AnbCbgJrgnDCdoJ5QnjCcwJrgmfCY8JigmMCY4JkQmTCZUJlgmXCZkJmQmaCZgJngmdCZ8JoQmiCaMJpQmmCagJqQmqCa0JrwmxCbYJwAnMCdYJ3AnfCdMJwAmsCZMJggl6CXwJiQmjCbcJxQnGCb4JvQm6CaoJjQl6CXcJfwmFCYIJggmSCa8JwwnVCeUJ9QkIChsKGwoUChcKGwoeCiEKJQoyCkQKVApfCmoKdgp5CmEJXgliCXkJiwmSCagJtAm4Cb0JvwnBCcAJvgm6CbIJrAmsCbEJswm5CccJ0gnfCeoJ8gn6CQcKBQoECgoKAAr9CQkKDwoBCt0JvgmqCZsJjwmECX4JhAmJCY4JlQmnCbgJxQnOCdoJ4gneCekJAAr+CdgJtQm9CeUJ/gn+Cd8JxgmuCaAJkQmLCYsJjQmQCZMJlQmXCZkJmwmeCZ4JnQmjCaEJpAmkCaMJpAmnCakJqgmrCawJrQmwCbEJtgnBCcwJ1AnbCd8J0wm9CagJkwmDCXwJgQmXCa0JugnJCdIJzwnICb8JsgmUCYEJeAl2CXcJdwl3CX4JlAmzCcUJ1AnjCfkJCAoGCgAKBwoNCg8KFgokCjIKQwpSCl8KbAp5CoEKZQlgCWAJbgl+CYcJmAmsCbYJuAm4CbkJtwm1CbMJrgmnCawJswm6CcEJxwnSCdkJ3QnlCe0J8AnwCfMJ9QnsCe8JAgoHCu8JzQmyCaAJkAmGCX8JggmKCZYJoQmqCawJtgnJCdMJ4gnzCfYJAQoJCvoJ1gm2CdsJ/gkQCvoJ2QnCCa8JoQmTCYsJiwmNCZAJlAmXCZgJmwmeCaIJowmiCacJpgmnCacJpgmlCagJqgmsCa0JrwmvCbEJsgm3CcEJzAnUCdsJ4AnSCbcJowmPCYEJfwmJCakJugnBCc0J2gnaCdAJwwm1CZwJiAmCCX8Jfwl+CXsJdwl7CZEJsAnCCdUJ6Qn1CfEJ8gn5Cf8JAAoOCiMKMwpCClIKXgprCnkKgQptCWkJZAlqCXsJiAmXCaUJrgmwCa8JrwmtCawJrQmnCacJrQmyCbcJuwm/CccJzAnTCd4J2wnXCdoJ5QniCdoJ3gn2CfMJ2Qm7CakJlQmHCYAJgQmICZYJpgmzCb8JvgnCCdAJ2wn0CQUKBgoLCgsK9wnYCdIJ6wkFCgsK7gnTCcEJsAmjCZcJjQmMCY4JkQmVCZgJmwmeCaIJpQmoCagJqwmrCaoJqQmnCacJqQmrCa0JrwmxCbMJtAm1CboJxAnOCdUJ2wneCc0JsQmbCYcJfgmECZkJsQm+CcgJ0gncCd8J1gnHCbYJnwmKCZAJkwmTCY4JhAl6CXYJfwmRCa0JyQndCd4J3AneCeoJ9Qn/CQ8KIgoyCkAKTQpaCmgKeQqBCnwJdglsCWgJdwmKCZAJkwmVCZUJlQmaCaAJoQmjCaIJpgmrCa8JsgmyCbgJvgm8CbkJvAm+CcEJxgnSCdYJ0wnaCegJ4AnFCa0JoQmVCY0JhQmICZMJpAm2CcUJ1QndCeAJ5AnvCQQKEQoVChUKCwr2Cd4J5wn4CQYK9gneCc8JvwmxCaUJmwmRCZAJkAmTCZcJmgmdCaEJpgmpCawJrQmvCa4JrQmrCakJqQmqCasJrAmwCbIJtgm5CbsJvwnGCc4J1QnZCdUJwgmrCZEJgAmCCZQJrQm6CcYJ0AnWCd0J4AnZCckJuQmnCZoJogmqCawJnwmNCYIJgAmFCYUJmAm0CcEJwgnICdkJ5QnvCf4JDAofCjAKPApIClIKYwp1CoAKiAmECXgJcAl1CYUJiQmICYUJhQmICY8JlgmXCZoJnQmiCagJrAmtCa8Jswm2CbMJsQmvCa4JsQmwCbcJxgnRCdgJ3wncCb8JrAmhCZYJkQmMCZMJnwmuCcIJ0wnmCfgJ/wkGCgQKFwoiCiEKHwoMCvwJ+QkACvUJ6gncCdQJywm8CbEJqAmiCZsJkwmUCZQJlwmaCZ4JoQmlCaoJrgmwCbEJsQmvCa0JqwmrCa0JrAmsCa8Jsgm3CbsJvwnECcgJzgnSCdcJ0wnBCa0JkQl/CYUJnwm4CcIJ0QnZCdwJ4AniCdsJzQm9Ca8JqgmzCbcJtwmvCZgJhgmJCZIJkQmUCaQJrQmuCbsJzwncCeYJ9QkEChgKLQo5CkQKTwpfCnIKfwqOCYoJgwl8CXQJfAmCCYEJfgmBCYcJjAmPCZEJlAmZCZ8JpQmoCasJrQmwCbEJsAmuCa0JrQmuCbIJuQnHCdAJ2gnfCdgJvgmtCaEJnAmdCZ0JqAmtCbkJ0gnhCfYJCgoWCh4KHgosCjAKLgopCg0KAQoGCgQK5wnXCdMJzgnFCbwJtQmvCakJmwmZCZcJmQmaCZwJnwmiCaYJqgmuCbIJswmzCbIJsAmuCa4JrwmvCa0JrgmyCbQJuQm/CccJzAnRCdUJ2QnYCckJuQmgCYYJiAmhCbgJxgnXCd8J4QnkCeMJ3AnTCcMJtAm1CboJvQm7CbYJowmLCYsJqQmuCaQJpAmjCaYJqwmwCcEJ3QnsCfsJDwooCjUKQQpOClwKbQp7CpAJiwmHCYUJfAl8CX0JfQl+CYAJhQmICYoJjAmQCZUJnAmhCaQJpwmqCakJqwmrCawJrgmwCbMJtwm/CckJ1AncCeAJ0gm6Ca4JpAmqCbAJrQmzCcUJ0wnmCfUJBgoWCiYKNQo1CjsKPQo3CiwKFwoMCgsK+gneCdQJzwnJCcIJvQm4CbIJqwmfCZ0JnQmdCZ4JngmgCaMJpgmpCa4Jswm0CbUJtAmyCbEJsQmxCbEJrwmuCbAJsgm4CcAJyQnPCdQJ2QndCd8J0wnDCbEJkQmNCaIJtQnHCdcJ4QnlCecJ5QnfCdgJzQnACb4JwQnBCb4JuAmqCZIJkgmtCbgJswmrCacJpQmjCaUJtAnSCeIJ8gkHCiIKMgo8CkoKVgpgCmoKkgmMCYsJiQmCCYAJfgl9CX4JgQmGCYgJigmMCZAJlQmaCZ8JogmkCaYJqQmqCawJrgmxCbcJvwnDCckJzwnVCd0J2QnBCbAJrQmuCbIJtgmzCbkJ2gnkCfYJBgoUCiUKOApPClMKTQpNCjwKKwofChMKCgrxCdcJ0QnLCcUJvwm7CbUJsQmsCaUJogmjCaIJogmiCaIJpAmnCakJrQmyCbQJtgm2CbQJswmzCbMJswmyCa8JsAmzCbkJwQnLCdMJ2QncCeEJ4gnaCcwJvgmoCZ4JpQm0CckJ2gniCecJ6wnnCeAJ2gnTCc0JyQnJCcgJwwm7Ca8JngmgCbAJvQm9CbYJsQmuCacJpAmtCcAJ0gnmCf0JFgorCjUKPgpIClEKWgqUCZAJjAmKCYYJhgmDCX8JfgmACYUJigmMCZEJlQmYCZsJoAmlCakJqwmuCbAJsQmxCbEJvgnOCdIJ1QnUCdgJ2QnMCboJrQmtCbUJtwm7CbQJuAnVCeUJ+AkHChkKLwpFCloKXgpaClMKPwosCh0KEAoECuIJ1QnOCccJwQm7CbYJsgmvCaoJpAmlCacJpQmkCaQJpgmnCagJqQmtCbEJswm1CbcJuAm2CbYJtgm0CbMJsQmxCbMJugnCCc0J1gncCd8J4gnlCd4J0wnFCbQJpwmoCbcJzgneCeMJ5wnsCeoJ4wnbCdUJ0gnSCdEJ0wnNCcAJswmqCaoJsgnCCc0JygnECb0JrwmkCaUJrAnCCdwJ8gkIChoKKAoyCjsKRgpTCo0JkAmLCYsJigmKCYcJgQl/CYAJhQmKCY4JlAmYCZwJnwmjCakJrQmwCbIJtAm0CbUJuAnJCdoJ3QnYCdEJywnHCb0JtAmsCa8JwAnGCboJswmzCcEJ1gnqCfsJCQokCjkKUApgCl8KUwo+CikKGgoKCu0J1gnRCcoJwwm8CbYJsgmxCa4JqQmmCacJqwmpCacJpgmoCakJqgmrCasJrgmyCbMJtQm4CboJuQm4CbYJswmyCbEJtAm7CcMJzQnXCd0J4QnkCeYJ4gnbCcwJuAmqCasJuQnQCd4J5AnpCe8J8gnuCd8J2AnZCdoJ2gneCdgJxwm1Ca8Jrwm0CccJ2QneCdYJygm3CasJpQmkCbEJzgnfCe8JBAoSCh8KLgo9CksKjAmOCZAJjgmPCY8JiQmDCYAJgQmHCYoJjQmRCZgJogmoCawJsAmyCbMJtAm3CbkJvgnJCdUJ3wngCdsJ0gnFCbsJsQmsCa0JvwnZCcsJtgmzCbMJtwnTCecJ9gkBChoKMgpTCmEKXgpRCjsKJwoWCgcK5AnTCc0Jxgm/CbcJsgmxCa4JrAmrCakJqwmtCawJqQmoCakJrAmsCa0JrAmtCbAJsgmzCbcJuwm8CboJuAmzCbIJsgm0CbsJwwnNCdYJ3QniCeQJ5AnjCeAJ1QnCCbEJrgm3CcoJ2gnjCesJ8wn5CfsJ7wnjCegJ6wnsCekJ3wnOCbsJtwm7Cb8JzQneCeQJ4QnZCcsJwAmwCaMJpwm2CccJzwniCfgJBwokCjQKPQqFCY0JlgmXCZcJkwmJCYUJggmDCYcJiQmKCY8JlwmoCbEJsgmzCbMJswmzCbYJtwm2Cb4JzwndCd4J3QnPCb0JswmvCbQJygngCd0JxAmzCbMJswm9CdQJ5wn5CQwKJApACloKYwpbCkwKNgojChEK/gndCdIJygnCCbsJtAmxCa4JrgmuCa4JrQmuCa8JrQmrCakJqwmuCa8JrwmvCa4JrgmxCbMJtQm5CbwJvQm6CbQJsgmyCbMJuQnCCcsJ1QncCd4J4gniCd8J3wnbCc8JwQm2CboJxgnUCd4J6Qn0Cf0JAgoACvoJ+An/CQIK9QnjCdMJygnLCc4J0AnTCeEJ7QntCeYJ4AnYCcAJqgmkCa8JuwnGCdAJ3An0CREKKAowCn0JhwmTCagJowmaCY0JiQmGCYQJhwmICYoJiwmRCagJtAmzCbEJrAmtCa8JsgmyCbAJsgm7CcQJ1AnZCcwJswmxCbQJxAnbCd8J2wnGCbYJswm0CcYJ1wnrCf8JFgozClIKYgpjClcKRQouChsKCQrrCdUJzgnGCb4JtwmyCa8JrgmvCbEJsQmxCbEJsQmuCawJrAmtCbAJsQmxCbEJsQmwCbAJsgm0CbcJuwm+Cb0JtgmzCbIJsgm3CcAJywnTCdoJ3QnfCeEJ4QnfCd4J2gnUCcIJwwnKCdMJ2gnlCfIJ/gkFCgcKBAoECgcKBgr4CeUJ1gnWCdsJ3wndCdkJ5gn6Cf8J+QnwCecJ2QnHCbkJuQnDCdAJ0QnSCd8J+gkJChUKgQmHCZcJrAmvCaIJlwmQCYkJhgmHCYcJiAmICY4JnwmsCasJpQmkCaYJqgmrCawJrQmvCbEJsQm+CcQJwgm5CbgJvQnNCdoJ3AnXCcUJugmzCbcJywneCfEJBQohCkIKXwpqCl8KUgo8CiYKEgr7CdoJ0AnJCcEJugmzCbAJrgmuCa8Jsgm0CbQJswmzCbAJrgmuCa8JsgmzCbMJtAmzCbIJsAmyCbQJuAm6Cb4Jvwm5CbYJtAmzCbYJvgnJCdEJ1wnbCd0J4QnkCeEJ4wnfCdsJzgnKCdEJ2wncCeMJ8wn8CQMKBwoJCgkKCwoFCvgJ5wnaCeAJ6gnxCfAJ7AnyCQMKCQoHCv8J9gnwCeoJ3wnWCdwJ4QndCdkJ2gnjCfAJ9AmPCZcJpQmyCbQJqQmfCZYJiwmICYgJhwmHCYcJigmSCZgJmQmYCZsJoAmkCacJrQmvCbAJsgm1CbkJvgnACb4JwwnHCcwJ0QnVCc8Jxgm/CbwJxgnVCeUJ+QkQCi4KSwphCmkKXApMCjMKHgoICuoJ1AnKCcEJvAm1CbEJrgmuCa4JsAm1CbgJtAmzCbIJsAmvCa8JsQmzCbUJtwm3CbYJswmyCbIJtAm3CbsJvgm/CbwJugm4CbgJuQnACcoJ0AnUCdkJ3AnjCeYJ5wnmCd8J2wnUCdEJ2AnhCeUJ6gnyCfoJAAoFCgsKDgoOCgYK/gnxCeoJ8An6CQMKBAr9CfwJCAoRChIKDgoHCgkKCAr/CfMJ+Qn8CfYJ7QnkCeQJ6QnqCZAJoQmzCbgJtQmuCaYJnAmRCY4JjAmHCYcJhwmHCYkJiwmOCZIJmAmeCaQJqwmyCbMJswm1CboJvQnCCcUJxwnOCdEJ0wnWCdgJ1AnMCcgJ0QnXCeIJ8gkCChoKNQpPCl0KYQpaCkcKLgoXCgQK3wnOCcIJuQm0CbEJrgmuCa4JrgmxCbgJtAmzCbIJsQmwCbAJsAmxCbMJtgm6CboJuAm0CbMJsgmzCbYJugm+CcAJwAm+Cb4JvwnECcUJywnPCdMJ2QndCeMJ7AnqCeYJ3QnaCdYJ1gneCecJ7gn0CfgJ+Qn9CQMKCgoRChAKCgoDCvsJ+Qn+CQcKCwoMCgMK/wkLChkKIgoiCiAKIgohChUKDgoWChYKDAoBCvkJ9QnxCe0JjQmfCbIJugm5CbUJrgmlCZwJlQmOCYgJhwmHCYcJhwmHCYsJkQmZCZ4JpgmtCbIJtAm1CbgJvAnACcUJygnPCdQJ2gncCd8J3wnXCc8J0QnYCeEJ6gn5CQkKHQowCkcKTgpYClIKPAokCgwK7AnQCcIJtwmxCa8JrgmuCa4JrgmvCbUJvwm0CbMJsgmxCbEJsQmxCbEJswm2CbsJvQm6CbYJswmyCbIJswm3CbsJvwnCCcMJxgnICcwJzAnOCdIJ1QnZCd8J5QnuCfAJ6QnbCdgJ2AncCeUJ7gn3Cf8JAAr9CfwJAgoKChMKFgoSCgcKAAoDCgwKFQoaChYKCwoDChAKIQotCjIKMQozCjIKKgomCi4KLQolChgKDQoFCv0J8AmJCZkJqQmzCboJuQm1Ca0JogmZCY4JiQmHCYcJhwmHCYgJjgmVCZ0JpAmnCasJrgmwCbEJsgm5CcEJyQnNCdEJ1wngCegJ6wnkCdcJ1AnVCdgJ5AnwCfwJCAoaCiUKMwpFCk8KQgovChYK9wnUCb8JtAmvCa4JrgmuCa4Jrgm2CcUJzwnLCccJvwm6CbcJtQmyCbIJsQmyCbQJugm+Cb0JuQm2CbQJsgmyCbUJuQm/CcMJyAnOCc8J0QnRCdIJ0wnUCdkJ3AnjCe8J9gnuCdwJ2AnZCeAJ6gn0Cf4JBQoFCgIK/wkCCgoKEwoaChsKEAoNChUKHgomCioKJAoYChEKGgooCjUKPgpACj8KPAo3CjUKNwo2CjIKLQokChUKBAr2CYQJkgmfCawJtwm7CbcJsAmmCZ0JkwmNCYgJhwmICYoJjQmVCZ4JpQmtCbEJrwmuCa8JsAm0Cb0JyAnOCdIJ1QnZCeYJ9Qn8CfMJ4gnfCeAJ4gnrCfYJ/wkJChcKIgovCjoKOAouCh4KBgrfCbwJrgmuCa4JrgmuCa4JsQnBCdMJ5AnhCdQJ2gnZCcsJwQm8CbUJsgmxCbMJswm6CcAJwAm9CboJtwmzCbIJtAm6CcAJxwnMCdAJ0wnWCdcJ1wnXCdUJ1wnaCeEJ8An7CfkJ3wnYCdkJ4gnuCfkJAwoICgoKCAoECgUKDgoZCiEKIgohCiIKJgotCjIKMwotCiMKHQohCisKPApNClAKTApJCkgKSApGCkEKOwo2CjEKJQoRCvwJgAmNCZgJpQmyCbgJtwmyCaoJoAmVCYsJiAmHCYgJjAmXCaAJqAmvCbYJugm4CbEJsgm5CcIJzAnSCdIJ1QnbCeQJ7wn+CQkKBQr4CfQJ9An1CfkJ/wkDCgoKFQohCi0KLwooCh4KEArzCc4JswmuCa8JsgmuCa4JsgnJCd0J7wkBCvoJ4gnlCd8J0gnICcEJuAmyCbIJswm1CboJwAnCCcAJvgm7CbYJswm1Cb0JxQnLCc8J0wnWCdkJ2wncCdsJ2gnZCdgJ2wnrCf8JAQrvCdsJ2gnhCfAJ/QkFCgoKDgoPCg0KEAoXCh8KJgorCiwKLgozCjgKOwo6CjIKKAoiCiQKKwo/ClIKWgpZClUKVgpXClEKSgpECj4KOAowCh8KBQp8CYYJjwmbCaoJsgm2CbUJrwmkCZMJigmLCYkJhwmQCaIJrQm2CcIJzgnQCcUJuQm8CckJ0wncCd4J3AndCeoJ9gn5CQEKEQoPCgYKBgoFCgUKBQoHCggKCAoJCg0KFwoXChAKDgoGCuMJxgmxCa8Jsgm2CbIJtQnSCeMJ9AkECgoKAQr3Ce4J4QnUCcwJxgm8CbMJtAm3CbwJwQnFCccJxQnCCb8Juwm4CbsJwgnLCc8J0wnWCdkJ3QniCeIJ4gnfCdwJ2QnZCeIJ/AkJCgMK7QngCeQJ7wn/CQcKDQoSChYKGAocCiAKJQotCjYKOwo+CkIKSApMCkcKOgorCioKJwosCkEKVApiCmgKaAplCmMKXApTCk0KSApBCjcKLQoWCnkJgQmHCZIJogmsCbIJtQmzCaYJlQmRCYwJigmTCaMJsQm/Cc0J2AneCd0J0AnLCc8J1wnlCfIJ+An1CfYJ+wkJCgkKFgokCh8KFwoNCgcKBgoHCggKBAoACv8J/Qn/Cf8J/An9CfIJ2QnBCbAJsgm3CbwJuAnKCeAJ8QkGCg8KFAoNCgYK+AnkCdgJ0wnOCccJwAm+CcIJxwnLCc8JzwnLCccJwwnBCcIJxQnLCc8J0gnVCdgJ3QnjCegJ6gnpCeYJ4AnaCdgJ3Qn3CQcKBAr/CfQJ7wnxCf0JBgoNChQKHAohCiMKJgopCjYKQwpMCk4KUApUClcKUQpCCjgKNgoyCjMKQQpUCmcKdwp4CnYKcgppCl8KWApSCksKQQo2CigKfAmCCYgJkQmdCaYJrwmzCbIJpAmaCZUJjwmYCagJuAnHCdYJ3gnhCeQJ4AnbCdUJ2QnpCfoJBwoQChQKEwoRCh8KJgowCjIKLAodCgoKAgoACgEKAwr/CfkJ9wn1CfUJ8wnvCegJ3gnSCbsJsgm2CbwJwQnGCc8J2gnxCQIKFQojCiUKEwr8Ce8J4QndCdkJ0gnQCc8JzgnRCdQJ1gnWCdEJyQnICckJywnOCdEJ1AnXCdkJ3gnlCesJ8AnzCfMJ7gnkCdsJ2AnbCfQJBAoFCgMKAAr7CfYJ+QkCCgoKFQofCiYKLAoxCjcKQgpQClgKWgpbCl4KXgpWCkkKRwpNCkwKSApHClIKZgp7CoMKggp+CnQKawpkCl0KVQpKCj8KMwqACYYJjgmYCaMJqwmqCasJpQmhCZ4JnwmmCawJtgnDCdoJ3gnhCeYJ6wnrCeoJ4AnuCf8JDAoXCiYKLwowCiwKMQo2CjIKLgonChQKBgr+CfoJ+gn5CfcJ8gnuCesJ6QnmCeMJ3AnVCcoJvAm3CbsJwAnGCc0J1wnlCfgJCAoiCi8KMAoQCv0J8gnoCeUJ3gnYCdsJ2gnUCdkJ3QnfCdsJ0gnNCcsJzgnRCdQJ1gnYCdsJ4QnoCe8J9Qn6Cf4J/wn2CekJ3gnZCdwJ8wkDCgYKBQoECgAK+gn7Cf8JBQoRCiAKLAo2CkIKSQpPClgKYApmCmkKagpnClwKUApOClcKWgpUCk4KUwpnCnsKiAqSCo8KgAp2Cm8KZwpeClQKSQo8CoYJigmXCaEJqwmyCbMJqgmmCaQJpQmsCbIJtwm8CcsJ1wnaCd0J5QntCfQJ+gn8CQQKDwoZCiQKLwo6Cj0KOwo9CjsKLAocCggKAgr9CfgJ9AnxCfAJ7gnrCeYJ4QneCdwJ2wnXCdEJxwnACb4JwAnECcoJ0QnaCfAJBgoXCisKMwohCgAK+Qn1CfAJ8QnnCeIJ5QnbCdkJ5AnnCeAJ2QnUCdAJzwnQCdMJ1wnaCd4J4wnpCfEJ+An/CQMKBgoFCvoJ7AnhCdoJ4gn3CQQKBgoICgUKAgr+Cf4JAgoIChQKIAosCjoKTgpXCloKYApoCnEKdwp2CnMKaApWClYKYgplCl8KUwpXCmcKegqLCpwKowqTCoQKegpxCmcKXQpUCkcKjAmWCacJrgmyCbQJsgmtCacJpAmoCa4JtQm7CcIJyQnRCdgJ3wnmCe4J9gkACgcKDwoeCikKLQo2CjcKMwo1CjcKNgorChAK/Qn4CfMJ7gnpCecJ5wnnCeUJ4AnaCdcJ1gnUCdIJzAnHCcUJwwnGCckJzgnTCdwJ+AkJCg4KGAoWCgEK9Qn0CfYJ+An5CfgJ+AnxCeEJ7An8CfMJ3AnYCdUJ0wnUCdQJ1AnZCd4J5QnrCfIJ+gkBCgYKCwoJCgMK9wntCeUJ4wnwCf8JBQoICgkKBwoDCgAK/gkDCg0KFgogCigKOgpPClsKYwprCnEKdwqCCoQKgQp3Cm0Kagp0CncKbwplCmEKagp6CosKnQqoCqEKkwqHCnwKcQplClsKUAqLCZsJtAm1CbQJswmyCa8JqgmnCacJrgmzCboJwQnICc8J2QndCeMJ6gn0CfgJ+wkICiAKMAo1CjYKLQokCicKKAopCiEKCAr6CfAJ6QnjCd8J3gngCeAJ3wncCdkJ1QnSCc8JzAnKCcYJyAnICc0JzgnSCdcJ4An1Cf4J/wn/CQEK9gn0CfYJ+wn+CQEKBQoJCgEK+wkCCgYK9wngCdgJ1gnWCdgJ2AnWCdkJ4QnpCfIJ+gkBCgkKDgoQCgYKAAr5CfEJ6gnxCfwJAwoGCgkKCwoICgUKAQr+CQAKCgoZCiQKKwo8Ck4KWgpnCnQKfAqACooKkgqQCogKeQp2CoAKhQp/CncKcApxCnoKjAqcCqgKpwqdCpEKhQp5CmwKXwpTCocJlwmvCbUJswmzCbMJsQmtCagJqAmvCbIJuAm/CcYJzwnYCd0J5AnkCeUJ4QncCfIJDAogCiYKIgoUCgcKCQoOCg4KDQoDCvQJ6AneCdoJ2AnYCdoJ2gnZCdkJ1gnTCc4JzAnLCcoJywnNCc0J0AnTCdUJ2gnhCesJ8gn6CfwJ/An6CfkJ/gkCCgkKEgoZChwKGQoVChIKAwr1CecJ4QnaCdoJ3QncCdkJ2QnfCeoJ9wkACgoKEgoXChcKBgoACv8J9gnyCfgJAQoECgcKCgoMCgkKBQoCCv4J/wkKCh8KLAo2CkIKTgpaCmcKdgqCCowKmQqhCqUKnQqNCokKkwqXCpYKiQp5CnUKfgqQCp8KrAquCqYKmwqOCoAKcQpiClQKhgmOCaEJrgmzCbMJswmyCbAJqgmpCa0Jsgm3CbwJxAnOCdoJ3QndCd0J2QnXCdgJ6An+CQoKDQoFCvsJ9AnxCfUJ+An6CfYJ6wnhCdkJ1QnUCdQJ1AnVCdUJ1AnSCdAJzQnMCcsJzAnPCdEJ0AnTCdUJ2AncCeIJ6AnvCfMJ9gn3CfsJ/wkDCg0KGAolCisKLgowCi4KEwr+CfUJ7QnjCdsJ4AnkCeIJ3AnZCd4J7An5CQcKFAoeCiEKGwoNCggKBAr7CfkJ+gkCCgUKCAoMCg0KCwoGCgIK/wkACg8KJQozCj8KSwpQCloKaQp0CoAKkAqhCqwKswqxCqMKoQqoCqwKqwqeCocKdwqDCpkKqAq3Cr8KswqmCpYKgwpzCmMKVAqICYsJlAmhCa4JswmzCbMJsAmrCakJqwmwCbIJuAm/CckJ0QnVCdUJ1AnSCdMJ1wnbCekJ+An6CfMJ6AneCdkJ3AniCeUJ4wneCdsJ1QnSCdAJzwnPCdAJ0AnPCc4JzQnNCcwJzQnPCdIJ1QnTCdYJ2AnaCd0J4wnoCe0J8gn1CfoJ/gkCCgwKGAokCi4KMQozCjQKKgoOCgAK+gnzCesJ5AnnCeoJ5wngCdoJ4QnxCfkJBgocCioKKQonCh4KDQoCCvwJ/An9CQEKBQoJCg0KDwoKCgYKAwoACgIKEwopCjcKRQpUCloKYAprCnQKfwqQCqEKsAq/CswKxAq9CsQKyArCCrIKoAqHCpAKpAqzCsIKzAq/CqwKmQqDCnIKYgpUCowJjAmQCZcJpQmyCbMJswmvCaoJqQmqCa0JsQm2CbwJwAnGCcwJygnMCc4J0gnUCdcJ3AnkCecJ4wnaCdYJ1AnWCdcJ2QnZCdkJ1wnUCc8JzgnNCc0JzgnOCc4JzQnNCc0JzQnPCdEJ1AnXCdcJ2QnbCd0J4AnlCekJ7gnzCfcJ+wkACggKFQoiCiwKMAoyCjQKMwooChwKCgoDCvsJ+gn5CfYJ8QntCecJ4AnxCfsJ/gkICiIKMAoxCjAKIQoICgAK/gn/CQIKAwoECgkKDgoOCgwKCQoECgIKBAoWCioKOQpIClUKXgplCm4KdQp/CpMKoQqzCsQK1wrfCt8K5grjCtUKwwqwCqAKnwquCr0KygrQCsMKrQqXCn8KcQphClIKjgmPCZAJlQmcCaYJrQmtCasJqwmrCasJrAmvCbMJtgm5Cb0JwQnCCcUJywnPCdMJ1QnXCdkJ2wnZCdQJ0gnRCcsJzQnRCdUJ1gnTCdEJzwnNCc0JzQnNCc0JzQnOCc4JzgnPCdEJ1AnWCdgJ2QncCd4J4AniCeYJ6gnvCfQJ+Qn9CQAKBwobCisKLwouCiwKLgoyCjEKKgoZCgcKAwoCCgUK/gn4CfUJ9Qn8CQcKDgoSChkKKAozCjUKKwoPCgAKAAoBCgMKBgoICgcKCwoOChAKDgoMCgcKAwoGChgKKwo6CkoKVwpgCmgKcwp9CokKmgqmCroKzArmCvgK/gr/CvgK5ArPCrwKqwqsCrsKxwrQCs8KwAqqCpQKewpwCmMKVwqQCZEJkQmVCZkJnwmkCaQJpwmrCa0JrwmwCbIJsgmyCbMJtQm4CbsJwgnICc4J0QnSCdMJ0wnVCdQJ0QnNCcoJyAnHCcoJzwnQCdAJ0AnOCc4JzQnNCc0JzgnOCc8J0AnQCdEJ0wnVCdcJ2QnbCd4J4QnjCeUJ6AnrCfAJ9gn7Cf8JAgoLCh0KJwonCiUKJQorCjEKNQotCiQKFgoTChQKDQr+CQIK/Qn+CQkKHwosCikKKQouCjIKLgobCgIK/wkBCgMKBwoKCg0KDQoPChIKEgoRCg8KDQoOChAKHwosCjoKTApYCl8KaQp1CoIKkwqmCrIKxgrYCu4K/woKCwkL+wrtCtoKxwrBCsIKygrQCtQKzwrACqoKlwqBCnQKaQpdCpMJkwmTCZUJmAmdCaAJpAmoCawJsAmyCbMJswmzCbIJsgmzCbQJuAm+CcQJyQnMCc0JzAnKCc0JzgnMCckJxwnHCcYJxgnKCc0JzwnPCc4JzgnOCc4JzwnPCdAJ0QnRCdEJ0gnUCdYJ1wnZCdwJ4AnjCeYJ6AnrCe4J8wn4CfwJAQoGCgwKEQoXChkKGQogCioKMAo0CjEKLgomCiUKKgogChcKFgoHCgkKIAowCjcKNgo2CjcKMQomCg4KAgoCCgYKCgoOChAKEwoVChYKFwoVChQKEwoSChIKFAoiCi0KOQpJClQKWwplCnMKgQqUCqYKtQrJCtwK8wr/CgcLCAsAC/cK6grbCtAKzQrTCtgK1grQCsEKrQqdCogKfAptCl8KlgmWCZUJlgmYCZwJnwmkCagJrQmxCbMJtAm0CbQJswmzCbMJtQm3Cb4JxAnHCcgJyQnHCccJyQnJCcgJxwnGCcYJxgnHCckJzAnOCc8JzwnPCdAJ0AnRCdEJ0gnSCdIJ0gnUCdUJ1gnYCdoJ3AngCeQJ5wnqCe0J8AnzCfgJ/QkCCgQKAwoECgwKDAoLChUKJQosCjEKNwozCi8KMQo0CjIKMwouCiEKJQoxCjwKRgpJCkgKPQouCiEKEAoMCg4KEAoUChcKGgocCh4KHQocChkKFwoVChQKEwoWCh8KKgo0CkAKSwpVCmAKcAp/Co4KnwqvCsAK0QroCvYKAAsFCwUL/wr3CvAK6ArfCtoK1wrTCssKuAqlCpYKhwp7CmwKXQqZCZkJmAmXCZkJnQmfCaMJpwmsCbEJswm0CbUJtgm3CbgJuAm5CboJvAnBCcMJxQnFCcQJxQnGCcYJxgnGCccJxwnICckJygnNCc8J0QnRCdIJ0gnTCdQJ1AnVCdQJ1AnUCdUJ1gnXCdkJ2gndCeEJ5QnoCesJ7wnyCfUJ+An8Cf4J/gkBCgMKAwoBCgEKDQofCigKLwo3CjsKOwo9Cj8KQQpBCj0KMwo1Cj8KSgpTClUKTAo6CisKIgoZChkKHAoeCh8KIAojCiQKJAoiCiAKHgoaChcKFwoVChkKHgolCiwKOApECk4KWQpqCncKggqVCqMKuArKCuAK8wr8Cv8KAAsAC/4K+ArwCuUK2ArRCs0KwAqqCpoKjAp/CnQKZwpaCp0JnAmbCZoJmwmeCaAJowmmCasJsQmyCbMJtQm3CbkJuwm7CbwJuwm+Cb8JwAnBCcIJwgnDCcQJxAnFCcYJxwnICckJywnNCc4J0QnSCdQJ1QnWCdYJ1gnXCdcJ1gnWCdYJ1wnXCdkJ2gncCd8J4wnnCeoJ7QnxCfMJ9Qn4CfoJ+wn8Cf4JAAoBCgEKBQoRCh8KKQoxCjoKQgpGCkgKSwpOClIKUApLCkkKTgpUClkKVQpHCjUKKQojCiIKJQopCisKJwonCiwKKwooCicKJQoiCh0KHAoYChcKGgocCiIKKAoxCkAKSwpWCmYKcQp8CpEKogq5Cs0K3QrtCvQK9Qr3CvsK/Ar1Cu0K4QrUCsoKwQqyCqAKkAqBCnYKbAphClUKoAmfCZ4JngmdCZ8JoQmkCaYJqgmvCbIJswm0CbYJuAm5CbsJvAm8Cb0JvQm+Cb8JwAnACcEJwwnECcUJxwnICcoJzAnNCc8J0QnTCdYJ2AnZCdkJ2QnZCdkJ2AnZCdkJ2QnZCdkJ2gncCd8J4gnmCekJ7QnwCfQJ9Qn2CfkJ+gn8Cf4JAAoBCgIKBQoPChkKIwosCjUKPwpHCksKTwpVCl0KZQpjClwKVQpYCl0KXApRCkIKMQooCigKLAoyCjUKNgowCjEKNgo0Ci8KKwopCiUKIgodChoKGQoaChsKIgooCjAKPgpLClcKZApxCn8KkQqmCroKzgrWCt8K5QrnCuwK8wr2CvIK6QreCtIKxQq3CqoKlwqFCngKbwpkCloKUQqjCaIJogmhCaAJoQmjCaUJpwmqCa0JsAmyCbMJtAm1CbcJuAm6CboJuwm8CbwJvgm/CcAJwgnDCcQJxgnHCckJywnNCdAJ0gnUCdYJ2AnbCdsJ2gnbCdsJ2wnbCdsJ2wnbCdsJ3AneCeAJ4gnmCekJ7AnxCfMJ9wn4CfkJ+gn8Cf8JAQoDCggKCwoPChgKIQoqCjIKOwpFCksKUQpZCmUKcQp7CnkKcwptCmYKYgpaClAKRgo4CjUKOAo+CkQKRgpECkMKQwpDCj4KOAozCi4KKQolCiEKHAobChsKGwohCicKLwo8CksKWApiCnAKfgqPCqIKrwrACskK0ArUCtcK2wrhCugK6QrlCtwK0grFCrAKoAqKCnkKcQpoCl0KUwpOCqUJpQmkCaQJowmjCaQJpgmnCakJqwmtCbAJsQmyCbMJtAm1CbcJuAm5CboJuwm9Cb8JwQnDCcQJxQnHCcgJygnNCc8J0QnUCdYJ2AnaCdsJ2wncCdwJ3AndCd0J3QneCd4J3gngCeIJ5AnmCegJ7AnwCfQJ9wn6CfsJ/An9Cf8JAQoECgkKDwoUChkKIAooCjAKOQpCCkoKUQpZCmYKcwp9CoEKgwqBCnwKcQpmClsKTwpKCkkKSApICk8KVwpYClIKTwpUClEKSgpBCjkKMworCicKIgodChsKGwobCh4KJQotCjgKSApVCl8Kawp3CoUKlAqfCqsKuArBCsQKxgrJCs0K0grZCtwK2QrTCsYKpwqWCn0KdApuCmYKWgpQCk0KpwmoCacJpwmmCaUJpgmnCagJqQmrCa0JrgmvCbAJsgmzCbMJtAm1CbYJuQm7Cb0JvwnBCcMJxQnHCcgJyQnLCc0JzwnRCdMJ1QnYCdoJ2wncCd0J3QneCd4J4AnhCeIJ4wniCeIJ5QnoCekJ6gnvCfMJ9wn7Cf4J/wkACgEKAgoFCgkKDgoUChsKIAonCi4KNQo+CkkKUQpYCmIKcgp9CoAKhAqHCoQKfApzCmwKYQpXClYKVwpYCloKYgpqCmwKaApmCmYKXQpSCkgKPgo2Ci0KJwojCh4KHAobChwKHQohCigKMgo/Ck4KWQpkCm8KegqHCpMKoAqrCqwKrwq0CrkKvgrGCs8K0grSCtIKxwqtCpoKhQp5CnIKaApbClEKTwqpCaoJqgmpCagJpwmnCagJqQmqCasJrgmvCbAJsQmxCbIJsgmyCbMJtgm5CbsJvQm/CcEJwwnGCcgJygnLCcwJzAnOCc8J0QnTCdUJ2AnaCdsJ2wnbCdwJ3QneCeAJ4wnkCeUJ5gnmCekJ7QnuCfEJ9Qn6Cf8JAgoDCgQKBAoGCgkKDQoSChoKIQomCiwKMgo4CkMKTgpWClwKZgp1Cn4KgQqFCooKiAp8CngKdgpyCmsKaApnCmkKbQp0CnwKfgp8CnsKdwpmClYKSwpBCjgKLwooCiQKIAoeCh4KHQodCh8KJAorCjYKRApTCl0KaApzCn4KigqXCp8KngqgCqUKqQqxCrwKxgrHCsoKzArHCrQKpgqTCoEKeAptCl8KUwpTCqsJqwmsCasJqgmpCagJqQmqCawJrAmuCbEJsgmzCbMJswmzCbQJtgm3CbkJvAm/CcAJwQnECcYJyQnLCc0JzQnOCc4JzwnRCdIJ1AnWCdgJ2QnaCdoJ2wnbCd0J4AniCeUJ5gnnCegJ6gntCfEJ8wn3CfwJAQoECgYKCAoKCgwKDQoRChcKHwomCiwKMQo1CjsKRQpPClcKXQplCm8KeAp8CoAKiQqTCowKhwqDCoEKfQp3CncKegp+CoIKhgqHCoYKgwp9CmwKWgpNCkQKOgoxCioKJgoiCiAKIQoiCiAKHgogCiYKLAo6CkoKVwphCmsKdgqBCokKkAqUCpgKmwqeCqcKsgq4CrwKvwrBCr8KtAqpCpoKigp/CnUKaApeCl8KrQmuCa4JrQmrCaoJqgmqCawJrQmvCbAJsgm0CbYJtgm3CbgJuQm5CboJuQm9CcAJwgnDCcUJyAnKCc0JzwnQCc8JzwnQCdEJ0gnTCdUJ1wnXCdgJ2QnaCdsJ3AneCeEJ4wnlCeUJ5wnoCesJ8An0CfgJ/An/CQIKBgoKCg4KEAoTChYKGgogCigKLgoyCjYKOgpBCkgKUQpYCmAKaApxCnYKegqFCpsKoAqbCpMKjQqICoQKgwqGCooKjgqSCpIKjwqICn8KbwpdCk4KRgo9CjQKLAonCiQKIQojCiUKJQokCiIKJAooCjIKQgpPClkKYQpsCncKfwqECosKkAqVCpoKoQqpCq4KsQqzCrYKtAqvCqcKnAqOCoQKewpzCm4KawqvCa8JrwmvCa0JrAmrCasJrAmtCa8JsgmyCbQJuAm5CbsJvAm9CcAJvwnBCcEJwgnDCcQJxgnJCcwJzgnQCdEJ0gnRCdEJ0gnTCdQJ1QnWCdcJ1wnYCdkJ2gncCd4J4AniCeQJ4wniCeQJ6QnvCfUJ+gn9CQAKAgoGCgoKDQoQChIKFgoXChsKIgoqCi0KLwovCjIKPApJClAKWApiCmwKcgp4CoYKmwqnCqcKoQqaCpUKkgqQCpIKlgqcCp8KnAqYCo0KgApxCl8KUApICkAKNwovCioKJwokCiMKJgooCioKKQooCigKLQo6CkYKUApWCl4KaApyCnsKgwqJCo8KlQqbCqEKpAqmCqgKqwqtCqsKpgqbCpAKhwqBCnoKdAp1CrIJsQmxCbEJrwmtCawJrAmsCa4JrwmxCbIJtAm4CbwJvgm/CcIJxQnHCcsJyQnGCcUJxgnICcsJzQnPCdAJ0gnTCdQJ1QnVCdUJ1gnWCdcJ2AnYCdgJ2QnaCdsJ3QnfCeAJ4QngCeEJ5AnnCe0J9gn8CQAKAwoFCggKCgoLCgwKDAoMCgsKDQoWCiIKJwooCigKKQo0CkQKTApTCl8KagpyCnoKiQqcCqkKsAqtCqYKoAqcCpoKmgqfCqgKqwqoCqIKlgqDCnIKYQpRCkkKQgo7CjQKLwoqCicKJgonCisKLQosCioKKQorCjMKPwpHCk0KUgpbCmcKcwp+CoQKigqPCpUKmQqcCp4KnwqjCqYKpwqjCpwKkgqKCoQKfgp5CnwKswmzCbMJsgmxCa8JrQmsCa0JrgmwCbIJsgm0CbkJvgnACcIJxwnMCc8J0QnSCc8JywnKCcsJzQnOCc8J0AnSCdQJ1gnXCdgJ2AnZCdkJ2gnaCdoJ2gnZCdoJ2gnbCdwJ3QndCd4J3wniCeUJ6wn1CfsJAQoECgUKBwoHCgcKBwoGCgQKAwoCCgoKGAogCiIKJQopCjQKQgpNClYKXwppCnIKfAqKCpwKqgq7CsEKugqxCqkKpQqkCqsKuQq9CrcKqwqcCoYKdApjClMKSwpFCj8KOQozCi0KKAonCigKLQoxCjEKMAovCjAKNgo+CkgKSgpOClIKXQpqCncKgAqFCokKjQqQCpMKlgqZCpwKoAqiCqEKmwqTCooKhgqDCoEKgwq0CbQJswmzCbIJsQmuCa0JrQmuCbAJsgmzCbgJvAnBCcEJxgnLCdEJ1QnXCdkJ2QnSCdAJ0QnQCc8JzgnPCdEJ1AnWCdgJ2QnaCdsJ2wnbCdsJ2wnbCdsJ2wnaCdsJ2wnbCdsJ2wndCd8J4wnpCfAJ9wn9CQIKAwoECgQKAwoDCgIKAQoBCgIKCQoWCh8KJAooCi0KNgpDClAKWAphCmkKcwp9CosKmgqpCr8KzgrMCsQKvAq3CrYKvQrKCs4KxAqtCpsKhwp2CmcKVgpPCkoKRAo+CjcKMQorCigKKAotCjMKNQo2CjcKNwo5CkIKSQpPCk8KUApVCl8KbQp6Cn8KggqFCogKiwqPCpIKlgqaCp0KnAqXCpEKjgqNCo0KjgqNCrUJtQm0CbMJsgmxCbAJrgmuCa8JsQmyCbkJwgnICcUJxQnKCc8J1AnYCdsJ2wnbCdkJ1wnUCdIJ0AnPCc8JzwnSCdYJ2AnaCdsJ2wncCdwJ3AncCdwJ2wnbCdsJ2wnaCdsJ2wnbCdsJ3QngCeQJ6gntCfIJ9Qn4CfkJ+wn/Cf4J/Qn/CQIKBgoNChcKIQonCiwKMgo7CkYKUQpaCmEKagpzCn4KiwqZCqcKuwrMCtEK0ArLCscKxArJCtAK0QrFCqoKmQqICnkKbApfClYKUApKCkMKPAo1Ci8KKgopCi4KNgo6CjwKPwpACkIKRwpNClMKUwpQClAKUwpgCm0Kdgp7Cn0KgAqDCogKjQqQCpcKlwqYCpcKlQqWCpcKlwqYCpgKtgm2CbUJswmzCbIJsgmwCa8JsAmxCbIJxAnYCdQJxwnHCcoJ0AnWCdoJ3AneCdsJ2gnYCdUJ0wnRCc8JzwnPCdAJ1AnXCdoJ2wncCd0J3QndCd4J3gndCdwJ2wnbCdsJ2gnaCdoJ2wnbCd0J4AnhCeIJ5AnmCekJ7AnzCfcJ+wn+CQEKAwoJCg8KGgolCiwKMgo2CjsKRQpPClcKXgpoCnQKfwqKCpcKpAq0CsMKzArQCtIK0ArOCtEK0ArKCrsKpAqYCooKfQpxCmYKXQpWCk4KRgpACjkKNAovCiwKMAo5CkEKRQpHCkgKSApICkwKUQpVClMKUQpRClUKYApuCnUKdwp5Cn0KggqGCowKkgqWCpgKmgqbCp0KngqfCqAKoAq3CbcJtgm1CbQJswmyCbEJsAmwCbEJswnOCdwJ2gnOCcoJywnPCdYJ2wndCd4J2wnaCdgJ1gnTCdEJ0AnPCdAJ0QnTCdcJ2wnbCdsJ3AndCd0J3gneCd4J3gndCdwJ2wnbCdsJ2wnbCdsJ2wnbCdsJ2wnbCdsJ3wnlCe4J9Qn4CfsJ/wkDCgkKEAobCicKLgowCjIKNwo/CkkKUQpaCmYKcwp+CocKkwqgCq0KuArCCskK0ArWCtgK1grNCsMKtAqiCpcKiwqACnYKawpiCloKUQpKCkQKPgo6CjcKNgo1Cj4KRgpLCk0KTwpPCk8KTQpPClQKWApYClgKWQphCnAKcwp1CncKeQp+CoMKiwqUCpgKnAqfCqEKpAqoCqoKqwqqCrgJuQm4CbYJtQm0CbIJsQmwCbEJsQm6CdQJ3AnbCdgJ0AnNCdAJ1QnaCdwJ3wnbCdoJ2QnXCdMJ0QnQCdAJ0AnRCdMJ1wnaCdsJ2wnbCdsJ3AndCd0J3gnfCd8J3gndCdwJ3AncCdwJ2wnbCdsJ2wnbCdsJ2wneCeQJ7Qn0CfgJ/An/CQIKCAoPChgKIwonCigKKgovCjgKQwpMClcKYgpvCnkKggqNCpgKpAqtCrcKxArOCtYK2grUCs0KwQqyCqIKmAqNCoMKeQpvCmYKXQpUCk0KSApECkIKQAo+Cj8KRApMClEKVApWClYKVgpTClEKUgpZCmAKZwptCnAKcwp2CngKegp6CnsKgwqMCpQKmgqfCqQKqgqxCrcKugq7CrkKuQm6CbkJuAm2CbQJsgmyCbIJsgmxCb0J2QndCdsJ2QnUCc8J0AnVCdkJ3AneCdsJ2wnaCdcJ1AnSCdEJ0AnQCdEJ0wnVCdgJ2QnbCdsJ2wnbCdsJ3AndCd4J3wnfCd8J3wneCd0J3QndCdwJ3AnbCdsJ3AndCeAJ5QnqCfUJ+wn9CQAKAgoHCg0KEwoaCh8KIQokCikKMwo/CksKVwpgCmkKcgp6CoMKjgqZCqEKrQq/Cs0K1ArWCtIKzgrCCrIKpAqZCo8Khgp8CnMKaQpgClgKUApMCkoKSApHCkMKRApJClAKVgpaCl0KXgpeClwKVQpSCloKaQp0CnsKewp6CnoKfQp/CoAKgQqGCpEKlgqbCqAKqAqyCr4KyQrJCskKyQq6CbsJugm4CbYJswmyCbIJswm0CbUJxQnbCd4J3AnbCdgJ0wnRCdYJ2gnbCd8J3AnbCdoJ2AnVCdMJ0QnRCdEJ0QnSCdQJ1gnXCdgJ2gnbCdsJ2wnbCdsJ3AneCeAJ4QnhCeAJ3wnfCd8J3gneCd0J3gneCd8J4gnmCe0J9Qn6Cf4JAAoCCgYKCwoOChIKGAocCiAKJgouCjkKRwpUClwKYgppCnEKeAqBCpAKmwqoCroKyQrQCtAKzArICsAKsgqlCpsKkQqHCn4KdQpsCmMKWwpUClAKUApOCksKSApGCkoKVApbCmAKZQpnCmkKZQpfClkKYgptCnkKfgqACoAKgQqDCoUKhwqICowKlAqbCp4KogqqCrcKwwrOCtQK1ArSCrsJuwm7CbgJtQmzCbIJsgm1CbsJvwnLCdoJ3gnfCdsJ2gnWCdQJ1gnaCdwJ3wneCdwJ2gnZCdYJ1AnTCdIJ0gnSCdIJ0wnUCdUJ1gnXCdgJ2QnaCdoJ2wnbCdwJ3QngCeEJ4QnhCeEJ4QnhCeAJ4AngCeEJ4gnlCegJ7Qn0CfkJ/An/CQEKBAoFCgcKCwoRChcKHQojCioKNApACk0KVQpbCmAKaApyCn0KjAqaCqcKtwrDCsoKygrFCsAKugqxCqcKnQqTCogKfgp2Cm4KZwpeClgKVQpVClIKTwpLCksKTgpXCl8KZwpuCnIKcgpwCm0KagptCnMKewqBCoQKhgqHCokKjAqOCpAKlAqYCp0KowqpCrIKvArFCtAK2wrfCt0Kuwm8CbsJuQm2CbMJsgmyCbcJvgnECc4J2AndCeEJ3gnbCdkJ1gnYCdsJ3AngCeEJ3wnbCdoJ2AnWCdUJ0wnTCdIJ0wnTCdMJ1AnVCdUJ1gnXCdgJ2QnaCdoJ2wncCd0J3wnhCeIJ4gnjCeMJ4gniCeMJ4wnkCecJ6gnvCfIJ9wn7Cf0J/wkACgEKAgoGCg0KEwoYCh8KJgosCjYKQQpLClEKVApcCm4KfAqLCpoKqAqyCrsKvgq9CrgKtQqwCq4KqAqfCpQKiQp/CncKcAppCmMKXgpaClgKVgpSCk4KTQpQCloKZApvCncKewp7CnsKeAp0CnMKeAp+CoMKhwqKCo0KkQqTCpYKmAqaCpsKnwqlCq8KuArCCssK1grlCuwK6gq8CbwJuwm5CbcJtAmzCbUJuQm/CcYJzwnYCd0J4wniCdwJ2wnYCdkJ2wneCeMJ5AniCd4J2wnaCdgJ1gnVCdQJ0wnTCdMJ0wnUCdQJ1QnVCdYJ1wnYCdkJ2QnaCdsJ3AndCd8J4QniCeMJ5AnkCeQJ5QnmCecJ6gntCfEJ8wn1CfkJ+wn9Cf0J/wkBCgMKCQoPChQKGgohCiYKLAo1Cj4KRgpLClYKaQp7CoYKlwqnCqwKsgqyCq8KqgqoCqcKqAqmCp4KkwqJCn8KeApyCmwKZwpgClwKWgpYClMKUApPClIKXgppCnQKfAp+Cn8Kfwp9CnkKdgp8CoEKhgqKCo4KkgqWCpoKnQqgCp8KnAqfCqUKrwq8CskK0wrfCu0K+Ar3Cr0JvQm8CboJuAm2CbUJuAm9CcMJygnSCdkJ3gniCeUJ4AncCdoJ2gncCeIJ6AnqCecJ4gneCdsJ2gnYCdYJ1QnUCdQJ0wnTCdMJ1AnUCdUJ1QnWCdgJ2QnZCdoJ2gnbCdwJ3QngCeIJ5AnlCeUJ5gnnCegJ6gnsCe4J8AnzCfUJ9wn5CfsJ/Qn+CQAKAgoFCgoKEAoVChsKIQomCioKMwo9CkgKVApjCnMKewqHCpkKowqqCqkKpAqeCpwKmwqcCpwKlwqPCoYKfwp4CnMKbwppCmAKXQpcClkKVQpRClEKVwpiCm4KeAp9CoAKggqDCoEKfAp6Cn8KhQqKCo8KlAqXCpoKnwqkCqcKpgqhCp8KowquCr8KzQrZCuYK9AoHCwcLvwm+Cb0Juwm5CbcJtwm6CcEJyAnPCdUJ2wnfCeMJ5wnmCeEJ3AnaCd4J6AntCfAJ7AnmCeMJ3gnbCdgJ1wnWCdUJ1QnUCdQJ1AnUCdQJ1QnVCdYJ1wnZCdoJ2wnbCdsJ2wncCd8J4gnkCeUJ5gnnCekJ6gnsCe4J7wnxCfMJ9Qn2CfgJ+gn8Cf0J/wkBCgIKBgoKChAKFQocCiEKJwotCjgKQwpPClkKYgpsCncKhwqWCqEKnQqVCpAKjgqNCo4KjgqNCokKhAp+CngKdApuCmcKYApeClwKWgpWClMKVApdCmgKcgp6Cn4KggqECoUKhQqACnwKggqJCo8KlQqZCpwKngqiCqoKrwquCqoKpAqiCq0KwArPCt0K6gr7ChgLGgvACb8JvQm8CboJuQm4CbsJxAnKCdIJ2AndCeAJ5QnoCesJ6wnkCd8J4gntCfUJ9gnxCesJ5gneCdoJ2QnXCdcJ1wnWCdUJ1QnUCdQJ1QnVCdUJ1gnXCdkJ2wncCdwJ3AncCd0J4AnkCeUJ5wnoCekJ6wnsCe4J8AnxCfIJ9An2CfcJ+An5CfsJ/Qn+Cf8JAQoCCgUKCgoQChgKHwokCioKMQo5CkMKTApUCl0Kawp6CoYKiwqJCoQKgAp/Cn8KgAqCCoIKgQp9CnoKeApzCm0KZQpgCl0KXApcClkKVwpYCmIKbAp1CnwKgAqDCoYKiAqJCocKhQqJCpAKlQqaCp4KoQqlCqkKsAq2CrkKtgqyCq4KtQrECtEK3wruCgILGgsiC8EJwAm+Cb0JvAm7CboJvQnBCccJ0AnYCd0J4QnmCeoJ7gnxCe4J6gnuCfMJ+Qn7CfYJ8QnnCd0J2gnZCdgJ2AnYCdgJ1wnWCdUJ1QnVCdYJ1gnXCdcJ2QnbCdsJ3QneCd4J4AnhCeQJ5QnnCekJ6gnrCe0J7wnxCfMJ9An2CfcJ+Qn5CfoJ+wn8Cf4J/gkACgEKAgoECgsKFAodCiIKJgopCi4KNgo/CkcKTwpeCm4KeQp5CngKdgpzCnMKdAp1CngKeQp5CncKdwp1CnIKawplCmEKYApgCmAKXgpgCmMKawpxCngKfQqBCoUKiAqKCowKjQqNCpUKlwqbCqAKpQqpCq4Kswq6CsEKxgrGCsAKvwq/CsYK0grhCvAKBAsaCyML";
+{const bin=atob(DEM_B64),u8=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);const i16=new Int16Array(u8.buffer);for(let k=0;k<NX*NN;k++)Hg[k]=i16[k];}
+function H(x,n){const fi=(x-X0)/STEP,fj=(n-N0)/STEP;const i=Math.max(0,Math.min(NX-2,Math.floor(fi))),j=Math.max(0,Math.min(NN-2,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));const a=Hg[j*NX+i],b=Hg[j*NX+i+1],c=Hg[(j+1)*NX+i],d=Hg[(j+1)*NX+i+1];return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v;}
+function correct(){const R=320,CELL=400,buckets=new Map(),samples=[];
+  TRAILS.forEach(T=>T.pts.forEach((p,i)=>{if(i%2===0)samples.push({x:p.x,n:p.n,dl:p.e-H(p.x,p.n)});}));
+  samples.forEach(s=>{const k=Math.floor(s.x/CELL)+","+Math.floor(s.n/CELL);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(s);});
+  const out=new Float32Array(Hg);
+  for(let j=0;j<NN;j++)for(let i=0;i<NX;i++){const x=X0+i*STEP,n=N0+j*STEP,bx=Math.floor(x/CELL),bn=Math.floor(n/CELL);let sw=0,sd=0;
+    for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=buckets.get((bx+a)+","+(bn+b));if(!arr)continue;for(const s of arr){const d2=(s.x-x)**2+(s.n-n)**2;if(d2>4*R*R)continue;const w=Math.exp(-d2/(R*R));sw+=w;sd+=w*s.dl;}}
+    if(sw>0)out[j*NX+i]+=sd/sw*Math.min(1,sw*1.4);}
+  Hg.set(out);}
+correct();
+function distToTrail(T,x,n){let b=1e9;for(let i=0;i<T.pts.length;i+=3){const p=T.pts[i];const d=Math.hypot(p.x-x,p.n-n);if(d<b)b=d;}return b;}
+const NEAR=1150;
+function nearTrails(x,n){return TRAILS.filter(T=>distToTrail(T,x,n)<NEAR).map(T=>T.id);}
+
+/* ================= scene setup ================= */
+const canvas=$("#gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-2000,2000);
+const dirL=new THREE.DirectionalLight(0xffffff,0.5);scene.add(new THREE.AmbientLight(0xffffff,0.58),dirL,dirL.target);
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const col=h=>new THREE.Color(h);
+const LAM={};const lam=c=>LAM[c]||(LAM[c]=new THREE.MeshLambertMaterial({color:c}));
+const PHO={};const pho=c=>PHO[c]||(PHO[c]=new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0,specular:0x000000}));
+const HULL=new THREE.MeshBasicMaterial({color:PAL.outline,side:THREE.BackSide});
+function ribbon(points,width,mat,lift){
+  const pos=[],uv=[],idx=[];let len=0;
+  for(let i=0;i<points.length;i++){const p=points[i],a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)];
+    if(i)len+=points[i].distanceTo(points[i-1]);
+    let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;const px=-tz*width/2,pz=tx*width/2;
+    pos.push(p.x+px,p.y+lift,p.z+pz,p.x-px,p.y+lift,p.z-pz);uv.push(0,len/3,1,len/3);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}}
+  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
+  return new THREE.Mesh(g,typeof mat==="string"?new THREE.MeshBasicMaterial({color:mat,side:THREE.DoubleSide}):mat);
+}
+function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new THREE.Mesh(geo,phong?pho(color):lam(color));m.position.set(x,y,z);m.scale.set(sx,sy==null?sx:sy,sz==null?sx:sz);parent.add(m);
+  if(hull){const h=new THREE.Mesh(geo,HULL);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(hull);parent.add(h);m.userData.hull=h;}return m;}
+function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
+
+/* tile & organic boundary */
+const C={x0:-600,x1:6000,n0:-6000,n1:750,ve:2.5};
+const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
+function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
+const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+const mask=(x,n)=>{const t=sm(Math.min((1-Math.abs((x-cx)/(w/2)))*w/2,(1-Math.abs((n-cn)/(d/2)))*d/2)/(0.2*Math.min(w,d)));return t*t*(1.6-0.6*t);};
+const cells=96,nx=Math.round(cells*w/Math.max(w,d)),nn=Math.round(cells*d/Math.max(w,d)),dx=w/nx,dn=d/nn;
+let base=1e9;for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;if(qOf(x,n)<0.9)base=Math.min(base,H(x,n));}base-=10;
+const R1=nx+1,hv=new Float32Array((nx+1)*(nn+1));
+for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;hv[j*R1+i]=base+(H(x,n)-base)*mask(x,n);}
+const diag=new Uint8Array(nx*nn);for(let k=0;k<diag.length;k++)diag[k]=hash(k*7+11,1519)>.5?1:0;
+function surf(x,n){const fi=(x-C.x0)/dx,fj=(n-C.n0)/dn;const i=Math.max(0,Math.min(nx-1,Math.floor(fi))),j=Math.max(0,Math.min(nn-1,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));
+  const a=hv[j*R1+i],b=hv[j*R1+i+1],c=hv[(j+1)*R1+i],e=hv[(j+1)*R1+i+1];
+  if(diag[j*nx+i])return u>=v?a+(b-a)*u+(e-b)*v:a+(c-a)*v+(e-c)*u;
+  return u+v<=1?a+(b-a)*u+(c-a)*v:e+(c-e)*(1-u)+(b-e)*(1-v);}
+const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
+const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
+const world=new THREE.Group();scene.add(world);
+const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
+const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
+let MAXY=0;
+
+// terrain + contours
+(function(){
+  const pos=[],cols=[],r=rng(97),tris=[];
+  function tri(A,B,Q){
+    
+    const ux=B[0]-A[0],uy=B[2]-A[2],uz=B[1]-A[1],vx=Q[0]-A[0],vy=Q[2]-A[2],vz=Q[1]-A[1];
+    let Nx=uy*vz-uz*vy,Ny=uz*vx-ux*vz,Nz=ux*vy-uy*vx;if(Ny<0){Nx=-Nx;Ny=-Ny;Nz=-Nz;}
+    const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
+    const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
+    let c;
+    if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
+    else if(me>2600&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
+    const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
+    const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
+    W3.forEach(p=>{pos.push(p.x,p.y,p.z);cols.push(c.r,c.g,c.b);MAXY=Math.max(MAXY,p.y);});
+    tris.push([A,B,Q]);
+  }
+  for(let j=0;j<nn;j++)for(let i=0;i<nx;i++){const P=(ii,jj)=>[C.x0+ii*dx,C.n0+jj*dn,hv[jj*R1+ii]];const a=P(i,j),b=P(i+1,j),c=P(i,j+1),e=P(i+1,j+1);
+    if(diag[j*nx+i]){tri(a,b,e);tri(a,e,c);}else{tri(a,b,c);tri(b,e,c);}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));tg.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));tg.computeVertexNormals();
+  topoGroup.add(new THREE.Mesh(tg,new THREE.MeshLambertMaterial({vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+  topoGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(tg,26),new THREE.LineBasicMaterial({color:PAL.terrLine,transparent:true,opacity:.16})));
+  // contour lines every 100 ft, heavier every 500 ft
+  const minor=[],major=[];
+  tris.forEach(T=>{const hs=T.map(v=>v[2]);const lo=Math.min(...hs),hi=Math.max(...hs);if(hi-lo<1)return;
+    for(let L=Math.ceil((lo-base+1)/100)*100+base;L<hi;L+=100){if(L-base<40)continue;const pts=[];
+      for(let k=0;k<3;k++){const P=T[k],Q=T[(k+1)%3];if((P[2]-L)*(Q[2]-L)<0){const t=(L-P[2])/(Q[2]-P[2]);pts.push(Wv(P[0]+(Q[0]-P[0])*t,P[1]+(Q[1]-P[1])*t,L).add(new THREE.Vector3(0,0.06,0)));}}
+      if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
+  const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
+  topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
+  // base: one thin sheet of liquid glass
+  const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
+  const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
+})();
+
+// creeks with flowing texture
+function stripeTex(bg,stroke,w0,h0,n,seed,len){const c=document.createElement("canvas");c.width=w0;c.height=h0;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,w0,h0);const r=rng(seed);x.fillStyle=stroke;
+  for(let i=0;i<n;i++){const px=r()*w0,py=r()*h0,l=len*(0.5+r()),wd=1.5+r()*2.5;x.globalAlpha=0.55+r()*0.45;x.beginPath();x.ellipse(px,py,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py+h0,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py-h0,wd,l,0,0,Math.PI*2);x.fill();}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const creekTex=stripeTex(PAL.water,"#FFFFFF",32,128,10,5,9);
+const creekMat=new THREE.MeshBasicMaterial({map:creekTex,side:THREE.DoubleSide});
+CANYONS.forEach(cy=>{const pts=[];let done=false;
+  for(let k=0;k<cy.pts.length-1&&!done;k++){const a=cy.pts[k],b=cy.pts[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),st=Math.ceil(L/(dx/3));
+    for(let s=0;s<st;s++){const t=s/st,x=a[0]+(b[0]-a[0])*t,n=a[1]+(b[1]-a[1])*t;if(qOf(x,n)>0.95){if(pts.length>1){done=true;break;}continue;}pts.push(G(x,n));}}
+  if(pts.length<2)return;const wd=cy.minor?0.5:0.85;world.add(ribbon(pts,wd+0.4,PAL.waterEdge,0.2));world.add(ribbon(pts,wd,creekMat,0.26));});
+
+// trails
+const trailPts=[],trailMesh={};
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
+  const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
+  world.add(bright,dim);trailMesh[T.id]={bright,dim};});
+TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
+  const pts=T.world.filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
+  g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
+  const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55})));
+  const foot=pts.map(p=>new THREE.Vector3(p.x,0.02,p.z));g.add(ribbon(foot,0.5,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35,side:THREE.DoubleSide}),0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.4,0)))),pts.length*2,0.32,6,false),new THREE.MeshLambertMaterial({color:c})));
+  trail3D.add(g);T.g3=g;});
+const TG=new Map(),tgk=(x,z)=>Math.floor(x/1.6)+","+Math.floor(z/1.6);trailPts.forEach(p=>{const k=tgk(p.x,p.z);(TG.get(k)||TG.set(k,[]).get(k)).push(p);});
+const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=TG.get((i+a)+","+(j+b));if(!arr)continue;for(const p of arr){const ddx=p.x-v.x,ddz=p.z-v.z;if(ddx*ddx+ddz*ddz<2.2)return true;}}return false;};
+
+// trees
+(function(){
+  const types={
+    oak:{geo:new THREE.IcosahedronGeometry(0.8,1),color:PAL.oak,y:1.3,trunk:true},
+    syc:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.sycamore,y:1.2,trunk:true},
+    gold:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.gold,y:1.2,trunk:true},
+    conifer:{geo:new THREE.IcosahedronGeometry(0.62,1).scale(1,1.15,1).translate(0,0.6,0),color:"#647F6C",y:0.15,trunk:true},
+    shrub:{geo:new THREE.IcosahedronGeometry(0.4,0).scale(1,0.7,1),color:PAL.shrub,y:0.22,trunk:false}};
+  const inst={};Object.keys(types).forEach(k=>inst[k]=[]);
+  const tr=rng(907);
+  for(let t=0;t<9000;t++){
+    const x=C.x0+tr()*w,n=C.n0+tr()*d,q=qOf(x,n);if(q>0.93)continue;
+    const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
+    const cd=creekDist(x,n);if(cd*S<0.8)continue;
+    const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
+    if(mk<0.25){type="shrub";p=0.05;}
+    else if(cd<230){type=tr()<.38?"gold":"syc";p=0.14;}
+    else if(south<-0.1&&g<1.0){type="conifer";p=0.025+cl*.035;}
+    
+    else if(g>1.15)type=null;
+    else{type=tr()<.12?"conifer":"shrub";p=0.06+cl*.05;}
+    if(!type||tr()>p||inst[type].length>420)continue;
+    const v=Wv(x,n,e);if(nearTrail(v))continue;
+    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+  }
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
+  Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
+    const mesh=new THREE.InstancedMesh(T.geo,pho(T.color),list.length),hull=new THREE.InstancedMesh(T.geo,HULL,list.length);
+    list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y+T.y*it.s,it.v.z);sc.setScalar(it.s);m4.compose(pv,q,sc);mesh.setMatrixAt(i,m4);sc.setScalar(it.s*1.12);m4.compose(pv,q,sc);hull.setMatrixAt(i,m4);if(T.trunk)trunks.push({v:it.v,s:it.s,h:T.y});});
+    treeGroup.add(hull,mesh);});
+  const tm=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.08,0.11,1,5).translate(0,0.5,0),lam(PAL.trunk),trunks.length);q.identity();
+  trunks.forEach((t,i)=>{pv.set(t.v.x,t.v.y,t.v.z);sc.set(t.s,t.h*t.s,t.s);m4.compose(pv,q,sc);tm.setMatrixAt(i,m4);});treeGroup.add(tm);
+})();
+
+// boulders
+(function(){const r=rng(41),g=new THREE.IcosahedronGeometry(0.35,0),list=[];
+  CANYONS.forEach(cy=>{for(let k=0;k<cy.pts.length-1;k++){const a=cy.pts[k],b=cy.pts[k+1];for(let s=0;s<6;s++){const t=r(),x=a[0]+(b[0]-a[0])*t+(r()-.5)*160,n=a[1]+(b[1]-a[1])*t+(r()-.5)*160;if(qOf(x,n)>0.85)continue;list.push(G(x,n,0.15));}}});
+  const m=new THREE.InstancedMesh(g,pho(PAL.stone),list.length),h=new THREE.InstancedMesh(g,HULL,list.length),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  list.forEach((v,i)=>{const s=0.7+r()*0.8;q.setFromEuler(new THREE.Euler(r()*3,r()*3,r()*3));sc.set(s,s*.7,s);m4.compose(v,q,sc);m.setMatrixAt(i,m4);sc.multiplyScalar(1.12);m4.compose(v,q,sc);h.setMatrixAt(i,m4);});treeGroup.add(h,m);})();
+
+/* ================= flowers ================= */
+const FGEO={stem:new THREE.CylinderGeometry(0.03,0.03,1,4).translate(0,0.5,0),
+  tube:new THREE.ConeGeometry(0.09,0.34,5).translate(0,0.17,0),cup:new THREE.ConeGeometry(0.2,0.22,6).rotateX(Math.PI).translate(0,0.11,0),
+  dome:new THREE.SphereGeometry(0.2,6,4).scale(1,0.6,1),spike:new THREE.ConeGeometry(0.1,0.55,5).translate(0,0.28,0),
+  berry:new THREE.IcosahedronGeometry(0.075,0),bush:new THREE.IcosahedronGeometry(0.38,0).scale(1,.8,1),frond:new THREE.ConeGeometry(0.07,0.9,3).translate(0,0.45,0),
+  yuccaLeaf:new THREE.ConeGeometry(0.06,0.55,3).translate(0,0.27,0),pad:new THREE.SphereGeometry(0.2,7,5).scale(1,1.25,0.32)};
+function plant(k,sink,r){const sp=SPECIES[k],c=sp.color,G2="#5F8A3E",add=sink;
+  const M=(x,y,z,s,rx=0,rz=0)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,0,rz)),new THREE.Vector3(s,s,s));
+  const Ms=(x,y,z,sx,sy)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(sx,sy,sx));
+  if(sp.shape==="tube"){for(let i=0;i<5;i++){const a=r()*6.28,rr=r()*0.25,x=Math.cos(a)*rr,z=Math.sin(a)*rr,h=0.35+r()*.25;add("stem",G2,Ms(x,0,z,1,h));add("tube",c,M(x,h,z,1,(r()-.5)*.6,(r()-.5)*.6));}}
+  else if(sp.shape==="cup"){add("bush",G2,Ms(0,0.25,0,0.9,0.8));for(let i=0;i<5;i++){const a=i/5*6.28+r(),x=Math.cos(a)*.28,z=Math.sin(a)*.28;add("cup",c,M(x,0.5+r()*.15,z,1));}}
+  else if(sp.shape==="dome"){add("bush",G2,Ms(0,0.2,0,0.8,0.6));for(let i=0;i<4;i++){const a=i/4*6.28+r(),x=Math.cos(a)*.22,z=Math.sin(a)*.22;add("dome",c,M(x,0.45,z,0.9+r()*.3));}}
+  else if(sp.shape==="spike"){add("bush",G2,Ms(0,0.2,0,0.7,0.6));for(let i=0;i<4;i++){const a=r()*6.28,x=Math.cos(a)*.18,z=Math.sin(a)*.18,h=0.5+r()*.3;add("stem",G2,Ms(x,0,z,1,h));add("spike",c,M(x,h,z,1));}}
+  else if(sp.shape==="yucca"){for(let i=0;i<8;i++){const a=i/8*6.28;add("yuccaLeaf","#7E9B5C",M(0,0,0,1,Math.cos(a)*.9,Math.sin(a)*.9));}add("stem","#8FA36A",Ms(0,0,0,1.4,1.6));add("spike",c,M(0,1.6,0,1.6));}
+  else if(sp.shape==="berry"){add("bush","#4F7A3A",Ms(0,0.32,0,1.15,1));for(let i=0;i<7;i++){const a=r()*6.28,b=r()*1.2,x=Math.cos(a)*.38*Math.cos(b-.6),z=Math.sin(a)*.38*Math.cos(b-.6);add("berry",c,M(x,0.32+Math.sin(b)*.3,z,1));}}
+  else if(sp.shape==="pad"){const PADS=[[0,0.24,0,1,0,0],[0.2,0.5,0.02,0.85,0,-0.5],[-0.2,0.48,0,0.85,0,0.5],[0.05,0.75,0.05,0.7,0,-0.2],[0.3,0.24,0.15,0.8,0.5,-0.3]];PADS.forEach(([x,y,z,s,ry,rz])=>{add("pad","#7FA552",new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(0,ry+r()*0.6,rz)),new THREE.Vector3(s,s,s)));});[[0.05,0.98,0.05],[0.32,0.73,0.02],[-0.3,0.72,0]].forEach(([x,y,z])=>add("berry",c,M(x,y,z,1.4)));}
+  else if(sp.shape==="fern"){for(let i=0;i<7;i++){const a=i/7*6.28+r()*.3;add("frond",c,M(0,0,0,1,Math.cos(a)*.95,Math.sin(a)*.95));}}
+}
+const flowerGroups={},clusters=[];
+(function(){
+  const r=rng(53),FS=1.8;
+  TRAILS.forEach(T=>{const buckets={};
+    FLORA[T.id].forEach(k=>{const sp=SPECIES[k];let got=0,tries=0;const want=T.id==="C"?4:3;
+      while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
+        if(qOf(x,n)>0.85)continue;
+        const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
+        plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
+        clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
+    const grp=new THREE.Group();Object.values(buckets).forEach(b=>{const m=new THREE.InstancedMesh(FGEO[b.g],pho(b.c),b.list.length);b.list.forEach((mm,i)=>m.setMatrixAt(i,mm));grp.add(m);});
+    world.add(grp);flowerGroups[T.id]=grp;});
+})();
+
+/* ================= landmarks + waterfall ================= */
+const anim={};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,8),ico=new THREE.IcosahedronGeometry(1,0);
+  const roof=new THREE.CylinderGeometry(0.75,0.75,1,3).rotateZ(Math.PI/2).rotateX(Math.PI/2).rotateY(Math.PI/2);
+  function house(x,n,s,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry;world.add(g);
+    part(g,box,PAL.wall,0,0.6*s,0,1.8*s,1.2*s,1.2*s,1.06);const r=part(g,roof,PAL.roof,0,1.55*s,0,1.25*s,0.95*s,1.2*s,1.06);rot(r,0,Math.PI/2,0);
+    part(g,box,"#6B4F3A",0,0.35*s,0.61*s,0.35*s,0.7*s,0.05,0);}
+  function gate(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);
+    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}
+  function bench(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n,0.05));g.rotation.y=ry||0;world.add(g);part(g,box,"#9C7653",0,0.42,0,1.3,0.1,0.42,1.08);part(g,box,"#9C7653",0,0.75,-0.2,1.3,0.45,0.08,1.08);part(g,box,"#6B4F3A",-0.55,0.2,0,0.1,0.4,0.36,0);part(g,box,"#6B4F3A",0.55,0.2,0,0.1,0.4,0.36,0);}
+  function palm(x,n,h,i){const b=G(x,n);const g=new THREE.Group();g.position.copy(b);g.rotation.y=(i||0)*1.3;world.add(g);
+    const tk=part(g,cyl,"#9A7B5B",0,h/2,0,0.11,h,0.11);rot(tk,0,0,((i||0)%2?0.06:-0.05));
+    for(let f=0;f<7;f++){const a=f/7*Math.PI*2;const fr=part(g,new THREE.ConeGeometry(0.16,1.5,4).translate(0,0.75,0),f%2?"#5E8F3E":"#6FA04A",0,h,0,1,1,1,1.1);rot(fr,Math.cos(a)*1.25,0,Math.sin(a)*1.25);}
+    part(g,new THREE.SphereGeometry(1,6,4),"#8C6B4A",0,h-0.05,0,0.22,0.18,0.22,1.1);}
+  function slab(x,n,sx,sz,c,ry){const p=G(x,n);const m=part(world,box,c||"#D9D4C8",p.x,p.y+0.1,p.z,sx,0.2,sz,1.06);rot(m,0,ry||0,0);return m;}
+  function tower(x,n,h,c){const p=G(x,n);part(world,cyl,c||"#E9E1D2",p.x,p.y+h/2,p.z,0.35,h,0.35,1.06);part(world,new THREE.ConeGeometry(0.6,0.8,8),"#B5523B",p.x,p.y+h+0.4,p.z,1,1,1,1.06);}
+  function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
+    [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
+  function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
+  // tilted sandstone slab: plate dipping ~50 deg to the NE, strike NW-SE
+  function tslab(x,n,L,D,ry,tilt,c,sink){const g=new THREE.Group();g.position.copy(G(x,n,-(sink||0.25)));g.rotation.y=ry;world.add(g);
+    const m=part(g,box,c,0,D*0.5*Math.sin(tilt),0,L,0.45,D,1.06);rot(m,tilt,0,0);return g;}
+  function rockband(x,n,s,ry){const cs=["#C98F62","#B97D55","#D6A274","#BF8558"];for(let i=0;i<4;i++)tslab(x+i*28*s,n+i*34*s,(5.2-i*0.7)*s,(3.2-i*0.35)*s,ry,0.87,cs[i]);}
+  // Famous Rocks
+  rockband(2213,-976,1.6,2.44);rockband(2423,-846,1.2,2.5);
+  // hogback bands across the park
+  [[1590,-1111,1.0],[1000,-1250,0.8],[700,-2600,0.9],[1300,-3400,0.8],[2200,-2600,0.9],[2700,-3800,0.75],[1800,-1900,0.85],[450,-1700,0.75],[1900,-4800,0.7],[3800,-3400,0.7]].forEach(([x,n,s],i)=>rockband(x,n,s,2.44+((i-3*Math.floor(i/3))-1)*0.08));
+  // Witch's Hat
+  {const q=G(849,-424);part(world,new THREE.ConeGeometry(0.55,1.8,7),"#B97D55",q.x,q.y+0.9,q.z,1,1,1,1.06);part(world,cyl,"#C98F62",q.x,q.y+0.1,q.z,0.9,0.2,0.9,1.06);}
+  // Interpretive Center
+  house(328,-205,1.5,0.3);
+  gate(735,336,0.4);gate(488,-275,-0.3);
+  // PCT signs: post with a small board
+  function pct(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);part(g,box,"#6B4F3A",0,0.7,0,0.12,1.4,0.12,0);part(g,box,"#2F5D46",0,1.25,0.08,0.7,0.5,0.06,1.08);part(g,box,"#E9E1D2",0,1.25,0.115,0.45,0.25,0.02,0);}
+  pct(785,276,0.4);pct(2102,-4360,0.8);
+  // freeway tunnel portal
+  {const q=G(5415,-4839);const t=part(world,box,"#9A958C",q.x,q.y+0.5,q.z,1.6,1.0,0.5,1.06);rot(t,0,0.6,0);const h=part(world,box,"#2B2B2B",q.x,q.y+0.4,q.z,0.8,0.7,0.55,0);rot(h,0,0.6,0);}
+  bench(3309,-1344,0.6);bench(2494,-629,2.4);
+
+  anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
+})();
+
+/* ================= animals ================= */
+const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
+function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
+const BUILD={
+ bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
+   part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
+   legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6";part(g,SPH,c,0,1.35,0,0.85,0.45,0.38);part(g,SPH,lt,-0.8,1.4,0,0.18,0.22,0.22);
+   const neck=new THREE.Group();neck.position.set(0.6,1.5,0);g.add(neck);
+   part(neck,CYL,c,0.18,0.35,0,0.13,0.7,0.13);part(neck,SPH,c,0.35,0.75,0,0.32,0.22,0.2);part(neck,SPH,"#2a2a2a",0.66,0.72,0,0.06,0.06,0.06,0);
+   part(neck,SPH,c,0.15,1.0,0.25,0.2,0.09,0.06);part(neck,SPH,c,0.15,1.0,-0.25,0.2,0.09,0.06);
+   part(neck,CYL,"#8A6A4F",0.25,1.15,0.12,0.03,0.4,0.03,0);part(neck,CYL,"#8A6A4F",0.25,1.15,-0.12,0.03,0.4,0.03,0);
+   legs4(g,c,[[0.5,0.2],[0.5,-0.2],[-0.5,0.2],[-0.5,-0.2]],1.1,1.1,0.08);g.userData.neck=neck;return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C";part(g,SPH,c,0,0.7,0,0.55,0.7,0.45);part(g,SPH,c,0.15,1.45,0,0.38);part(g,SPH,"#F3E7D6",0.45,1.38,0,0.16,0.13,0.18);
+   part(g,CONE,c,0.1,1.85,0.2,0.1,0.25,0.1);part(g,CONE,c,0.1,1.85,-0.2,0.1,0.25,0.1);part(g,SPH,"#111",0.45,1.55,0.14,0.05,0.05,0.05,0);part(g,SPH,"#111",0.45,1.55,-0.14,0.05,0.05,0.05,0);
+   const tail=new THREE.Group();tail.position.set(-0.45,0.35,0);g.add(tail);part(tail,SPH,c,-0.18,0,0,0.22,0.1,0.1);g.userData.tail=tail;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF";part(g,SPH,c,0,1.05,0,0.85,0.38,0.32);part(g,SPH,lt,0.45,0.98,0,0.3,0.25,0.25);
+   part(g,SPH,c,0.85,1.38,0,0.3,0.26,0.24);const sn=part(g,CONE,c,1.18,1.32,0,0.13,0.4,0.13);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.38,1.32,0,0.05,0.05,0.05,0);
+   part(g,CONE,c,0.8,1.68,0.13,0.08,0.26,0.08);part(g,CONE,c,0.8,1.68,-0.13,0.08,0.26,0.08);
+   const tail=new THREE.Group();tail.position.set(-0.8,1.05,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.2,0,0.42,0.16,0.16);rot(t1,0,0,0.5);part(tail,SPH,"#3a3a3a",-0.72,-0.4,0,0.12,0.1,0.1,0);g.userData.tail=tail;
+   legs4(g,c,[[0.5,0.15],[0.5,-0.15],[-0.5,0.15],[-0.5,-0.15]],0.9,0.9,0.07);return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";part(g,SPH,c,0,0.5,0,1.3,0.42,0.5);part(g,SPH,lt,0.3,0.38,0,0.7,0.2,0.38);
+   part(g,SPH,c,1.25,0.82,0,0.38,0.34,0.34);part(g,SPH,lt,1.55,0.74,0,0.16,0.13,0.18);part(g,SPH,"#111",1.68,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,c,1.18,1.16,0.2,0.1);part(g,SPH,c,1.18,1.16,-0.2,0.1);part(g,SPH,"#111",1.5,0.92,0.13,0.04,0.04,0.04,0);part(g,SPH,"#111",1.5,0.92,-0.13,0.04,0.04,0.04,0);
+   const a=part(g,CYL,c,1.2,0.2,0.28,0.1,0.8,0.1);rot(a,0,0,Math.PI/2);const b=part(g,CYL,c,1.2,0.2,-0.28,0.1,0.8,0.1);rot(b,0,0,Math.PI/2);
+   const tail=new THREE.Group();tail.position.set(-1.25,0.45,0);g.add(tail);[[-0.3,-0.1,0.1],[-0.6,-0.15,0.3],[-0.85,-0.05,0.55]].forEach(([x,y,z],i)=>part(tail,SPH,i===2?"#4a3626":c,x,y,z,0.14));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";part(g,SPH,c,0,0.6,0,0.6,0.45,0.42);part(g,SPH,c,0.62,0.82,0,0.32,0.28,0.3);
+   part(g,SPH,dk,0.78,0.86,0,0.16,0.08,0.3,0);part(g,SPH,lt,0.9,0.76,0,0.13,0.1,0.13);part(g,SPH,"#111",1.02,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,lt,0.55,1.08,0.18,0.09);part(g,SPH,lt,0.55,1.08,-0.18,0.09);
+   const tail=new THREE.Group();tail.position.set(-0.55,0.7,0);g.add(tail);for(let i=0;i<5;i++)part(tail,SPH,i%2?dk:"#B9B5AE",-0.12-i*0.16,0.1+i*0.07,0,0.14,0.14,0.14,i===0?1.1:0);g.userData.tail=tail;
+   legs4(g,dk,[[0.35,0.22],[0.35,-0.22],[-0.35,0.22],[-0.35,-0.22]],0.42,0.42,0.08);return g;},
+ squirrel(){const g=new THREE.Group(),c="#9A9A96",lt="#F1EFEA";const b=part(g,SPH,c,0,0.42,0,0.3,0.36,0.25);rot(b,0,0,-0.3);part(g,SPH,lt,0.12,0.38,0,0.16,0.24,0.18,0);
+   part(g,SPH,c,0.2,0.8,0,0.2,0.18,0.17);part(g,SPH,"#111",0.37,0.83,0.07,0.035,0.035,0.035,0);part(g,CONE,c,0.15,1.0,0.08,0.05,0.12,0.05);part(g,CONE,c,0.15,1.0,-0.08,0.05,0.12,0.05);
+   const tail=new THREE.Group();tail.position.set(-0.25,0.3,0);g.add(tail);[[-0.12,0.15,0.2],[-0.18,0.45,0.22],[-0.08,0.75,0.2],[0.05,0.92,0.15]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A";part(g,SPH,c,0,0.32,0,0.32,0.26,0.24);part(g,SPH,"#B98A5E",0.05,0.24,0,0.26,0.16,0.2,0);part(g,SPH,c,0.25,0.56,0,0.15);part(g,SPH,"#111",0.33,0.53,0,0.1,0.07,0.12,0);
+   part(g,SPH,"#FFFFFF",0.36,0.6,0.08,0.03,0.03,0.03,0);const tk=part(g,CONE,"#111",0.33,0.82,0,0.05,0.16,0.05,0);rot(tk,0,0,-0.6);return g;},
+ snake(){const g=new THREE.Group(),segs=[];for(let i=0;i<16;i++){segs.push(part(g,SPH,i%3===0?"#6E5638":"#C2A36E",0,0.12,0,0.16-i*0.004,0.12,0.16-i*0.004,1.12));}
+   part(segs[0],SPH,"#111",0.5,0.5,0.45,0.25,0.25,0.25,0);g.userData.segs=segs;return g;},
+ bird(c,belly,cap){const g=new THREE.Group();part(g,SPH,c,0,0,0,0.35,0.16,0.16);if(belly)part(g,SPH,belly,0.05,-0.07,0,0.26,0.1,0.12,0);part(g,SPH,cap||c,0.32,0.05,0,0.14);
+   const bk=part(g,CONE,"#E3A44A",0.48,0.04,0,0.05,0.12,0.05,0);rot(bk,0,0,-Math.PI/2);
+   const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute([0.18,0,0,-0.2,0,0,-0.05,0,1.1],3));wg.computeVertexNormals();
+   const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
+   const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
+};
+const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const animalGroup=new THREE.Group();world.add(animalGroup);
+const animals=[];
+const ANIMALS=[
+ {k:"coyote",path:[1172,-3183,1123,-3538],per:24},
+ {k:"coyote",path:[2664,-4767,2957,-4364],per:22,ph:0.5},
+ {k:"bobcat",path:[1081,-5310,1645,-5106],per:22},
+ {k:"squirrel",at:[1709,165],hop:true},
+ {k:"squirrel",at:[2953,-591],hop:true},
+ {k:"squirrel",at:[2302,-837],hop:true},
+ {k:"snake",path:[151,-1636,57,-2103],per:30},
+ {k:"snake",path:[4342,-3981,4778,-4144],per:30,ph:0.5},
+ {k:"quail",at:[2581,-3491],flock:3},
+ {k:"quail",at:[3642,-2245],flock:3}
+];
+ANIMALS.forEach((a,idx)=>{
+  const s=a.s||SCALE[a.k];const items=[];
+  const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
+  const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
+  const holder=new THREE.Group();animalGroup.add(holder);
+  if(a.flock){for(let i=0;i<a.flock;i++){const o=make();holder.add(o);items.push({o,dx:(i-1)*90,dn:(i%2)*70});}}
+  else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
+  let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
+  items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
+  animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
+});
+// birds
+const birds=[];
+[["hawk",-44,32,-30,8],["jay",44,26,26,7],["raven",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["jay",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
+  const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
+// clouds with varied shapes
+const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
+  const SHAPES={puff:[[0,0,0,2.6],[2.6,-.4,.4,2.0],[-2.5,-.6,-.2,1.9],[1,1.4,-.3,1.8],[4.4,-.9,.2,1.3]],
+    long:[[-4.5,0,0,1.3],[-2.6,.3,.2,1.7],[-.6,.5,0,2.0],[1.5,.3,-.2,1.8],[3.5,0,.1,1.5],[5.2,-.2,0,1.1]],
+    tower:[[0,0,0,2.2],[0.6,2.2,.2,1.8],[-.3,3.9,0,1.4],[1.9,.4,-.2,1.5],[-1.9,.2,.1,1.5]],
+    wisp:[[0,0,0,1.2],[1.5,.2,0,0.9],[-1.3,-.1,0,0.8]]};
+  [["puff",-46,30,-34,1.6],["long",64,32,-34,1.2],["tower",-60,34,6,1.1],["wisp",36,36,-46,1.6],["long",-8,38,-56,1.0],["wisp",58,30,-6,1.4],["puff",-22,40,-62,1.1]].forEach(([sh,x,y,z,s0],k)=>{const cl=new THREE.Group();
+    SHAPES[sh].forEach(([a,b,c,s])=>{const m=new THREE.Mesh(cg,lam(PAL.cloud));m.position.set(a,b,c);m.scale.set(s,s*(sh==="long"||sh==="wisp"?0.7:1),s);const h=new THREE.Mesh(cg,hm);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(1.05);cl.add(h,m);});
+    cl.position.set(x,y,z);cl.scale.setScalar(s0);scene.add(cl);clouds.push({obj:cl,hx:x,hz:z,hy:y,ph:k*1.9});});})();
+
+/* ================= camera & views ================= */
+const VIEW=100;
+const cur={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()},goal={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()};
+let view="all",hoverKey=null,animalsOn=true,flowersOn=true,topoOn=true,treesOn=true,baseOn=true;
+const dirOf=(az,el)=>new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az));
+const stage=$("#stage");
+const isPhone=()=>innerWidth<=860;
+function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
+const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
+function viewPoints(v){
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
+const VIEWAZ={"all":3.9,"A":3.9,"B":3.9,"C":3.9};
+function fitFor(v,az,el){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
+  const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
+  const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
+  const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*2.4);
+  const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
+  return {zoom,target};}
+function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
+
+/* ================= icons ================= */
+function fIcon(sh,c){const s={tube:`<path d="M6 11V4" stroke="#5F8A3E"/><path d="M4.5 4.5 6 1l1.5 3.5z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  cup:`<circle cx="6" cy="8" r="3.4" fill="#5F8A3E"/><path d="M3.5 4h5L6 7z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  dome:`<circle cx="6" cy="8.5" r="3" fill="#5F8A3E"/><ellipse cx="6" cy="5" rx="3.6" ry="2.2" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  spike:`<path d="M6 11V6" stroke="#5F8A3E"/><path d="M4.6 7 6 1l1.4 6z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  yucca:`<path d="M2 11l4-3 4 3M6 8V3" stroke="#7E9B5C"/><path d="M5 4 6 .5 7 4z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  berry:`<circle cx="6" cy="6.5" r="4.2" fill="#4F7A3A"/><circle cx="4.5" cy="5" r="1" fill="${c}"/><circle cx="7.5" cy="6.5" r="1" fill="${c}"/><circle cx="5.5" cy="8.2" r="1" fill="${c}"/>`,
+  fern:`<path d="M6 11 2 3M6 11 6 1M6 11 10 3" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`,
+  pad:`<ellipse cx="6" cy="8.3" rx="2.6" ry="3" fill="#7FA552"/><ellipse cx="3.6" cy="4.6" rx="1.8" ry="2.2" fill="#7FA552"/><ellipse cx="8.4" cy="4.4" rx="1.8" ry="2.2" fill="#7FA552"/><circle cx="3.6" cy="2.4" r="1.1" fill="${c}"/><circle cx="8.4" cy="2.2" r="1.1" fill="${c}"/>`}[sh];
+  return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true">${s}</svg>`;}
+function paw(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="8" rx="2.6" ry="2.2" fill="${c}"/><circle cx="2.6" cy="5" r="1.1" fill="${c}"/><circle cx="4.6" cy="3" r="1.1" fill="${c}"/><circle cx="7.4" cy="3" r="1.1" fill="${c}"/><circle cx="9.4" cy="5" r="1.1" fill="${c}"/></svg>`;}
+function wing(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6c2-2 3.5-2 5 0 1.5-2 3-2 5 0-1.5.4-3 1.6-5 3C4 7.6 2.5 6.4 1 6z" fill="${c}"/></svg>`;}
+const isBird=k=>!!BIRDC[k];
+const wIcon=k=>isBird(k)?wing(WILD[k].color):paw(WILD[k].color);
+function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;return t?`<span class="bd t" style="--c:var(${TR[t].color})">${id}</span>`:`<span class="bd">${id}</span>`;}
+
+/* ================= callouts ================= */
+const LABELS=[];const labelsBox=$("#labels");
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+  el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
+  el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
+STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+TRAILS.forEach(T=>{
+  const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
+  Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
+    addLabel({key:"w-"+T.id+"-"+a.k,kind:"animal",badge:`<span class="bd ic">${wIcon(a.k)}</span>`,text:a.label||WILD[a.k].name,views:[T.id],pos:item.pos,item});});
+  const bestF={};clusters.filter(c=>c.trail===T.id).forEach(c=>{if(!bestF[c.k]||c.dist<bestF[c.k].dist)bestF[c.k]=c;});
+  Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
+    addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
+});
+function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
+const tmpV=new THREE.Vector3();
+function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
+function layoutLabels(){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins(),ink="#1D2B26";
+  const act=LABELS.filter(o=>{const on=labelOn(o);o.el.hidden=!on;return on;});
+  const P=act.map(o=>{const p=project(o.pos());return {o,x:p.x,y:p.y};});
+  if(isPhone()){P.forEach(p=>{p.o.el.classList.add("dot");p.o.el.classList.remove("left","right");p.o.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`;});$("#lead").innerHTML="";return;}
+  const cxm=(m.l+(W-m.r))/2;let Lf=P.filter(p=>p.x<cxm),Rt=P.filter(p=>p.x>=cxm);
+  while(Lf.length>Rt.length+1){Lf.sort((a,b)=>b.x-a.x);Rt.push(Lf.shift());}
+  while(Rt.length>Lf.length+1){Rt.sort((a,b)=>a.x-b.x);Lf.push(Rt.shift());}
+  const gap=act.length>18?26:30,top=m.t+8,bot=Hh-m.b-8;
+  const spread=arr=>{arr.sort((a,b)=>a.y-b.y);const ys=arr.map(p=>Math.max(top,Math.min(bot,p.y)));for(let i=1;i<ys.length;i++)ys[i]=Math.max(ys[i],ys[i-1]+gap);
+    const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
+    arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
+  spread(Lf);spread(Rt);
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
+  $("#lead").innerHTML=svg;
+}
+
+/* ================= glass card ================= */
+const card=$("#card");let cardItem=null;
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const r10=n=>fmt(Math.round(n/10)*10);
+function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
+function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
+function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
+function openCard(item){cardItem=item;let h="";
+  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+    h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
+  else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
+  else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
+  const ph=photosFor(item);
+  const gal=ph.length?`<div class="gal"><img class="main" src="${ph[0].f}" alt="${ph[0].t||""}"><div class="cr">${credit(ph[0])}</div>${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button class="th${i?"":" on"}" data-i="${i}"><img src="${p.f}" alt=""></button>`).join("")}</div>`:""}</div>`
+    :`<div class="gal"><p class="none">No open-license traveler photos of this exact spot yet.</p></div>`;
+  card.classList.remove("big");
+  card.innerHTML=`<button class="x" aria-label="Close">×</button>`+h+gal+`<div class="more">${ph.length?`Tap for ${ph.length} photo${ph.length>1?"s":""}`:"Tap for photos"}</div>`;card.hidden=false;
+  card.querySelector(".x").onclick=e=>{e.stopPropagation();closeCard();};
+  card.querySelectorAll(".th").forEach(b=>b.onclick=e=>{e.stopPropagation();const p=ph[+b.dataset.i];card.querySelector(".main").src=p.f;card.querySelector(".cr").innerHTML=credit(p);card.querySelectorAll(".th").forEach(t=>t.classList.toggle("on",t===b));});
+  card.onclick=e=>{if(e.target.closest("a,.th,.x"))return;card.classList.toggle("big");positionCard();};
+  positionCard();}
+function closeCard(){cardItem=null;card.hidden=true;}
+function positionCard(){if(!cardItem)return;const p=project(cardItem.pos());const W=stage.clientWidth;const cw=card.offsetWidth,ch=card.offsetHeight;
+  let x=Math.max(cw/2+8,Math.min(W-cw/2-8,p.x)),y=p.y-14;if(y-ch<8)y=ch+8;card.style.transform=`translate(${x-cw/2}px,${y-ch}px)`;}
+
+/* ================= portraits (rendered from the same models) ================= */
+let pr=null;const PCACHE={};
+function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
+  if(!pr){pr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});pr.setPixelRatio(2);pr.setSize(236,184);}
+  const sc=new THREE.Scene();sc.add(new THREE.AmbientLight(0xffffff,0.62));const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-3,5,4);sc.add(dl);
+  const g=new THREE.Group();sc.add(g);
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.35,40),[lam(PAL.band),lam(PAL.ground),lam(PAL.ground)]);disc.position.y=-0.18;g.add(disc);
+  const ring=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,30),new THREE.LineBasicMaterial({color:PAL.slabLine}));ring.position.copy(disc.position);g.add(ring);
+  let subj;
+  if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
+    else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+  else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
+  g.add(subj);
+  const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+  const c2=new THREE.OrthographicCamera(-1,1,1,-1,-100,100);const az=0.9,el=0.42;c2.position.copy(ctr).add(new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az)).multiplyScalar(20));c2.lookAt(ctr);
+  const hw=Math.max(size.x*0.62,size.z*0.62,size.y*0.75,1.2),a=236/184;c2.left=-hw*a;c2.right=hw*a;c2.top=hw;c2.bottom=-hw;c2.updateProjectionMatrix();
+  pr.render(sc,c2);const url=pr.domElement.toDataURL("image/png");PCACHE[key]=url;return url;}
+
+/* ================= panel ================= */
+function spark(T,w0,h0){const pts=T.pts.filter((p,i)=>i%3===0);const dd=pts.map((p,i)=>`${i?"L":"M"}${(p.m/T.total*w0).toFixed(1)},${(h0-2-(p.e-T.lo)/(T.hi-T.lo||1)*(h0-4)).toFixed(1)}`).join("");return `<svg width="${w0}" height="${h0}" viewBox="0 0 ${w0} ${h0}" aria-hidden="true"><path d="${dd}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/></svg>`;}
+function profileSVG(T){const w0=320,h0=96,m={l:38,r:8,t:24,b:16};const step=T.hi-T.lo>1000?500:T.hi-T.lo>450?200:100,lo=Math.floor((T.lo-20)/step)*step,hi=Math.ceil((T.hi+40)/step)*step;
+  const X=v=>m.l+v/T.total*(w0-m.l-m.r),Y=e=>m.t+(1-(e-lo)/(hi-lo))*(h0-m.t-m.b);let g="";
+  for(let e=lo;e<=hi;e+=step)g+=`<line x1="${m.l}" x2="${w0-m.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--rule)"/><text x="${m.l-5}" y="${Y(e)+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${fmt(e)}</text>`;
+  const line=T.pts.map((p,i)=>`${i?"L":"M"}${X(p.m).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  g+=`<path d="${line}L${X(T.total)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="var(${T.color})" fill-opacity=".14"/><path d="${line}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/>`;
+  g+=`<text x="${m.l}" y="${h0-3}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">0 mi</text><text x="${w0-m.r}" y="${h0-3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${T.official} mi</text>`;
+  ORDER[T.id].forEach(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);if(!mm)return;const x=X(mm.m),y=Y(mm.e),t=s.trails.length===1?s.trails[0]:null,fill=t?`var(${TR[t].color})`:"#fff",tc=t?"#fff":"var(--ink)",wd=id.length>1?18:14;
+    g+=`<line x1="${x}" x2="${x}" y1="${y}" y2="${y-8}" stroke="var(--ink)" stroke-width=".7"/><rect x="${x-wd/2}" y="${y-21}" width="${wd}" height="13" rx="6.5" fill="${fill}" stroke="${t?fill:"var(--ink)"}"/><text x="${x}" y="${y-11.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="${tc}">${id}</text>`;});
+  return `<svg viewBox="0 0 ${w0} ${h0}" aria-label="Elevation profile">${g}</svg>`;}
+function speciesHere(){const ws=new Set(),fs=new Set();
+  animals.forEach(a=>{if(view==="all"||a.trails.includes(view))ws.add(a.k);});if(view==="all")["hawk","jay","raven","woodpecker"].forEach(k=>ws.add(k));else["hawk","jay"].forEach(k=>ws.add(k));
+  clusters.forEach(c=>{if(view==="all"||c.trail===view)fs.add(c.k);});return {ws:[...Object.keys(WILD)].filter(k=>ws.has(k)),fs:[...Object.keys(SPECIES)].filter(k=>fs.has(k))};}
+function wildList(ks){return `<ul class="list" data-kind="animal">${ks.map(k=>`<li data-k="${k}"><button class="item">${wIcon(k)}<span class="nm">${WILD[k].name}</span><span class="chev">›</span></button></li>`).join("")}</ul>`;}
+function floraList(ks){return `<ul class="list" data-kind="flower">${ks.map(k=>{const sp=SPECIES[k],[st,now]=floraStatus(sp);return `<li data-k="${k}"><button class="item">${fIcon(sp.shape,sp.color)}<span class="nm">${sp.name} <span class="lt">${sp.latin}</span></span><span class="bm${now?" now":""}">${st}</span></button></li>`;}).join("")}</ul>`;}
+function renderPanel(){let h="";const {ws,fs}=speciesHere();
+  if(view==="all"){
+    h=`<div><div class="eyebrow">All trails</div><h2>Tilted rocks on the Pacific Crest Trail</h2></div>
+    <p>Vasquez Rocks is a 932-acre county park in Agua Dulce, where sandstone layers laid down some 25 million years ago were tipped on edge by movement along the San Andreas and Elkhorn faults. The site was the Tataviam village of Mapipinga; the bandit Tiburcio Vásquez hid here in 1874. A is a short loop to the Famous Rocks, B follows the park’s stretch of the Pacific Crest Trail, and C is the long Apwinga Loop. Pick a trail to focus the model; click anything on it for a quick note.</p>
+    <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
+    <div><h3>How the numbers work</h3><p class="note">A and C start at the Interpretive Center and share the Nature Heritage Trail and the Famous Rocks; A begins on the same path as B by the front gate, and B and C share part of the Pacific Crest Trail. Spots on two trails carry plain numbers. Stops on one trail only carry its letter: C2 is the second such stop on Trail C.</p></div>
+    <div><h3>Wildlife at Vasquez Rocks</h3>${wildList(ws)}</div>
+    <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
+    <p class="note">Vasquez Rocks Natural Area, 10700 W. Escondido Canyon Road, Agua Dulce. Open sunrise to sunset; Interpretive Center Tuesday to Sunday, 8 am to 4 pm. Free parking. Dogs on leash. Little shade; bring water. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
+  } else {const T=TR[view];
+    h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
+    <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+    <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
+    <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
+    <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
+    <div><h3>Flowers along the way</h3>${floraList(fs)}</div>
+    <div><h3>Read more</h3><div class="links">${({A:`<a href="https://www.trails.lacounty.gov/Trail/1507/geology-trail" target="_blank" rel="noopener">Geology Trail · Trails LA County</a><a href="https://trails.lacounty.gov/Files/QuickGuide/VASQ_FullMap_Translation_English.pdf" target="_blank" rel="noopener">Park map (PDF) · Trails LA County</a>`,B:`<a href="https://www.hikespeak.com/trails/vasquez-rocks-hike-pacific-crest-trail-loop/" target="_blank" rel="noopener">PCT and Foot Trail Loop · Hikespeak</a><a href="https://trails.lacounty.gov/Files/QuickGuide/VASQ_FullMap_Translation_English.pdf" target="_blank" rel="noopener">Park map (PDF) · Trails LA County</a>`,C:`<a href="https://trails.lacounty.gov/Trail/1853/apwinga-loop-trail" target="_blank" rel="noopener">Apwinga Loop Trail · Trails LA County</a><a href="https://modernhiker.com/hike/hiking-vasquez-rocks/" target="_blank" rel="noopener">Vasquez Rocks loop · Modern Hiker</a>`})[T.id]||""}</div></div>`;}
+  $("#pbody").innerHTML=h;$("#pbody").scrollTop=0;
+  document.querySelectorAll("#pbody [data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+  document.querySelectorAll('#pbody .list[data-kind="stop"] li').forEach(li=>{const id=li.dataset.id;li.querySelector("button").addEventListener("click",()=>openCard({kind:"stop",id,pos:()=>STOP[id].v}));
+    li.addEventListener("pointerenter",()=>setHover("s-"+id));li.addEventListener("pointerleave",()=>setHover(null));});
+  document.querySelectorAll('#pbody .list[data-kind="animal"] li, #pbody .list[data-kind="flower"] li').forEach(li=>{const kind=li.parentElement.dataset.kind,k=li.dataset.k;
+    li.querySelector("button").addEventListener("click",()=>toggleDetail(li,kind,k));});
+}
+function toggleDetail(li,kind,k){const open=li.classList.contains("open");li.parentElement.parentElement.parentElement.querySelectorAll("li.open").forEach(o=>{o.classList.remove("open");const d=o.querySelector(".detail");if(d)d.remove();});
+  if(open){closeCard();return;}
+  li.classList.add("open");const isA=kind==="animal";const info=isA?WILD[k]:SPECIES[k];
+  const d=document.createElement("div");d.className="detail glass";
+  const ph=(isA?PHOTOS.animal[k]:PHOTOS.flower[k])||[];
+  d.innerHTML=`<div>${ph.length?`<img alt="${info.name}" src="${ph[0].f}"><div class="cap">${credit(ph[0])}</div>`:`<img alt="${info.name}, drawn in the model's style" src="${portrait(kind,k)}"><div class="cap">Model drawing</div>`}</div><div><p>${info.sum}</p>${isA?"":`<p style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i>${info.latin}</i> · ${floraStatus(info)[0]}</p>`}</div>`;
+  li.appendChild(d);
+  // also point to it on the model
+  if(isA){if(isBird(k)){const b=birds.find(b=>b.k===k);if(b)openCard({kind:"animal",k,a:null,pos:()=>b.obj.position});}
+    else{const a=animals.find(a=>a.k===k&&(view==="all"||a.trails.includes(view)));if(a&&animalsOn)openCard({kind:"animal",k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))});}}
+  else{const c=clusters.filter(c=>c.k===k&&(view==="all"||c.trail===view)).sort((a,b)=>a.dist-b.dist)[0];if(c&&flowersOn)openCard({kind:"flower",k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))});}}
+$("#switch").innerHTML=`<button data-v="all" aria-pressed="true"><span class="sl">Overview</span><span class="sn">All trails</span></button>`+TRAILS.map(T=>`<button data-v="${T.id}" aria-pressed="false"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="sn">${T.short}</span></button>`).join("");
+document.querySelectorAll("#switch button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.v)));
+function applyVisibility(){
+  animals.forEach(a=>{a.holder.visible=animalsOn&&(view==="all"||a.trails.includes(view));});
+  birds.forEach(b=>b.obj.visible=animalsOn);
+  Object.entries(flowerGroups).forEach(([t,g])=>g.visible=flowersOn&&(view==="all"||view===t));
+  topoGroup.visible=topoOn;treeGroup.visible=treesOn;baseGroup.visible=baseOn;trail3D.visible=!topoOn;TRAILS.forEach(T=>{T.g3.visible=view==="all"||view===T.id;});
+  if(cardItem&&((cardItem.kind==="animal"&&!animalsOn)||(cardItem.kind==="flower"&&!flowersOn)))closeCard();}
+function select(v){view=v;document.querySelectorAll("#switch button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  TRAILS.forEach(T=>{const on=v==="all"||v===T.id;trailMesh[T.id].bright.visible=on;trailMesh[T.id].dim.visible=!on;});
+  goal.az=VIEWAZ[v];goal.el=v==="all"?0.58:0.66;LABELS.forEach(o=>o.ly=null);closeCard();fitGoal();applyVisibility();renderPanel();setHover(null);
+  try{history.replaceState(null,"",v==="all"?location.pathname+location.search:"#trail-"+v);}catch(e){}}
+
+/* ================= interaction ================= */
+const ptrs=new Map();let pinch0=0,zoom0=1,down=null;
+function pickAt(px,py){let best=null,bd=26;
+  const test=(item,v)=>{const p=project(v);const dd=Math.hypot(p.x-px,p.y-py);if(dd<bd){bd=dd;best=item;}};
+  STOPS.forEach(s=>{if(view==="all"||s.trails.includes(view))test({kind:"stop",id:s.id,pos:()=>s.v},s.v);});
+  if(animalsOn){animals.forEach(a=>{if(!a.holder.visible)return;const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};test(item,a.pos().clone().add(new THREE.Vector3(0,0.8,0)));});
+    birds.forEach(b=>test({kind:"animal",k:b.k,a:null,pos:()=>b.obj.position},b.obj.position));}
+  if(flowersOn)clusters.forEach(c=>{if(view!=="all"&&c.trail!==view)return;test({kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))},c.v.clone().add(new THREE.Vector3(0,0.6,0)));});
+  return best;}
+stage.addEventListener("pointerdown",e=>{if(e.target.closest("#card,.kn"))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now()};stage.setPointerCapture(e.pointerId);stage.classList.add("dragging");
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);zoom0=goal.zoom;}});
+stage.addEventListener("pointermove",e=>{const p=ptrs.get(e.pointerId);
+  if(!p){const r=stage.getBoundingClientRect();stage.classList.toggle("pick",!!pickAt(e.clientX-r.left,e.clientY-r.top));return;}
+  if(ptrs.size===2){p.x=e.clientX;p.y=e.clientY;const [a,b]=[...ptrs.values()];const dd=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)goal.zoom=Math.max(.5,Math.min(30,zoom0*dd/pinch0));return;}
+  const ddx=e.clientX-p.x,ddy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;goal.az-=ddx*0.006;goal.el=Math.max(0.3,Math.min(1.25,goal.el+ddy*0.004));});
+const endP=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!ptrs.size)stage.classList.remove("dragging");pinch0=0;
+  if(down&&e.type==="pointerup"&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&performance.now()-down.t<500){const r=stage.getBoundingClientRect();const it=pickAt(e.clientX-r.left,e.clientY-r.top);if(it)openCard(it);else closeCard();}down=null;};
+stage.addEventListener("pointerup",endP);stage.addEventListener("pointercancel",endP);
+stage.addEventListener("wheel",e=>{e.preventDefault();goal.zoom=Math.max(.5,Math.min(30,goal.zoom*Math.exp(-e.deltaY*0.0015)));},{passive:false});
+$("#zin").onclick=()=>goal.zoom=Math.min(30,goal.zoom*1.3);$("#zout").onclick=()=>goal.zoom=Math.max(.5,goal.zoom/1.3);
+$("#zfit").onclick=()=>{goal.az=VIEWAZ[view];goal.el=view==="all"?0.58:0.66;fitGoal();};
+const tog=(id,fn)=>$(id).addEventListener("click",e=>{const v=fn();e.currentTarget.setAttribute("aria-pressed",String(v));applyVisibility();});
+tog("#tgTopo",()=>topoOn=!topoOn);tog("#tgBase",()=>baseOn=!baseOn);tog("#tgTrees",()=>treesOn=!treesOn);tog("#tgAnimals",()=>animalsOn=!animalsOn);tog("#tgFlowers",()=>flowersOn=!flowersOn);
+addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey)return;const k={"0":"all","1":"A","2":"B","3":"C",Escape:"esc"}[e.key];if(!k)return;if(k==="esc"){if(cardItem){closeCard();return;}select("all");}else select(k);});
+function resize(){const W=stage.clientWidth,Hh=stage.clientHeight;if(!W||!Hh)return;renderer.setSize(W,Hh,false);const a=W/Hh;cam.left=-VIEW*a/2;cam.right=VIEW*a/2;cam.top=VIEW/2;cam.bottom=-VIEW/2;}
+new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
+
+/* ================= animation ================= */
+const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
+function animate(tt,dt){
+  animals.forEach(a=>{
+    if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
+      const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
+      if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
+        o.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(tt*3-i*0.6)*0.18);sg.userData.hull.position.copy(sg.position);});return;}
+      o.position.copy(G(x,n));const head=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y+=((head-o.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI)*0.08;
+      const spd=a.k==="raccoon"?7:a.k==="coyote"?6:5,sw=Math.sin(tt*spd+a.ph*20)*0.45;(o.userData.legs||[]).forEach((L,i)=>L.rotation.z=(i%2?sw:-sw)*(i<2?1:-1));
+      o.position.y+=Math.abs(Math.sin(tt*spd))*0.05*a.s;if(o.userData.tail)o.userData.tail.rotation.y=Math.sin(tt*3+a.ph)*0.3;}
+    else if(a.k==="deer"){const gz=(Math.sin(tt*0.6+a.ph*5)+1)/2;a.items[0].o.userData.neck.rotation.z=-gz*1.1;}
+    else if(a.k==="bobcat"||a.k==="lion"){a.items[0].o.userData.tail.rotation.y=Math.sin(tt*(a.k==="lion"?1.2:2.2)+a.ph)*0.6;}
+    else if(a.hop){const o=a.items[0].o,u=(tt*0.35+a.ph)%1,ang=u*Math.PI*2,rr=60;const x=a.x+Math.cos(ang)*rr,n=a.n+Math.sin(ang)*rr;o.position.copy(G(x,n,Math.abs(Math.sin(tt*6+a.ph*9))*0.35));o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;o.userData.tail.rotation.z=Math.sin(tt*6)*0.25;}
+    else if(a.flock){a.items.forEach((it,i)=>{const ang=tt*0.25+i*2.1+a.ph,x=a.x+it.dx+Math.cos(ang)*50,n=a.n+it.dn+Math.sin(ang)*50;it.o.position.copy(G(x,n,Math.abs(Math.sin(tt*5+i))*0.12));it.o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;});}
+  });
+  birds.forEach(b=>{const ang=tt*b.sp+b.ph;b.obj.position.set(b.cx+Math.cos(ang)*b.r,b.cy+Math.sin(tt*0.5+b.ph)*1.2,b.cz+Math.sin(ang)*b.r);
+    const s=Math.sign(b.sp),vx=-Math.sin(ang)*s,vz=Math.cos(ang)*s;b.obj.rotation.set(0,Math.atan2(-vz,vx),0);b.obj.rotateX(-0.28*s);
+    const flap=Math.max(0,Math.sin(tt*0.9+b.fl))**2;const fa=Math.sin(tt*9+b.fl)*0.7*flap+0.1;b.obj.userData.w[0].rotation.x=-fa;b.obj.userData.w[1].rotation.x=fa;});
+  cloudLift+=((view==="all"?12:48)-cloudLift)*Math.min(1,dt*1.5);
+  clouds.forEach(c=>{c.obj.position.x=c.hx+Math.sin(tt*0.06+c.ph)*8;c.obj.position.z=c.hz+Math.cos(tt*0.05+c.ph)*3;c.obj.position.y=c.hy+cloudLift+Math.sin(tt*0.3+c.ph)*0.4;});
+  creekTex.offset.y-=dt*0.35;
+  const W=anim.water;W.fallTex.offset.y+=dt*0.9;
+  W.rings.forEach((rg,i)=>{const u=(tt*0.5+i/3)%1;rg.scale.setScalar(0.5+u*1.6);rg.material.opacity=(1-u)*0.85;});
+  W.mist.forEach(m=>{const u=(tt*0.35+m.ph)%1;m.m.position.set(m.x+Math.sin(tt+m.ph*6)*0.15,0.2+u*1.6,0.9+u*0.4);m.m.scale.setScalar(0.6+u*1.2);m.m.material.opacity=(1-u)*0.7;});
+}
+let last=performance.now(),T0=last,lastRender=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+  const moving=Math.abs(goal.az-cur.az)>1e-3||Math.abs(goal.el-cur.el)>1e-3||Math.abs(goal.zoom-cur.zoom)/goal.zoom>1e-3||cur.target.distanceTo(goal.target)>1e-2||ptrs.size>0;
+  if(!moving&&t-lastRender<33)return;lastRender=t;
+  const dt=Math.min(0.05,(t-last)/1000);last=t;
+  const k=reduced?1:1-Math.exp(-dt*3.2);
+  cur.az+=(goal.az-cur.az)*k;cur.el+=(goal.el-cur.el)*k;cur.zoom+=(goal.zoom-cur.zoom)*k;cur.target.lerp(goal.target,k);
+  const fwd=dirOf(cur.az,cur.el);cam.position.copy(cur.target).addScaledVector(fwd,500);cam.up.set(0,1,0);cam.lookAt(cur.target);cam.zoom=cur.zoom;cam.updateProjectionMatrix();
+  const right=new THREE.Vector3().crossVectors(fwd.clone().negate(),UPV).normalize();
+  dirL.position.copy(cur.target).addScaledVector(right,-100).add(new THREE.Vector3(0,95,0)).addScaledVector(fwd,25);dirL.target.position.copy(cur.target);
+  if(!reduced)animate((t-T0)/1000,dt);
+  renderer.render(scene,cam);layoutLabels();positionCard();}
+resize();
+const h0=(location.hash||"").replace("#trail-","");
+select(TR[h0]?h0:"all");
+cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
+if(reduced)animate(6,0.016);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
+})();
+</script>
