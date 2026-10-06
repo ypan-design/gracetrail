@@ -33,8 +33,7 @@ a{color:inherit}
 .mk.flip .chip{left:auto;right:16px}
 .mk:focus-visible .dot{outline:3px solid var(--tB);outline-offset:3px}
 /* hero cat */
-#hero{position:fixed;z-index:3;pointer-events:none;height:min(94vh,74vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
-#hero::before{content:"";position:absolute;left:18%;right:18%;top:6%;bottom:-6%;border-radius:50%;background:radial-gradient(closest-side,rgba(238,244,241,.92),rgba(238,244,241,.55) 55%,rgba(238,244,241,0));z-index:-1}
+#hero{position:fixed;z-index:3;pointer-events:none;height:min(62vh,62vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
 #kit{position:absolute;inset:0}
 #kit img,#kit svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 #kit img{filter:drop-shadow(0 18px 30px rgba(29,43,38,.18))}
@@ -72,7 +71,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 #card .go{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:23px;background:var(--ink);color:#fff;text-decoration:none;font-weight:500;font-size:14.5px;transition:transform .25s}
 #card .go:hover{transform:translateY(-2px)}
 @media (max-width:820px){
-  #hero{height:min(46vh,94vw*.75);bottom:auto;top:12vh}
+  #hero{height:min(48vh,104vw*.75)}
   header{left:16px;top:14px;right:16px}.word{font-size:32px}.lede{display:none}
   #legend{display:none}#index{display:none}
   #scale{bottom:14px;max-width:calc(100vw - 24px);overflow-x:auto}#scale button{padding:0 10px;font-size:10px;white-space:nowrap;letter-spacing:.04em}
@@ -82,7 +81,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 </style>
 </head>
 <body>
-<svg id="map" role="img" aria-label="Key plan map of Grace Trail sheets"><g id="cam">
+<svg id="map" role="img" aria-label="Map of Grace Trail trails"><g id="cam">
   <path id="g-nation" class="vns" fill="#E3EEE8" stroke="none"></path>
   <path id="g-ca" class="vns" fill="#D6E9DF" stroke="none"></path>
   <path id="g-la" class="vns" fill="#C8E1D4" stroke="#7FA899" stroke-width="1"></path>
@@ -91,7 +90,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
   <path id="g-nation2" class="vns" fill="none" stroke="#5E8C7E" stroke-width="1.4"></path>
   <defs><radialGradient id="fd" cx=".5" cy=".5" r=".5"><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient><mask id="fm" maskUnits="userSpaceOnUse" x="0" y="0" width="1850" height="1650"><rect width="1850" height="1650" fill="url(#fd)"/></mask></defs>
   <g id="kp"><image href="keyplan.svg" x="0" y="0" width="1850" height="1650" preserveAspectRatio="none" mask="url(#fm)"></image>
-    <g id="rects"></g><g id="trails"></g></g>
+    <g id="rects" style="display:none"></g><g id="trails"></g></g>
 </g></svg>
 <div id="marks"></div>
 
@@ -119,12 +118,12 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 <header>
   <h1 class="word">Grace<br>Trail</h1>
   <p class="sub">Hikes, drawn as maps</p>
-  <p class="lede">Every hike is a sheet: real terrain, numbered stops, and the animals and flowers along the way. She keeps an eye on the trails around her. Pick one to open its sheet.</p>
+  <p class="lede">Real terrain, numbered stops, and the animals and flowers waiting along the way. She&rsquo;s already looking up at where to go next. Pick a trail and go explore.</p>
 </header>
-<div id="legend"><b id="lv">San Gabriel Valley</b><br><span id="cnt">2 sheets</span> · more in survey</div>
+<div id="legend"><b id="lv">San Gabriel Valley</b><br><span id="cnt">2 trails</span> to explore · more on the way</div>
 
-<nav id="index" class="glass" aria-label="Sheets">
-  <h2><span>Sheet index</span><span>No.</span></h2>
+<nav id="index" class="glass" aria-label="Trails">
+  <h2><span>Trails to explore</span><span>No.</span></h2>
   <ul id="list"></ul>
   <div class="soon">Next: the rest of Los Angeles, then California.</div>
 </nav>
@@ -164,7 +163,7 @@ SHEETS.forEach(function(s){var r=s.rect;
 // markers + index
 var marks=$('marks'),list=$('list');
 SHEETS.forEach(function(s){
-  var b=document.createElement('button');b.className='mk';b.setAttribute('aria-label','Sheet '+s.id+', '+s.name);
+  var b=document.createElement('button');b.className='mk';b.setAttribute('aria-label','Explore '+s.name);
   b.innerHTML='<span class="dot"></span><span class="chip glass"><span class="no">'+s.id+'</span>'+s.name+'</span>';
   b.addEventListener('click',function(e){e.stopPropagation();openCard(s)});marks.appendChild(b);s.mk=b;s.chip=b.querySelector('.chip');
   var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
@@ -183,7 +182,7 @@ function fit(l){
   R.pts.forEach(function(p){var dx=p[0]-cx,dy=p[1]-cy;xs.push(dx*ca-dy*sa);ys.push(dx*sa+dy*ca)});
   var bw=Math.max.apply(0,xs)-Math.min.apply(0,xs),bh=Math.max.apply(0,ys)-Math.min.apply(0,ys);
   var s,sx,sy;
-  if(l==='sgv'){var boxW=mobile?W*.98:W*.88,boxH=mobile?H*.5:H*.7;s=Math.min(boxW/bw,boxH/bh);sx=W*.5;sy=mobile?H*.7:H*.4;}
+  if(l==='sgv'){var boxW=mobile?W*1.05:W*.64,boxH=mobile?H*.34:H*.4;s=Math.min(boxW/bw,boxH/bh);sx=W*.5;sy=mobile?H*.3:H*.27;}
   else{ // zoomed out: keep the sheets' dot clear of the cat, map spreads behind her
     var boxW2=mobile?W*.9:(l==='us'?W*.23:W*.44),boxH2=mobile?H*.42:H*.72;s=Math.min(boxW2/bw,boxH2/bh);
     var P=SHEETS[0].p,ox=(P[0]-cx)*s,oy=(P[1]-cy)*s,rx=ox*ca-oy*sa,ry=ox*sa+oy*ca;
@@ -218,7 +217,7 @@ function apply(v){
     sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';sh.mk.classList.toggle('flip',mobile?x>W-230:(x<W*.5&&x>300)||x>W-250);
     sh.chip.style.opacity=dotOn?'0':'1';
     sh.x=x;sh.y=y;});
-  if(dotOn){SHEETS[0].chip.innerHTML='<span class="no">2</span>Sheets · San Gabriel Valley';SHEETS[0].chip.style.opacity='1';SHEETS[0].clustered=true;}
+  if(dotOn){SHEETS[0].chip.innerHTML='<span class="no">2</span>Trails to explore · San Gabriel Valley';SHEETS[0].chip.style.opacity='1';SHEETS[0].clustered=true;}
   else if(SHEETS[0].clustered){SHEETS[0].chip.innerHTML='<span class="no">01</span>'+SHEETS[0].name;SHEETS[0].clustered=false;}
   $('north').style.transform='rotate('+v.rot+'deg)';
   if(cardFor)placeCard();
@@ -246,7 +245,7 @@ function loop(now){
 var card=$('card'),cardFor=null;
 function openCard(s){if(s.clustered&&fit(view.level).s<fit('la').s*0.6){go('sgv');return;}
   cardFor=s;var tr=s.trails.map(function(t){return '<li><span class="t" style="background:'+TC[t[0]]+'">'+t[0]+'</span>'+t[1]+'<span class="mi">'+t[2]+'</span></li>'}).join('');
-  card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">Sheet '+s.id+'</span><h3>'+s.name+'</h3><div class="where">'+s.where+' · high point '+s.high+'</div><ul>'+tr+'</ul><a class="go" href="'+s.href+'">Open sheet <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#fff" stroke-width="1.6"/></svg></a>';
+  card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">Trail '+s.id+'</span><h3>'+s.name+'</h3><div class="where">'+s.where+' · high point '+s.high+'</div><ul>'+tr+'</ul><a class="go" href="'+s.href+'">Explore this trail <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#fff" stroke-width="1.6"/></svg></a>';
   card.querySelector('.x').onclick=closeCard;card.classList.add('on');placeCard();}
 function closeCard(){cardFor=null;card.classList.remove('on')}
 function placeCard(){var s=cardFor;if(!s)return;var cw=card.offsetWidth,ch=card.offsetHeight;
@@ -262,7 +261,7 @@ addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
     var lr=hero.getBoundingClientRect();var inside=Math.hypot((px-(lr.left+lr.width*.517))/(lr.width*.3),(py-(lr.top+lr.height*.47))/(lr.height*.42))<1;dilT=inside?57:50;}
   addEventListener('pointermove',function(e){aim(e.clientX,e.clientY)},{passive:true});
   addEventListener('pointerdown',function(e){aim(e.clientX,e.clientY)},{passive:true});
-  (function tick(now){if(!reduce&&now-last>idleMs){var t=(now-t0)/1000;tgt.x=Math.sin(t*.6)*max*.8;tgt.y=Math.sin(t*1.2)*max*.3;dilT=50;}
+  (function tick(now){if(!reduce&&now-last>idleMs){var t=(now-t0)/1000;tgt.x=Math.sin(t*.45)*max*.75;tgt.y=-max*(.8+Math.sin(t*.9)*.12);dilT=52;}
     cur.x+=(tgt.x-cur.x)*.16;cur.y+=(tgt.y-cur.y)*.16;dil+=(dilT-dil)*.12;
     balls.forEach(function(b){b.setAttribute('transform','translate('+cur.x.toFixed(2)+' '+cur.y.toFixed(2)+')')});
     pupils.forEach(function(p){p.setAttribute('r',dil.toFixed(2))});requestAnimationFrame(tick);})(performance.now());
