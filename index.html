@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Grace Trail</title>
-<meta name="description" content="Grace Trail: hikes drawn as interactive axonometric maps, starting in the San Gabriel Valley.">
+<title>Grace&rsquo;s Trail</title>
+<meta name="description" content="Grace&rsquo;s Trail: hikes drawn as interactive axonometric maps, starting in the San Gabriel Valley.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -23,6 +23,9 @@ a{color:inherit}
 #map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #map.drag{cursor:grabbing}
 .vns{vector-effect:non-scaling-stroke}
+#g-la,#g-ca{transition:fill .6s,stroke-width .6s}
+body[data-l=la] #g-la{stroke:#2F5E50;stroke-width:2.2px;fill:#B9D9C7}
+body[data-l=ca] #g-ca{stroke:#2F5E50;stroke-width:2.2px;fill:#C9E3D5}
 #marks{position:fixed;inset:0;pointer-events:none;z-index:4}
 .mk{position:absolute;left:0;top:0;width:2px;height:2px;pointer-events:auto;border:0;padding:0;background:none;cursor:pointer;transform:translate(-9999px,-9999px)}
 .dot{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 2px 8px rgba(29,43,38,.35)}
@@ -33,27 +36,27 @@ a{color:inherit}
 .mk.flip .chip{left:auto;right:16px}
 .mk:focus-visible .dot{outline:3px solid var(--tB);outline-offset:3px}
 /* hero cat */
-#hero{position:fixed;z-index:3;pointer-events:none;height:min(62vh,62vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
+#hero{position:fixed;z-index:3;pointer-events:none;height:min(55vh,58vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
 #kit{position:absolute;inset:0}
 #kit img,#kit svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 #kit img{filter:drop-shadow(0 18px 30px rgba(29,43,38,.18))}
 /* chrome */
-header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
+header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(100vh - 52px);display:flex;flex-direction:column}
 .word{font-family:var(--display);font-stretch:125%;font-weight:260;font-size:44px;line-height:.9;letter-spacing:-.03em;margin:0}
 .sub{margin:10px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.lede{margin:14px 0 0;font-size:15.5px;line-height:1.55;color:#2F3F39;max-width:340px}
-#index{position:fixed;left:32px;bottom:28px;z-index:5;width:310px;border-radius:14px;padding:14px 12px 10px}
-#index h2{margin:0 6px 8px;font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between}
+#panel{margin-top:18px;border-radius:18px;padding:16px 14px 10px;overflow:auto;min-height:0}
+.lede{margin:0 6px 10px;font-size:14.5px;line-height:1.55;color:#2F3F39}
+#panel h2{margin:14px 6px 8px;font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;color:var(--ink)}
+#scale{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.8)}
+#scale button{border:0;background:transparent;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding:0 8px;min-height:40px;border-radius:12px;cursor:pointer;transition:background .3s,color .3s;white-space:nowrap}
+#scale button:hover{background:rgba(207,230,218,.7)}
+#scale button[aria-pressed=true]{background:var(--ink);color:#fff}
 #index ul{list-style:none;margin:0;padding:0}
 #index button{width:100%;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px;border:0;border-top:1px solid var(--rule);background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;border-radius:8px}
 #index button:hover,#index button:focus-visible{background:rgba(207,230,218,.7)}
 #index .nm{font-weight:600;font-size:14.5px;line-height:1.2}
 #index .lo{font-size:12px;color:var(--muted)}
 #index .soon{color:var(--muted);font-size:12.5px;padding:10px 6px 4px;border-top:1px solid var(--rule)}
-#scale{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;z-index:5;display:flex;gap:4px;padding:5px;border-radius:30px}
-#scale button{border:0;background:transparent;font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding:0 16px;min-height:40px;border-radius:24px;cursor:pointer;transition:background .3s,color .3s}
-#scale button[aria-pressed=true]{background:var(--ink);color:#fff}
-#scale button:disabled{opacity:.4;cursor:default}
 #legend{position:fixed;right:32px;top:28px;z-index:5;text-align:right;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.9}
 #legend b{color:var(--ink);font-weight:500}
 #north{position:fixed;right:34px;bottom:34px;z-index:5;width:28px;height:44px;transition:transform 1.2s cubic-bezier(.6,0,.2,1)}
@@ -71,17 +74,17 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 #card .go{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:23px;background:var(--ink);color:#fff;text-decoration:none;font-weight:500;font-size:14.5px;transition:transform .25s}
 #card .go:hover{transform:translateY(-2px)}
 @media (max-width:820px){
-  #hero{height:min(48vh,104vw*.75)}
-  header{left:16px;top:14px;right:16px}.word{font-size:32px}.lede{display:none}
-  #legend{display:none}#index{display:none}
-  #scale{bottom:14px;max-width:calc(100vw - 24px);overflow-x:auto}#scale button{padding:0 10px;font-size:10px;white-space:nowrap;letter-spacing:.04em}
-  #north{display:none}#card{width:min(330px,calc(100vw - 24px))}
+  #hero{height:min(46vh,100vw*.75)}
+  header{left:12px;top:12px;right:12px;width:auto}.word{font-size:30px}.sub{display:none}
+  #panel{margin-top:10px;padding:6px;border-radius:16px}.lede,#index,#panel h2{display:none}
+  #scale{background:none;border:0;padding:0;grid-template-columns:repeat(4,1fr)}#scale button{font-size:9.5px;letter-spacing:.02em;padding:0 4px;white-space:normal;line-height:1.1}
+  #legend{display:none}#north{display:none}#card{width:min(330px,calc(100vw - 24px))}
 }
 @media (prefers-reduced-motion:reduce){.dot::after{animation:none}}
 </style>
 </head>
-<body>
-<svg id="map" role="img" aria-label="Map of Grace Trail trails"><g id="cam">
+<body data-l="sgv">
+<svg id="map" role="img" aria-label="Map of Grace&rsquo;s Trail hikes"><g id="cam">
   <path id="g-nation" class="vns" fill="#E3EEE8" stroke="none"></path>
   <path id="g-ca" class="vns" fill="#D6E9DF" stroke="none"></path>
   <path id="g-la" class="vns" fill="#C8E1D4" stroke="#7FA899" stroke-width="1"></path>
@@ -116,23 +119,26 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 </div>
 
 <header>
-  <h1 class="word">Grace<br>Trail</h1>
+  <h1 class="word">Grace&rsquo;s<br>Trail</h1>
   <p class="sub">Hikes, drawn as maps</p>
-  <p class="lede">Real terrain, numbered stops, and the animals and flowers waiting along the way. She&rsquo;s already looking up at where to go next. Pick a trail and go explore.</p>
+  <aside id="panel" class="glass">
+    <p class="lede">Grace&rsquo;s Trail is a growing atlas of hikes, each one drawn as a 3D map from real elevation data: the climbs, the creek crossings, the overlooks, and the numbered stops worth pausing at, with the animals and flowers you might meet along the way.</p>
+    <p class="lede">It starts here in the San Gabriel Valley and keeps spreading outward. Grace is already looking up at where to go next. Pick a region, pick a trail, and go explore.</p>
+    <h2><span>Explore by region</span></h2>
+    <div id="scale" role="group" aria-label="Map region">
+      <button data-l="sgv" aria-pressed="true">San Gabriel Valley</button>
+      <button data-l="la" aria-pressed="false">Los Angeles</button>
+      <button data-l="ca" aria-pressed="false">California</button>
+      <button data-l="us" aria-pressed="false">United States</button>
+    </div>
+    <nav id="index" aria-label="Trails">
+      <h2><span>Trails to explore</span><span>No.</span></h2>
+      <ul id="list"></ul>
+      <div class="soon">Next: the rest of Los Angeles, then California.</div>
+    </nav>
+  </aside>
 </header>
 <div id="legend"><b id="lv">San Gabriel Valley</b><br><span id="cnt">2 trails</span> to explore · more on the way</div>
-
-<nav id="index" class="glass" aria-label="Trails">
-  <h2><span>Trails to explore</span><span>No.</span></h2>
-  <ul id="list"></ul>
-  <div class="soon">Next: the rest of Los Angeles, then California.</div>
-</nav>
-<div id="scale" class="glass" role="group" aria-label="Map scale">
-  <button data-l="sgv" aria-pressed="true">San Gabriel Valley</button>
-  <button data-l="la" aria-pressed="false">Los Angeles</button>
-  <button data-l="ca" aria-pressed="false">California</button>
-  <button data-l="us" aria-pressed="false">United States</button>
-</div>
 <svg id="north" viewBox="0 0 28 44" aria-hidden="true"><path d="M14 40V4M14 4 8 16M14 4l6 12" fill="none" stroke="#1D2B26" stroke-width="1.5"/><text x="14" y="44" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#1D2B26" dy="0">N</text></svg>
 <div id="card" class="glass" role="dialog" aria-live="polite"></div>
 
@@ -182,17 +188,19 @@ function fit(l){
   R.pts.forEach(function(p){var dx=p[0]-cx,dy=p[1]-cy;xs.push(dx*ca-dy*sa);ys.push(dx*sa+dy*ca)});
   var bw=Math.max.apply(0,xs)-Math.min.apply(0,xs),bh=Math.max.apply(0,ys)-Math.min.apply(0,ys);
   var s,sx,sy;
-  if(l==='sgv'){var boxW=mobile?W*1.05:W*.64,boxH=mobile?H*.34:H*.4;s=Math.min(boxW/bw,boxH/bh);sx=W*.5;sy=mobile?H*.3:H*.27;}
-  else{ // zoomed out: keep the sheets' dot clear of the cat, map spreads behind her
-    var boxW2=mobile?W*.9:(l==='us'?W*.23:W*.44),boxH2=mobile?H*.42:H*.72;s=Math.min(boxW2/bw,boxH2/bh);
-    var P=SHEETS[0].p,ox=(P[0]-cx)*s,oy=(P[1]-cy)*s,rx=ox*ca-oy*sa,ry=ox*sa+oy*ca;
-    var T=mobile?[W*.5,H*.74]:(l==='us'?[W*.755,H*.56]:[W*.78,H*.5]);sx=T[0]-rx;sy=T[1]-ry;}
+  // open stage = the band above Grace's head, right of the panel
+  var hr=$('hero').getBoundingClientRect(),headTop=hr.top+hr.height*.05;
+  var top=mobile?($('panel').getBoundingClientRect().bottom+44):44,bot=Math.max(top+120,headTop-(mobile?20:30));
+  var L=mobile?12:404,Rr=W-(mobile?12:40);
+  var pad=l==='sgv'?1:.92;
+  s=Math.min((Rr-L)/bw,(bot-top)/bh)*pad;sx=(L+Rr)/2;sy=(top+bot)/2;
+  if(!mobile){var mid=W*.5;sx=Math.max(sx-((Rr-L)-bw*s)/2,Math.min(sx,mid));} // pull toward screen centre when there is slack
   return {cx:cx,cy:cy,s:s,rot:R.rot,sx:sx,sy:sy};
 }
 var view={cur:null,from:null,to:null,t:1,anim:false,level:'sgv',pan:[0,0]};
 var LEVELS={sgv:'San Gabriel Valley',la:'Los Angeles',ca:'California',us:'United States'};
 function go(l){ if(view.level===l&&!view.anim&&view.pan[0]===0&&view.pan[1]===0)return;
-  view.level=l;view.from=JSON.parse(JSON.stringify(view.cur));view.to=fit(l);view.t=0;view.anim=true;view.t0=performance.now();
+  view.level=l;document.body.dataset.l=l;view.from=JSON.parse(JSON.stringify(view.cur));view.to=fit(l);view.t=0;view.anim=true;view.t0=performance.now();
   view.from.sx+=view.pan[0];view.from.sy+=view.pan[1];view.pan=[0,0];
   document.querySelectorAll('#scale button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.l===l))});
   $('lv').textContent=LEVELS[l];closeCard();}
@@ -207,6 +215,7 @@ function apply(v){
   $('kp').setAttribute('opacity',kpOn.toFixed(3));
   var caS=fit('ca').s, laS=fit('la').s;
   $('g-counties').setAttribute('opacity',Math.max(0,Math.min(1,(Math.log(s/caS)+.4)/.6)).toFixed(3));
+  $('g-states').setAttribute('opacity',Math.max(.3,Math.min(1,1-(Math.log(s/caS)+.5)*.9)).toFixed(3));
   $('g-la').setAttribute('opacity',Math.max(0,Math.min(1,(Math.log(s/caS)+.6)/.8)).toFixed(3));
   var a=v.rot*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
   var dotOn=kpOn<.6;
@@ -214,7 +223,7 @@ function apply(v){
     if(!dotOn){ // at trail scale: marker sits at the sheet frame's upper-left corner
       var q=sh.id==='01'?kp2p(1724,421):kp2p(350,1400);var ex=(q[0]-v.cx)*s,ey=(q[1]-v.cy)*s;x=sx+ex*ca-ey*sa;y=sy+ex*sa+ey*ca;}
     if(dotOn&&i>0){x=-9999;} // cluster: one dot when far out
-    sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';sh.mk.classList.toggle('flip',mobile?x>W-230:(x<W*.5&&x>300)||x>W-250);
+    sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';sh.mk.classList.toggle('flip',x>W-(mobile?200:260));
     sh.chip.style.opacity=dotOn?'0':'1';
     sh.x=x;sh.y=y;});
   if(dotOn){SHEETS[0].chip.innerHTML='<span class="no">2</span>Trails to explore · San Gabriel Valley';SHEETS[0].chip.style.opacity='1';SHEETS[0].clustered=true;}
@@ -249,7 +258,7 @@ function openCard(s){if(s.clustered&&fit(view.level).s<fit('la').s*0.6){go('sgv'
   card.querySelector('.x').onclick=closeCard;card.classList.add('on');placeCard();}
 function closeCard(){cardFor=null;card.classList.remove('on')}
 function placeCard(){var s=cardFor;if(!s)return;var cw=card.offsetWidth,ch=card.offsetHeight;
-  var x=Math.max(12,Math.min(W-cw-12,s.x+24)),y=Math.max(12,Math.min(H-ch-12,s.y-ch/2));card.style.transform='translate('+x+'px,'+y+'px)';}
+  var x,y;if(mobile){x=(W-cw)/2;y=Math.max(12,$('hero').getBoundingClientRect().top-ch+40);}else{x=W-cw-32;y=96;}card.style.transform='translate('+x+'px,'+y+'px)';}
 addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
 // kitten eyes
 (function(){
