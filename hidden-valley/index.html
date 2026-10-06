@@ -314,7 +314,7 @@ const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
 const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
 const world=new THREE.Group();scene.add(world);
 const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
-const BAND=0.9,BASEH=1.6;const baseGroup=new THREE.Group();
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
 const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
 let MAXY=0;
 
@@ -350,13 +350,18 @@ let MAXY=0;
       if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
   const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
   topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
-  // organic island base: thin teal band + thin white base
+  // base: one thin sheet of liquid glass
   const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
   const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
-  const bandG=ex(BAND),baseG=ex(BASEH);
-  const bandM=new THREE.Mesh(bandG,[lam(PAL.ground),lam(PAL.band)]);bandM.position.y=-BAND-0.03;baseGroup.add(bandM);
-  const baseM=new THREE.Mesh(baseG,[lam(PAL.slab),lam(PAL.slab)]);baseM.position.y=-BAND-BASEH-0.03;baseGroup.add(baseM);
-  [[bandG,bandM],[baseG,baseM]].forEach(([g,m])=>{const l=new THREE.LineSegments(new THREE.EdgesGeometry(g,35),new THREE.LineBasicMaterial({color:PAL.slabLine}));l.position.copy(m.position);baseGroup.add(l);});world.add(baseGroup);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
 })();
 
 // creeks with flowing texture
