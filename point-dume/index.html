@@ -224,10 +224,15 @@ const WILD={
  snake:{name:"Gopher snake",color:"#B49867",sum:"A harmless, blotched snake often mistaken for a rattlesnake. Hunts rodents in the coastal scrub on warm days."},
  quail:{name:"California quail",color:"#7D8A9A",sum:"California's state bird. Plump, with a curled black topknot; runs through the brush in small groups."},
  hawk:{name:"Red-tailed hawk",color:"#A8572F",sum:"Hunts the bluff-top grassland and hangs in the wind off the cliffs."},
- raven:{name:"Common raven",color:"#262626",sum:"Big black birds that tumble in the updrafts along the cliff edge, often in pairs."}
+ raven:{name:"Common raven",color:"#262626",sum:"Big black birds that tumble in the updrafts along the cliff edge, often in pairs."},
+ whale:{name:"Gray whale",color:"#5A646C",sum:"Gray whales pass close to shore on their migration between Alaska and Baja, mostly December to April. Look for the spout."},
+ dolphin:{name:"Common dolphin",color:"#6F7E8C",sum:"Pods of common and bottlenose dolphins feed just past the surf most of the year."},
+ shark:{name:"White shark (juvenile)",color:"#4A5660",sum:"Juvenile white sharks gather in the warm shallows off Southern California beaches, mostly in summer and fall; drone surveys film them a short way past the surf. They are young, under about 8 feet, and rarely bother people."},
+ sealion:{name:"California sea lion",color:"#7A5B43",sum:"California sea lions haul out on the rocks below the bluffs, barking and sunning."},
+ pelican:{name:"Brown pelican",color:"#8C7E6E",sum:"Brown pelicans glide in lines just above the waves and dive headfirst for fish."}
 };
 
-const PHOTOS={"stop":{"4":[{"f":"../photos/pl_point_4_2.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5707637077","t":"The Big Bang, Point Dume, Ca"},{"f":"../photos/pl_point_4_3.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5487627723","t":"Point Dume, Ca - Breaker Breaker!"}],"7":[{"f":"../photos/pl_point_8_2.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215121871","t":"Dume Cove"}],"8":[{"f":"../photos/pl_point_8_0.jpg","by":"tschundler","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/24607013@N08/6834046779","t":"Dume Cove"},{"f":"../photos/pl_point_8_1.jpg","by":"dtpancio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/32293500@N05/48905544271","t":"Dume Cove"},{"f":"../photos/pl_point_8_3.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215719410","t":"Dume Cove"}],"C1":[{"f":"../photos/pl_point_c1_0.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124299","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_1.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9285905094","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_2.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124831","t":"Westward Beach, Malibu"}]},"animal":{"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_squirrel_1.jpg","by":"sonstroem","lic":"BY 2.0","src":"https://www.flickr.com/photos/96964826@N05/19792172568","t":"Western Gray Squirrel"}],"quail":[{"f":"../photos/sp_quail_2.jpg","by":"SidPix","lic":"BY 2.0","src":"https://www.flickr.com/photos/22357152@N02/6401999787","t":"California Quail"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}]},"flower":{"buckwheat":[{"f":"../photos/sp_buckwheat_1.jpg","by":"pellaea","lic":"BY 2.0","src":"https://www.flickr.com/photos/7147684@N03/4776487528","t":"California Buckwheat"}],"coreopsis":[{"f":"../photos/sp_coreopsis_1.jpg","by":"Dick Culbert","lic":"BY 2.0","src":"https://www.flickr.com/photos/92252798@N07/27210400550","t":"Coreopsis (or Leptosyne) gigantea"}],"sunflower":[{"f":"../photos/sp_sunflower_0.jpg","by":"FotoGrazio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/94075184@N00/49567265992","t":"Bush Sunflower, Encelia californica"}],"lemonade":[{"f":"../photos/sp_lemonade_2.jpg","by":"J.G. in S.F.","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/13892958@N07/3305739222","t":"Rhus integrifolia #2"}],"sagebrush":[{"f":"../photos/sp_sagebrush_1.jpg","by":"John Rusk","lic":"BY 2.0","src":"https://www.flickr.com/photos/12303842@N00/29147729924","t":"J20160916-0005—Artemisia californica—RPBG—DxO"}],"pear":[{"f":"../photos/sp_pear_1.jpg","by":"Mauricio Mercadante","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/43256055@N03/8235011213","t":"Opuntia littoralis"}],"poppy":[{"f":"../photos/sp_poppy_1.jpg","by":"wallygrom","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/33037982@N04/6265071432","t":"Eschscholzia californica (California Poppies)"}]}};
+const PHOTOS={"stop":{"4":[{"f":"../photos/pl_point_4_2.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5707637077","t":"The Big Bang, Point Dume, Ca"},{"f":"../photos/pl_point_4_3.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5487627723","t":"Point Dume, Ca - Breaker Breaker!"}],"7":[{"f":"../photos/pl_point_8_2.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215121871","t":"Dume Cove"}],"8":[{"f":"../photos/pl_point_8_0.jpg","by":"tschundler","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/24607013@N08/6834046779","t":"Dume Cove"},{"f":"../photos/pl_point_8_1.jpg","by":"dtpancio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/32293500@N05/48905544271","t":"Dume Cove"},{"f":"../photos/pl_point_8_3.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215719410","t":"Dume Cove"}],"C1":[{"f":"../photos/pl_point_c1_0.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124299","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_1.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9285905094","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_2.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124831","t":"Westward Beach, Malibu"}]},"animal":{"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_squirrel_1.jpg","by":"sonstroem","lic":"BY 2.0","src":"https://www.flickr.com/photos/96964826@N05/19792172568","t":"Western Gray Squirrel"}],"quail":[{"f":"../photos/sp_quail_2.jpg","by":"SidPix","lic":"BY 2.0","src":"https://www.flickr.com/photos/22357152@N02/6401999787","t":"California Quail"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}],"whale":[{"f":"../photos/sp_whale_0.jpg","by":"Thomas Shahan 3","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/49580580@N02/14993137416","t":"Gray Whale (Eschrichtius robustus), Depoe Bay, Oregon"}],"dolphin":[{"f":"../photos/sp_dolphin_0.jpg","by":"Gregory 'Slobirdr' Smith","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/22170893@N06/14825276609","t":"Short-beaked Common Dolphin (Delphinus delphis)"}],"sealion":[{"f":"../photos/sp_sealion_0.jpg","by":"Franco Folini","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/78425154@N00/12231710296","t":"California Sea Lion (Zalophus californianus)"}],"pelican":[{"f":"../photos/sp_pelican_0.jpg","by":"Franco Folini","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/78425154@N00/12079540953","t":"Juvenile Brown Pelican (Pelecanus occidentalis)"}]},"flower":{"buckwheat":[{"f":"../photos/sp_buckwheat_1.jpg","by":"pellaea","lic":"BY 2.0","src":"https://www.flickr.com/photos/7147684@N03/4776487528","t":"California Buckwheat"}],"coreopsis":[{"f":"../photos/sp_coreopsis_1.jpg","by":"Dick Culbert","lic":"BY 2.0","src":"https://www.flickr.com/photos/92252798@N07/27210400550","t":"Coreopsis (or Leptosyne) gigantea"}],"sunflower":[{"f":"../photos/sp_sunflower_0.jpg","by":"FotoGrazio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/94075184@N00/49567265992","t":"Bush Sunflower, Encelia californica"}],"lemonade":[{"f":"../photos/sp_lemonade_2.jpg","by":"J.G. in S.F.","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/13892958@N07/3305739222","t":"Rhus integrifolia #2"}],"sagebrush":[{"f":"../photos/sp_sagebrush_1.jpg","by":"John Rusk","lic":"BY 2.0","src":"https://www.flickr.com/photos/12303842@N00/29147729924","t":"J20160916-0005—Artemisia californica—RPBG—DxO"}],"pear":[{"f":"../photos/sp_pear_1.jpg","by":"Mauricio Mercadante","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/43256055@N03/8235011213","t":"Opuntia littoralis"}],"poppy":[{"f":"../photos/sp_poppy_1.jpg","by":"wallygrom","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/33037982@N04/6265071432","t":"Eschscholzia californica (California Poppies)"}]}};
 /* ================= terrain ================= */
 const X0=-2300,X1=1050,N0=-1900,N1=1200,STEP=25;
 const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
@@ -500,6 +505,18 @@ const anim={};
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
 const BUILD={
+ dolphin(){const g=new THREE.Group(),c="#6F7E8C",b="#DCE2E7";part(g,SPH,c,0,0,0,1.15,0.34,0.32);part(g,SPH,b,0.1,-0.12,0,0.95,0.2,0.24,0);
+   part(g,SPH,c,1.2,-0.04,0,0.32,0.12,0.12);const f=part(g,new THREE.ConeGeometry(0.22,0.5,3),c,-0.1,0.38,0,1,1,0.35);rot(f,0,0,-0.35);
+   const t=new THREE.Group();t.position.set(-1.15,0,0);g.add(t);part(t,SPH,c,-0.15,0,0,0.25,0.06,0.42);g.userData.tail=t;return g;},
+ whale(){const g=new THREE.Group(),c="#5A646C",m="#8E979D";part(g,SPH,c,0,0,0,2.8,0.55,0.95);[[0.8,0.42,0.3],[-0.4,0.45,-0.3],[1.6,0.35,-0.2],[-1.3,0.36,0.25]].forEach(([x,y,z])=>part(g,SPH,m,x,y,z,0.22,0.08,0.2,0));
+   const t=new THREE.Group();t.position.set(-2.7,0,0);g.add(t);part(t,SPH,c,-0.5,0,0,0.7,0.18,0.25);part(t,SPH,c,-1.1,0.05,0,0.25,0.08,0.95);g.userData.tail=t;
+   const sp=new THREE.Group();sp.position.set(1.9,0.5,0);g.add(sp);[[0,0.5,0,0.35],[0.15,1.0,0.1,0.45],[-0.1,1.4,-0.1,0.5],[0.1,1.75,0,0.4]].forEach(([x,y,z,s])=>{const m2=new THREE.Mesh(SPH,new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:.85}));m2.position.set(x,y,z);m2.scale.setScalar(s);sp.add(m2);});sp.visible=false;g.userData.spout=sp;return g;},
+ shark(){const g=new THREE.Group();const sh=new THREE.Mesh(SPH,new THREE.MeshBasicMaterial({color:0x2E4752,transparent:true,opacity:.2,depthWrite:false}));sh.scale.set(1.0,0.05,0.32);sh.position.y=-0.05;g.add(sh);
+   const f=part(g,new THREE.ConeGeometry(0.32,0.85,3),"#4A5660",0.2,0.38,0,1,1,0.3);rot(f,0,0,-0.28);const t=part(g,new THREE.ConeGeometry(0.16,0.4,3),"#4A5660",-1.2,0.16,0,1,1,0.3);rot(t,0,0,0.3);g.userData.fin=f;return g;},
+ seal(){return BUILD.sealion("#8A8378");},
+ sealion(cc){const g=new THREE.Group(),c=cc||"#7A5B43";const bd=part(g,SPH,c,0,0.35,0,0.75,0.32,0.34);rot(bd,0,0,0.35);const h=part(g,SPH,c,0.62,0.78,0,0.22,0.2,0.2);part(g,SPH,"#2B201A",0.82,0.8,0.08,0.04,0.04,0.04,0);
+   [[0.25,0.12,0.3],[0.25,0.12,-0.3]].forEach(([x,y,z])=>part(g,SPH,c,x,y,z,0.28,0.05,0.12));part(g,SPH,c,-0.7,0.12,0,0.3,0.06,0.28);g.userData.head=h;return g;},
+
  bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
    part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
    legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
@@ -540,7 +557,8 @@ const BUILD={
    const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
    const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
 };
-const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const BIRDC={pelican:["#8C7E6E","#EDE6DA","#E8C66A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const MSCALE={dolphin:2.1,whale:2.2,shark:1.6,sealion:1.6,seal:1.5,pelican:2.4};
 const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
@@ -563,6 +581,45 @@ ANIMALS.forEach((a,idx)=>{
   items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
   animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
 });
+
+/* ================= marine life ================= */
+const MARINE=["whale", "dolphin", "shark", "sealion", "pelican"];
+const marine=[];
+(function(){
+  const step=100,OC=[];const xs=[],ns=[];for(let x=C.x0+step;x<C.x1-step;x+=step)xs.push(x);for(let n=C.n0+step;n<C.n1-step;n+=step)ns.push(n);
+  const NX2=xs.length,NN2=ns.length,isSea=new Uint8Array(NX2*NN2),dist=new Float32Array(NX2*NN2).fill(1e9);const q=[];
+  for(let j=0;j<NN2;j++)for(let i=0;i<NX2;i++){const s=H(xs[i],ns[j])<0.8&&qOf(xs[i],ns[j])<0.93;isSea[j*NX2+i]=s?1:0;if(!s){dist[j*NX2+i]=0;q.push(j*NX2+i);}}
+  for(let h=0;h<q.length;h++){const k=q[h],i=k%NX2,j=(k/NX2)|0;[[1,0],[-1,0],[0,1],[0,-1]].forEach(([a,b])=>{const i2=i+a,j2=j+b;if(i2<0||j2<0||i2>=NX2||j2>=NN2)return;const k2=j2*NX2+i2;if(dist[k2]>dist[k]+step){dist[k2]=dist[k]+step;q.push(k2);}});}
+  const band=(lo,hi)=>{const L=[];for(let k=0;k<isSea.length;k++)if(isSea[k]&&dist[k]>=lo&&dist[k]<=hi)L.push([xs[k%NX2],ns[(k/NX2)|0],dist[k]]);return L;};
+  const shore=[];for(let k=0;k<isSea.length;k++){if(isSea[k])continue;const i=k%NX2,j=(k/NX2)|0;if([[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const i2=i+a,j2=j+b;return i2>=0&&j2>=0&&i2<NX2&&j2<NN2&&isSea[j2*NX2+i2];}))shore.push([xs[i],ns[j],H(xs[i],ns[j])]);}
+  const r=rng(4242),pick=(L)=>L.length?L[Math.floor(r()*L.length)]:null;
+  const far=(L,used,minD)=>{for(let t=0;t<60;t++){const p=pick(L);if(p&&used.every(u=>Math.hypot(u[0]-p[0],u[1]-p[1])>minD))return p;}return pick(L);};
+  const used=[];const all=TRAILS.map(t=>t.id);
+  const add=(k,x,n,extra)=>{const s=MSCALE[k];const holder=new THREE.Group();animalGroup.add(holder);const items=[];
+    const cnt=extra.count||1;for(let i=0;i<cnt;i++){const o=k==="pelican"?BUILD.bird(...BIRDC.pelican):BUILD[k]();o.scale.setScalar(s);holder.add(o);items.push({o});}
+    const a={k,s,items,holder,x,n,ph:r()*10,trails:all,marine:true,...extra,pos:()=>items[0].o.position};animals.push(a);marine.push(a);used.push([x,n]);return a;};
+  MARINE.forEach(k=>{
+    if(k==="dolphin"){const p=far(band(300,1300),used,700);if(p)add(k,p[0],p[1],{count:3,rad:220});}
+    else if(k==="whale"){const L=band(900,1e9).sort((a,b)=>b[2]-a[2]);const p=far(L.slice(0,Math.max(1,L.length>>2)),used,900)||pick(band(400,1e9));if(p)add(k,p[0],p[1],{rad:420});}
+    else if(k==="shark"){const p=far(band(150,600),used,600);if(p)add(k,p[0],p[1],{rad:140});}
+    else if(k==="sealion"||k==="seal"){const L=shore.filter(s=>s[2]<14);const p=far(L.length?L:shore,used,500);if(p){const a=add(k,p[0],p[1],{count:2});a.rock=true;}}
+    else if(k==="pelican"){const L=band(100,500);const p=far(L,used,400);if(p)add(k,p[0],p[1],{count:3,rad:600});}
+  });
+  marine.forEach(a=>{if(a.rock){const p=G(a.x,a.n);part(a.holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.35,p.z,1.9,0.7,1.5);
+    a.items.forEach((it,i)=>{it.o.position.copy(G(a.x+(i?60:-40),a.n+(i?30:-20),0.75));it.o.rotation.y=i*2.2;});}});
+})();
+function marineTick(tt){marine.forEach(a=>{const y0=G(a.x,a.n).y;
+  if(a.k==="dolphin"){a.items.forEach((it,i)=>{const ang=tt*0.18+a.ph+i*0.5,x=a.x+Math.cos(ang)*a.rad,n=a.n+Math.sin(ang)*a.rad*0.55;const u=((tt*0.5+i*0.29+a.ph)%1);const up=u<0.5?Math.sin(u/0.5*Math.PI):-0.5;
+      const o=it.o;o.position.copy(Wv(x,n,0));o.position.y=y0+up*1.3-0.05;o.visible=up>-0.1;const vx=-Math.sin(ang),vn=Math.cos(ang)*0.55;o.rotation.set(0,Math.atan2(vn,vx),0);o.rotateZ(u<0.5?Math.cos(u/0.5*Math.PI)*0.8:0);o.userData.tail.rotation.z=Math.sin(tt*8+i)*0.3;});}
+  else if(a.k==="whale"){const o=a.items[0].o,ang=tt*0.03+a.ph,x=a.x+Math.cos(ang)*a.rad,n=a.n+Math.sin(ang)*a.rad*0.4;const cyc=(tt*0.09+a.ph)%1;
+      o.position.copy(Wv(x,n,0));o.position.y=y0+(cyc<0.7?0.05:-0.6*(cyc-0.7)/0.3);o.rotation.set(0,Math.atan2(Math.cos(ang)*0.4,-Math.sin(ang)),0);
+      const sp=o.userData.spout,sw=(tt*0.5+a.ph)%4;sp.visible=cyc<0.7&&sw<1.1;sp.scale.setScalar(0.4+Math.min(1,sw)*0.8);o.userData.tail.rotation.z=cyc>0.82?Math.min(1.2,(cyc-0.82)*9):Math.sin(tt*0.8)*0.08;}
+  else if(a.k==="shark"){const o=a.items[0].o,ang=-(tt*0.22+a.ph),x=a.x+Math.cos(ang)*a.rad,n=a.n+Math.sin(ang)*a.rad;o.position.copy(Wv(x,n,0));o.position.y=y0+Math.sin(tt*1.7)*0.03;o.rotation.set(0,Math.atan2(-Math.cos(ang),Math.sin(ang)),0);}
+  else if(a.k==="sealion"||a.k==="seal"){a.items.forEach((it,i)=>{const h=it.o.userData.head;h.position.y=0.78+Math.max(0,Math.sin(tt*1.3+i*2+a.ph))*0.12;h.userData.hull.position.copy(h.position);});}
+  else if(a.k==="pelican"){a.items.forEach((it,i)=>{const u=(tt*0.035+a.ph)%1,k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);const x=a.x+(e-0.5)*a.rad*2-i*70,n=a.n+i*40;
+      const o=it.o;o.position.copy(Wv(x,n,0));o.position.y=y0+2.4+Math.sin(tt*0.8+i)*0.25;o.rotation.set(0,u<0.5?0:Math.PI,0);const fa=Math.sin(tt*5+i)*0.35*Math.max(0,Math.sin(tt*0.7+i))+0.08;o.userData.w[0].rotation.x=-fa;o.userData.w[1].rotation.x=fa;});}
+});}
+
 // birds
 const birds=[];
 [["hawk",-44,32,-30,8],["jay",44,26,26,7],["raven",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["jay",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
@@ -693,7 +750,7 @@ function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
   let subj;
   if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
     else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
-    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,dolphin:1.5,whale:0.85,shark:1.6,sealion:1.9,seal:1.9}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
   else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
   g.add(subj);
   const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
@@ -796,7 +853,8 @@ new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
 /* ================= animation ================= */
 const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
 function animate(tt,dt){
-  animals.forEach(a=>{
+  marineTick(tt);
+  animals.forEach(a=>{if(a.marine)return;
     if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
       const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
       if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
