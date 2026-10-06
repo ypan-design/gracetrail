@@ -13,7 +13,6 @@
   --paper:#EEF4F1; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9; --mint:#CFE6DA; --mint-d:#9FBDB2;
   --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8; --sky:#6aa9d4;
   --display:"Archivo",sans-serif; --body:"Hanken Grotesk",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
-  --lens:min(52vh,34vw,460px);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);overflow:hidden}
@@ -24,21 +23,21 @@ a{color:inherit}
 #map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #map.drag{cursor:grabbing}
 .vns{vector-effect:non-scaling-stroke}
-#marks{position:fixed;inset:0;pointer-events:none}
+#marks{position:fixed;inset:0;pointer-events:none;z-index:4}
 .mk{position:absolute;left:0;top:0;width:2px;height:2px;pointer-events:auto;border:0;padding:0;background:none;cursor:pointer;transform:translate(-9999px,-9999px)}
 .dot{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 2px 8px rgba(29,43,38,.35)}
 .dot::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--ink);opacity:0;animation:ping 2.6s ease-out infinite}
 @keyframes ping{0%{transform:scale(.5);opacity:.55}100%{transform:scale(1.8);opacity:0}}
 .chip{position:absolute;left:16px;top:-17px;white-space:nowrap;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:18px;font-size:13.5px;font-weight:600;transition:opacity .4s ease}
 .no{font-family:var(--mono);font-size:11px;font-weight:500;background:var(--ink);color:#fff;border-radius:11px;padding:3px 7px}
+.mk.flip .chip{left:auto;right:16px}
 .mk:focus-visible .dot{outline:3px solid var(--tB);outline-offset:3px}
-/* lens */
-#lens{position:fixed;width:var(--lens);height:var(--lens);left:calc(30vw - var(--lens)/2);top:calc(50vh - var(--lens)/2);border-radius:50%;overflow:hidden;z-index:3;
-  box-shadow:0 0 0 10px rgba(255,255,255,.55),0 0 0 11px rgba(29,43,38,.12),0 30px 80px rgba(29,43,38,.25);background:radial-gradient(120% 90% at 50% 38%,#8ec5e8,var(--sky) 70%)}
-#lensring{position:fixed;width:calc(var(--lens) + 44px);height:calc(var(--lens) + 44px);left:calc(30vw - var(--lens)/2 - 22px);top:calc(50vh - var(--lens)/2 - 22px);border-radius:50%;z-index:2;pointer-events:none}
-#kit{position:absolute;width:calc(var(--lens) * 1.75);aspect-ratio:1448/1086;left:calc(var(--lens)/2 - var(--lens)*1.75*0.5166);top:calc(var(--lens)/2 - var(--lens)*1.75*0.33)}
+/* hero cat */
+#hero{position:fixed;z-index:3;pointer-events:none;height:min(94vh,74vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
+#hero::before{content:"";position:absolute;left:18%;right:18%;top:6%;bottom:-6%;border-radius:50%;background:radial-gradient(closest-side,rgba(238,244,241,.92),rgba(238,244,241,.55) 55%,rgba(238,244,241,0));z-index:-1}
+#kit{position:absolute;inset:0}
 #kit img,#kit svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-.ticks{position:fixed;z-index:2;pointer-events:none;left:calc(30vw - var(--lens)/2 - 40px);top:calc(50vh - var(--lens)/2 - 40px);width:calc(var(--lens) + 80px);height:calc(var(--lens) + 80px)}
+#kit img{filter:drop-shadow(0 18px 30px rgba(29,43,38,.18))}
 /* chrome */
 header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 .word{font-family:var(--display);font-stretch:125%;font-weight:260;font-size:44px;line-height:.9;letter-spacing:-.03em;margin:0}
@@ -73,10 +72,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 #card .go{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:23px;background:var(--ink);color:#fff;text-decoration:none;font-weight:500;font-size:14.5px;transition:transform .25s}
 #card .go:hover{transform:translateY(-2px)}
 @media (max-width:820px){
-  :root{--lens:min(64vw,300px)}
-  #lens{left:calc(50vw - var(--lens)/2);top:calc(31vh - var(--lens)/2)}
-  #lensring{left:calc(50vw - var(--lens)/2 - 22px);top:calc(31vh - var(--lens)/2 - 22px)}
-  .ticks{left:calc(50vw - var(--lens)/2 - 40px);top:calc(31vh - var(--lens)/2 - 40px)}
+  #hero{height:min(46vh,94vw*.75);bottom:auto;top:12vh}
   header{left:16px;top:14px;right:16px}.word{font-size:32px}.lede{display:none}
   #legend{display:none}#index{display:none}
   #scale{bottom:14px;max-width:calc(100vw - 24px);overflow-x:auto}#scale button{padding:0 10px;font-size:10px;white-space:nowrap;letter-spacing:.04em}
@@ -99,14 +95,9 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 </g></svg>
 <div id="marks"></div>
 
-<svg class="ticks" viewBox="0 0 200 200" aria-hidden="true">
-  <circle cx="100" cy="100" r="96" fill="none" stroke="#1D2B26" stroke-opacity=".35" stroke-width=".35" stroke-dasharray=".5 2.6"></circle>
-  <text x="100" y="5.2" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="4" fill="#1D2B26">N</text>
-</svg>
-<div id="lensring" class="glass"></div>
-<div id="lens" aria-label="A tabby kitten in a bucket hat whose eyes follow your cursor">
+<div id="hero" aria-label="A tabby kitten in a bucket hat whose eyes follow your cursor">
   <div id="kit">
-    <img src="kitten.jpg" alt="">
+    <img src="kitten.webp" alt="">
     <svg viewBox="0 0 1448 1086" aria-hidden="true">
       <defs>
         <radialGradient id="iris" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#262b1f"/><stop offset=".62" stop-color="#596243"/><stop offset=".83" stop-color="#8f9868"/><stop offset=".94" stop-color="#b6ba8e"/><stop offset="1" stop-color="#4a4a32"/></radialGradient>
@@ -128,7 +119,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;max-width:420px}
 <header>
   <h1 class="word">Grace<br>Trail</h1>
   <p class="sub">Hikes, drawn as maps</p>
-  <p class="lede">Every hike is a sheet: real terrain, numbered stops, and the animals and flowers along the way. She keeps an eye on the trail. Pick a sheet on the map to open it.</p>
+  <p class="lede">Every hike is a sheet: real terrain, numbered stops, and the animals and flowers along the way. She keeps an eye on the trails around her. Pick one to open its sheet.</p>
 </header>
 <div id="legend"><b id="lv">San Gabriel Valley</b><br><span id="cnt">2 sheets</span> · more in survey</div>
 
@@ -191,10 +182,12 @@ function fit(l){
   var xs=[],ys=[],cx=0,cy=0;R.pts.forEach(function(p){cx+=p[0]/4;cy+=p[1]/4});
   R.pts.forEach(function(p){var dx=p[0]-cx,dy=p[1]-cy;xs.push(dx*ca-dy*sa);ys.push(dx*sa+dy*ca)});
   var bw=Math.max.apply(0,xs)-Math.min.apply(0,xs),bh=Math.max.apply(0,ys)-Math.min.apply(0,ys);
-  var lensPx=$('lens').offsetWidth,L=W*.3+lensPx/2+44,Rr=W-48;
-  var boxW=mobile?W*.94:(Rr-L), boxH=mobile?H*.5:H*.74;
-  var s=Math.min(boxW/bw,boxH/bh);
-  var sx=mobile?W*.5:(L+Rr)/2, sy=mobile?H*.68:H*.49;
+  var s,sx,sy;
+  if(l==='sgv'){var boxW=mobile?W*.98:W*.88,boxH=mobile?H*.5:H*.7;s=Math.min(boxW/bw,boxH/bh);sx=W*.5;sy=mobile?H*.7:H*.4;}
+  else{ // zoomed out: keep the sheets' dot clear of the cat, map spreads behind her
+    var boxW2=mobile?W*.9:(l==='us'?W*.23:W*.44),boxH2=mobile?H*.42:H*.72;s=Math.min(boxW2/bw,boxH2/bh);
+    var P=SHEETS[0].p,ox=(P[0]-cx)*s,oy=(P[1]-cy)*s,rx=ox*ca-oy*sa,ry=ox*sa+oy*ca;
+    var T=mobile?[W*.5,H*.74]:(l==='us'?[W*.755,H*.56]:[W*.78,H*.5]);sx=T[0]-rx;sy=T[1]-ry;}
   return {cx:cx,cy:cy,s:s,rot:R.rot,sx:sx,sy:sy};
 }
 var view={cur:null,from:null,to:null,t:1,anim:false,level:'sgv',pan:[0,0]};
@@ -220,12 +213,12 @@ function apply(v){
   var dotOn=kpOn<.6;
   SHEETS.forEach(function(sh,i){var dx=(sh.p[0]-v.cx)*s,dy=(sh.p[1]-v.cy)*s;var x=sx+dx*ca-dy*sa,y=sy+dx*sa+dy*ca;
     if(!dotOn){ // at trail scale: marker sits at the sheet frame's upper-left corner
-      var q=sh.id==='01'?kp2p(946,992):kp2p(350,1400);var ex=(q[0]-v.cx)*s,ey=(q[1]-v.cy)*s;x=sx+ex*ca-ey*sa;y=sy+ex*sa+ey*ca;}
-    if(dotOn&&i>0&&s<laS*0.6){x=-9999;} // cluster: one dot when far out
-    sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
-    sh.chip.style.opacity=(dotOn&&s<laS*0.6)?'0':'1';
+      var q=sh.id==='01'?kp2p(1724,421):kp2p(350,1400);var ex=(q[0]-v.cx)*s,ey=(q[1]-v.cy)*s;x=sx+ex*ca-ey*sa;y=sy+ex*sa+ey*ca;}
+    if(dotOn&&i>0){x=-9999;} // cluster: one dot when far out
+    sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';sh.mk.classList.toggle('flip',mobile?x>W-230:(x<W*.5&&x>300)||x>W-250);
+    sh.chip.style.opacity=dotOn?'0':'1';
     sh.x=x;sh.y=y;});
-  if(dotOn&&s<laS*0.6){SHEETS[0].chip.innerHTML='<span class="no">2</span>Sheets · San Gabriel Valley';SHEETS[0].chip.style.opacity='1';SHEETS[0].clustered=true;}
+  if(dotOn){SHEETS[0].chip.innerHTML='<span class="no">2</span>Sheets · San Gabriel Valley';SHEETS[0].chip.style.opacity='1';SHEETS[0].clustered=true;}
   else if(SHEETS[0].clustered){SHEETS[0].chip.innerHTML='<span class="no">01</span>'+SHEETS[0].name;SHEETS[0].clustered=false;}
   $('north').style.transform='rotate('+v.rot+'deg)';
   if(cardFor)placeCard();
@@ -263,10 +256,10 @@ addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
 (function(){
   var svg=document.querySelector('#kit svg'),balls=[].slice.call(document.querySelectorAll('#kit .ball')),pupils=[].slice.call(document.querySelectorAll('#kit .pupil'));
   var max=15,idleMs=3500,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var tgt={x:0,y:0},cur={x:0,y:0},last=0,t0=performance.now(),dil=50,dilT=50,lens=$('lens');
+  var tgt={x:0,y:0},cur={x:0,y:0},last=0,t0=performance.now(),dil=50,dilT=50,hero=$('hero');
   function aim(px,py){var r=svg.getBoundingClientRect();if(!r.width)return;var s=1448/r.width,cx=r.left+748/s,cy=r.top+516/s;
     var dx=px-cx,dy=py-cy,d=Math.hypot(dx,dy)||1,k=Math.min(max,d*s/8)/d;tgt.x=dx*k;tgt.y=dy*k*.85;last=performance.now();
-    var lr=lens.getBoundingClientRect();var inside=Math.hypot(px-(lr.left+lr.width/2),py-(lr.top+lr.height/2))<lr.width/2;dilT=inside?57:50;}
+    var lr=hero.getBoundingClientRect();var inside=Math.hypot((px-(lr.left+lr.width*.517))/(lr.width*.3),(py-(lr.top+lr.height*.47))/(lr.height*.42))<1;dilT=inside?57:50;}
   addEventListener('pointermove',function(e){aim(e.clientX,e.clientY)},{passive:true});
   addEventListener('pointerdown',function(e){aim(e.clientX,e.clientY)},{passive:true});
   (function tick(now){if(!reduce&&now-last>idleMs){var t=(now-t0)/1000;tgt.x=Math.sin(t*.6)*max*.8;tgt.y=Math.sin(t*1.2)*max*.3;dilT=50;}
