@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Point Dume · Grace&rsquo;s Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-screen viewer. Model fills the screen on an organic island base; left panel holds the view switch and content; callouts in two columns either side; liquid-glass cards float over the model. Single light "illustration board" theme, chosen deliberately. */
+:root{
+  color-scheme:light;
+  --paper:#EEF4F1; --sheet:#FFFFFF; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9;
+  --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --panel:372px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.dragging{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#labels{position:absolute;inset:0;pointer-events:none}
+
+/* badges */
+.bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
+.bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.ic{padding:0;width:22px;border-color:var(--rule)}
+.bd.ic svg{width:14px;height:14px}
+.kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
+.kn .tx{background:color-mix(in srgb,var(--paper) 86%,transparent);padding:2px 6px;border-radius:4px}
+.kn.f .tx{font-style:italic;color:var(--muted)}
+.kn.left{flex-direction:row-reverse}
+.kn.dot .tx{display:none}
+.kn.on .tx{font-weight:600;color:var(--ink)}
+.kn.on .bd{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+
+/* liquid glass */
+.glass{background:linear-gradient(140deg,rgba(255,255,255,.62),rgba(255,255,255,.26));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 10px 30px rgba(29,43,38,.16),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);border-radius:16px}
+#card{position:absolute;left:0;top:0;width:250px;padding:12px 14px 13px;z-index:3;pointer-events:auto;transform-origin:50% 100%;transition:opacity .25s}
+#card .row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#card h4{margin:0 0 3px;font-family:var(--display);font-stretch:108%;font-weight:500;font-size:17px;line-height:1.15}
+#card p{margin:0;font-size:12.5px;line-height:1.45;color:#33443E}
+#card .meta{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+#card{transition:opacity .25s,width .3s}
+#card.big{width:340px}
+#card .gal{display:none;margin-top:10px}
+#card.big .gal{display:block}
+#card .gal .main{width:100%;height:200px;object-fit:cover;border-radius:10px;display:block;background:#E3EFEA}
+#card .cr{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+#card .cr a,.detail .cap a{color:inherit}
+#card .thumbs{display:flex;gap:5px;margin-top:6px;overflow-x:auto}
+#card .th{border:0;padding:0;background:none;cursor:pointer;border-radius:6px;outline:2px solid transparent;flex:none}
+#card .th.on{outline-color:var(--ink)}
+#card .th img{width:52px;height:38px;object-fit:cover;border-radius:6px;display:block}
+#card .none{font-size:12px;color:var(--muted)}
+#card .more{margin-top:7px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;cursor:pointer}
+#card.big .more{display:none}
+#card{cursor:pointer}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);padding:4px}
+#card::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+
+/* panel */
+.panel{position:absolute;left:0;top:0;bottom:0;width:var(--panel);display:flex;flex-direction:column;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-right:1px solid var(--rule);z-index:2}
+.head{padding:18px 22px 12px;display:flex;flex-direction:column;gap:4px}
+.head h1{font-family:var(--display);font-stretch:116%;font-weight:300;font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:-.01em}
+.switch{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:6px 22px 12px;border-bottom:1px solid var(--rule)}
+.switch button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 8px 8px;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.switch button:hover{border-color:var(--ink)}
+.switch button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.switch .sl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.switch .sn{font-size:12.5px;font-weight:600;line-height:1.15}
+.switch .bd{min-width:18px;height:18px;font-size:10px}
+.body{flex:1;overflow-y:auto;padding:16px 22px 28px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin}
+.body h2{font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.body h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 6px}
+.body p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin:0}
+.stat{padding:7px 9px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat dd{margin:1px 0 0;font-family:var(--display);font-stretch:106%;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.list>li{border-bottom:1px solid var(--rule)}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:1px 10px;align-items:center;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer}
+.item:hover .nm,.list>li.on .nm{text-decoration:underline;text-underline-offset:3px}
+.item>.bd,.item>.ico{grid-row:1/3;justify-self:start}
+.item .nm{font-weight:600}
+.item .nm .mono{font-weight:400;font-size:10.5px;color:var(--muted);margin-left:6px}
+.item .lt{font-style:italic;color:var(--muted);font-weight:400}
+.item .ds{grid-column:2;font-size:13px;color:var(--muted)}
+.item .bm{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:right;grid-row:1/3;grid-column:3}
+.item .now{color:var(--tA);font-weight:500}
+.item .chev{grid-row:1/3;grid-column:3;font-family:var(--mono);color:var(--muted);transition:transform .25s}
+.list>li.open .chev{transform:rotate(90deg)}
+.detail{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;margin:0 0 10px;padding:10px;overflow:hidden}
+.detail img{width:118px;height:92px;object-fit:cover;border-radius:10px;background:linear-gradient(180deg,#F7FBF9,#E3EFEA);display:block}
+.detail p{font-size:12.5px;line-height:1.45;color:#33443E}
+.detail .cap{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+.ico{width:18px;height:18px;flex:none}
+.tcard{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
+.tcard:hover .tn{text-decoration:underline;text-underline-offset:3px}
+.tcard .tn{font-weight:600}
+.tcard .tm{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tcard svg{grid-row:1/3;grid-column:3}
+.cards{border-top:1px solid var(--rule)}
+.prof svg{display:block;width:100%;height:96px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:9px}
+.links{display:grid;gap:4px;font-size:13px}
+.links a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--rule)}
+
+/* controls */
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:flex-end;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.grp{display:flex;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.grp button{border:0;background:none;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;min-width:32px;display:flex;align-items:center;gap:6px}
+.grp button+button{border-left:1px solid var(--rule)}
+.grp button:hover{background:var(--paper)}
+.grp button .sq{width:8px;height:8px;border-radius:2px;background:var(--ink)}
+.grp button[aria-pressed="false"]{color:var(--muted)}
+.grp button[aria-pressed="false"] .sq{background:transparent;outline:1px solid var(--muted)}
+.hint{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);z-index:2;pointer-events:none}
+
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;overflow:visible}
+  #stage{position:relative;height:58svh;min-height:340px}
+  .panel{position:relative;width:auto;bottom:auto;border-right:0;border-top:1px solid var(--rule);backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+  .switch{position:sticky;top:0;background:var(--paper);z-index:3}
+  .body{overflow:visible;padding:16px 16px 40px}
+  .head,.switch{padding-inline:16px}
+  .ctrls{bottom:auto;top:calc(58svh - 46px);right:10px}
+  .hint{display:none}
+  #card{width:210px}
+}
+@media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+</style>
+
+<div class="app" id="app">
+  <div id="stage" aria-label="Interactive model of Point Dume State Beach and Natural Preserve">
+    <canvas id="gl"></canvas>
+    <svg id="lead" aria-hidden="true"></svg>
+    <div id="labels"></div>
+    <div id="card" class="glass" hidden role="dialog" aria-live="polite"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="head">
+      <a class="eyebrow" href="../" style="text-decoration:none;color:inherit">← Grace&rsquo;s Trail · Explore more trails</a>
+      <h1>Point Dume</h1>
+    </div>
+    <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
+    <div class="body" id="pbody" aria-live="polite"></div>
+  </aside>
+  <div class="hint">Drag to turn · scroll to zoom · click anything, tap the card for photos</div>
+  <div class="ctrls">
+    <div class="grp" role="group" aria-label="Layers">
+      <button id="tgTopo" aria-pressed="true"><span class="sq"></span>Topo</button>
+      <button id="tgTrees" aria-pressed="true"><span class="sq"></span>Trees</button>
+      <button id="tgAnimals" aria-pressed="true"><span class="sq"></span>Wildlife</button>
+      <button id="tgFlowers" aria-pressed="true"><span class="sq"></span>Flowers</button>
+      <button id="tgBase" aria-pressed="true"><span class="sq"></span>Base</button>
+    </div>
+    <div class="grp" role="group" aria-label="View">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" aria-label="Reset view">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NOW_MONTH=new Date().getMonth()+1;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
+  band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};
+
+/* ================= data ================= */
+const CANYONS=[];
+const TRAILS=[{"id":"A","name":"Summit & Boardwalk Loop","short":"Summit loop","official":1.0,"unit":"loop","route":"Loop","time":"30–45 min","level":"Easy","color":"--tA","desc":"From the Cliffside Drive entrance, follow the Poppy Trail and the bluff path to the four-way junction, circle the fenced summit, then take the boardwalk to the viewing platform at the tip. Return past the junction to the end of Birdview Avenue.","anchors":[[-26,36,130,0.0],[-26,36,130,0.0],[35,-14,127,0.015],[96,-63,123,0.03],[155,-115,117,0.045],[193,-153,113,0.055],[191,-180,112,0.06],[186,-260,108,0.075],[156,-337,105,0.091],[122,-401,104,0.105],[89,-466,108,0.119],[48,-545,120,0.135],[-11,-578,130,0.149],[-75,-631,144,0.165],[-133,-651,151,0.177],[-184,-668,158,0.187],[-167,-695,163,0.193],[-132,-769,171,0.209],[-122,-831,178,0.221],[-128,-912,187,0.236],[-150,-987,191,0.251],[-174,-1061,196,0.266],[-202,-1067,200,0.277],[-210,-985,202,0.293],[-210,-939,202,0.302],[-202,-922,202,0.305],[-252,-875,205,0.32],[-308,-918,207,0.334],[-314,-998,208,0.35],[-246,-1034,205,0.365],[-198,-1083,197,0.378],[-176,-1140,184,0.391],[-142,-1206,175,0.405],[-95,-1221,166,0.416],[-83,-1215,165,0.419],[-59,-1162,166,0.43],[-55,-1097,168,0.442],[-62,-1036,170,0.454],[-59,-953,171,0.47],[-61,-889,170,0.482],[-66,-821,167,0.495],[-96,-744,163,0.511],[-146,-690,157,0.525],[-206,-650,152,0.539],[-272,-599,146,0.555],[-340,-543,139,0.571],[-412,-472,134,0.591],[-432,-391,132,0.606],[-432,-391,132,0.606],[-365,-356,132,0.621],[-315,-295,134,0.636],[-265,-235,135,0.651],[-215,-176,134,0.665],[-166,-117,133,0.68],[-116,-59,132,0.694],[-81,1,131,0.707],[-26,36,131,0.721]]},
+ {"id":"B","name":"Bluff Loop & Dume Cove Stairs","short":"Dume Cove","official":1.5,"unit":"loop","route":"Loop","time":"1 hr","level":"Easy","color":"--tB","desc":"The summit and boardwalk, then around the west rim past an overlook above Westward Beach. Back at the bluff edge, a steep metal staircase drops to Dume Cove and its tide pools. The climb back up the stairs is the only real effort.","anchors":[[-26,36,130,0.0],[-26,36,130,0.0],[35,-14,127,0.015],[96,-63,123,0.03],[155,-115,117,0.045],[193,-153,113,0.055],[191,-180,112,0.06],[186,-260,108,0.075],[156,-337,105,0.091],[122,-401,104,0.105],[89,-466,108,0.119],[48,-545,120,0.135],[-11,-578,130,0.149],[-75,-631,144,0.165],[-133,-651,149,0.177],[-184,-668,153,0.187],[-166,-670,155,0.191],[-107,-729,161,0.206],[-75,-798,166,0.221],[-61,-889,170,0.238],[-59,-953,171,0.251],[-65,-1017,170,0.263],[-55,-1097,168,0.278],[-59,-1162,166,0.29],[-83,-1215,165,0.302],[-95,-1221,166,0.305],[-142,-1206,175,0.315],[-176,-1140,184,0.33],[-198,-1083,196,0.343],[-208,-1011,202,0.357],[-210,-939,202,0.371],[-210,-939,202,0.371],[-230,-878,205,0.385],[-297,-898,207,0.399],[-319,-966,208,0.413],[-280,-1014,206,0.426],[-221,-1059,204,0.441],[-181,-1113,188,0.454],[-170,-1178,179,0.467],[-102,-1208,167,0.482],[-133,-1241,148,0.494],[-210,-1241,142,0.508],[-295,-1204,138,0.526],[-358,-1173,136,0.539],[-398,-1131,127,0.551],[-460,-1096,120,0.565],[-494,-1029,111,0.579],[-537,-1013,112,0.589],[-534,-997,112,0.592],[-533,-936,112,0.603],[-540,-860,117,0.618],[-541,-784,120,0.632],[-507,-716,124,0.647],[-444,-654,127,0.664],[-411,-588,130,0.678],[-385,-505,135,0.694],[-317,-562,141,0.711],[-250,-616,148,0.727],[-184,-668,150,0.743],[-98,-636,147,0.761],[-44,-591,135,0.775],[23,-566,125,0.789],[63,-509,116,0.802],[103,-444,106,0.817],[139,-369,105,0.832],[170,-312,106,0.845],[188,-233,109,0.86],[193,-153,110,0.875],[229,-85,110,0.89],[282,-48,106,0.903],[320,-54,103,0.911],[344,-71,101,0.917],[388,-63,84,0.932],[397,-134,42,0.946],[426,-194,13,0.959],[399,-251,4,0.971],[362,-328,3,0.987],[328,-400,4,1.002],[328,-400,4,1.002],[298,-472,4,1.017],[288,-496,4,1.032],[318,-424,4,1.047],[351,-352,4,1.062],[385,-280,4,1.077],[412,-223,8,1.089],[405,-159,32,1.103],[387,-82,74,1.118],[373,-43,98,1.13],[320,-54,103,1.143],[268,-64,107,1.155],[214,-104,111,1.169],[174,-134,116,1.184],[116,-80,121,1.199],[55,-30,126,1.214],[-5,19,129,1.228],[-26,36,130,1.233]]},
+ {"id":"C","name":"Westward Beach to Dume Cove","short":"Westward Beach","official":2.2,"unit":"loop","route":"Round trip","time":"1.5 hr","level":"Easy–moderate","color":"--tC","desc":"Walk the sand of Westward Beach to the foot of the point and around the rocks to Pirates Cove. Climb the zigzag trail onto the headland, cross to the boardwalk platform, and take the stairs down to Dume Cove. Return over the top and down the switchbacks to the beach. Check the tide first.","anchors":[[-2024,945,12,0.0],[-2024,945,12,0.0],[-1984,894,12,0.012],[-1935,827,11,0.028],[-1890,764,11,0.043],[-1845,702,11,0.057],[-1801,640,11,0.072],[-1755,579,11,0.086],[-1710,519,11,0.1],[-1664,458,11,0.115],[-1618,398,10,0.129],[-1573,338,10,0.143],[-1527,278,10,0.158],[-1482,215,10,0.172],[-1439,150,10,0.187],[-1396,84,10,0.202],[-1354,19,10,0.217],[-1311,-47,10,0.232],[-1268,-113,10,0.246],[-1225,-178,10,0.261],[-1178,-241,11,0.276],[-1130,-301,12,0.291],[-1082,-362,13,0.305],[-1034,-423,13,0.32],[-985,-483,13,0.335],[-937,-544,13,0.349],[-884,-600,13,0.365],[-873,-675,10,0.38],[-867,-750,7,0.394],[-862,-825,4,0.408],[-845,-905,4,0.424],[-806,-971,4,0.44],[-757,-993,4,0.45],[-745,-1015,4,0.455],[-697,-1077,4,0.47],[-628,-1128,4,0.486],[-560,-1180,4,0.502],[-560,-1180,4,0.502],[-628,-1128,4,0.518],[-697,-1077,4,0.535],[-745,-1015,20,0.55],[-714,-984,50,0.563],[-660,-957,79,0.576],[-606,-931,101,0.588],[-559,-896,111,0.599],[-533,-936,111,0.614],[-534,-997,112,0.625],[-537,-1013,112,0.629],[-494,-1029,111,0.638],[-460,-1096,120,0.653],[-398,-1131,127,0.666],[-358,-1173,136,0.678],[-295,-1204,138,0.692],[-210,-1241,142,0.709],[-133,-1241,147,0.724],[-95,-1221,154,0.732],[-63,-1191,161,0.74],[-55,-1097,168,0.758],[-62,-1036,170,0.77],[-59,-953,171,0.786],[-61,-889,170,0.798],[-66,-821,167,0.811],[-96,-744,163,0.827],[-146,-690,157,0.841],[-184,-668,153,0.849],[-158,-659,151,0.854],[-98,-636,147,0.867],[-44,-591,135,0.881],[23,-566,125,0.895],[63,-509,116,0.908],[103,-444,106,0.923],[139,-369,105,0.939],[170,-312,106,0.951],[188,-233,109,0.967],[193,-153,110,0.982],[193,-153,110,0.982],[229,-85,110,0.996],[282,-48,106,1.009],[320,-54,103,1.017],[344,-71,101,1.023],[388,-63,84,1.039],[397,-134,42,1.052],[426,-194,13,1.065],[399,-251,4,1.078],[362,-328,3,1.094],[328,-400,4,1.109],[328,-400,4,1.109],[298,-472,4,1.123],[288,-496,4,1.138],[318,-424,4,1.153],[351,-352,4,1.168],[385,-280,4,1.183],[412,-223,8,1.195],[405,-159,32,1.209],[387,-82,74,1.224],[373,-43,98,1.236],[320,-54,103,1.249],[268,-64,107,1.262],[214,-104,110,1.275],[191,-180,110,1.29],[186,-260,108,1.305],[156,-337,105,1.321],[122,-401,104,1.335],[89,-466,108,1.349],[48,-545,120,1.366],[-11,-578,130,1.379],[-75,-631,144,1.395],[-133,-651,149,1.407],[-206,-650,150,1.423],[-272,-599,146,1.438],[-340,-543,139,1.455],[-394,-533,133,1.472],[-428,-621,128,1.49],[-470,-674,125,1.503],[-542,-672,117,1.519],[-629,-662,111,1.536],[-652,-590,108,1.552],[-685,-603,98,1.568],[-677,-682,88,1.583],[-658,-771,75,1.6],[-685,-835,65,1.614],[-712,-890,55,1.625],[-745,-851,39,1.637],[-771,-768,26,1.654],[-802,-713,21,1.666],[-831,-661,17,1.677],[-879,-595,14,1.693],[-937,-544,13,1.708],[-985,-483,13,1.723],[-1034,-423,13,1.737],[-1082,-362,13,1.752],[-1130,-301,12,1.767],[-1178,-241,11,1.782],[-1225,-178,10,1.796],[-1268,-113,10,1.811],[-1311,-47,10,1.826],[-1354,19,10,1.841],[-1396,84,10,1.856],[-1439,150,10,1.87],[-1482,215,10,1.885],[-1527,278,10,1.9],[-1573,338,10,1.914],[-1618,398,10,1.928],[-1664,458,11,1.943],[-1710,519,11,1.957],[-1755,579,11,1.971],[-1801,640,11,1.986],[-1845,702,11,2.0],[-1890,764,11,2.015],[-1935,827,11,2.029],[-1984,894,12,2.045],[-2024,945,12,2.058]]}];
+const STOPS=[{"id":"1","trails":["A","B"],"x":-26,"n":36,"name":"Cliffside Drive trailhead","desc":"The preserve entrance at 29188 Cliffside Drive, with ten two-hour parking spaces (two ADA). Parking is not allowed elsewhere on Cliffside Drive or Birdview Avenue."},
+ {"id":"2","trails":["A","B","C"],"x":193,"n":-153,"name":"Poppy Trail junction","desc":"The Poppy Trail meets the path along the bluff edge, with a lookout over Dume Cove. Poppies and giant coreopsis bloom here in spring."},
+ {"id":"3","trails":["A","B","C"],"x":-184,"n":-668,"name":"Four-way junction","desc":"The main crossing below the summit: up to the top, out along the boardwalk, or down the west side to Westward Beach."},
+ {"id":"4","trails":["A","B"],"x":-210,"n":-939,"name":"Point Dume summit","desc":"The fenced high point, about 200 ft above the water, with a memorial plaque. The view runs up Westward and Zuma beaches toward Point Mugu."},
+ {"id":"5","trails":["A","B","C"],"x":-95,"n":-1221,"name":"Boardwalk platform","desc":"The boardwalk ends at a platform over Santa Monica Bay. Watch for sea lions, harbor seals, dolphins and pelicans, and gray whales from November through April."},
+ {"id":"A1","trails":["A"],"x":-432,"n":-391,"name":"Birdview Avenue","desc":"The path comes out at the end of Birdview Avenue. Walk back along Cliffside Drive to the trailhead."},
+ {"id":"6","trails":["B","C"],"x":-537,"n":-1013,"name":"West rim overlook","desc":"A fenced lookout on the west rim. The cliff drops almost straight to the water, and the beaches run north to Zuma."},
+ {"id":"7","trails":["B","C"],"x":320,"n":-54,"name":"Stairs to Dume Cove","desc":"A steep metal staircase drops down the east cliff from the bluff top to the beach."},
+ {"id":"8","trails":["B","C"],"x":328,"n":-400,"name":"Dume Cove","desc":"A quieter beach under the cliffs with tide pools in the volcanic rock: sea stars, anemones and crabs. Go at low tide."},
+ {"id":"C1","trails":["C"],"x":-2024,"n":945,"name":"Westward Beach lot","desc":"The paid beach lot at the end of Westward Beach Road. Free parking is also allowed along Westward Beach Road."},
+ {"id":"C2","trails":["C"],"x":-757,"n":-993,"name":"Base of the point","desc":"Westward Beach ends at the foot of Point Dume, a cliff of dark volcanic rock about 200 ft high."},
+ {"id":"C3","trails":["C"],"x":-560,"n":-1180,"name":"Pirates Cove","desc":"A small beach, about 300 ft long, tucked around the rocks southeast of Westward Beach. The rocks can be cut off at high tide."}];
+const ORDER={"A":["1","2","3","4","5","A1"],"B":["1","2","3","5","4","6","7","8"],"C":["C1","C2","C3","6","5","3","2","7","8"]};
+const SPECIES={
+ coreopsis:{name:"Giant coreopsis",latin:"Leptosyne gigantea",color:"#F7C81E",shape:"dome",bloom:[2,3,4],sum:"A strange tree-like daisy with a thick trunk and a mop of ferny leaves, topped with yellow flowers in late winter. Grows on coastal bluffs.",rule:(d,e,g,s)=>e>12&&d>80},
+ sunflower:{name:"California bush sunflower",latin:"Encelia californica",color:"#F5C232",shape:"cup",bloom:[2,3,4,5,6],sum:"A rounded coastal shrub covered in yellow daisies with dark brown centers, blooming through spring.",rule:(d,e,g,s)=>e>12&&d>80&&s>-0.2},
+ lemonade:{name:"Lemonade berry",latin:"Rhus integrifolia",color:"#F0A7B4",shape:"berry",bloom:[2,3,4],fruit:[5,6,7],sum:"An evergreen coastal shrub with clusters of pink-white flowers and sticky, tart red berries that taste like lemonade.",rule:(d,e,g,s)=>e>12&&d>80},
+ sagebrush:{name:"California sagebrush",latin:"Artemisia californica",color:"#C9CFA0",shape:"dome",bloom:[8,9,10],sum:"A soft, gray-green shrub with a strong sweet smell, the base of coastal sage scrub. Tiny pale flowers in late summer.",rule:(d,e,g,s)=>e>12&&d>100},
+ buckwheat:{name:"California buckwheat",latin:"Eriogonum fasciculatum",color:"#F5E6DC",shape:"dome",bloom:[4,5,6,7,8,9,10],sum:"Round clusters of tiny white-pink flowers that dry to rust brown in fall. Important food for native bees.",rule:(d,e,g,s)=>e>12&&s>-0.1&&d>160},
+ pear:{name:"Coast prickly pear",latin:"Opuntia littoralis",color:"#F2C230",shape:"pad",bloom:[4,5,6],fruit:[8,9,10],sum:"A native cactus of flat green pads, with yellow flowers in late spring and purple-red fruit in late summer. Grows on dry, sunny slopes.",rule:(d,e,g,s)=>e>12&&s>0.0&&d>140&&g>0.12},
+ poppy:{name:"California poppy",latin:"Eschscholzia californica",color:"#F28A1E",shape:"cup",bloom:[2,3,4,5],sum:"The state flower. Silky orange cups that open in sun and fold shut on cloudy days and at night. Grows in open, grassy patches.",rule:(d,e,g,s)=>e>12&&s>-0.05&&d>150&&g<0.6}
+};
+const FLORA={"A":["coreopsis","poppy","buckwheat","sagebrush"],"B":["coreopsis","sunflower","lemonade","pear","sagebrush"],"C":["sunflower","lemonade","pear","buckwheat"]};
+const WILD={
+ coyote:{name:"Coyote",color:"#A88B6A",sum:"A lean, gray-tan wild dog that hunts ground squirrels and gophers on the headland, mostly at dawn and dusk."},
+ squirrel:{name:"California ground squirrel",color:"#9A9A96",sum:"A brown, speckled squirrel that lives in burrows in the bluff-top grassland and sits up at the entrance to watch."},
+ snake:{name:"Gopher snake",color:"#B49867",sum:"A harmless, blotched snake often mistaken for a rattlesnake. Hunts rodents in the coastal scrub on warm days."},
+ quail:{name:"California quail",color:"#7D8A9A",sum:"California's state bird. Plump, with a curled black topknot; runs through the brush in small groups."},
+ hawk:{name:"Red-tailed hawk",color:"#A8572F",sum:"Hunts the bluff-top grassland and hangs in the wind off the cliffs."},
+ raven:{name:"Common raven",color:"#262626",sum:"Big black birds that tumble in the updrafts along the cliff edge, often in pairs."}
+};
+
+const PHOTOS={"stop":{"4":[{"f":"../photos/pl_point_4_2.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5707637077","t":"The Big Bang, Point Dume, Ca"},{"f":"../photos/pl_point_4_3.jpg","by":"™ Pacheco","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/43767277@N04/5487627723","t":"Point Dume, Ca - Breaker Breaker!"}],"7":[{"f":"../photos/pl_point_8_2.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215121871","t":"Dume Cove"}],"8":[{"f":"../photos/pl_point_8_0.jpg","by":"tschundler","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/24607013@N08/6834046779","t":"Dume Cove"},{"f":"../photos/pl_point_8_1.jpg","by":"dtpancio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/32293500@N05/48905544271","t":"Dume Cove"},{"f":"../photos/pl_point_8_3.jpg","by":"tsoleau","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23535767@N04/5215719410","t":"Dume Cove"}],"C1":[{"f":"../photos/pl_point_c1_0.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124299","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_1.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9285905094","t":"Westward Beach, Malibu"},{"f":"../photos/pl_point_c1_2.jpg","by":"crumj","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/45183326@N00/9283124831","t":"Westward Beach, Malibu"}]},"animal":{"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_squirrel_1.jpg","by":"sonstroem","lic":"BY 2.0","src":"https://www.flickr.com/photos/96964826@N05/19792172568","t":"Western Gray Squirrel"}],"quail":[{"f":"../photos/sp_quail_2.jpg","by":"SidPix","lic":"BY 2.0","src":"https://www.flickr.com/photos/22357152@N02/6401999787","t":"California Quail"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}]},"flower":{"buckwheat":[{"f":"../photos/sp_buckwheat_1.jpg","by":"pellaea","lic":"BY 2.0","src":"https://www.flickr.com/photos/7147684@N03/4776487528","t":"California Buckwheat"}],"coreopsis":[{"f":"../photos/sp_coreopsis_1.jpg","by":"Dick Culbert","lic":"BY 2.0","src":"https://www.flickr.com/photos/92252798@N07/27210400550","t":"Coreopsis (or Leptosyne) gigantea"}],"sunflower":[{"f":"../photos/sp_sunflower_0.jpg","by":"FotoGrazio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/94075184@N00/49567265992","t":"Bush Sunflower, Encelia californica"}],"lemonade":[{"f":"../photos/sp_lemonade_2.jpg","by":"J.G. in S.F.","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/13892958@N07/3305739222","t":"Rhus integrifolia #2"}],"sagebrush":[{"f":"../photos/sp_sagebrush_1.jpg","by":"John Rusk","lic":"BY 2.0","src":"https://www.flickr.com/photos/12303842@N00/29147729924","t":"J20160916-0005—Artemisia californica—RPBG—DxO"}],"pear":[{"f":"../photos/sp_pear_1.jpg","by":"Mauricio Mercadante","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/43256055@N03/8235011213","t":"Opuntia littoralis"}],"poppy":[{"f":"../photos/sp_poppy_1.jpg","by":"wallygrom","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/33037982@N04/6265071432","t":"Eschscholzia californica (California Poppies)"}]}};
+/* ================= terrain ================= */
+const X0=-2300,X1=1050,N0=-1900,N1=1200,STEP=25;
+const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
+function hash(i,j){let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return (a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v)*2-1;}
+function fbm(x,y){let s=0,a=.5,f=1;for(let o=0;o<4;o++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5;}return s;}
+function closest(pts,x,n){let bd=1e9,bf=0;for(let k=0;k<pts.length-1;k++){const a=pts[k],b=pts[k+1];const dx=b[0]-a[0],dn=b[1]-a[1];let t=((x-a[0])*dx+(n-a[1])*dn)/(dx*dx+dn*dn);t=t<0?0:t>1?1:t;const d=Math.hypot(x-(a[0]+dx*t),n-(a[1]+dn*t));if(d<bd){bd=d;bf=a[2]+(b[2]-a[2])*t;}}return {d:bd,f:bf};}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25;}
+function creekDist(x,n){let m=1e9;for(const c of CANYONS){const r=closest(c.pts,x,n);if(r.d<m)m=r.d;}return m;}
+function interpField(A,idx,cum){const known=[];A.forEach((a,i)=>{if(a[idx]!==null)known.push(i);});return A.map((a,i)=>{if(a[idx]!==null)return a[idx];const lo=known.filter(k=>k<i).pop(),hi=known.find(k=>k>i);const t=(cum[i]-cum[lo])/(cum[hi]-cum[lo]);return A[lo][idx]+(A[hi][idx]-A[lo][idx])*t;});}
+TRAILS.forEach(T=>{const A=T.anchors,cum=[0];for(let i=1;i<A.length;i++)cum.push(cum[i-1]+Math.hypot(A[i][0]-A[i-1][0],A[i][1]-A[i-1][1]));
+  const E=interpField(A,2,cum),M=interpField(A,3,cum),pts=[];
+  for(let i=0;i<A.length-1;i++){const L=cum[i+1]-cum[i],st=Math.max(1,Math.ceil(L/30));for(let s=0;s<st;s++){const t=s/st;pts.push({x:A[i][0]+(A[i+1][0]-A[i][0])*t,n:A[i][1]+(A[i+1][1]-A[i][1])*t,e:E[i]+(E[i+1]-E[i])*t,m:M[i]+(M[i+1]-M[i])*t});}}
+  const L=A.length-1;pts.push({x:A[L][0],n:A[L][1],e:E[L],m:M[L]});T.pts=pts;
+  let gain=0,hi=-1e9,lo=1e9;pts.forEach((p,i)=>{if(i&&p.e>pts[i-1].e)gain+=p.e-pts[i-1].e;hi=Math.max(hi,p.e);lo=Math.min(lo,p.e);});T.gain=gain;T.hi=hi;T.lo=lo;T.total=pts[pts.length-1].m;});
+const TR=Object.fromEntries(TRAILS.map(t=>[t.id,t]));
+const Hg=new Float32Array(NX*NN);
+const DEM_B64="/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DwAPABAAEQASABMAFgAaABoAGwAeAB4AHwAfACAAIAD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8VABMAEAASABYAFwAYABkAGgAaABsAHAAeAB8AHwAgACAAIQAhACIAIgAiAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/w0AEQAZAB0AHAAdACAAIQAiACIAIgAfABwAHAAfAB8AIAAgABoAHQAcABcAEQAjACQA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8UABAAFwAhACkALAAvAC4AKwAoACYAJgAmACcAKAAqACwALQAsACoAKAAlAB8AFwAkACQAJQD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/FAASABoAJQAuADcAPgBBAEAAOgA1ADMAMwAzADQANwA8AEEARABBADsANQAuACkAIQAYABEAJQAmAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/FAAWACQAMwA9AEcAUABTAFAASgBFAEMAQwBDAEMARwBOAFUAWQBWAE4ARgA8ADUALgAkABgAJgAnAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DgAaACsAPQBLAFYAYABiAF8AWwBXAFUAVABUAFUAWQBgAGgAbQBqAGIAWABNAFAATQA1ABUAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/woADwAeADQARwBXAGQAbQBwAG4AbABqAGkAaQBqAGwAcAB2AH0AgQB+AHMAZwBhAF8AXgA/ABMAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/woADwAiADwAUgBiAG8AeAB8AH0AfAB9AH0AfwCBAIQAhwCMAJAAkQCNAIAAcABsAGwAawBHABQAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8KAAoADgAhAD4AWABpAHQAfwCIAIwAjgCPAJEAkwCVAJgAmgCdAJ0AmwCWAIkAeAByAHMAdQBZACYABQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DQANAAwADwAfAD0AWgBsAHgAhQCRAJgAnACeAKAAowClAKcAqQCpAKYAoQCbAI8AfwB2AHgAeABvAEgAIQAIAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8OAA8AEAARAA8AEgAlAEQAXwBxAH8AjQCZAKAApQCpAKwArgCxALMAswCxAKsApQCdAJIAhQB6AHkAeAB2AGgASQAkAAQAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/EAAQABEAEwAWABcAHgA3AFYAbAB6AIgAlgCeAKYArQCyALYAuAC5ALoAuAC0AK4ApgCdAJQAiQB/AHgAdgByAGwAZgA6AA0AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8QABEAEQARABIAFQAbACUANwBQAGcAeACHAJQAngCkAKsAswC7AL8AwADAAL4AugC1AK8ApgCcAJQAiwCDAHoAcgBuAG4AbQBKABkAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8MABAAEgATABIAEgASABUAGwAlADYATgBiAHIAgwCSAJ0AowCpALAAuwDEAMcAxgDDAMAAuwC1AK8ApgCcAJMAjACEAH0AdABuAG4AbQBZACgABAACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8PAA0ACwARABUAFgAVABQAEgAUABsAJgA1AEkAXQBtAHoAigCYAKIAqACwALkAxADLAMwAyQDFAMAAvAC2ALAApgCbAJIAjACFAH4AdQBuAG4AbgBcACkABAACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8NAAoAEAAWABsAHAAbABgAFwAbACUANABHAFoAagB2AIIAjwCbAKUArgC6AMUAzADOAM0AyQDFAMAAvAC3ALEApwCbAJIAiwCFAH4AdgBwAHAAcABaACYAAwACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8EAA0AGAAeACMAJQAlACQAJgAsADcARgBXAGcAcgB9AIkAlACeAKgAtQDEAM4A0QDPAMwAyADEAMAAuwC3ALEApwCbAJIAiwCFAH4AdgBxAHEAcQBXACIAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/EAAIABQAIgArAC8AMQAyADMANgA9AEkAVwBjAG0AdgCBAI0AmAChAKsAugDKANMA0wDPAMsAxwDDAL8AuwC2ALAApgCbAJMAjACFAH0AdgBzAHIAcgBUAB4AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DAAMABkAKAAzADkAOwA/AEIARgBOAFgAYwBqAHAAdwCBAI4AmgCjAK0AvQDMANMA0wDPAMsAxwDEAL8AugC1AK8ApgCdAJQAjQCFAH0AdwBzAHMAcwBRABsAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/CwASABwAKAAyADkAPwBHAE8AVgBeAGQAaQBtAHIAeACAAI0AmQCjAK8AvwDNANQA0wDQAMwAyADEAL8AugC0AK4ApgCeAJYAjwCHAH8AdwB0AHQAcgBNABcAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DQAUABwAJQAtADQAPABHAFMAXgBlAGkAbABvAHQAeQCAAIoAlgChALAAwgDPANMA0wDQAM0AyQDFAL8AugC0AK4ApwCgAJkAkQCJAIAAegB4AHUAaQBEABMAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wsADQASABgAHgAlACwANQBBAFAAXgBnAGsAbgBxAHYAegCAAIgAkgCeAK8AwgDPANEA0QDPAM0AygDFAMAAugC0AK4AqAChAJoAkgCKAIEAfwB9AHkAUgAjAAUAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8KAAwADgAQABIAFgAcACUAMAA9AE0AXQBmAGwAbwBzAHcAewCBAIgAkACbAKwAvgDJAMwAzADNAMwAyQDFAL8AugC0AK4AqACiAJsAkwCKAIEAgQCAAHUAPwAMAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/CgALAA0ADwAQAA8AEAAXACEALgA8AEwAWwBmAGwAcAB0AHgAfACCAIkAkACZAKcAtQC/AMQAxQDHAMgAxgDCAL0AuQC0AK4AqACiAJwAlACJAH4AfgB+AHEAOQAIAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wkACwAMAA0ADwAPAA4ADwAVACAALQA6AEoAWQBlAGwAcAB1AHkAfQCDAIkAkACZAKMArgC2ALsAvQC+AL8AvwC9ALoAtwCyAK0AqACiAJwAkgCFAH0AfgB9AG8APwATAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8JAAoACwAMAA0ADgAOAA4ADwAVACAAKwA3AEYAVgBjAGsAcAB1AHoAfwCEAIoAkQCYAKEAqQCwALQAtQC1ALcAuAC4ALYAswCvAKoApgCgAJcAigB+AHsAfAB8AFoAJQAGAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8KAAsADAAMAA0ADQAOAA0ADwAVAB8AKAAzAEIAVABiAGsAcAB1AHoAfwCEAIoAkACYAJ8ApQCrAK0ArgCvALAAsgCyALAArQCpAKUAogCcAJAAggB4AHUAdgByAEYAEQACAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/CQAKAAsADAAMAA0ADQAOAA0AEAAXACAAJwAxAEEAVQBjAGsAcAB1AHoAfgCDAIgAjwCWAJwAoQCkAKYAqACpAKsArQCtAKoApwCiAJ8AnACXAIsAfgB0AHAAbwBrAEIAEQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wkACgALAAsADAAMAA0ADQANAA4AEgAaACEAKQAzAEUAWQBmAGwAcAB1AHoAfQCBAIUAjACTAJgAnACfAKAAogCjAKUApgCmAKQAoACcAJkAlgCSAIkAfQBxAGoAaABnAEoAHAACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8IAAkACgALAAwADAAMAA0ADQANAA8AFQAdACQALQA7AE4AXwBoAG0AcAB1AHkAfAB/AIMAiACOAJQAmACaAJsAnACeAKAAoQCgAJ4AmwCYAJYAkgCOAIcAfQBwAGUAZABjAFMAKAAHAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/CAAJAAoACwALAAwADAAMAA0ADQANABAAGAAgACgAMwBGAFoAZgBqAG4AcQB1AHkAewB+AIEAhQCKAJAAlACWAJcAmACaAJwAnQCcAJsAmACWAJMAkACMAIYAfQBxAGIAYQBdAFQAOgAQAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wcACQAKAAoACwAMAAwADAANAA0ADQAOABMAGwAjACwAPABRAGIAaQBsAG8AcgB2AHgAewB9AH8AggCHAIwAkACSAJQAlgCXAJkAmgCZAJgAlgCUAJIAjwCLAIYAfgByAGMAXQBdAFsAOwARAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8GAAgACQAKAAsADAAMAAwADQANAA0ADQAPABYAHwAnADIARQBbAGcAawBtAHAAcwB2AHkAewB8AH4AgQCFAIkAjQCQAJIAlACWAJcAlwCXAJYAlQCTAJAAjgCLAIYAfgByAGQAXABbAFoAQwAaAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8IAAkACgALAAsADAAMAAwADQANAA0ADQASABoAIwAtADsAUABiAGoAbABvAHEAdAB3AHkAewB8AH4AgACEAIgAjACPAJEAkwCVAJUAlQCVAJUAkwCRAI8AjQCLAIYAfgByAGQAWQBZAFkATQAnAAcAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BwAJAAoACwALAAwADAAMAA0ADQANAA0ADQAUAB4AKAAzAEUAWgBnAGsAbQBwAHMAdQB3AHkAewB8AH4AgACDAIcAigCNAJAAkgCTAJMAkwCUAJMAkgCQAI4AjACKAIYAfgByAGUAWQBZAFgAVQA1AA8AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wYACAAKAAoACwAMAAwADAANAA0ADQANAA0ADgAWACMALgA9AFEAYgBpAGwAbwBxAHQAdgB4AHkAewB9AH8AgQCDAIYAiQCMAI4AkACRAJEAkgCSAJEAkQCPAI0AiwCJAIUAfgBzAGYAXABZAFkAWQBDABoAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8FAAgACQAKAAsACwAMAAwADQANAA0ADQANAA0AEQAcACsAOwBNAF0AZwBrAG0AcABzAHUAdwB5AHoAfAB9AH8AgQCDAIYAiQCKAIwAjQCOAJAAkACQAJAAjwCOAIwAiwCJAIUAfgBzAGcAXwBaAFoAWgBOACoACAACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8HAAkACgALAAsADAAMAA0ADQANAA0ADQAOABAAGAAoADsATwBeAGYAagBsAG8AcgB0AHYAeAB6AHsAfQB+AIAAgQCDAIYAiACJAIsAjACNAI4AjwCPAI4AjQCMAIsAiwCJAIYAfwB1AGkAYQBaAFoAWgBYADwAFQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BgAIAAkACgALAAwADAAMAA0ADQANAA0ADgAQABUAIwA6AFIAYQBoAGoAbABuAHEAcwB2AHgAegB7AHwAfgB/AIAAggCDAIUAhwCIAIoAiwCMAI0AjQCNAI0AjACLAIsAigCJAIYAgAB3AGwAYwBdAFoAWwBbAE0AJwAHAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wUABwAJAAoACwALAAwADAANAA0ADQANAA0ADQASAB8ANABMAF8AaABrAGwAbQBwAHIAdQB3AHkAewB8AH4AfwCAAIEAggCEAIUAhgCIAIkAigCLAIwAjACMAIwAiwCLAIoAigCIAIUAgQB4AG4AZgBgAFsAWwBcAFkAOwAUAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8FAAcACAAKAAoACwAMAAwADAANAA0ADQANAA0ADwAaAC4ARABYAGQAaQBrAG0AbwBxAHQAdgB5AHsAfAB+AH8AgACBAIIAgwCEAIUAhgCHAIgAiQCKAIoAiwCLAIsAiwCKAIoAiQCHAIQAgAB6AHAAaQBjAF4AXQBeAF4ATQAlAAUAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8HAAgACQAKAAsACwAMAAwADQANAA0ADQAOAA8AGAArAEAAUgBeAGYAagBsAG8AcQBzAHUAeAB6AHwAfgB/AIAAgQCBAIIAgwCEAIUAhgCHAIgAiQCJAIoAigCKAIoAigCJAIkAiACGAIMAgAB6AHMAbABnAGMAXwBgAGEAXAA6ABEAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BgAIAAkACgAKAAsADAAMAA0ADQANAA0ADQAPABYAJwA+AFAAXABjAGgAawBuAHAAcgB0AHYAeQB7AH4AfwCAAIEAggCCAIMAgwCEAIQAhQCGAIcAiACJAIkAiQCJAIoAiQCJAIgAhgCEAIIAfwB7AHUAbwBqAGcAYwBiAGMAYwBOACMABAACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wYABwAIAAkACgALAAsADAAMAA0ADQAOAA4ADQAQACAAOgBPAFwAYwBnAGoAbQBvAHIAdAB2AHgAegB8AH4AgACBAIIAggCDAIMAgwCDAIQAhQCGAIcAiACIAIkAiQCJAIkAiQCIAIcAhQCEAIEAfwB7AHYAcQBtAGoAZwBjAGQAZABcADYADQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8RAAYACAAJAAkACgALAAsADAAMAA0ADQAOAA8AEQAYAC8ASQBaAGIAZwBpAGwAbgBxAHMAdgB3AHkAewB8AH4AgACBAIEAggCDAIMAgwCDAIQAhQCGAIcAhwCIAIgAiACIAIgAiACHAIYAhACDAIEAfgB7AHcAcwBvAGwAaQBmAGUAZQBlAEgAHAACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DwAKAAcACAAJAAoACgALAAsADAAMAAwADQAOAA8AFAAkAD4AUwBgAGYAaQBrAG4AcQBzAHUAeAB5AHsAewB8AH4AfwCAAIEAggCDAIMAgwCEAIQAhQCGAIcAhwCHAIgAiACIAIgAhwCGAIQAgwCCAIAAfgB7AHgAdABwAG0AawBoAGYAZgBmAFkALgAIAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wkACQAGAAcACQAJAAoACgALAAsADAAMAAwADgAPABAAGQAyAEsAXABlAGkAawBtAHAAcgB1AHcAegB7AHwAfQB9AH4AfgCAAIEAggCDAIMAhACEAIQAhQCGAIYAhwCHAIcAiACHAIcAhgCFAIMAggCBAIAAfQB7AHgAdQBxAG8AbABqAGcAZwBnAGQAQQAVAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wYABgAHAAgACQAJAAoACgALAAsACwAMAA0ADwARABkALQBIAFsAZABpAGsAbQBvAHIAdAB3AHkAewB9AH4AfwB+AH4AfwCAAIEAggCDAIQAhACEAIUAhQCGAIYAhwCHAIcAhwCHAIYAhQCEAIIAgQCAAH4AfQB7AHgAdQByAHAAbQBrAGkAZwBnAGcAUgAmAAUAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8DAAUABwAIAAkACQAJAAoACgALAAsACwALAA0AEQAaAC0ARgBbAGUAaQBrAG0AbwBxAHQAdgB4AHoAfQB+AH8AgACAAIAAgACAAIEAggCDAIQAhACEAIUAhQCGAIYAhwCHAIcAhwCGAIYAhACDAIEAgAB/AH0AfAB6AHgAdgBzAHEAbwBsAGoAZwBnAGcAYAA5AA4AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BAAEAAYACAAIAAkACQAJAAoACgALAAsACwAMABEAGwAsAEQAWgBlAGkAawBtAG8AcQBzAHYAeAB6AHwAfgB/AIAAgQCBAIAAgQCBAIEAggCDAIQAhACFAIUAhQCGAIYAhwCHAIcAhwCGAIUAhACCAIEAgAB+AH0AewB6AHgAdgB0AHIAcABtAGsAaQBoAGcAZgBKAB0AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wQABQAGAAcACAAJAAkACQAJAAoACgALAAsADAASABwAKwBAAFYAZABoAGsAbQBvAHEAcwB1AHcAeQB7AH0AfwCAAIEAgQCBAIEAgQCCAIIAggCDAIQAhACFAIUAhgCGAIcAhwCHAIcAhwCGAIUAhACCAIEAgAB+AHwAewB6AHgAdgB1AHMAcQBuAGwAagBmAGUAZABYAC8ACQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8EAAYABwAHAAgACAAJAAkACQAKAAoACgAKAAwAEAAbACkAPABRAGEAaQBrAGwAbwBxAHMAdQB3AHkAewB8AH4AgACBAIIAggCCAIIAggCCAIMAgwCDAIQAhACFAIYAhgCGAIcAhwCHAIcAhgCGAIUAgwCCAIEAgAB+AHwAewB6AHgAdwB1AHQAcgBvAG0AawBlAGQAZABhAEAAFQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BAAGAAcABwAIAAgACQAJAAkACQAJAAoACgAKAAwAFQAjADUASgBdAGcAagBsAG4AcABzAHUAdwB5AHoAfAB+AH8AgACBAIIAgwCDAIMAgwCDAIMAhACEAIQAhQCFAIYAhgCHAIcAhwCHAIcAhgCGAIUAhACCAIEAgAB+AH0AewB6AHkAeAB2AHUAcwBwAG4AbABoAGQAYwBjAFAAJgAHAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wQABQAHAAcACAAIAAkACQAJAAkACQAJAAoACQAKAA4AGQApADwAUQBiAGkAawBtAHAAcgB0AHcAeAB6AHwAfQB/AIAAgQCCAIIAgwCEAIQAhACEAIQAhACFAIUAhQCGAIYAhwCHAIcAhwCHAIcAhwCGAIUAhACCAIEAgAB/AH4AfAB7AHoAeQB4AHYAdABxAG8AbABqAGMAYgBiAF4AQAAZAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wUABgAHAAgACAAJAAkACQAJAAkACQAJAAkACgAMABIAHQArADwAUQBjAGoAbABuAHEAdAB2AHgAegB8AH4AfwCAAIEAgQCCAIMAhACEAIQAhQCFAIUAhQCFAIYAhgCGAIcAhwCHAIgAiACHAIcAhwCGAIUAhACDAIEAgAB/AH4AfQB8AHsAegB5AHcAdQByAHAAbQBrAGYAYwBiAGIAVgAyAA4AAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8EAAYABwAIAAgACQAJAAkACQAJAAoACgAJAAoADAARABkAIwAuAD4AUgBjAGsAbQBwAHIAdQB3AHkAfAB+AH8AgACBAIEAggCDAIMAhACFAIUAhQCFAIUAhgCGAIYAhgCHAIcAhwCIAIgAiACIAIcAhwCGAIUAhACDAIIAgQCAAIAAfwB+AH0AfAB6AHgAdgB0AHEAbgBsAGkAYgBiAGIAYQBLACUABgACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BAAGAAcACAAIAAkACQAJAAkACgAKAAoACgAJAAsADwAXACAAKAA0AEYAWgBmAGsAbgBxAHQAdgB5AHsAfQB/AIAAgQCBAIIAgwCDAIQAhQCFAIUAhQCGAIYAhgCGAIcAhwCHAIgAiACIAIgAiACIAIgAhwCGAIYAhQCDAIIAgQCBAIEAgAB/AH8AfQB8AHkAdwB1AHMAcABtAGsAaABiAGIAYgBeAEAAGQADAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wYABQAHAAgACAAJAAkACQAJAAoACgAKAAoACgAKAA0AFQAdACYALwA/AFQAYwBpAGwAbwByAHUAeAB6AHwAfgCAAIEAgQCCAIMAgwCEAIQAhQCFAIYAhgCGAIcAhwCHAIcAhwCIAIgAiACJAIkAiACIAIgAhwCHAIYAhQCEAIMAggCCAIEAgQCAAIAAfwB9AHoAeAB2AHQAcgBvAG0AagBlAGMAZABlAFoAOgAYAAMAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8KAAkABgAHAAgACQAJAAkACQAKAAoACgAKAAoACgALABEAGgAjACwAOQBNAGAAaQBrAG4AcQB0AHYAeQB7AH0AfwCAAIEAggCDAIMAhACEAIUAhQCGAIYAhwCHAIcAhwCHAIgAiACIAIkAiQCJAIkAiQCIAIgAhwCHAIYAhQCEAIMAgwCDAIIAggCBAIEAfwB9AHsAeQB3AHUAcwBxAG4AbABpAGQAZgBnAGcAWQA5ABYAAwACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8HAAUABwAIAAgACQAJAAoACgAKAAoACgAKAAoACgAOABYAIAApADUARwBbAGcAawBtAG8AcgB1AHgAegB8AH4AgACBAIIAggCDAIQAhQCFAIYAhgCGAIcAhwCHAIgAiACIAIgAiQCJAIkAiQCJAIkAiQCJAIgAiACHAIcAhgCFAIQAhACDAIMAggCCAIEAgAB+AHwAegB5AHcAdQBzAHAAbgBsAGkAZwBnAGcAZgBXADcAFQADAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DQAJAAYABwAIAAkACQAJAAoACgAKAAoACgAKAAoACwASABsAJgAwAEAAVQBlAGsAbABuAHEAdAB2AHkAewB9AH8AgACBAIIAgwCDAIQAhQCGAIYAhgCHAIcAiACIAIgAiACJAIkAiQCJAIoAigCKAIoAiQCJAIkAiACIAIcAhgCFAIUAhQCEAIQAgwCCAIEAgAB+AH0AfAB6AHkAdwB0AHIAcABuAGwAagBnAGYAZQBkAFUANgAVAAIAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/w0ABwAFAAcACAAJAAkACgAKAAoACgAKAAoACgAKAAoADQAWACEALAA5AEwAXwBpAGwAbgBwAHMAdgB4AHoAfAB+AH8AgQCBAIIAgwCEAIQAhQCGAIcAhwCHAIgAiACIAIkAiQCJAIkAigCKAIoAigCKAIoAigCJAIkAiQCIAIcAhwCGAIYAhQCFAIQAhACDAIIAgQCAAH4AfQB8AHoAeAB2AHQAcgBwAG4AbABpAGUAZABkAGUAVwA2ABUAAgACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8EAAQABQAGAAgACAAJAAkACgAKAAoACgAKAAoACgAKAAsAEgAbACcAMwBEAFYAZQBrAG0AbwByAHUAdwB5AHsAfQB/AIAAgQCCAIMAgwCEAIUAhQCGAIcAhwCIAIgAiACJAIkAigCKAIoAigCKAIsAiwCKAIoAigCKAIkAiQCIAIgAhwCHAIYAhgCGAIUAhACDAIIAgQCBAIAAfwB9AHwAegB4AHYAdABzAHEAbgBsAGgAZABlAGYAZwBYADcAFQACAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DAAFAAUABgAHAAgACQAJAAkACgAKAAoACgAKAAoACgALABAAGQAjAC8APgBQAF8AaABsAG4AcQB0AHYAeAB6AHwAfgCAAIEAggCCAIMAhACEAIUAhQCGAIcAhwCIAIkAiQCJAIoAigCKAIoAiwCLAIsAiwCLAIsAiwCKAIoAiQCJAIgAiACHAIcAhwCGAIUAhACEAIMAggCCAIEAgAB/AH0AewB5AHgAdwB1AHQAcgBvAG0AaQBmAGcAaABpAFkANwAUAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/w4ABAAFAAYABwAIAAgACQAJAAoACgAKAAoACgAKAAoACgAOABcAIgAtADsATQBcAGYAagBtAHAAcgB1AHcAeQB7AH0AfwCAAIEAggCDAIQAhACFAIUAhgCGAIcAiACIAIkAiQCKAIoAiwCLAIsAiwCLAIsAiwCLAIsAiwCLAIoAigCJAIkAiQCIAIgAhwCHAIYAhQCEAIQAgwCCAIIAgQCAAH4AfAB7AHoAeQB5AHgAdgB0AHEAbgBrAGgAaQBqAGoAWAA0ABAAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8SABMABQAGAAcACAAIAAkACQAJAAoACgAKAAoACgAKAAoACwASAB4AKwA6AEsAWwBlAGoAbABvAHIAdAB3AHkAewB9AH4AgACBAIIAgwCDAIQAhQCFAIYAhgCHAIcAiACIAIkAigCKAIsAiwCLAIwAjACMAIwAjACMAIwAjACLAIsAigCKAIoAiQCJAIkAiACHAIcAhgCFAIQAhACDAIMAggCAAH4AfQB8AHwAfAB8AHsAegB4AHYAcwBwAGwAagBqAGoAaABRACwACwACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/FgADAAQABQAGAAcACAAIAAkACQAJAAoACgAKAAsACwALAAoADQAYACYANgBIAFoAZQBqAGwAbgBxAHMAdgB4AHoAfAB+AH8AgQCCAIIAgwCEAIQAhQCGAIYAhwCHAIgAiACJAIkAigCKAIsAjACMAIwAjACMAIwAjACMAIwAjACMAIsAiwCLAIsAigCKAIkAiACIAIcAhwCGAIUAhQCEAIMAggCAAH8AfgB+AH4AfwB+AH4AfQB8AHoAdwB0AHAAbQBqAGgAZgBjAEkAJAAHAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/xYAGwAEAAUABgAHAAgACAAJAAkACQAKAAoACgAKAAsADAALAA0AEwAfAC4AQQBVAGMAagBsAG0AcAByAHUAdwB5AHsAfQB/AIAAgQCCAIMAhACEAIUAhQCGAIcAhwCIAIgAiQCJAIoAigCLAIwAjACNAI0AjQCNAI0AjQCNAIwAjACMAIwAjACMAIwAiwCKAIoAiQCJAIgAiACHAIYAhQCEAIMAggCBAIAAgACAAIAAgACAAIAAgAB/AH0AewB4AHQAcABrAGYAZABkAGAARAAfAAUAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wQABQAGAAYABwAIAAgACQAJAAkACgAKAAoACgAKAAsACwANABMAHAAoADYASgBdAGgAawBtAG8AcgB0AHcAeQB7AH0AfgCAAIEAggCDAIMAhACFAIYAhgCHAIcAiACIAIkAigCKAIsAiwCMAIwAjQCNAI0AjQCNAI0AjQCNAI0AjQCNAI0AjQCNAIwAjACLAIsAigCKAIkAiACIAIcAhgCFAIQAgwCCAIIAggCCAIIAggCCAIIAgQCBAIAAfgB8AHgAdABvAGcAZABlAGUAXgA+ABkABAACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8FAAUABgAHAAcACAAIAAkACQAJAAkACgAKAAoACgAKAAkACwATAB8AKQAyAD4AUQBiAGoAbABuAHEAcwB2AHgAegB8AH4AgACBAIIAgwCDAIQAhQCGAIYAhwCHAIgAiQCJAIoAigCLAIsAjACNAI0AjQCOAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCNAI0AjQCMAIwAiwCLAIoAiQCIAIcAhgCFAIUAhACEAIMAgwCDAIMAgwCDAIMAggCCAIEAgAB/AHwAeABzAG0AZQBmAGcAZwBbADsAGQAEAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/BAAFAAYABwAHAAgACAAJAAkACQAJAAoACgAKAAoACgAKAAoADwAdACwANgA+AEkAWgBmAGsAbQBvAHIAdQB3AHoAfAB+AH8AgACBAIIAgwCEAIUAhgCGAIcAiACIAIkAigCKAIsAiwCMAIwAjQCNAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCNAI0AjACLAIoAigCJAIgAhwCHAIYAhgCFAIUAhQCFAIQAhACEAIQAgwCDAIIAgQCAAH8AewB2AHIAbQBnAGcAaABoAFsAOwAYAAMAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/wQABQAGAAcABwAIAAgACQAJAAkACQAKAAoACgAKAAoACgAJAAwAFwApADgAQwBMAFcAYgBpAGwAbgBxAHMAdgB4AHsAfQB/AIAAgQCCAIMAhACFAIUAhgCHAIgAiACJAIoAiwCLAIwAjACNAI0AjgCOAI8AjwCPAI8AjwCPAI8AjwCPAI8AjwCPAI8AjwCPAI8AjgCOAI0AjQCMAIsAiwCKAIoAiQCIAIgAhwCHAIcAhgCGAIYAhQCFAIUAhACEAIMAggCBAIAAfQB5AHUAcQBtAGgAaABoAGcAWgA6ABgAAwACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f8KAAUABgAHAAcACAAIAAkACQAJAAkACgAKAAoACgAKAAoACgALABEAIQA0AEQAUQBbAGIAZwBqAGwAbwByAHUAdwB6AHwAfgCAAIEAggCDAIQAhQCGAIYAhwCHAIgAiQCKAIsAiwCMAI0AjQCOAI4AjwCPAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACPAI8AjwCOAI4AjQCNAI0AjACMAIsAiwCKAIkAiQCIAIgAiACIAIcAhwCGAIYAhQCFAIQAgwCCAIEAfwB8AHgAdABwAGwAaABnAGcAZQBXADUAFAADAAIAAgD9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/DAAFAAYABwAHAAgACAAJAAkACQAJAAoACgAKAAoACgAKAAoACgAOABoAKgA+AFEAXgBkAGgAagBsAG4AcABzAHYAeAB7AH0AfwCAAIIAgwCEAIUAhQCGAIcAiACIAIkAigCLAIsAjACNAI4AjgCPAI8AkACQAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJAAkACQAJAAkACPAI8AjwCOAI4AjgCNAI0AjACLAIsAigCKAIoAiQCJAIkAiACHAIcAhgCGAIUAhACDAIIAgAB+AHsAeAB0AHAAbABnAGUAYwBdAEwALgASAAMAAgACAP3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/w4ABQAGAAcABwAIAAgACQAJAAkACQAKAAoACgAKAAoACwAKAAoADAAVACIAMwBJAFsAZQBoAGoAawBtAG8AcQB0AHcAeQB8AH4AgACBAIIAgwCEAIUAhgCHAIgAiACJAIoAiwCMAIwAjQCOAI8AjwCPAJAAkQCRAJEAkQCSAJIAkgCSAJIAkgCSAJIAkQCRAJEAkQCRAJEAkACQAJAAkACQAI8AjwCPAI4AjgCNAI0AjACMAIsAiwCLAIoAiQCJAIgAhwCHAIYAhQCEAIMAgQCAAH4AewB3AHMAbwBrAGMAXgBXAFAAQQAoABIABQACAAIA/f/9//3//f/9//3//f/9//3//f/9//3//f8NAAQABQAGAAcACAAIAAgACQAJAAkACQAKAAoACgAKAAsACwALAAwAEwAgAC8AQABVAGMAaABqAGsAbABuAHAAcgB1AHgAegB8AH8AgACCAIMAhACFAIYAhwCIAIgAiQCKAIsAjACNAI4AjgCPAI8AkACQAJEAkQCSAJIAkgCTAJMAkwCTAJMAkwCTAJMAkgCSAJIAkgCSAJIAkQCRAJEAkACQAJAAkACQAJAAjwCPAI8AjgCOAI0AjQCMAIwAiwCKAIkAiACIAIcAhgCFAIQAggCBAIAAfQB6AHYAcgBuAGYAVwBQAEoARgA6ACkAFgAHAAIAAgACAP3//f/9//3//f/9//3//f/9//3/DwAEAAUABgAHAAgACAAIAAkACQAJAAkACgAKAAoACgALAAsADAANABIAHQAsADwATgBfAGcAaQBrAGwAbgBvAHEAcwB2AHgAewB9AH8AgQCCAIMAhACFAIYAhwCIAIkAigCLAIwAjQCOAI8AjwCQAJAAkQCRAJIAkgCSAJMAkwCTAJQAlACUAJQAlACUAJQAkwCTAJMAkwCTAJMAkgCSAJIAkQCRAJEAkQCRAJEAkQCQAJAAkACPAI8AjgCOAI0AjACLAIoAiQCJAIgAhwCGAIUAgwCCAIEAfwB9AHkAdABwAGkAWgBKAEYAQgA/ADsALQAbAAoAAgACAAIA/f/9//3//f/9//3//f/9//3/DQAEAAYABwAHAAgACAAIAAkACQAJAAkACgAKAAoACgALAAwADQARABsAKQA2AEYAWABkAGkAagBsAG0AbwBwAHIAdAB3AHkAewB9AH8AgACBAIMAhACGAIcAiACJAIoAiwCMAI0AjgCPAJAAkACRAJIAkgCSAJMAkwCTAJQAlACUAJUAlQCVAJUAlQCVAJUAlQCUAJQAlACUAJQAkwCTAJIAkgCSAJIAkgCSAJIAkgCSAJIAkgCRAJAAkACPAI8AjgCNAIwAiwCKAIkAiACHAIYAhQCDAIIAgQB+AHsAdgBxAGwAYwBTAEMAQAA+AD8APQAxAB8ADQADAAIA/f/9//3//f/9//3//f/9/xQABAAFAAYABwAIAAgACAAJAAkACQAJAAkACgAKAAsACwAMAAwADwAZACYANABAAFAAYABoAGoAawBtAG4AcABxAHMAdQB3AHkAegB8AH4AfwCAAIIAhACGAIcAiQCKAIsAjACNAI4AjwCQAJEAkQCSAJMAkwCTAJQAlACUAJQAlQCVAJUAlgCWAJYAlgCWAJYAlgCWAJUAlQCVAJUAlACUAJMAkwCTAJMAkwCTAJQAlACUAJQAkwCTAJIAkQCRAJAAjwCOAI0AjACLAIoAiQCIAIcAhgCEAIMAgQB/AHwAdwBzAG4AagBhAFAAPwA+AD8APgA9ADIAIAARAAcA/f/9//3//f/9//3//f8dABkABAAGAAcABwAIAAgACQAJAAkACQAJAAkACgAKAAsADAAOAA4AFQAiAC8APQBLAFoAZQBpAGoAbABuAG8AcQByAHQAdgB3AHkAegB8AH0AfgCAAIIAhACGAIcAiQCKAIsAjQCOAI8AkACRAJIAkwCTAJQAlACVAJUAlQCVAJUAlgCWAJYAlgCXAJcAlwCXAJcAlwCXAJcAlgCWAJYAlQCVAJUAlACUAJQAlQCVAJUAlQCVAJUAlQCVAJQAkwCSAJEAkACQAI8AjQCMAIsAigCJAIgAhwCFAIQAggCAAHwAeQB1AHEAbQBpAGAAUQBCAD4APgA8ADkALgAlABsA/f/9//3//f/9//3/DgAZACIABQAGAAcACAAIAAkACQAJAAkACQAJAAoACgALAAwADQAPABQAHQAqADkARwBWAGEAZwBqAGsAbQBuAHAAcQBzAHUAdgB3AHkAegB8AH0AfwCAAIIAhACGAIcAiQCLAIwAjQCOAJAAkQCSAJMAlACUAJUAlQCWAJYAlgCWAJYAlgCXAJcAlwCYAJgAmQCZAJkAmQCYAJgAlwCXAJcAlgCWAJYAlgCWAJYAlgCWAJYAlgCXAJcAlwCXAJYAlQCUAJMAkgCRAJAAjgCNAIwAiwCKAIkAhwCGAIQAggCAAH0AegB3AHQAcABtAGkAYQBUAEQAPQA5ADQAMgA1ADEA/f/9//3//f/9//3/FAAfACMABgAHAAcACAAIAAkACQAJAAkACQAKAAoACgALAA0ADwASABoAJQAzAEMAUQBdAGUAaABqAGwAbgBvAHAAcgBzAHUAdwB4AHoAewB9AH4AgACBAIMAhACGAIgAiQCLAI0AjgCPAJEAkgCTAJQAlQCWAJYAlwCXAJcAlwCXAJcAmACYAJgAmQCaAJsAmwCbAJsAmwCbAJoAmgCaAJkAmQCYAJcAlwCXAJcAlwCXAJcAmACYAJgAmQCYAJcAlgCVAJQAkwCSAJEAkACOAI0AjACLAIkAiACGAIQAgwCAAH4AewB5AHYAcwBwAG0AaQBiAFUARAA2ADIANAA3ADkA/f/9//3//f/9/xIAGgAiAAUABwAHAAgACAAJAAkACQAJAAkACQAKAAoACwAMAA4AEQAXACEALQA7AEsAWABhAGcAaQBrAG0AbgBwAHEAcwB0AHYAdwB5AHoAfAB9AH8AgQCCAIQAhQCHAIkAigCMAI4AjwCQAJIAkwCUAJUAlgCXAJgAmACYAJgAmACZAJkAmQCaAJsAnACdAJ0AngCeAJ8AnwCfAKAAoACgAJ8AngCbAJkAmQCYAJgAmACYAJkAmgCaAJsAmwCaAJkAlwCWAJUAlACTAJIAkQCQAI8AjQCMAIoAiQCHAIUAgwCBAH8AfQB7AHkAdwB0AHEAbgBqAGIAVABDADYANgA4ADgA/f/9//3//f8DAAQABAAFAAYABwAIAAgACQAJAAkACQAJAAoACgAKAAsACwAMAA0AEgAcACgANABCAFAAXABkAGgAagBsAG0AbwBwAHIAcwB1AHYAeAB6AHsAfQB+AIAAggCDAIUAhgCIAIoAiwCNAI4AkACRAJMAlACVAJYAlwCYAJkAmgCaAJoAmgCbAJsAnACcAJ0AngCfAKAAoQCiAKIAowClAKcAqACpAKgApgChAJ4AnACbAJoAmgCaAJsAnACdAJ0AnACbAJoAmQCYAJcAlgCUAJMAkgCRAJAAjwCNAIwAigCIAIcAhQCDAIEAgAB+AHwAegB4AHUAcgBvAGoAYQBWAE0ARAA5ADkA/f/9//3/AwAEAAUABgAGAAcACAAIAAkACQAJAAkACQAKAAoACgALAAwADQAOAA4AEQAeACwAOgBHAFQAXwBmAGkAagBsAG4AbwBwAHIAdAB1AHcAeQB7AHwAfgB/AIEAgwCEAIYAhwCJAIsAjACOAI8AkQCSAJQAlQCWAJcAmACaAJsAmwCcAJwAnQCdAJ4AngCfAKAAoQCiAKMApAClAKYApwCpAKwArwCwALAArQCoAKQAoQCfAJ4AnQCdAJ4AngCfAJ8AngCdAJwAmwCaAJgAlwCVAJQAkwCSAJEAkACPAI4AjACKAIgAhwCFAIMAggCBAH8AfgB8AHkAdgByAG4AaQBlAGAAWQBOAEIA/f/9//3/BAAGAAYABwAHAAgACAAJAAkACQAJAAkACgAKAAoACwAMAA0AEAARABEAFQAgAC8APABJAFUAYABnAGkAawBsAG4AbwBwAHIAdAB2AHgAegB7AH0AfwCBAIIAhACFAIcAiACKAIwAjQCOAJAAkQCTAJQAlgCXAJgAmgCbAJwAnQCeAJ4AnwCfAKAAoQChAKIApAClAKYApwCpAKkAqwCtAK8AsgCzALMAsQCsAKgApQCjAKEAoACgAKAAoACgAKAAoACfAJ4AnQCbAJoAmACWAJUAlACTAJIAkgCRAI8AjgCMAIoAiQCHAIUAhACDAIIAgAB/AHwAegB2AHMAbwBsAGoAZgBfAFkA/f/9/wkABQAGAAcACAAIAAgACQAJAAkACQAJAAoACgAKAAsADAAOABAAFAAXABkAHgAmADAAPABHAFMAXgBmAGkAagBsAG0AbgBwAHIAdQB3AHkAewB9AH4AgACCAIQAhQCHAIgAigCLAI0AjgCPAJEAkgCUAJUAlwCYAJkAmwCcAJ0AngCfAKAAoAChAKIAowCkAKUApgCoAKkAqwCsAK0ArQCvALEAswC0ALQAsgCuAKsAqACmAKUApACjAKMAowCjAKMAogChAKAAnwCdAJsAmQCYAJcAlgCVAJQAkwCTAJEAkACOAIwAiwCJAIcAhgCFAIQAgwCBAH8AfQB6AHcAdABxAG4AbABpAGcA/f8EAAUABgAHAAgACAAJAAkACQAJAAkACgAKAAoACgALAAwADgAQABQAGQAeACQAKQAvADYAPgBHAFAAWwBjAGgAaQBrAGwAbgBwAHIAdQB4AHoAfAB+AIAAgQCDAIUAhwCIAIoAiwCNAI4AjwCQAJEAkwCUAJYAmACZAJsAnACeAJ8AoAChAKEAogCjAKQApgCnAKgAqQCqAKwArQCvALAAsACwALIAtAC1ALQAsgCvAK0AqwCpAKgApwCmAKYApwCnAKYApQCkAKIAoQCfAJ0AmwCaAJgAlwCXAJYAlgCVAJMAkgCQAI4AjQCLAIkAiACHAIUAhACDAIIAgAB9AHoAeAB1AHMAcABuAG0ABAAFAAYABwAIAAgACQAJAAkACQAJAAoACgAKAAoACwALAA0AEAAUABkAHwAmAC8ANgA8AEEARwBLAE8AVwBgAGYAaABqAGsAbQBwAHMAdgB5AHsAfQB/AIEAgwCFAIYAiACKAIwAjQCPAI8AkACRAJIAkwCVAJcAmQCbAJwAngCfAKAAoQCiAKMApAClAKYAqACqAKsArACtAK4ArwCxALMAswCzALMAtQC2ALUAswCwAK4ArQCrAKoAqQCqAKoAqwCrAKoAqACnAKUAowChAJ8AngCcAJoAmQCZAJgAmACXAJUAlACSAJAAjgCNAIsAigCJAIcAhgCFAIMAggCAAH0AewB5AHYAdAByAHAABAAGAAcACAAIAAkACQAJAAoACgAKAAoACgAKAAoACwAMAA4AEgAXAB0AJgAwADsARgBNAFIAVQBWAFUAVwBeAGQAZwBoAGoAbQBwAHMAdwB6AHwAfgCAAIIAhACGAIgAigCMAI4AjwCQAJEAkQCSAJMAlACVAJcAmQCbAJ0AnwCgAKEAowCkAKUApgCnAKgAqgCsAK4ArwCwALAAsQCzALUAtQC1ALYAtwC3ALYAtACyALEArwCtAKwAqwCsAK0ArgCuAK0AqwCpAKcApQCkAKIAoACeAJ0AnACbAJsAmgCYAJcAlQCTAJIAkACPAI0AjACLAIkAiACHAIUAgwCCAIAAfgB8AHoAdwB1AHMABQAHAAgACAAJAAkACQAKAAoACgAKAAoACgAKAAsACwANAA8AEwAZACMALwA9AEsAVwBfAGIAYwBjAGAAXgBeAGEAZQBnAGkAbABwAHQAdwB6AH0AfwCCAIQAhgCIAIoAjACOAJAAkQCSAJMAkwCUAJQAlQCWAJcAmQCcAJ4AoACiAKMApACmAKcAqACpAKoAqwCtALAAsgCzALMAtAC1ALcAuAC4ALgAuQC5ALcAtQC0ALMAsQCvAK0ArACuALAAsQCxAK8ArQCrAKkAqACmAKQAowChAJ8AngCdAJ0AnACaAJkAlwCVAJMAkgCQAI8AjgCMAIsAigCIAIcAhQCEAIIAgQB/AH0AewB5AHcABgAIAAgACQAJAAoACgAKAAoACgAKAAoACgALAAsADAANAA8AEwAeAC0APQBNAFsAZABpAGoAagBqAGkAZgBiAGEAYwBmAGkAbQBwAHQAeAB7AH0AgACDAIUAhwCJAIsAjgCQAJIAlACVAJUAlQCVAJUAlgCXAJgAmgCdAJ8AoQCjAKUApgCoAKkAqgCrAKwArQCuALEAtAC2ALcAtwC4ALkAugC6ALsAuwC6ALkAuAC3ALUAswCxAK4ArQCvALEAswCzALEArwCtAKwAqgCpAKcApQCkAKIAoQCgAJ8AnQCcAJoAmACWAJUAkwCSAJAAjwCOAI0AjACKAIkAhwCGAIUAgwCBAH8AfQB7AHoABwAIAAkACQAKAAoACgAKAAoACwALAAsACwALAAsADAANAA8AFwAoADwATABbAGUAaQBrAGsAbABsAGoAaABmAGQAZABmAGoAbQBxAHUAeQB7AH4AgACDAIYAiACKAI0AjwCSAJQAlgCXAJcAlwCXAJcAmACYAJoAmwCeAKAAogClAKcAqACqAKsArACtAK4ArgCwALIAtQC5ALsAvAC8AL0AvQC9AL0AvQC8ALsAugC5ALcAtQCyAK8ArgCwALIAtAC0ALIAsQCvAK4ArACrAKkAqACmAKUAowCiAKAAnwCdAJwAmgCYAJYAlQCTAJIAkQCQAI8AjgCNAIsAigCJAIcAhgCEAIIAgAB+AH0ACAAJAAkACgAKAAoACgALAAsACwALAAsACwALAAwADAAMABIAIQA2AEkAWQBkAGkAawBsAG0AbQBtAGwAagBoAGYAZQBnAGoAbgBzAHcAegB8AH4AgACEAIcAigCNAI8AkQCTAJYAmACZAJkAmQCaAJoAmgCbAJwAnQCfAKIApACnAKkAqwCsAK0ArwCvALEAsgCzALYAuQC9AL8AwADAAMEAwADAAL8AvwC+AL4AvQC7ALkAtgCzALAArwCwALIAtQC2ALUAswCyALAArwCtAKwAqgCpAKcApQCkAKIAoACfAJ0AmwCZAJgAlgCVAJMAkgCSAJEAkACPAI4AjQCLAIoAiACHAIUAgwCBAH8ACQAJAAoACgAKAAoACwALAAsACwALAAwADAAMAAwADAAQABwAMABEAFUAYwBpAGsAbABuAG8AcABvAG4AbQBrAGkAaABoAGsAcAB0AHgAewB9AH8AggCFAIkAjACPAJIAlACVAJYAmQCaAJsAnACcAJwAnQCeAJ8AoACiAKQApgCoAKsArQCvALAAsgC0ALYAuAC7AL0AwADCAMMAxADEAMQAwwDCAMIAwQDBAMAAvwC+ALwAuQC1ALIAsQCxALMAtgC4ALgAtgC1ALMAsgCwAK4ArQCrAKkAqACmAKQAogCgAJ8AnQCbAJkAmACWAJUAlACTAJMAkgCSAJEAkACPAI0AiwCKAIgAhgCEAIEACgAKAAoACwALAAsACwALAAsADAAMAAwADQAMAA0AEAAbACsAPgBPAF8AaABrAGwAbgBwAHEAcgByAHEAcQBwAG8AbABsAG4AcgB3AHoAfQB/AIIAhACHAIoAjgCRAJQAlgCXAJcAmQCbAJ0AngCeAJ8AoAChAKIAowClAKcAqACqAK0ArwCxALQAtwC6AL4AwQDEAMUAxgDHAMgAyADIAMcAxgDEAMMAwwDDAMMAwgDBAL8AvQC5ALYAtACzALUAuQC7ALoAuQC4ALYAtACzALEArwCuAKwAqgCoAKUAowCiAKAAngCdAJsAmQCYAJcAlgCVAJQAlACUAJQAkwCSAJAAjwCNAIsAiACFAIIACgALAAsACwALAAsACwALAAwADAANAA0ADQAOABEAGgAoADkASgBbAGYAagBsAG4AbwBxAHMAdAB1AHYAdwB3AHYAdQB0AHQAdgB5AHwAfwCBAIMAhgCJAIwAkACTAJYAmACZAJkAmQCbAJ0AnwCgAKEAowCkAKUApwCoAKkAqgCsAK4AsQC1ALgAvADBAMUAyADKAMsAywDLAMsAywDKAMkAxwDGAMYAxQDFAMUAxQDEAMMAwQC/AL0AugC5ALoAvAC9AL0AvAC7ALkAuAC2ALQAsgCwAK4ArACpAKcApQCjAKIAoACeAJ0AnACaAJkAmACXAJYAlgCXAJYAlQCUAJMAkgCQAI4AigCHAIIACwALAAsACwALAAsADAAMAAwADQAOAA4ADwASABoAJgA1AEcAVwBjAGkAawBtAG8AcQBzAHUAdgB4AHoAewB8AH0AfAB7AHoAeQB7AH4AgQCDAIUAiACLAI4AkgCVAJgAmgCbAJsAmwCdAJ8AoQCjAKQApgCnAKkAqgCsAKwArQCtAK8AswC3ALwAwQDGAMkAywDNAM0AzgDOAM4AzgDNAMsAyQDIAMgAyADIAMgAyADHAMcAxgDEAMMAwgDAAMAAwADBAMAAvwC+ALwAuwC5ALcAtQCyALAArQCrAKkApwClAKMAogCgAJ8AngCdAJsAmgCZAJgAmACZAJkAmACXAJYAlQCUAJEAjQCJAIQADAAMAAwADAAMAAwADAAMAA0ADgAPABAAEwAaACMAMQBCAFMAYQBoAGsAbQBvAHEAcwB1AHcAeQB7AHwAfgB/AIAAgQCAAH4AfAB8AH8AggCEAIcAiQCMAI8AkwCWAJkAmwCdAJ0AngCgAKEAowClAKYAqACqAKwArQCvALAArwCvALAAswC5AL8AxADJAMwAzQDOAM8A0ADQANAA0ADPAM0AywDKAMoAygDLAMsAywDLAMoAygDJAMgAxwDGAMUAxQDEAMMAwgDBAMAAvgC8ALoAtwC1ALEArgCsAKoAqQCnAKYApACjAKEAoACfAJ0AnACbAJoAmgCbAJsAmgCZAJkAmACWAJQAkACMAIgADQANAA0ADQANAA0ADQAOAA4ADwAQABQAGgAiAC0APABPAF4AZwBqAGwAbgBxAHMAdQB3AHkAewB9AH8AgACCAIIAggCBAIAAfgB9AH4AgQCFAIgAigCNAJAAkwCWAJkAnACeAJ8AoACiAKQApQCnAKkAqgCsAK4AsACyALMAswCxALEAtQC7AMEAxgDKAM0AzwDRANIA0gDTANMA0gDSANAAzgDOAM4AzgDOAM4AzgDOAM4AzQDMAMsAygDKAMkAyADHAMcAxgDFAMMAwQC/AL0AugC3ALMAsACuAKwAqgCpAKgApgClAKQAowChAKAAngCdAJ0AnQCdAJwAnACbAJsAmgCYAJYAkwCQAI0ADwAPAA8ADwAPAA8AEAAQABAAEQAVABwAIwAsADkASgBaAGUAagBsAG8AcQBzAHUAdgB4AHsAfQB/AIEAgwCEAIUAhACDAIAAfgB9AH4AgQCEAIgAjACPAJEAkwCWAJkAnACeAKAAogClAKcAqACqAKsArQCvALEAtAC2ALgAuAC3ALcAugC/AMQAyADLAM4A0QDTANQA1QDVANYA1gDVANUA1ADUANMA0wDTANMA0wDSANIA0QDQAM8AzwDOAM0AzQDMAMsAygDJAMcAxQDEAMEAvgC6ALYAswCwAK4ArQCrAKoAqQCoAKcApgCkAKMAogChAKAAoACfAJ4AnQCdAJwAmwCaAJgAlwCVAJIAEgASABEAEQASABMAEwASABMAFgAcACMAKwA1AEQAVABhAGgAbABuAHEAcwB1AHYAeAB6AHwAfgCBAIMAhQCGAIYAhgCEAIEAfwB+AH4AgACDAIgAjQCRAJMAlQCXAJkAnACfAKEApACnAKkAqwCsAK4ArwCxALQAtwC6ALwAvQC9AL4AwADDAMcAygDNANAA0gDUANYA1wDYANgA2QDZANkA2QDZANgA2ADYANcA1gDWANUA1ADTANMA0gDRANEA0ADPAM4AzQDMAMoAyQDHAMUAwgC/ALoAtwCzALAArwCtAK0ArACrAKoAqACnAKYApACjAKMAogChAKAAnwCeAJ0AnACbAJoAmQCYAJYAFQAVABUAFQAWABgAGAAYABkAHgAkACoAMwA/AE4AWwBlAGsAbgBxAHQAdgB3AHgAegB8AH4AgACCAIUAhgCIAIgAhwCFAIEAfwB+AH4AfwCDAIkAjwCUAJYAmACZAJsAnQCgAKMApgCpAKwArgCvALAAsgC1ALgAvAC/AMEAwgDDAMQAxQDHAMkAzADOANEA1ADWANgA2QDaANsA3ADcANwA3QDdAN0A3QDcANsA2gDZANgA1wDXANYA1gDVANQA0wDTANIA0ADPAM4AzADLAMkAxgDDAL8AuwC3ALMAsQCwAK8ArgCuAKwAqwCpAKgApwClAKQAowCiAKEAoACfAJ4AnQCcAJsAmgCaAJgAGQAXABcAGQAdACAAIgAjACUAKAAsADIAPABJAFYAYQBpAG4AcgB1AHcAeQB6AHoAfAB9AH8AggCEAIcAiACKAIoAigCIAIQAgQB/AH4AfgCCAIoAkwCYAJoAmwCcAJ4AnwCiAKQApwCrAK4AsQCzALQAtgC5AL0AwQDEAMYAxwDIAMgAyADJAMsAzgDQANMA1gDYANoA3ADdAN0A3gDeAN8A4ADgAOAA4ADgAN4A3QDcANsA2gDaANoA2QDZANgA1wDWANUA1ADTANEA0ADOAMwAygDHAMMAvwC7ALcAtACzALIAsQCwAK8ArQCsAKoAqQCnAKYApQCjAKIAoQCgAJ8AngCdAJwAmwCaAJkAHwAcABoAHQAlAC0AMQA0ADUANQA2ADsARQBRAF0AZgBtAHIAdgB5AHsAfAB8AH0AfgB/AIEAhACGAIkAiwCMAI0AjQCNAIoAhgCCAH8AfQCBAIsAlgCbAJ0AngCfAKAAogCkAKYAqQCsAK8AswC2ALgAuwC+AMEAxQDIAMoAywDLAMsAywDMAM0A0ADTANUA2ADbANwA3gDfAOAA4ADgAOEA4gDjAOMA4wDiAOEA4ADeAN0A3QDdAN0A3QDcANsA2gDaANkA2ADXANUA1ADRAM8AzQDKAMcAxADAALwAuQC3ALYAtQCzALEArwCtAKwAqwCpAKgApgClAKMAogChAKAAnwCeAJ0AnACbAJoAJwAmACYAKAAwADoAQQBFAEcARwBFAEYATgBZAGQAbAByAHcAewB+AH8AfwB/AIAAgQCCAIQAhgCIAIsAjQCPAJAAkQCSAJIAjwCJAIIAfgB/AIoAlwCdAJ8AoQCiAKQApQCnAKgAqgCsALAAswC4ALsAvwDCAMUAyADKAMwAzQDNAM4AzgDPANAA0gDVANcA2gDdAN8A4ADhAOIA4gDiAOMA5ADkAOUA5QDkAOMA4QDgAN8A3wDfAOAA4ADfAN4A3QDdANwA2wDaANkA1wDVANMA0ADNAMoAxwDEAMEAvgC8ALoAuAC2ALMAsQCvAK0ArACrAKoAqACmAKUAowCiAKEAoACfAJ4AnQCcAJoA";
+{const bin=atob(DEM_B64),u8=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);const i16=new Int16Array(u8.buffer);for(let k=0;k<NX*NN;k++)Hg[k]=i16[k];}
+function H(x,n){const fi=(x-X0)/STEP,fj=(n-N0)/STEP;const i=Math.max(0,Math.min(NX-2,Math.floor(fi))),j=Math.max(0,Math.min(NN-2,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));const a=Hg[j*NX+i],b=Hg[j*NX+i+1],c=Hg[(j+1)*NX+i],d=Hg[(j+1)*NX+i+1];return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v;}
+function correct(){const R=320,CELL=400,buckets=new Map(),samples=[];
+  TRAILS.forEach(T=>T.pts.forEach((p,i)=>{if(i%2===0)samples.push({x:p.x,n:p.n,dl:p.e-H(p.x,p.n)});}));
+  samples.forEach(s=>{const k=Math.floor(s.x/CELL)+","+Math.floor(s.n/CELL);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(s);});
+  const out=new Float32Array(Hg);
+  for(let j=0;j<NN;j++)for(let i=0;i<NX;i++){const x=X0+i*STEP,n=N0+j*STEP,bx=Math.floor(x/CELL),bn=Math.floor(n/CELL);let sw=0,sd=0;
+    for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=buckets.get((bx+a)+","+(bn+b));if(!arr)continue;for(const s of arr){const d2=(s.x-x)**2+(s.n-n)**2;if(d2>4*R*R)continue;const w=Math.exp(-d2/(R*R));sw+=w;sd+=w*s.dl;}}
+    if(sw>0)out[j*NX+i]+=sd/sw*Math.min(1,sw*1.4);}
+  Hg.set(out);}
+correct();
+function distToTrail(T,x,n){let b=1e9;for(let i=0;i<T.pts.length;i+=3){const p=T.pts[i];const d=Math.hypot(p.x-x,p.n-n);if(d<b)b=d;}return b;}
+const NEAR=1150;
+function nearTrails(x,n){return TRAILS.filter(T=>distToTrail(T,x,n)<NEAR).map(T=>T.id);}
+
+/* ================= scene setup ================= */
+const canvas=$("#gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-2000,2000);
+const dirL=new THREE.DirectionalLight(0xffffff,0.5);scene.add(new THREE.AmbientLight(0xffffff,0.58),dirL,dirL.target);
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const col=h=>new THREE.Color(h);
+const LAM={};const lam=c=>LAM[c]||(LAM[c]=new THREE.MeshLambertMaterial({color:c}));
+const PHO={};const pho=c=>PHO[c]||(PHO[c]=new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0,specular:0x000000}));
+const HULL=new THREE.MeshBasicMaterial({color:PAL.outline,side:THREE.BackSide});
+function ribbon(points,width,mat,lift){
+  const pos=[],uv=[],idx=[];let len=0;
+  for(let i=0;i<points.length;i++){const p=points[i],a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)];
+    if(i)len+=points[i].distanceTo(points[i-1]);
+    let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;const px=-tz*width/2,pz=tx*width/2;
+    pos.push(p.x+px,p.y+lift,p.z+pz,p.x-px,p.y+lift,p.z-pz);uv.push(0,len/3,1,len/3);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}}
+  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
+  return new THREE.Mesh(g,typeof mat==="string"?new THREE.MeshBasicMaterial({color:mat,side:THREE.DoubleSide}):mat);
+}
+function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new THREE.Mesh(geo,phong?pho(color):lam(color));m.position.set(x,y,z);m.scale.set(sx,sy==null?sx:sy,sz==null?sx:sz);parent.add(m);
+  if(hull){const h=new THREE.Mesh(geo,HULL);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(hull);parent.add(h);m.userData.hull=h;}return m;}
+function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
+
+/* tile & organic boundary */
+const C={x0:-2150,x1:900,n0:-1750,n1:1050,ve:3};
+const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
+function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
+const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+const mask=(x,n)=>{const t=sm(Math.min((1-Math.abs((x-cx)/(w/2)))*w/2,(1-Math.abs((n-cn)/(d/2)))*d/2)/(0.2*Math.min(w,d)));return t*t*(1.6-0.6*t);};
+const cells=96,nx=Math.round(cells*w/Math.max(w,d)),nn=Math.round(cells*d/Math.max(w,d)),dx=w/nx,dn=d/nn;
+let base=1e9;for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;if(qOf(x,n)<0.9)base=Math.min(base,H(x,n));}base-=10;
+const R1=nx+1,hv=new Float32Array((nx+1)*(nn+1));
+for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;hv[j*R1+i]=base+(H(x,n)-base)*mask(x,n);}
+const diag=new Uint8Array(nx*nn);for(let k=0;k<diag.length;k++)diag[k]=hash(k*7+11,1519)>.5?1:0;
+function surf(x,n){const fi=(x-C.x0)/dx,fj=(n-C.n0)/dn;const i=Math.max(0,Math.min(nx-1,Math.floor(fi))),j=Math.max(0,Math.min(nn-1,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));
+  const a=hv[j*R1+i],b=hv[j*R1+i+1],c=hv[(j+1)*R1+i],e=hv[(j+1)*R1+i+1];
+  if(diag[j*nx+i])return u>=v?a+(b-a)*u+(e-b)*v:a+(c-a)*v+(e-c)*u;
+  return u+v<=1?a+(b-a)*u+(c-a)*v:e+(c-e)*(1-u)+(b-e)*(1-v);}
+const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
+const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
+const world=new THREE.Group();scene.add(world);
+const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
+const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
+let MAXY=0;
+
+// terrain + contours
+(function(){
+  const pos=[],cols=[],r=rng(97),tris=[];
+  function tri(A,B,Q){
+    
+    const ux=B[0]-A[0],uy=B[2]-A[2],uz=B[1]-A[1],vx=Q[0]-A[0],vy=Q[2]-A[2],vz=Q[1]-A[1];
+    let Nx=uy*vz-uz*vy,Ny=uz*vx-ux*vz,Nz=ux*vy-uy*vx;if(Ny<0){Nx=-Nx;Ny=-Ny;Nz=-Nz;}
+    const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
+    const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
+    let c;
+    if(me<3)c=col(me<1?"#9CCFE0":"#E9DDBF");else if(me<14&&g<0.25)c=col("#EADFC4");else if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
+    else if(me>150&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
+    const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
+    const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
+    W3.forEach(p=>{pos.push(p.x,p.y,p.z);cols.push(c.r,c.g,c.b);MAXY=Math.max(MAXY,p.y);});
+    tris.push([A,B,Q]);
+  }
+  for(let j=0;j<nn;j++)for(let i=0;i<nx;i++){const P=(ii,jj)=>[C.x0+ii*dx,C.n0+jj*dn,hv[jj*R1+ii]];const a=P(i,j),b=P(i+1,j),c=P(i,j+1),e=P(i+1,j+1);
+    if(diag[j*nx+i]){tri(a,b,e);tri(a,e,c);}else{tri(a,b,c);tri(b,e,c);}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));tg.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));tg.computeVertexNormals();
+  topoGroup.add(new THREE.Mesh(tg,new THREE.MeshLambertMaterial({vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+  topoGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(tg,26),new THREE.LineBasicMaterial({color:PAL.terrLine,transparent:true,opacity:.16})));
+  // contour lines every 100 ft, heavier every 500 ft
+  const minor=[],major=[];
+  tris.forEach(T=>{const hs=T.map(v=>v[2]);const lo=Math.min(...hs),hi=Math.max(...hs);if(hi-lo<1)return;
+    for(let L=Math.ceil((lo-base+1)/100)*100+base;L<hi;L+=100){if(L-base<40)continue;const pts=[];
+      for(let k=0;k<3;k++){const P=T[k],Q=T[(k+1)%3];if((P[2]-L)*(Q[2]-L)<0){const t=(L-P[2])/(Q[2]-P[2]);pts.push(Wv(P[0]+(Q[0]-P[0])*t,P[1]+(Q[1]-P[1])*t,L).add(new THREE.Vector3(0,0.06,0)));}}
+      if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
+  const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
+  topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
+  // base: one thin sheet of liquid glass
+  const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
+  const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
+})();
+
+// creeks with flowing texture
+function stripeTex(bg,stroke,w0,h0,n,seed,len){const c=document.createElement("canvas");c.width=w0;c.height=h0;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,w0,h0);const r=rng(seed);x.fillStyle=stroke;
+  for(let i=0;i<n;i++){const px=r()*w0,py=r()*h0,l=len*(0.5+r()),wd=1.5+r()*2.5;x.globalAlpha=0.55+r()*0.45;x.beginPath();x.ellipse(px,py,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py+h0,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py-h0,wd,l,0,0,Math.PI*2);x.fill();}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const creekTex=stripeTex(PAL.water,"#FFFFFF",32,128,10,5,9);
+const creekMat=new THREE.MeshBasicMaterial({map:creekTex,side:THREE.DoubleSide});
+CANYONS.forEach(cy=>{const pts=[];let done=false;
+  for(let k=0;k<cy.pts.length-1&&!done;k++){const a=cy.pts[k],b=cy.pts[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),st=Math.ceil(L/(dx/3));
+    for(let s=0;s<st;s++){const t=s/st,x=a[0]+(b[0]-a[0])*t,n=a[1]+(b[1]-a[1])*t;if(qOf(x,n)>0.95){if(pts.length>1){done=true;break;}continue;}pts.push(G(x,n));}}
+  if(pts.length<2)return;const wd=cy.minor?0.5:0.85;world.add(ribbon(pts,wd+0.4,PAL.waterEdge,0.2));world.add(ribbon(pts,wd,creekMat,0.26));});
+
+// trails
+const trailPts=[],trailMesh={};
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
+  const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
+  world.add(bright,dim);trailMesh[T.id]={bright,dim};});
+TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
+  const pts=T.world.filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
+  g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
+  const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55})));
+  const foot=pts.map(p=>new THREE.Vector3(p.x,0.02,p.z));g.add(ribbon(foot,0.5,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35,side:THREE.DoubleSide}),0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.4,0)))),pts.length*2,0.32,6,false),new THREE.MeshLambertMaterial({color:c})));
+  trail3D.add(g);T.g3=g;});
+const TG=new Map(),tgk=(x,z)=>Math.floor(x/1.6)+","+Math.floor(z/1.6);trailPts.forEach(p=>{const k=tgk(p.x,p.z);(TG.get(k)||TG.set(k,[]).get(k)).push(p);});
+const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=TG.get((i+a)+","+(j+b));if(!arr)continue;for(const p of arr){const ddx=p.x-v.x,ddz=p.z-v.z;if(ddx*ddx+ddz*ddz<2.2)return true;}}return false;};
+
+// trees
+(function(){
+  const types={
+    oak:{geo:new THREE.IcosahedronGeometry(0.8,1),color:PAL.oak,y:1.3,trunk:true},
+    syc:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.sycamore,y:1.2,trunk:true},
+    gold:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.gold,y:1.2,trunk:true},
+    conifer:{geo:new THREE.ConeGeometry(0.6,2.4,7).translate(0,1.45,0),color:PAL.conifer,y:0,trunk:false},
+    shrub:{geo:new THREE.IcosahedronGeometry(0.4,0).scale(1,0.7,1),color:PAL.shrub,y:0.22,trunk:false}};
+  const inst={};Object.keys(types).forEach(k=>inst[k]=[]);
+  const tr=rng(907);
+  for(let t=0;t<9000;t++){
+    const x=C.x0+tr()*w,n=C.n0+tr()*d,q=qOf(x,n);if(q>0.93)continue;
+    const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
+    const cd=creekDist(x,n);if(cd*S<0.8)continue;
+    const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
+    if(mk<0.25){type=tr()<.5?"oak":"conifer";p=0.05;}
+    else if(cd<230){type=tr()<.38?"gold":"syc";p=0.32;}
+    else if(south<-0.15&&cd<1300){type=(e>2300&&tr()<.55)?"conifer":"oak";p=0.24+cl*.25;}
+    else if(e>2600){type="conifer";p=0.12;}
+    else if(g>1.15)type=null;
+    else{type="shrub";p=0.02+cl*.02;}
+    if(!type||tr()>p||inst[type].length>420)continue;
+    const v=Wv(x,n,e);if(nearTrail(v))continue;
+    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+  }
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
+  Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
+    const mesh=new THREE.InstancedMesh(T.geo,pho(T.color),list.length),hull=new THREE.InstancedMesh(T.geo,HULL,list.length);
+    list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y+T.y*it.s,it.v.z);sc.setScalar(it.s);m4.compose(pv,q,sc);mesh.setMatrixAt(i,m4);sc.setScalar(it.s*1.12);m4.compose(pv,q,sc);hull.setMatrixAt(i,m4);if(T.trunk)trunks.push({v:it.v,s:it.s,h:T.y});});
+    treeGroup.add(hull,mesh);});
+  const tm=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.08,0.11,1,5).translate(0,0.5,0),lam(PAL.trunk),trunks.length);q.identity();
+  trunks.forEach((t,i)=>{pv.set(t.v.x,t.v.y,t.v.z);sc.set(t.s,t.h*t.s,t.s);m4.compose(pv,q,sc);tm.setMatrixAt(i,m4);});treeGroup.add(tm);
+})();
+
+// boulders
+(function(){const r=rng(41),g=new THREE.IcosahedronGeometry(0.35,0),list=[];
+  CANYONS.forEach(cy=>{for(let k=0;k<cy.pts.length-1;k++){const a=cy.pts[k],b=cy.pts[k+1];for(let s=0;s<6;s++){const t=r(),x=a[0]+(b[0]-a[0])*t+(r()-.5)*160,n=a[1]+(b[1]-a[1])*t+(r()-.5)*160;if(qOf(x,n)>0.85)continue;list.push(G(x,n,0.15));}}});
+  const m=new THREE.InstancedMesh(g,pho(PAL.stone),list.length),h=new THREE.InstancedMesh(g,HULL,list.length),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  list.forEach((v,i)=>{const s=0.7+r()*0.8;q.setFromEuler(new THREE.Euler(r()*3,r()*3,r()*3));sc.set(s,s*.7,s);m4.compose(v,q,sc);m.setMatrixAt(i,m4);sc.multiplyScalar(1.12);m4.compose(v,q,sc);h.setMatrixAt(i,m4);});treeGroup.add(h,m);})();
+
+/* ================= flowers ================= */
+const FGEO={stem:new THREE.CylinderGeometry(0.03,0.03,1,4).translate(0,0.5,0),
+  tube:new THREE.ConeGeometry(0.09,0.34,5).translate(0,0.17,0),cup:new THREE.ConeGeometry(0.2,0.22,6).rotateX(Math.PI).translate(0,0.11,0),
+  dome:new THREE.SphereGeometry(0.2,6,4).scale(1,0.6,1),spike:new THREE.ConeGeometry(0.1,0.55,5).translate(0,0.28,0),
+  berry:new THREE.IcosahedronGeometry(0.075,0),bush:new THREE.IcosahedronGeometry(0.38,0).scale(1,.8,1),frond:new THREE.ConeGeometry(0.07,0.9,3).translate(0,0.45,0),
+  yuccaLeaf:new THREE.ConeGeometry(0.06,0.55,3).translate(0,0.27,0),pad:new THREE.SphereGeometry(0.2,7,5).scale(1,1.25,0.32)};
+function plant(k,sink,r){const sp=SPECIES[k],c=sp.color,G2="#5F8A3E",add=sink;
+  const M=(x,y,z,s,rx=0,rz=0)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,0,rz)),new THREE.Vector3(s,s,s));
+  const Ms=(x,y,z,sx,sy)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(sx,sy,sx));
+  if(sp.shape==="tube"){for(let i=0;i<5;i++){const a=r()*6.28,rr=r()*0.25,x=Math.cos(a)*rr,z=Math.sin(a)*rr,h=0.35+r()*.25;add("stem",G2,Ms(x,0,z,1,h));add("tube",c,M(x,h,z,1,(r()-.5)*.6,(r()-.5)*.6));}}
+  else if(sp.shape==="cup"){add("bush",G2,Ms(0,0.25,0,0.9,0.8));for(let i=0;i<5;i++){const a=i/5*6.28+r(),x=Math.cos(a)*.28,z=Math.sin(a)*.28;add("cup",c,M(x,0.5+r()*.15,z,1));}}
+  else if(sp.shape==="dome"){add("bush",G2,Ms(0,0.2,0,0.8,0.6));for(let i=0;i<4;i++){const a=i/4*6.28+r(),x=Math.cos(a)*.22,z=Math.sin(a)*.22;add("dome",c,M(x,0.45,z,0.9+r()*.3));}}
+  else if(sp.shape==="spike"){add("bush",G2,Ms(0,0.2,0,0.7,0.6));for(let i=0;i<4;i++){const a=r()*6.28,x=Math.cos(a)*.18,z=Math.sin(a)*.18,h=0.5+r()*.3;add("stem",G2,Ms(x,0,z,1,h));add("spike",c,M(x,h,z,1));}}
+  else if(sp.shape==="yucca"){for(let i=0;i<8;i++){const a=i/8*6.28;add("yuccaLeaf","#7E9B5C",M(0,0,0,1,Math.cos(a)*.9,Math.sin(a)*.9));}add("stem","#8FA36A",Ms(0,0,0,1.4,1.6));add("spike",c,M(0,1.6,0,1.6));}
+  else if(sp.shape==="berry"){add("bush","#4F7A3A",Ms(0,0.32,0,1.15,1));for(let i=0;i<7;i++){const a=r()*6.28,b=r()*1.2,x=Math.cos(a)*.38*Math.cos(b-.6),z=Math.sin(a)*.38*Math.cos(b-.6);add("berry",c,M(x,0.32+Math.sin(b)*.3,z,1));}}
+  else if(sp.shape==="pad"){const PADS=[[0,0.24,0,1,0,0],[0.2,0.5,0.02,0.85,0,-0.5],[-0.2,0.48,0,0.85,0,0.5],[0.05,0.75,0.05,0.7,0,-0.2],[0.3,0.24,0.15,0.8,0.5,-0.3]];PADS.forEach(([x,y,z,s,ry,rz])=>{add("pad","#7FA552",new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(0,ry+r()*0.6,rz)),new THREE.Vector3(s,s,s)));});[[0.05,0.98,0.05],[0.32,0.73,0.02],[-0.3,0.72,0]].forEach(([x,y,z])=>add("berry",c,M(x,y,z,1.4)));}
+  else if(sp.shape==="fern"){for(let i=0;i<7;i++){const a=i/7*6.28+r()*.3;add("frond",c,M(0,0,0,1,Math.cos(a)*.95,Math.sin(a)*.95));}}
+}
+const flowerGroups={},clusters=[];
+(function(){
+  const r=rng(53),FS=1.8;
+  TRAILS.forEach(T=>{const buckets={};
+    FLORA[T.id].forEach(k=>{const sp=SPECIES[k];let got=0,tries=0;const want=T.id==="C"?4:3;
+      while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
+        if(qOf(x,n)>0.85)continue;
+        const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
+        plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
+        clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
+    const grp=new THREE.Group();Object.values(buckets).forEach(b=>{const m=new THREE.InstancedMesh(FGEO[b.g],pho(b.c),b.list.length);b.list.forEach((mm,i)=>m.setMatrixAt(i,mm));grp.add(m);});
+    world.add(grp);flowerGroups[T.id]=grp;});
+})();
+
+/* ================= landmarks + waterfall ================= */
+const anim={};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,8),ico=new THREE.IcosahedronGeometry(1,0);
+  const roof=new THREE.CylinderGeometry(0.75,0.75,1,3).rotateZ(Math.PI/2).rotateX(Math.PI/2).rotateY(Math.PI/2);
+  function house(x,n,s,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry;world.add(g);
+    part(g,box,PAL.wall,0,0.6*s,0,1.8*s,1.2*s,1.2*s,1.06);const r=part(g,roof,PAL.roof,0,1.55*s,0,1.25*s,0.95*s,1.2*s,1.06);rot(r,0,Math.PI/2,0);
+    part(g,box,"#6B4F3A",0,0.35*s,0.61*s,0.35*s,0.7*s,0.05,0);}
+  function gate(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);
+    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}
+  function bench(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n,0.05));g.rotation.y=ry||0;world.add(g);part(g,box,"#9C7653",0,0.42,0,1.3,0.1,0.42,1.08);part(g,box,"#9C7653",0,0.75,-0.2,1.3,0.45,0.08,1.08);part(g,box,"#6B4F3A",-0.55,0.2,0,0.1,0.4,0.36,0);part(g,box,"#6B4F3A",0.55,0.2,0,0.1,0.4,0.36,0);}
+  function palm(x,n,h,i){const b=G(x,n);const g=new THREE.Group();g.position.copy(b);g.rotation.y=(i||0)*1.3;world.add(g);
+    const tk=part(g,cyl,"#9A7B5B",0,h/2,0,0.11,h,0.11);rot(tk,0,0,((i||0)%2?0.06:-0.05));
+    for(let f=0;f<7;f++){const a=f/7*Math.PI*2;const fr=part(g,new THREE.ConeGeometry(0.16,1.5,4).translate(0,0.75,0),f%2?"#5E8F3E":"#6FA04A",0,h,0,1,1,1,1.1);rot(fr,Math.cos(a)*1.25,0,Math.sin(a)*1.25);}
+    part(g,new THREE.SphereGeometry(1,6,4),"#8C6B4A",0,h-0.05,0,0.22,0.18,0.22,1.1);}
+  function slab(x,n,sx,sz,c,ry){const p=G(x,n);const m=part(world,box,c||"#D9D4C8",p.x,p.y+0.1,p.z,sx,0.2,sz,1.06);rot(m,0,ry||0,0);return m;}
+  function tower(x,n,h,c){const p=G(x,n);part(world,cyl,c||"#E9E1D2",p.x,p.y+h/2,p.z,0.35,h,0.35,1.06);part(world,new THREE.ConeGeometry(0.6,0.8,8),"#B5523B",p.x,p.y+h+0.4,p.z,1,1,1,1.06);}
+  function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
+    [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
+  function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
+  gate(-26,36,0.8);gate(-2024,945,-0.6);
+  // boardwalk + viewing platform
+  slab(-95,-1221,0.5,0.75,"#B08A5E",0.82);slab(-63,-1191,0.5,0.75,"#B08A5E",0.13);slab(-56,-1132,0.5,0.75,"#B08A5E",0.00);slab(-55,-1063,0.5,0.75,"#B08A5E",-0.22);slab(-65,-1017,0.5,0.75,"#B08A5E",0.10);slab(-59,-953,0.5,0.75,"#B08A5E",-0.03);slab(-61,-889,0.5,0.75,"#B08A5E",-0.08);slab(-66,-821,0.5,0.75,"#B08A5E",-0.37);slab(-85,-771,0.5,0.75,"#B08A5E",-0.48);slab(-107,-729,0.5,0.75,"#B08A5E",-0.78);
+  slab(-95,-1236,1.6,1.2,"#9C7653",0.2);
+  bench(-185,-979,2.6);bench(-125,-1201,3.0);
+  // stairs to Dume Cove
+  slab(320,-54,0.45,0.55,"#8A8F94",0.6);slab(373,-43,0.45,0.55,"#8A8F94",0.6);slab(388,-63,0.45,0.55,"#8A8F94",0.6);slab(388,-103,0.45,0.55,"#8A8F94",0.6);slab(397,-134,0.45,0.55,"#8A8F94",0.6);slab(412,-184,0.45,0.55,"#8A8F94",0.6);
+  // beach sign at Westward Beach
+  {const q=G(-1964,855);part(world,cyl,"#6B4F3A",q.x,q.y+0.5,q.z,0.06,1.0,0.06,0);part(world,box,"#2D4A40",q.x,q.y+1.05,q.z,0.9,0.5,0.06,1.06);}
+
+  anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
+})();
+
+(function(){const m4=new THREE.Matrix4(),pv=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  treeGroup.children.forEach(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,m4);m4.decompose(pv,q,sc);
+    const x=pv.x/S+cx,n=-pv.z/S+cn;if(H(x,n)<8){sc.setScalar(0);m4.compose(pv,q,sc);m.setMatrixAt(i,m4);}}m.instanceMatrix.needsUpdate=true;});})();
+/* ================= animals ================= */
+const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
+function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
+const BUILD={
+ bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
+   part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
+   legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6";part(g,SPH,c,0,1.35,0,0.85,0.45,0.38);part(g,SPH,lt,-0.8,1.4,0,0.18,0.22,0.22);
+   const neck=new THREE.Group();neck.position.set(0.6,1.5,0);g.add(neck);
+   part(neck,CYL,c,0.18,0.35,0,0.13,0.7,0.13);part(neck,SPH,c,0.35,0.75,0,0.32,0.22,0.2);part(neck,SPH,"#2a2a2a",0.66,0.72,0,0.06,0.06,0.06,0);
+   part(neck,SPH,c,0.15,1.0,0.25,0.2,0.09,0.06);part(neck,SPH,c,0.15,1.0,-0.25,0.2,0.09,0.06);
+   part(neck,CYL,"#8A6A4F",0.25,1.15,0.12,0.03,0.4,0.03,0);part(neck,CYL,"#8A6A4F",0.25,1.15,-0.12,0.03,0.4,0.03,0);
+   legs4(g,c,[[0.5,0.2],[0.5,-0.2],[-0.5,0.2],[-0.5,-0.2]],1.1,1.1,0.08);g.userData.neck=neck;return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C";part(g,SPH,c,0,0.7,0,0.55,0.7,0.45);part(g,SPH,c,0.15,1.45,0,0.38);part(g,SPH,"#F3E7D6",0.45,1.38,0,0.16,0.13,0.18);
+   part(g,CONE,c,0.1,1.85,0.2,0.1,0.25,0.1);part(g,CONE,c,0.1,1.85,-0.2,0.1,0.25,0.1);part(g,SPH,"#111",0.45,1.55,0.14,0.05,0.05,0.05,0);part(g,SPH,"#111",0.45,1.55,-0.14,0.05,0.05,0.05,0);
+   const tail=new THREE.Group();tail.position.set(-0.45,0.35,0);g.add(tail);part(tail,SPH,c,-0.18,0,0,0.22,0.1,0.1);g.userData.tail=tail;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF";part(g,SPH,c,0,1.05,0,0.85,0.38,0.32);part(g,SPH,lt,0.45,0.98,0,0.3,0.25,0.25);
+   part(g,SPH,c,0.85,1.38,0,0.3,0.26,0.24);const sn=part(g,CONE,c,1.18,1.32,0,0.13,0.4,0.13);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.38,1.32,0,0.05,0.05,0.05,0);
+   part(g,CONE,c,0.8,1.68,0.13,0.08,0.26,0.08);part(g,CONE,c,0.8,1.68,-0.13,0.08,0.26,0.08);
+   const tail=new THREE.Group();tail.position.set(-0.8,1.05,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.2,0,0.42,0.16,0.16);rot(t1,0,0,0.5);part(tail,SPH,"#3a3a3a",-0.72,-0.4,0,0.12,0.1,0.1,0);g.userData.tail=tail;
+   legs4(g,c,[[0.5,0.15],[0.5,-0.15],[-0.5,0.15],[-0.5,-0.15]],0.9,0.9,0.07);return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";part(g,SPH,c,0,0.5,0,1.3,0.42,0.5);part(g,SPH,lt,0.3,0.38,0,0.7,0.2,0.38);
+   part(g,SPH,c,1.25,0.82,0,0.38,0.34,0.34);part(g,SPH,lt,1.55,0.74,0,0.16,0.13,0.18);part(g,SPH,"#111",1.68,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,c,1.18,1.16,0.2,0.1);part(g,SPH,c,1.18,1.16,-0.2,0.1);part(g,SPH,"#111",1.5,0.92,0.13,0.04,0.04,0.04,0);part(g,SPH,"#111",1.5,0.92,-0.13,0.04,0.04,0.04,0);
+   const a=part(g,CYL,c,1.2,0.2,0.28,0.1,0.8,0.1);rot(a,0,0,Math.PI/2);const b=part(g,CYL,c,1.2,0.2,-0.28,0.1,0.8,0.1);rot(b,0,0,Math.PI/2);
+   const tail=new THREE.Group();tail.position.set(-1.25,0.45,0);g.add(tail);[[-0.3,-0.1,0.1],[-0.6,-0.15,0.3],[-0.85,-0.05,0.55]].forEach(([x,y,z],i)=>part(tail,SPH,i===2?"#4a3626":c,x,y,z,0.14));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";part(g,SPH,c,0,0.6,0,0.6,0.45,0.42);part(g,SPH,c,0.62,0.82,0,0.32,0.28,0.3);
+   part(g,SPH,dk,0.78,0.86,0,0.16,0.08,0.3,0);part(g,SPH,lt,0.9,0.76,0,0.13,0.1,0.13);part(g,SPH,"#111",1.02,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,lt,0.55,1.08,0.18,0.09);part(g,SPH,lt,0.55,1.08,-0.18,0.09);
+   const tail=new THREE.Group();tail.position.set(-0.55,0.7,0);g.add(tail);for(let i=0;i<5;i++)part(tail,SPH,i%2?dk:"#B9B5AE",-0.12-i*0.16,0.1+i*0.07,0,0.14,0.14,0.14,i===0?1.1:0);g.userData.tail=tail;
+   legs4(g,dk,[[0.35,0.22],[0.35,-0.22],[-0.35,0.22],[-0.35,-0.22]],0.42,0.42,0.08);return g;},
+ squirrel(){const g=new THREE.Group(),c="#9A9A96",lt="#F1EFEA";const b=part(g,SPH,c,0,0.42,0,0.3,0.36,0.25);rot(b,0,0,-0.3);part(g,SPH,lt,0.12,0.38,0,0.16,0.24,0.18,0);
+   part(g,SPH,c,0.2,0.8,0,0.2,0.18,0.17);part(g,SPH,"#111",0.37,0.83,0.07,0.035,0.035,0.035,0);part(g,CONE,c,0.15,1.0,0.08,0.05,0.12,0.05);part(g,CONE,c,0.15,1.0,-0.08,0.05,0.12,0.05);
+   const tail=new THREE.Group();tail.position.set(-0.25,0.3,0);g.add(tail);[[-0.12,0.15,0.2],[-0.18,0.45,0.22],[-0.08,0.75,0.2],[0.05,0.92,0.15]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A";part(g,SPH,c,0,0.32,0,0.32,0.26,0.24);part(g,SPH,"#B98A5E",0.05,0.24,0,0.26,0.16,0.2,0);part(g,SPH,c,0.25,0.56,0,0.15);part(g,SPH,"#111",0.33,0.53,0,0.1,0.07,0.12,0);
+   part(g,SPH,"#FFFFFF",0.36,0.6,0.08,0.03,0.03,0.03,0);const tk=part(g,CONE,"#111",0.33,0.82,0,0.05,0.16,0.05,0);rot(tk,0,0,-0.6);return g;},
+ snake(){const g=new THREE.Group(),segs=[];for(let i=0;i<16;i++){segs.push(part(g,SPH,i%3===0?"#6E5638":"#C2A36E",0,0.12,0,0.16-i*0.004,0.12,0.16-i*0.004,1.12));}
+   part(segs[0],SPH,"#111",0.5,0.5,0.45,0.25,0.25,0.25,0);g.userData.segs=segs;return g;},
+ bird(c,belly,cap){const g=new THREE.Group();part(g,SPH,c,0,0,0,0.35,0.16,0.16);if(belly)part(g,SPH,belly,0.05,-0.07,0,0.26,0.1,0.12,0);part(g,SPH,cap||c,0.32,0.05,0,0.14);
+   const bk=part(g,CONE,"#E3A44A",0.48,0.04,0,0.05,0.12,0.05,0);rot(bk,0,0,-Math.PI/2);
+   const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute([0.18,0,0,-0.2,0,0,-0.05,0,1.1],3));wg.computeVertexNormals();
+   const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
+   const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
+};
+const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const animalGroup=new THREE.Group();world.add(animalGroup);
+const animals=[];
+const ANIMALS=[
+ {k:"coyote",path:[-224,-1000,-223,-856],per:22},
+ {k:"squirrel",at:[-351,-198],hop:true},
+ {k:"squirrel",at:[-237,-511],hop:true},
+ {k:"squirrel",at:[16,-1017],hop:true},
+ {k:"snake",path:[339,-150,414,-87],per:30},
+ {k:"quail",at:[-1152,-451],flock:3}
+];
+ANIMALS.forEach((a,idx)=>{
+  const s=a.s||SCALE[a.k];const items=[];
+  const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
+  const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
+  const holder=new THREE.Group();animalGroup.add(holder);
+  if(a.flock){for(let i=0;i<a.flock;i++){const o=make();holder.add(o);items.push({o,dx:(i-1)*90,dn:(i%2)*70});}}
+  else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
+  let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
+  items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
+  animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
+});
+// birds
+const birds=[];
+[["hawk",-44,32,-30,8],["jay",44,26,26,7],["raven",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["jay",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
+  const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
+// clouds with varied shapes
+const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
+  const SHAPES={puff:[[0,0,0,2.6],[2.6,-.4,.4,2.0],[-2.5,-.6,-.2,1.9],[1,1.4,-.3,1.8],[4.4,-.9,.2,1.3]],
+    long:[[-4.5,0,0,1.3],[-2.6,.3,.2,1.7],[-.6,.5,0,2.0],[1.5,.3,-.2,1.8],[3.5,0,.1,1.5],[5.2,-.2,0,1.1]],
+    tower:[[0,0,0,2.2],[0.6,2.2,.2,1.8],[-.3,3.9,0,1.4],[1.9,.4,-.2,1.5],[-1.9,.2,.1,1.5]],
+    wisp:[[0,0,0,1.2],[1.5,.2,0,0.9],[-1.3,-.1,0,0.8]]};
+  [["puff",-46,30,-34,1.6],["long",64,32,-34,1.2],["tower",-60,34,6,1.1],["wisp",36,36,-46,1.6],["long",-8,38,-56,1.0],["wisp",58,30,-6,1.4],["puff",-22,40,-62,1.1]].forEach(([sh,x,y,z,s0],k)=>{const cl=new THREE.Group();
+    SHAPES[sh].forEach(([a,b,c,s])=>{const m=new THREE.Mesh(cg,lam(PAL.cloud));m.position.set(a,b,c);m.scale.set(s,s*(sh==="long"||sh==="wisp"?0.7:1),s);const h=new THREE.Mesh(cg,hm);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(1.05);cl.add(h,m);});
+    cl.position.set(x,y,z);cl.scale.setScalar(s0);scene.add(cl);clouds.push({obj:cl,hx:x,hz:z,hy:y,ph:k*1.9});});})();
+
+/* ================= camera & views ================= */
+const VIEW=100;
+const cur={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()},goal={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()};
+let view="all",hoverKey=null,animalsOn=true,flowersOn=true,topoOn=true,treesOn=true,baseOn=true;
+const dirOf=(az,el)=>new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az));
+const stage=$("#stage");
+const isPhone=()=>innerWidth<=860;
+function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
+const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
+function viewPoints(v){
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
+const VIEWAZ={"all":0.6,"A":0.5,"B":0.5,"C":0.7};
+function fitFor(v,az,el){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
+  const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
+  const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
+  const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*2.4);
+  const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
+  return {zoom,target};}
+function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
+
+/* ================= icons ================= */
+function fIcon(sh,c){const s={tube:`<path d="M6 11V4" stroke="#5F8A3E"/><path d="M4.5 4.5 6 1l1.5 3.5z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  cup:`<circle cx="6" cy="8" r="3.4" fill="#5F8A3E"/><path d="M3.5 4h5L6 7z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  dome:`<circle cx="6" cy="8.5" r="3" fill="#5F8A3E"/><ellipse cx="6" cy="5" rx="3.6" ry="2.2" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  spike:`<path d="M6 11V6" stroke="#5F8A3E"/><path d="M4.6 7 6 1l1.4 6z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  yucca:`<path d="M2 11l4-3 4 3M6 8V3" stroke="#7E9B5C"/><path d="M5 4 6 .5 7 4z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  berry:`<circle cx="6" cy="6.5" r="4.2" fill="#4F7A3A"/><circle cx="4.5" cy="5" r="1" fill="${c}"/><circle cx="7.5" cy="6.5" r="1" fill="${c}"/><circle cx="5.5" cy="8.2" r="1" fill="${c}"/>`,
+  fern:`<path d="M6 11 2 3M6 11 6 1M6 11 10 3" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`,
+  pad:`<ellipse cx="6" cy="8.3" rx="2.6" ry="3" fill="#7FA552"/><ellipse cx="3.6" cy="4.6" rx="1.8" ry="2.2" fill="#7FA552"/><ellipse cx="8.4" cy="4.4" rx="1.8" ry="2.2" fill="#7FA552"/><circle cx="3.6" cy="2.4" r="1.1" fill="${c}"/><circle cx="8.4" cy="2.2" r="1.1" fill="${c}"/>`}[sh];
+  return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true">${s}</svg>`;}
+function paw(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="8" rx="2.6" ry="2.2" fill="${c}"/><circle cx="2.6" cy="5" r="1.1" fill="${c}"/><circle cx="4.6" cy="3" r="1.1" fill="${c}"/><circle cx="7.4" cy="3" r="1.1" fill="${c}"/><circle cx="9.4" cy="5" r="1.1" fill="${c}"/></svg>`;}
+function wing(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6c2-2 3.5-2 5 0 1.5-2 3-2 5 0-1.5.4-3 1.6-5 3C4 7.6 2.5 6.4 1 6z" fill="${c}"/></svg>`;}
+const isBird=k=>!!BIRDC[k];
+const wIcon=k=>isBird(k)?wing(WILD[k].color):paw(WILD[k].color);
+function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;return t?`<span class="bd t" style="--c:var(${TR[t].color})">${id}</span>`:`<span class="bd">${id}</span>`;}
+
+/* ================= callouts ================= */
+const LABELS=[];const labelsBox=$("#labels");
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+  el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
+  el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
+STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+TRAILS.forEach(T=>{
+  const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
+  Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
+    addLabel({key:"w-"+T.id+"-"+a.k,kind:"animal",badge:`<span class="bd ic">${wIcon(a.k)}</span>`,text:a.label||WILD[a.k].name,views:[T.id],pos:item.pos,item});});
+  const bestF={};clusters.filter(c=>c.trail===T.id).forEach(c=>{if(!bestF[c.k]||c.dist<bestF[c.k].dist)bestF[c.k]=c;});
+  Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
+    addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
+});
+function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
+const tmpV=new THREE.Vector3();
+function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
+function layoutLabels(){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins(),ink="#1D2B26";
+  const act=LABELS.filter(o=>{const on=labelOn(o);o.el.hidden=!on;return on;});
+  const P=act.map(o=>{const p=project(o.pos());return {o,x:p.x,y:p.y};});
+  if(isPhone()){P.forEach(p=>{p.o.el.classList.add("dot");p.o.el.classList.remove("left","right");p.o.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`;});$("#lead").innerHTML="";return;}
+  const cxm=(m.l+(W-m.r))/2;let Lf=P.filter(p=>p.x<cxm),Rt=P.filter(p=>p.x>=cxm);
+  while(Lf.length>Rt.length+1){Lf.sort((a,b)=>b.x-a.x);Rt.push(Lf.shift());}
+  while(Rt.length>Lf.length+1){Rt.sort((a,b)=>a.x-b.x);Lf.push(Rt.shift());}
+  const gap=act.length>18?26:30,top=m.t+8,bot=Hh-m.b-8;
+  const spread=arr=>{arr.sort((a,b)=>a.y-b.y);const ys=arr.map(p=>Math.max(top,Math.min(bot,p.y)));for(let i=1;i<ys.length;i++)ys[i]=Math.max(ys[i],ys[i-1]+gap);
+    const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
+    arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
+  spread(Lf);spread(Rt);
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
+  $("#lead").innerHTML=svg;
+}
+
+/* ================= glass card ================= */
+const card=$("#card");let cardItem=null;
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const r10=n=>fmt(Math.round(n/10)*10);
+function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
+function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
+function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
+function openCard(item){cardItem=item;let h="";
+  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+    h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
+  else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
+  else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
+  const ph=photosFor(item);
+  const gal=ph.length?`<div class="gal"><img class="main" src="${ph[0].f}" alt="${ph[0].t||""}"><div class="cr">${credit(ph[0])}</div>${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button class="th${i?"":" on"}" data-i="${i}"><img src="${p.f}" alt=""></button>`).join("")}</div>`:""}</div>`
+    :`<div class="gal"><p class="none">No open-license traveler photos of this exact spot yet.</p></div>`;
+  card.classList.remove("big");
+  card.innerHTML=`<button class="x" aria-label="Close">×</button>`+h+gal+`<div class="more">${ph.length?`Tap for ${ph.length} photo${ph.length>1?"s":""}`:"Tap for photos"}</div>`;card.hidden=false;
+  card.querySelector(".x").onclick=e=>{e.stopPropagation();closeCard();};
+  card.querySelectorAll(".th").forEach(b=>b.onclick=e=>{e.stopPropagation();const p=ph[+b.dataset.i];card.querySelector(".main").src=p.f;card.querySelector(".cr").innerHTML=credit(p);card.querySelectorAll(".th").forEach(t=>t.classList.toggle("on",t===b));});
+  card.onclick=e=>{if(e.target.closest("a,.th,.x"))return;card.classList.toggle("big");positionCard();};
+  positionCard();}
+function closeCard(){cardItem=null;card.hidden=true;}
+function positionCard(){if(!cardItem)return;const p=project(cardItem.pos());const W=stage.clientWidth;const cw=card.offsetWidth,ch=card.offsetHeight;
+  let x=Math.max(cw/2+8,Math.min(W-cw/2-8,p.x)),y=p.y-14;if(y-ch<8)y=ch+8;card.style.transform=`translate(${x-cw/2}px,${y-ch}px)`;}
+
+/* ================= portraits (rendered from the same models) ================= */
+let pr=null;const PCACHE={};
+function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
+  if(!pr){pr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});pr.setPixelRatio(2);pr.setSize(236,184);}
+  const sc=new THREE.Scene();sc.add(new THREE.AmbientLight(0xffffff,0.62));const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-3,5,4);sc.add(dl);
+  const g=new THREE.Group();sc.add(g);
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.35,40),[lam(PAL.band),lam(PAL.ground),lam(PAL.ground)]);disc.position.y=-0.18;g.add(disc);
+  const ring=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,30),new THREE.LineBasicMaterial({color:PAL.slabLine}));ring.position.copy(disc.position);g.add(ring);
+  let subj;
+  if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
+    else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+  else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
+  g.add(subj);
+  const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+  const c2=new THREE.OrthographicCamera(-1,1,1,-1,-100,100);const az=0.9,el=0.42;c2.position.copy(ctr).add(new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az)).multiplyScalar(20));c2.lookAt(ctr);
+  const hw=Math.max(size.x*0.62,size.z*0.62,size.y*0.75,1.2),a=236/184;c2.left=-hw*a;c2.right=hw*a;c2.top=hw;c2.bottom=-hw;c2.updateProjectionMatrix();
+  pr.render(sc,c2);const url=pr.domElement.toDataURL("image/png");PCACHE[key]=url;return url;}
+
+/* ================= panel ================= */
+function spark(T,w0,h0){const pts=T.pts.filter((p,i)=>i%3===0);const dd=pts.map((p,i)=>`${i?"L":"M"}${(p.m/T.total*w0).toFixed(1)},${(h0-2-(p.e-T.lo)/(T.hi-T.lo||1)*(h0-4)).toFixed(1)}`).join("");return `<svg width="${w0}" height="${h0}" viewBox="0 0 ${w0} ${h0}" aria-hidden="true"><path d="${dd}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/></svg>`;}
+function profileSVG(T){const w0=320,h0=96,m={l:38,r:8,t:24,b:16};const step=T.hi-T.lo>1000?500:T.hi-T.lo>450?200:100,lo=Math.floor((T.lo-20)/step)*step,hi=Math.ceil((T.hi+40)/step)*step;
+  const X=v=>m.l+v/T.total*(w0-m.l-m.r),Y=e=>m.t+(1-(e-lo)/(hi-lo))*(h0-m.t-m.b);let g="";
+  for(let e=lo;e<=hi;e+=step)g+=`<line x1="${m.l}" x2="${w0-m.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--rule)"/><text x="${m.l-5}" y="${Y(e)+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${fmt(e)}</text>`;
+  const line=T.pts.map((p,i)=>`${i?"L":"M"}${X(p.m).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  g+=`<path d="${line}L${X(T.total)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="var(${T.color})" fill-opacity=".14"/><path d="${line}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/>`;
+  g+=`<text x="${m.l}" y="${h0-3}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">0 mi</text><text x="${w0-m.r}" y="${h0-3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${T.official} mi</text>`;
+  ORDER[T.id].forEach(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);if(!mm)return;const x=X(mm.m),y=Y(mm.e),t=s.trails.length===1?s.trails[0]:null,fill=t?`var(${TR[t].color})`:"#fff",tc=t?"#fff":"var(--ink)",wd=id.length>1?18:14;
+    g+=`<line x1="${x}" x2="${x}" y1="${y}" y2="${y-8}" stroke="var(--ink)" stroke-width=".7"/><rect x="${x-wd/2}" y="${y-21}" width="${wd}" height="13" rx="6.5" fill="${fill}" stroke="${t?fill:"var(--ink)"}"/><text x="${x}" y="${y-11.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="${tc}">${id}</text>`;});
+  return `<svg viewBox="0 0 ${w0} ${h0}" aria-label="Elevation profile">${g}</svg>`;}
+function speciesHere(){const ws=new Set(),fs=new Set();
+  animals.forEach(a=>{if(view==="all"||a.trails.includes(view))ws.add(a.k);});if(view==="all")["hawk","jay","raven","woodpecker"].forEach(k=>ws.add(k));else["hawk","jay"].forEach(k=>ws.add(k));
+  clusters.forEach(c=>{if(view==="all"||c.trail===view)fs.add(c.k);});return {ws:[...Object.keys(WILD)].filter(k=>ws.has(k)),fs:[...Object.keys(SPECIES)].filter(k=>fs.has(k))};}
+function wildList(ks){return `<ul class="list" data-kind="animal">${ks.map(k=>`<li data-k="${k}"><button class="item">${wIcon(k)}<span class="nm">${WILD[k].name}</span><span class="chev">›</span></button></li>`).join("")}</ul>`;}
+function floraList(ks){return `<ul class="list" data-kind="flower">${ks.map(k=>{const sp=SPECIES[k],[st,now]=floraStatus(sp);return `<li data-k="${k}"><button class="item">${fIcon(sp.shape,sp.color)}<span class="nm">${sp.name} <span class="lt">${sp.latin}</span></span><span class="bm${now?" now":""}">${st}</span></button></li>`;}).join("")}</ul>`;}
+function renderPanel(){let h="";const {ws,fs}=speciesHere();
+  if(view==="all"){
+    h=`<div><div class="eyebrow">All trails</div><h2>A volcanic headland, three short walks</h2></div>
+    <p>Point Dume is the rocky headland at the north end of Santa Monica Bay, named in 1793 by George Vancouver after Father Francisco Dumetz. Used for artillery practice in World War II, it became state land in 1979; the bluff top is now a natural preserve of coastal scrub and grassland. A circles the summit and boardwalk, B adds the stairs down to Dume Cove, and C starts on the sand at Westward Beach. Pick a trail to focus the model; click anything on it for a quick note.</p>
+    <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit==="loop"?"loop":"one way"} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
+    <div><h3>How the numbers work</h3><p class="note">Plain numbers mark spots more than one trail passes, like the summit and the boardwalk platform. Lettered stops belong to one trail: C3 is the third stop on Trail C.</p></div>
+    <div><h3>Wildlife on the point</h3>${wildList(ws)}</div>
+    <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
+    <p class="note">Point Dume State Beach and Natural Preserve, Malibu. Preserve entrance at 29188 Cliffside Drive (10 two-hour spaces); paid beach lot at 7103 Westward Beach Road. Open sunrise to sunset. Dogs are not allowed. Stay on the fenced trails; the cliffs erode. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
+  } else {const T=TR[view];
+    h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
+    <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+    <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
+    <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
+    <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
+    <div><h3>Flowers along the way</h3>${floraList(fs)}</div>
+    <div><h3>Read more</h3><div class="links">${({A:`<a href="https://www.hikespeak.com/trails/point-dume-malibu/" target="_blank" rel="noopener">Point Dume Natural Preserve · Hikespeak</a><a href="https://www.parks.ca.gov/pages/623/files/PtDumeBrochure.pdf" target="_blank" rel="noopener">Park brochure · California State Parks</a>`,B:`<a href="https://modernhiker.com/hike/point-dume/" target="_blank" rel="noopener">Point Dume · Modern Hiker</a>`,C:`<a href="https://www.gaiagps.com/hike/449873/point-dume/" target="_blank" rel="noopener">Point Dume · Gaia GPS</a><a href="https://latrailhikers.com/hikes/point-dume-state-beach/" target="_blank" rel="noopener">Point Dume State Beach · LA Trail Hikers</a><a href="https://californiacoastaltrail.org/trail-section/los-angeles-section-2/" target="_blank" rel="noopener">Los Angeles Section 2 · California Coastal Trail</a>`})[T.id]||""}</div></div>`;}
+  $("#pbody").innerHTML=h;$("#pbody").scrollTop=0;
+  document.querySelectorAll("#pbody [data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+  document.querySelectorAll('#pbody .list[data-kind="stop"] li').forEach(li=>{const id=li.dataset.id;li.querySelector("button").addEventListener("click",()=>openCard({kind:"stop",id,pos:()=>STOP[id].v}));
+    li.addEventListener("pointerenter",()=>setHover("s-"+id));li.addEventListener("pointerleave",()=>setHover(null));});
+  document.querySelectorAll('#pbody .list[data-kind="animal"] li, #pbody .list[data-kind="flower"] li').forEach(li=>{const kind=li.parentElement.dataset.kind,k=li.dataset.k;
+    li.querySelector("button").addEventListener("click",()=>toggleDetail(li,kind,k));});
+}
+function toggleDetail(li,kind,k){const open=li.classList.contains("open");li.parentElement.parentElement.parentElement.querySelectorAll("li.open").forEach(o=>{o.classList.remove("open");const d=o.querySelector(".detail");if(d)d.remove();});
+  if(open){closeCard();return;}
+  li.classList.add("open");const isA=kind==="animal";const info=isA?WILD[k]:SPECIES[k];
+  const d=document.createElement("div");d.className="detail glass";
+  const ph=(isA?PHOTOS.animal[k]:PHOTOS.flower[k])||[];
+  d.innerHTML=`<div>${ph.length?`<img alt="${info.name}" src="${ph[0].f}"><div class="cap">${credit(ph[0])}</div>`:`<img alt="${info.name}, drawn in the model's style" src="${portrait(kind,k)}"><div class="cap">Model drawing</div>`}</div><div><p>${info.sum}</p>${isA?"":`<p style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i>${info.latin}</i> · ${floraStatus(info)[0]}</p>`}</div>`;
+  li.appendChild(d);
+  // also point to it on the model
+  if(isA){if(isBird(k)){const b=birds.find(b=>b.k===k);if(b)openCard({kind:"animal",k,a:null,pos:()=>b.obj.position});}
+    else{const a=animals.find(a=>a.k===k&&(view==="all"||a.trails.includes(view)));if(a&&animalsOn)openCard({kind:"animal",k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))});}}
+  else{const c=clusters.filter(c=>c.k===k&&(view==="all"||c.trail===view)).sort((a,b)=>a.dist-b.dist)[0];if(c&&flowersOn)openCard({kind:"flower",k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))});}}
+$("#switch").innerHTML=`<button data-v="all" aria-pressed="true"><span class="sl">Overview</span><span class="sn">All trails</span></button>`+TRAILS.map(T=>`<button data-v="${T.id}" aria-pressed="false"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="sn">${T.short}</span></button>`).join("");
+document.querySelectorAll("#switch button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.v)));
+function applyVisibility(){
+  animals.forEach(a=>{a.holder.visible=animalsOn&&(view==="all"||a.trails.includes(view));});
+  birds.forEach(b=>b.obj.visible=animalsOn);
+  Object.entries(flowerGroups).forEach(([t,g])=>g.visible=flowersOn&&(view==="all"||view===t));
+  topoGroup.visible=topoOn;treeGroup.visible=treesOn;baseGroup.visible=baseOn;trail3D.visible=!topoOn;TRAILS.forEach(T=>{T.g3.visible=view==="all"||view===T.id;});
+  if(cardItem&&((cardItem.kind==="animal"&&!animalsOn)||(cardItem.kind==="flower"&&!flowersOn)))closeCard();}
+function select(v){view=v;document.querySelectorAll("#switch button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  TRAILS.forEach(T=>{const on=v==="all"||v===T.id;trailMesh[T.id].bright.visible=on;trailMesh[T.id].dim.visible=!on;});
+  goal.az=VIEWAZ[v];goal.el=v==="all"?0.58:0.66;LABELS.forEach(o=>o.ly=null);closeCard();fitGoal();applyVisibility();renderPanel();setHover(null);
+  try{history.replaceState(null,"",v==="all"?location.pathname+location.search:"#trail-"+v);}catch(e){}}
+
+/* ================= interaction ================= */
+const ptrs=new Map();let pinch0=0,zoom0=1,down=null;
+function pickAt(px,py){let best=null,bd=26;
+  const test=(item,v)=>{const p=project(v);const dd=Math.hypot(p.x-px,p.y-py);if(dd<bd){bd=dd;best=item;}};
+  STOPS.forEach(s=>{if(view==="all"||s.trails.includes(view))test({kind:"stop",id:s.id,pos:()=>s.v},s.v);});
+  if(animalsOn){animals.forEach(a=>{if(!a.holder.visible)return;const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};test(item,a.pos().clone().add(new THREE.Vector3(0,0.8,0)));});
+    birds.forEach(b=>test({kind:"animal",k:b.k,a:null,pos:()=>b.obj.position},b.obj.position));}
+  if(flowersOn)clusters.forEach(c=>{if(view!=="all"&&c.trail!==view)return;test({kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))},c.v.clone().add(new THREE.Vector3(0,0.6,0)));});
+  return best;}
+stage.addEventListener("pointerdown",e=>{if(e.target.closest("#card,.kn"))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now()};stage.setPointerCapture(e.pointerId);stage.classList.add("dragging");
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);zoom0=goal.zoom;}});
+stage.addEventListener("pointermove",e=>{const p=ptrs.get(e.pointerId);
+  if(!p){const r=stage.getBoundingClientRect();stage.classList.toggle("pick",!!pickAt(e.clientX-r.left,e.clientY-r.top));return;}
+  if(ptrs.size===2){p.x=e.clientX;p.y=e.clientY;const [a,b]=[...ptrs.values()];const dd=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)goal.zoom=Math.max(.5,Math.min(30,zoom0*dd/pinch0));return;}
+  const ddx=e.clientX-p.x,ddy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;goal.az-=ddx*0.006;goal.el=Math.max(0.3,Math.min(1.25,goal.el+ddy*0.004));});
+const endP=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!ptrs.size)stage.classList.remove("dragging");pinch0=0;
+  if(down&&e.type==="pointerup"&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&performance.now()-down.t<500){const r=stage.getBoundingClientRect();const it=pickAt(e.clientX-r.left,e.clientY-r.top);if(it)openCard(it);else closeCard();}down=null;};
+stage.addEventListener("pointerup",endP);stage.addEventListener("pointercancel",endP);
+stage.addEventListener("wheel",e=>{e.preventDefault();goal.zoom=Math.max(.5,Math.min(30,goal.zoom*Math.exp(-e.deltaY*0.0015)));},{passive:false});
+$("#zin").onclick=()=>goal.zoom=Math.min(30,goal.zoom*1.3);$("#zout").onclick=()=>goal.zoom=Math.max(.5,goal.zoom/1.3);
+$("#zfit").onclick=()=>{goal.az=VIEWAZ[view];goal.el=view==="all"?0.58:0.66;fitGoal();};
+const tog=(id,fn)=>$(id).addEventListener("click",e=>{const v=fn();e.currentTarget.setAttribute("aria-pressed",String(v));applyVisibility();});
+tog("#tgTopo",()=>topoOn=!topoOn);tog("#tgBase",()=>baseOn=!baseOn);tog("#tgTrees",()=>treesOn=!treesOn);tog("#tgAnimals",()=>animalsOn=!animalsOn);tog("#tgFlowers",()=>flowersOn=!flowersOn);
+addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey)return;const k={"0":"all","1":"A","2":"B","3":"C",Escape:"esc"}[e.key];if(!k)return;if(k==="esc"){if(cardItem){closeCard();return;}select("all");}else select(k);});
+function resize(){const W=stage.clientWidth,Hh=stage.clientHeight;if(!W||!Hh)return;renderer.setSize(W,Hh,false);const a=W/Hh;cam.left=-VIEW*a/2;cam.right=VIEW*a/2;cam.top=VIEW/2;cam.bottom=-VIEW/2;}
+new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
+
+/* ================= animation ================= */
+const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
+function animate(tt,dt){
+  animals.forEach(a=>{
+    if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
+      const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
+      if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
+        o.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(tt*3-i*0.6)*0.18);sg.userData.hull.position.copy(sg.position);});return;}
+      o.position.copy(G(x,n));const head=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y+=((head-o.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI)*0.08;
+      const spd=a.k==="raccoon"?7:a.k==="coyote"?6:5,sw=Math.sin(tt*spd+a.ph*20)*0.45;(o.userData.legs||[]).forEach((L,i)=>L.rotation.z=(i%2?sw:-sw)*(i<2?1:-1));
+      o.position.y+=Math.abs(Math.sin(tt*spd))*0.05*a.s;if(o.userData.tail)o.userData.tail.rotation.y=Math.sin(tt*3+a.ph)*0.3;}
+    else if(a.k==="deer"){const gz=(Math.sin(tt*0.6+a.ph*5)+1)/2;a.items[0].o.userData.neck.rotation.z=-gz*1.1;}
+    else if(a.k==="bobcat"||a.k==="lion"){a.items[0].o.userData.tail.rotation.y=Math.sin(tt*(a.k==="lion"?1.2:2.2)+a.ph)*0.6;}
+    else if(a.hop){const o=a.items[0].o,u=(tt*0.35+a.ph)%1,ang=u*Math.PI*2,rr=60;const x=a.x+Math.cos(ang)*rr,n=a.n+Math.sin(ang)*rr;o.position.copy(G(x,n,Math.abs(Math.sin(tt*6+a.ph*9))*0.35));o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;o.userData.tail.rotation.z=Math.sin(tt*6)*0.25;}
+    else if(a.flock){a.items.forEach((it,i)=>{const ang=tt*0.25+i*2.1+a.ph,x=a.x+it.dx+Math.cos(ang)*50,n=a.n+it.dn+Math.sin(ang)*50;it.o.position.copy(G(x,n,Math.abs(Math.sin(tt*5+i))*0.12));it.o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;});}
+  });
+  birds.forEach(b=>{const ang=tt*b.sp+b.ph;b.obj.position.set(b.cx+Math.cos(ang)*b.r,b.cy+Math.sin(tt*0.5+b.ph)*1.2,b.cz+Math.sin(ang)*b.r);
+    const s=Math.sign(b.sp),vx=-Math.sin(ang)*s,vz=Math.cos(ang)*s;b.obj.rotation.set(0,Math.atan2(-vz,vx),0);b.obj.rotateX(-0.28*s);
+    const flap=Math.max(0,Math.sin(tt*0.9+b.fl))**2;const fa=Math.sin(tt*9+b.fl)*0.7*flap+0.1;b.obj.userData.w[0].rotation.x=-fa;b.obj.userData.w[1].rotation.x=fa;});
+  cloudLift+=((view==="all"?12:48)-cloudLift)*Math.min(1,dt*1.5);
+  clouds.forEach(c=>{c.obj.position.x=c.hx+Math.sin(tt*0.06+c.ph)*8;c.obj.position.z=c.hz+Math.cos(tt*0.05+c.ph)*3;c.obj.position.y=c.hy+cloudLift+Math.sin(tt*0.3+c.ph)*0.4;});
+  creekTex.offset.y-=dt*0.35;
+  const W=anim.water;W.fallTex.offset.y+=dt*0.9;
+  W.rings.forEach((rg,i)=>{const u=(tt*0.5+i/3)%1;rg.scale.setScalar(0.5+u*1.6);rg.material.opacity=(1-u)*0.85;});
+  W.mist.forEach(m=>{const u=(tt*0.35+m.ph)%1;m.m.position.set(m.x+Math.sin(tt+m.ph*6)*0.15,0.2+u*1.6,0.9+u*0.4);m.m.scale.setScalar(0.6+u*1.2);m.m.material.opacity=(1-u)*0.7;});
+}
+let last=performance.now(),T0=last,lastRender=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+  const moving=Math.abs(goal.az-cur.az)>1e-3||Math.abs(goal.el-cur.el)>1e-3||Math.abs(goal.zoom-cur.zoom)/goal.zoom>1e-3||cur.target.distanceTo(goal.target)>1e-2||ptrs.size>0;
+  if(!moving&&t-lastRender<33)return;lastRender=t;
+  const dt=Math.min(0.05,(t-last)/1000);last=t;
+  const k=reduced?1:1-Math.exp(-dt*3.2);
+  cur.az+=(goal.az-cur.az)*k;cur.el+=(goal.el-cur.el)*k;cur.zoom+=(goal.zoom-cur.zoom)*k;cur.target.lerp(goal.target,k);
+  const fwd=dirOf(cur.az,cur.el);cam.position.copy(cur.target).addScaledVector(fwd,500);cam.up.set(0,1,0);cam.lookAt(cur.target);cam.zoom=cur.zoom;cam.updateProjectionMatrix();
+  const right=new THREE.Vector3().crossVectors(fwd.clone().negate(),UPV).normalize();
+  dirL.position.copy(cur.target).addScaledVector(right,-100).add(new THREE.Vector3(0,95,0)).addScaledVector(fwd,25);dirL.target.position.copy(cur.target);
+  if(!reduced)animate((t-T0)/1000,dt);
+  renderer.render(scene,cam);layoutLabels();positionCard();}
+resize();
+const h0=(location.hash||"").replace("#trail-","");
+select(TR[h0]?h0:"all");
+cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
+if(reduced)animate(6,0.016);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
+})();
+</script>
