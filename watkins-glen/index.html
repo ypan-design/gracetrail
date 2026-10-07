@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Watkins Glen · Grace&rsquo;s Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-screen viewer. Model fills the screen on an organic island base; left panel holds the view switch and content; callouts in two columns either side; liquid-glass cards float over the model. Single light "illustration board" theme, chosen deliberately. */
+:root{
+  color-scheme:light;
+  --paper:#EEF4F1; --sheet:#FFFFFF; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9;
+  --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --panel:372px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.dragging{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#labels{position:absolute;inset:0;pointer-events:none}
+
+/* badges */
+.bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
+.bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.ic{padding:0;width:22px;border-color:var(--rule)}
+.bd.ic svg{width:14px;height:14px}
+.kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
+.kn .tx{background:color-mix(in srgb,var(--paper) 86%,transparent);padding:2px 6px;border-radius:4px}
+.kn.f .tx{font-style:italic;color:var(--muted)}
+.kn.left{flex-direction:row-reverse}
+.kn.dot .tx{display:none}
+.kn.on .tx{font-weight:600;color:var(--ink)}
+.kn.on .bd{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+
+/* liquid glass */
+.glass{background:linear-gradient(140deg,rgba(255,255,255,.62),rgba(255,255,255,.26));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 10px 30px rgba(29,43,38,.16),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);border-radius:16px}
+#card{position:absolute;left:0;top:0;width:250px;padding:12px 14px 13px;z-index:3;pointer-events:auto;transform-origin:50% 100%;transition:opacity .25s}
+#card .row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#card h4{margin:0 0 3px;font-family:var(--display);font-stretch:108%;font-weight:500;font-size:17px;line-height:1.15}
+#card p{margin:0;font-size:12.5px;line-height:1.45;color:#33443E}
+#card .meta{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+#card{transition:opacity .25s,width .3s}
+#card.big{width:340px}
+#card .gal{display:none;margin-top:10px}
+#card.big .gal{display:block}
+#card .gal .main{width:100%;height:200px;object-fit:cover;border-radius:10px;display:block;background:#E3EFEA}
+#card .cr{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+#card .cr a,.detail .cap a{color:inherit}
+#card .thumbs{display:flex;gap:5px;margin-top:6px;overflow-x:auto}
+#card .th{border:0;padding:0;background:none;cursor:pointer;border-radius:6px;outline:2px solid transparent;flex:none}
+#card .th.on{outline-color:var(--ink)}
+#card .th img{width:52px;height:38px;object-fit:cover;border-radius:6px;display:block}
+#card .none{font-size:12px;color:var(--muted)}
+#card .more{margin-top:7px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;cursor:pointer}
+#card.big .more{display:none}
+#card{cursor:pointer}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);padding:4px}
+#card::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+
+/* panel */
+.panel{position:absolute;left:0;top:0;bottom:0;width:var(--panel);display:flex;flex-direction:column;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-right:1px solid var(--rule);z-index:2}
+.head{padding:18px 22px 12px;display:flex;flex-direction:column;gap:4px}
+.head h1{font-family:var(--display);font-stretch:116%;font-weight:300;font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:-.01em}
+.switch{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:6px 22px 12px;border-bottom:1px solid var(--rule)}
+.switch button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 8px 8px;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.switch button:hover{border-color:var(--ink)}
+.switch button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.switch .sl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.switch .sn{font-size:12.5px;font-weight:600;line-height:1.15}
+.switch .bd{min-width:18px;height:18px;font-size:10px}
+.body{flex:1;overflow-y:auto;padding:16px 22px 28px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin}
+.body h2{font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.body h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 6px}
+.body p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin:0}
+.stat{padding:7px 9px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat dd{margin:1px 0 0;font-family:var(--display);font-stretch:106%;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.list>li{border-bottom:1px solid var(--rule)}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:1px 10px;align-items:center;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer}
+.item:hover .nm,.list>li.on .nm{text-decoration:underline;text-underline-offset:3px}
+.item>.bd,.item>.ico{grid-row:1/3;justify-self:start}
+.item .nm{font-weight:600}
+.item .nm .mono{font-weight:400;font-size:10.5px;color:var(--muted);margin-left:6px}
+.item .lt{font-style:italic;color:var(--muted);font-weight:400}
+.item .ds{grid-column:2;font-size:13px;color:var(--muted)}
+.item .bm{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:right;grid-row:1/3;grid-column:3}
+.item .now{color:var(--tA);font-weight:500}
+.item .chev{grid-row:1/3;grid-column:3;font-family:var(--mono);color:var(--muted);transition:transform .25s}
+.list>li.open .chev{transform:rotate(90deg)}
+.detail{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;margin:0 0 10px;padding:10px;overflow:hidden}
+.detail img{width:118px;height:92px;object-fit:cover;border-radius:10px;background:linear-gradient(180deg,#F7FBF9,#E3EFEA);display:block}
+.detail p{font-size:12.5px;line-height:1.45;color:#33443E}
+.detail .cap{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+.ico{width:18px;height:18px;flex:none}
+.tcard{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
+.tcard:hover .tn{text-decoration:underline;text-underline-offset:3px}
+.tcard .tn{font-weight:600}
+.tcard .tm{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tcard svg{grid-row:1/3;grid-column:3}
+.cards{border-top:1px solid var(--rule)}
+.prof svg{display:block;width:100%;height:96px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:9px}
+.links{display:grid;gap:4px;font-size:13px}
+.links a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--rule)}
+
+/* controls */
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:flex-end;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.grp{display:flex;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.grp button{border:0;background:none;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;min-width:32px;display:flex;align-items:center;gap:6px}
+.grp button+button{border-left:1px solid var(--rule)}
+.grp button:hover{background:var(--paper)}
+.grp button .sq{width:8px;height:8px;border-radius:2px;background:var(--ink)}
+.grp button[aria-pressed="false"]{color:var(--muted)}
+.grp button[aria-pressed="false"] .sq{background:transparent;outline:1px solid var(--muted)}
+.hint{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);z-index:2;pointer-events:none}
+
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;overflow:visible}
+  #stage{position:relative;height:58svh;min-height:340px}
+  .panel{position:relative;width:auto;bottom:auto;border-right:0;border-top:1px solid var(--rule);backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+  .switch{position:sticky;top:0;background:var(--paper);z-index:3}
+  .body{overflow:visible;padding:16px 16px 40px}
+  .head,.switch{padding-inline:16px}
+  .ctrls{bottom:auto;top:calc(58svh - 46px);right:10px}
+  .hint{display:none}
+  #card{width:210px}
+}
+@media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+.homechip{position:relative;overflow:hidden;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-bottom:6px;padding:8px 14px 8px 10px;border-radius:18px;text-decoration:none;color:var(--ink);
+  background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);
+  -webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.homechip::after{content:"";position:absolute;top:-50%;left:-30%;width:30%;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));transform:rotate(18deg) translateX(-150%);transition:transform .8s ease}
+.homechip:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 16px 32px rgba(29,43,38,.16)}.homechip:hover::after{transform:rotate(18deg) translateX(600%)}
+.hc-arrow{font-size:14px}.hc-name{font-family:var(--display,inherit);font-stretch:118%;font-weight:400;font-size:16px;letter-spacing:-.01em}
+.hc-sub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-left:9px;border-left:1px solid rgba(29,43,38,.15)}
+</style>
+
+<div class="app" id="app">
+  <div id="stage" aria-label="Interactive model of Watkins Glen State Park">
+    <canvas id="gl"></canvas>
+    <svg id="lead" aria-hidden="true"></svg>
+    <div id="labels"></div>
+    <div id="card" class="glass" hidden role="dialog" aria-live="polite"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="head">
+      <a class="homechip" href="../" aria-label="Back to Grace&rsquo;s Trail home"><span class="hc-arrow">←</span><span class="hc-name">Grace&rsquo;s Trail</span><span class="hc-sub">All trails</span></a>
+      <h1>Watkins Glen Gorge</h1>
+    </div>
+    <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
+    <div class="body" id="pbody" aria-live="polite"></div>
+  </aside>
+  <div class="hint">Drag to turn · scroll to zoom · click anything, tap the card for photos</div>
+  <div class="ctrls">
+    <div class="grp" role="group" aria-label="Layers">
+      <button id="tgTopo" aria-pressed="true"><span class="sq"></span>Topo</button>
+      <button id="tgTrees" aria-pressed="true"><span class="sq"></span>Trees</button>
+      <button id="tgAnimals" aria-pressed="true"><span class="sq"></span>Wildlife</button>
+      <button id="tgFlowers" aria-pressed="true"><span class="sq"></span>Flowers</button>
+      <button id="tgBase" aria-pressed="true"><span class="sq"></span>Base</button>
+    </div>
+    <div class="grp" role="group" aria-label="View">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" aria-label="Reset view">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NOW_MONTH=new Date().getMonth()+1;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
+  band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};Object.assign(PAL,{"ground": "#C4E5C8", "groundN": "#ADD7B4", "oak": "#4E7F3A", "sycamore": "#9DBF4E", "gold": "#E39A3C"});
+
+/* ================= data ================= */
+const CANYONS=[{"pts":[[-6077,-1968,861],[-5966,-1915,857],[-5838,-1915,858],[-5728,-1886,857],[-5660,-1805,857],[-5577,-1752,854],[-5484,-1762,855],[-5363,-1761,854],[-5249,-1727,851],[-5134,-1634,852],[-5015,-1598,850],[-4863,-1574,851],[-4749,-1545,848],[-4653,-1541,843],[-4465,-1582,842],[-4250,-1611,847],[-4132,-1610,841],[-4012,-1564,839],[-3828,-1451,845],[-3722,-1389,841],[-3542,-1353,795],[-3364,-1340,789],[-3225,-1338,797],[-3115,-1200,762],[-3073,-1107,733],[-2960,-1044,714],[-2844,-1019,684],[-2656,-1025,694],[-2531,-994,682],[-2417,-928,672],[-2297,-885,668],[-2201,-877,674],[-2047,-841,673],[-1953,-802,658],[-1775,-761,652],[-1614,-722,629],[-1384,-712,631],[-1270,-692,561],[-1166,-663,521],[-1076,-638,542],[-964,-601,537],[-897,-540,466],[-713,-517,474],[-452,-346,465]],"minor":false,"id":"glen"}];
+const TRAILS=[{"id":"A","name":"Gorge Trail and Lover’s Lane","short":"Lover’s Lane loop","official":0.8,"unit":"loop","route":"Loop","time":"45 min","level":"Moderate","color":"--tA","desc":"A short loop through the lower gorge. From the Main Entrance, the Gorge Trail passes Sentry Bridge, walks behind Cavern Cascade and climbs the Spiral Tunnel, then Lover’s Lane brings you back along the north wall to the Suspension Bridge and Point Lookout. Lots of stone steps for its length.","anchors":[[-885,-478,500,0.0],[-949,-538,568,0.025],[-930,-597,571,0.04],[-938,-632,561,0.045],[-1079,-660,547,0.072],[-1187,-671,531,0.093],[-1267,-691,574,0.111],[-1269,-681,571,0.113],[-1284,-683,589,0.133],[-1389,-698,606,0.153],[-1502,-693,621,0.174],[-1614,-691,630,0.195],[-1716,-732,634,0.218],[-1842,-736,639,0.242],[-1967,-778,657,0.268],[-2117,-820,672,0.299],[-2245,-857,679,0.324],[-2309,-847,691,0.334],[-2243,-846,696,0.349],[-2133,-788,714,0.373],[-2043,-751,719,0.394],[-1912,-699,717,0.421],[-1772,-675,709,0.448],[-1656,-664,700,0.471],[-1607,-664,695,0.476],[-1423,-642,672,0.517],[-1277,-628,661,0.545],[-1194,-618,635,0.557],[-1198,-629,621,0.566],[-1299,-663,619,0.586],[-1420,-678,617,0.61],[-1442,-696,615,0.638],[-1318,-691,591,0.661],[-1247,-657,597,0.68],[-1215,-680,549,0.701],[-1079,-660,547,0.728],[-965,-637,566,0.75],[-949,-538,568,0.775],[-906,-482,520,0.796],[-885,-478,500,0.8]]},
+ {"id":"B","name":"Gorge Trail to Mile Point Bridge, North Rim return","short":"2-mile loop","official":2.0,"unit":"loop","route":"Loop","time":"1–1.5 hr","level":"Moderate","color":"--tB","desc":"The park’s suggested 2-mile hike. Climb the Gorge Trail past Glen Cathedral, Central Cascade and Rainbow Falls to Mile Point Bridge, then go up the steps to the North Rim (Indian) Trail and walk back east through the woods above the gorge.","anchors":[[-885,-478,500,0.0],[-949,-538,568,0.028],[-930,-597,571,0.045],[-938,-632,561,0.049],[-1079,-660,547,0.079],[-1187,-671,531,0.102],[-1267,-691,574,0.122],[-1269,-681,571,0.125],[-1284,-683,589,0.146],[-1389,-698,606,0.168],[-1502,-693,621,0.192],[-1614,-691,630,0.215],[-1716,-732,634,0.239],[-1842,-736,639,0.266],[-1967,-778,657,0.295],[-2117,-820,672,0.328],[-2245,-857,677,0.356],[-2358,-850,690,0.381],[-2447,-903,690,0.403],[-2485,-930,689,0.412],[-2549,-960,690,0.428],[-2570,-974,690,0.434],[-2700,-984,701,0.461],[-2802,-980,704,0.482],[-2833,-1042,751,0.501],[-2847,-1059,798,0.506],[-2985,-1101,827,0.536],[-3084,-1199,838,0.566],[-3164,-1321,834,0.597],[-3272,-1357,823,0.621],[-3328,-1290,809,0.645],[-3432,-1293,805,0.666],[-3543,-1326,814,0.693],[-3742,-1373,821,0.736],[-3866,-1427,827,0.764],[-3974,-1489,838,0.791],[-4062,-1564,845,0.815],[-4149,-1640,850,0.844],[-4149,-1640,850,0.846],[-4002,-1499,868,0.891],[-3915,-1383,881,0.921],[-3846,-1301,889,0.943],[-3998,-1398,904,0.982],[-4125,-1487,909,1.014],[-4231,-1503,910,1.038],[-4125,-1487,910,1.06],[-3998,-1398,908,1.093],[-3911,-1334,905,1.116],[-3812,-1278,899,1.14],[-3672,-1239,895,1.17],[-3519,-1229,890,1.204],[-3353,-1237,881,1.238],[-3239,-1180,873,1.27],[-3179,-1069,867,1.297],[-3111,-994,861,1.318],[-2995,-946,853,1.345],[-2836,-923,843,1.38],[-2633,-864,834,1.424],[-2498,-817,818,1.454],[-2315,-739,802,1.497],[-2189,-697,794,1.524],[-2021,-665,778,1.561],[-1902,-643,757,1.587],[-1774,-630,724,1.613],[-1607,-664,703,1.648],[-1605,-656,703,1.65],[-1423,-642,679,1.688],[-1277,-628,664,1.719],[-1194,-618,635,1.737],[-1198,-629,621,1.743],[-1299,-663,619,1.765],[-1420,-678,617,1.791],[-1442,-696,615,1.821],[-1318,-691,591,1.847],[-1247,-657,597,1.868],[-1215,-680,549,1.892],[-1079,-660,547,1.921],[-965,-637,566,1.945],[-949,-538,568,1.972],[-906,-482,520,1.995],[-885,-478,500,2.0]]},
+ {"id":"C","name":"Full Gorge Trail and North Rim loop","short":"3-mile loop","official":3.0,"unit":"loop","route":"Loop","time":"2–2.5 hr","level":"Moderate","color":"--tC","desc":"The whole Gorge Trail, about 1.5 miles and more than 800 stone steps past all 19 waterfalls, from the Main Entrance up to Jacob’s Ladder and the Upper Entrance. The North Rim (Indian) Trail brings you back along the top. The park’s suggested 3-mile hike.","anchors":[[-885,-478,500,0.0],[-949,-538,568,0.033],[-930,-597,571,0.052],[-938,-632,561,0.057],[-1079,-660,547,0.093],[-1187,-671,531,0.12],[-1267,-691,574,0.144],[-1269,-681,571,0.146],[-1284,-683,589,0.171],[-1389,-698,606,0.197],[-1502,-693,621,0.225],[-1614,-691,630,0.252],[-1716,-732,634,0.281],[-1842,-736,639,0.312],[-1967,-778,657,0.346],[-2117,-820,672,0.385],[-2245,-857,677,0.418],[-2358,-850,690,0.447],[-2447,-903,690,0.473],[-2485,-930,689,0.483],[-2549,-960,690,0.502],[-2570,-974,690,0.51],[-2700,-984,701,0.541],[-2802,-980,704,0.566],[-2833,-1042,751,0.588],[-2847,-1059,798,0.593],[-2985,-1101,827,0.628],[-3084,-1199,838,0.664],[-3164,-1321,834,0.7],[-3272,-1357,823,0.729],[-3328,-1290,809,0.757],[-3432,-1293,805,0.781],[-3543,-1326,814,0.813],[-3742,-1373,821,0.864],[-3866,-1427,827,0.896],[-3974,-1489,838,0.928],[-4062,-1564,845,0.956],[-4149,-1640,845,0.99],[-4149,-1640,845,0.993],[-4185,-1598,847,1.017],[-4309,-1585,847,1.047],[-4407,-1564,849,1.071],[-4588,-1534,851,1.117],[-4726,-1521,852,1.152],[-4862,-1548,852,1.186],[-4960,-1587,852,1.213],[-5080,-1597,852,1.243],[-5213,-1673,854,1.28],[-5303,-1727,855,1.308],[-5402,-1745,859,1.333],[-5510,-1733,866,1.36],[-5619,-1714,883,1.388],[-5646,-1719,897,1.398],[-5722,-1733,915,1.414],[-5707,-1662,970,1.44],[-5649,-1544,992,1.476],[-5583,-1404,992,1.514],[-5477,-1315,989,1.55],[-5354,-1319,980,1.584],[-5197,-1360,970,1.624],[-5061,-1412,960,1.661],[-4873,-1380,948,1.708],[-4760,-1372,943,1.735],[-4613,-1398,937,1.773],[-4436,-1453,932,1.819],[-4231,-1503,923,1.871],[-4125,-1487,913,1.897],[-3998,-1398,909,1.936],[-3911,-1334,905,1.962],[-3812,-1278,899,1.991],[-3672,-1239,895,2.027],[-3519,-1229,890,2.064],[-3353,-1237,881,2.106],[-3239,-1180,873,2.144],[-3179,-1069,867,2.175],[-3111,-994,861,2.2],[-2995,-946,853,2.232],[-2836,-923,843,2.272],[-2633,-864,834,2.324],[-2498,-817,818,2.36],[-2315,-739,802,2.409],[-2189,-697,794,2.442],[-2021,-665,778,2.485],[-1902,-643,757,2.515],[-1774,-630,724,2.547],[-1607,-664,703,2.587],[-1605,-656,703,2.59],[-1423,-642,679,2.634],[-1277,-628,664,2.671],[-1194,-618,635,2.692],[-1198,-629,621,2.697],[-1299,-663,619,2.724],[-1420,-678,617,2.754],[-1442,-696,615,2.79],[-1318,-691,591,2.821],[-1247,-657,597,2.846],[-1215,-680,549,2.873],[-1079,-660,547,2.907],[-965,-637,566,2.936],[-949,-538,568,2.967],[-906,-482,520,2.995],[-885,-478,500,3.0]]}];
+const STOPS=[{"id":"1","trails":["A","B","C"],"x":-885,"n":-478,"name":"Main Entrance","desc":"The village entrance on North Franklin Street, with the visitor center and the main parking lot. The Gorge Trail starts here, through the stone Entrance Tunnel."},
+ {"id":"2","trails":["A","B","C"],"x":-930,"n":-597,"name":"Sentry Bridge","desc":"A stone arch over the creek. Below it is a round flume hole, where water was channeled to power a mill in the 1800s."},
+ {"id":"3","trails":["A","B","C"],"x":-1267,"n":-691,"name":"Cavern Cascade","desc":"The trail passes behind Cavern Cascade, so you walk under the falling water. Just past it, the Spiral Tunnel, cut by hand in 1927, climbs through the rock in a tight curl of steps."},
+ {"id":"4","trails":["A","B","C"],"x":-1607,"n":-664,"name":"Suspension Bridge","desc":"Built in 1870, it spans the gorge 85 feet above the creek. Despite the name it is a wrought-iron truss bridge. It links the North Rim (Indian) Trail with the south side."},
+ {"id":"5","trails":["A","B","C"],"x":-1194,"n":-618,"name":"Point Lookout","desc":"An overlook on the North Rim Trail, straight down into the sculpted rock of the lower gorge. From here stairs lead back down toward the entrance."},
+ {"id":"A1","trails":["A"],"x":-2309,"n":-847,"name":"Lover’s Lane","desc":"A quieter path that leaves the Gorge Trail and runs along the north wall back toward the Suspension Bridge. Its lookout is a concrete remnant of the trail that was here before the 1935 flood."},
+ {"id":"6","trails":["B","C"],"x":-2485,"n":-930,"name":"Glen Cathedral","desc":"The gorge widens into a tall, curved room of thin sandstone and shale layers laid down about 380 million years ago."},
+ {"id":"7","trails":["B","C"],"x":-2570,"n":-974,"name":"Central Cascade","desc":"The highest waterfall in the gorge, plunging more than 60 feet through a narrow chute."},
+ {"id":"8","trails":["B","C"],"x":-2833,"n":-1042,"name":"Rainbow Falls","desc":"A fall that spills over the gorge wall beside the trail, which passes behind it. Sunlight in its spray makes the rainbow it is named for, above a chain of plunge pools."},
+ {"id":"9","trails":["B","C"],"x":-4149,"n":-1640,"name":"Mile Point Bridge","desc":"A stone bridge built by the Civilian Conservation Corps, who rebuilt the gorge trail after the 1935 flood. The 2-mile route turns here, up the steps to the North Rim Trail."},
+ {"id":"C1","trails":["C"],"x":-5646,"n":-1719,"name":"Jacob’s Ladder","desc":"The upper end of the Gorge Trail: 180 stone stairs climb out of the gorge to the Upper Entrance on Route 409, with parking and a playground. The North Rim (Indian) Trail starts at the top and runs back east along the rim through the woods."}];
+const ORDER={"A":["1","2","3","A1","4","5"],"B":["1","2","3","6","7","8","9","4","5"],"C":["1","2","3","6","7","8","9","C1","4","5"]};
+const SPECIES={
+ wg_trillium:{name:"Large-flowered trillium",latin:"Trillium grandiflorum",color:"#FFFFFF",shape:"cup",bloom:[4,5],sum:"Three broad white petals over a whorl of three leaves, turning pink as they age. Carpets the rich woods along the rim trails in May.",rule:(d,e,g,s)=>d>80&&g<0.8&&s<0.1},
+ wg_columbine:{name:"Wild columbine",latin:"Aquilegia canadensis",color:"#D9443A",shape:"tube",bloom:[5,6],sum:"Nodding red-and-yellow flowers with long spurs that hummingbirds visit. It grows from cracks in the shale ledges of Finger Lakes gorges.",rule:(d,e,g,s)=>g>0.5&&d<500},
+ wg_jewelweed:{name:"Spotted jewelweed",latin:"Impatiens capensis",color:"#F08A24",shape:"tube",bloom:[7,8,9],sum:"Orange, red-spotted hanging flowers on watery stems in damp, shady spots near the creek. Ripe seed pods burst when touched.",rule:(d,e,g,s)=>d<160},
+ wg_raspberry:{name:"Purple-flowering raspberry",latin:"Rubus odoratus",color:"#C2408A",shape:"cup",bloom:[6,7,8],sum:"A thornless shrub with big maple-like leaves and rose-purple flowers, common on shaded banks and trail edges.",rule:(d,e,g,s)=>d>60&&d<700},
+ wg_bloodroot:{name:"Bloodroot",latin:"Sanguinaria canadensis",color:"#FFFFFF",shape:"cup",bloom:[4],sum:"One of the first spring flowers: a single white bloom wrapped in a lobed leaf. The root bleeds orange-red sap.",rule:(d,e,g,s)=>d>90&&g<0.7},
+ wg_fern:{name:"Ferns of the gorge walls",latin:"Polypodium, Dryopteris and others",color:"#5E9E4A",shape:"fern",bloom:[],sum:"Shade-loving ferns line the damp stone stairs and ledges, especially on Couch’s Staircase and the wet walls near the falls.",rule:(d,e,g,s)=>d<140}
+};
+const FLORA={"A":["wg_fern","wg_columbine","wg_jewelweed","wg_raspberry"],"B":["wg_fern","wg_columbine","wg_trillium","wg_raspberry","wg_bloodroot"],"C":["wg_fern","wg_columbine","wg_jewelweed","wg_trillium","wg_raspberry","wg_bloodroot"]};
+const WILD={
+ deer:{name:"White-tailed deer",color:"#B98A5E",sum:"The common deer of the Finger Lakes. Look for them browsing in the woods along the rim trails early and late in the day."},
+ chipmunk:{name:"Eastern chipmunk",color:"#B77A45",sum:"A small striped ground squirrel that darts across the stone walls and steps, cheeks full of seeds."},
+ squirrel:{name:"Eastern gray squirrel",color:"#9A9A96",sum:"Busy in the oaks, maples and hemlocks along the North Rim Trail, burying nuts in fall."},
+ raccoon:{name:"Raccoon",color:"#7E7A74",sum:"Masked and ringed-tailed. Forages along the creek and around the picnic areas at night."},
+ turkey:{name:"Wild turkey",color:"#4A3A2E",sum:"Flocks walk the open woods and field edges on the rims, scratching for acorns and seeds."},
+ fox:{name:"Red fox",color:"#C9682E",sum:"A small rusty fox with a white-tipped tail that hunts mice along the woods and fields above the gorge, mostly at dusk."},
+ vulture:{name:"Turkey vulture",color:"#2A2420",sum:"Big dark birds that rock on the air currents above the gorge from spring to fall, holding their wings in a shallow V."},
+ kingfisher:{name:"Belted kingfisher",color:"#4E7FA8",sum:"A blue-gray bird with a shaggy crest that rattles along Glen Creek and dives into the plunge pools for small fish."},
+ woodpecker:{name:"Pileated woodpecker",color:"#C8322C",sum:"A crow-sized black woodpecker with a red crest. It chisels big oblong holes in dead trees in the rim woods."},
+ hawk:{name:"Red-tailed hawk",color:"#A8572F",sum:"The common big hawk of the region, circling over the fields and woods around the park."}
+};
+
+const PHOTOS={"stop":{"2":[{"f":"../photos/pl_watkins_2_1.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026057243","t":"Sentry Bridge at Entrance Watkins Glen State Park, Watkins Glen NY 2391"},{"f":"../photos/pl_watkins_2_2.jpg","by":"Eric Kilby","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/8749778@N06/48011239153","t":"Sentry Bridge"},{"f":"../photos/pl_watkins_2_3.jpg","by":"Sean_Marshall","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7119320@N05/30171898528","t":"Sentry Bridge, Watkins Glen State Park"}],"3":[{"f":"../photos/pl_watkins_3_0.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026960568","t":"Behind Cavern Cascade Watkins Glen State Park, Watkins Glen NY 2427 - Copy"},{"f":"../photos/pl_watkins_3_2.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026971490","t":"Cavern Cascade Watkins Glen State Park, Watkins Glen NY 2417"},{"f":"../photos/pl_watkins_3_3.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026682646","t":"Cavern Cascade Watkins Glen State Park, Watkins Glen NY 2436"},{"f":"../photos/pl_watkins_3_1.jpg","by":"Boston Public Library","lic":"BY 2.0","src":"https://www.flickr.com/photos/24029425@N06/7297756038","t":"Cavern cascade, Watkins Glen, N. Y."}],"4":[{"f":"../photos/pl_watkins_4_1.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026075281","t":"Suspension Bridge Watkins Glen State Park, Watkins Glen NY 2449"},{"f":"../photos/pl_watkins_4_0.jpg","by":"andyarthur","lic":"BY 2.0","src":"https://www.flickr.com/photos/45846171@N04/10563067835","t":"Suspension Bridge Over Gorge"},{"f":"../photos/pl_watkins_4_2.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026078399","t":"Suspension Bridge Watkins Glen State Park, Watkins Glen NY 2545"},{"f":"../photos/pl_watkins_4_3.jpg","by":"Sean_Marshall","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7119320@N05/29103598497","t":"View from the Suspension Bridge, Watkins Glen"}],"5":[{"f":"../photos/pl_watkins_5_0.jpg","by":"daveynin","lic":"BY 2.0","src":"https://www.flickr.com/photos/44124370018@N01/51748993330","t":"Point Lookout the gorge in Autumn"}],"6":[{"f":"../photos/pl_watkins_6_1.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026717634","t":"Glen Cathedral Watkins Glen State Park, Watkins Glen NY 2470"},{"f":"../photos/pl_watkins_6_3.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4025969903","t":"Glen Cathedral Watkins Glen State Park, Watkins Glen NY 2472"},{"f":"../photos/pl_watkins_6_0.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4025976217","t":"Glen Cathedral Watkins Glen State Park, Watkins Glen NY 2476"}],"7":[{"f":"../photos/pl_watkins_7_2.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4025950295","t":"Central Cascade Watkins Glen State Park, Watkins Glen NY 2482"},{"f":"../photos/pl_watkins_7_3.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4025947105","t":"Central Cascade Watkins Glen State Park, Watkins Glen NY 2481"},{"f":"../photos/pl_watkins_7_1.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026760566","t":"Rainbow Falls Glen of Pools Central Cascade Watkins Glen State Park, Watkins Glen NY 2488"},{"f":"../photos/pl_watkins_7_0.jpg","by":"smallcurio","lic":"PDM 1.0","src":"https://www.flickr.com/photos/107480180@N03/49142318482","t":"Central Cascade, Watkins Glen, N.Y., by James Hope"}],"8":[{"f":"../photos/pl_watkins_8_1.jpg","by":"coleypauline","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/71704061@N00/5833156859","t":"Beautiful Rainbow Falls, Watkins Glen gorge"},{"f":"../photos/pl_watkins_8_3.jpg","by":"bobistraveling","lic":"BY 2.0","src":"https://www.flickr.com/photos/91008793@N00/4026031819","t":"Rainbow Falls Watkins Glen State Park, Watkins Glen NY 2505"},{"f":"../photos/pl_watkins_8_0.jpg","by":"Boston Public Library","lic":"BY 2.0","src":"https://www.flickr.com/photos/24029425@N06/7297755212","t":"Rainbow falls, Watkins Glen, N. Y."}]},"animal":{"deer":[{"f":"../photos/sp_wg_deer_0.jpg","by":"James St. John","lic":"BY 2.0","src":"https://www.flickr.com/photos/47445767@N05/8269171051","t":"Odocoileus virginianus (white-tailed deer) (Newark, Ohio, USA) 6"},{"f":"../photos/sp_wg_deer_3.jpg","by":"DFChurch","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/77056186@N00/45023547244","t":"White-tailed Deer"}],"raccoon":[{"f":"../photos/sp_raccoon_0.jpg","by":"Harlequeen","lic":"BY 2.0","src":"https://www.flickr.com/photos/27887748@N00/491727233","t":"Raccoon Cute Pose"}],"squirrel":[{"f":"../photos/sp_wg_gsquirrel_0.jpg","by":"DFChurch","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/77056186@N00/46431096831","t":"Eastern Gray Squirrel"},{"f":"../photos/sp_wg_gsquirrel_1.jpg","by":"DaPuglet","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/43810158@N07/31377582180","t":"Eastern Gray Squirrel"},{"f":"../photos/sp_wg_gsquirrel_3.jpg","by":"Eric Bégin","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/47604778@N00/1352488714","t":"Eastern Gray Squirrel / Ecureuil gris"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"woodpecker":[{"f":"../photos/sp_wg_pileated_1.jpg","by":"DaPuglet","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/43810158@N07/44704735605","t":"Stare Down With A Pileated Woodpecker"},{"f":"../photos/sp_wg_pileated_3.jpg","by":"DaPuglet","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/43810158@N07/42570487802","t":"The Pileated Woodpecker Chase"},{"f":"../photos/sp_wg_pileated_2.jpg","by":"DaPuglet","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/43810158@N07/33366694861","t":"Be Still My Heart! A pileated woodpecker flew right beside me!"}],"chipmunk":[{"f":"../photos/sp_wg_chipmunk_0.jpg","by":"Seánín Óg","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/23095866@N03/14544761731","t":"Eastern Chipmunk (Tamias striatus)"},{"f":"../photos/sp_wg_chipmunk_3.jpg","by":"Mr.TinDC","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/7471115@N08/5038312063","t":"Eastern Chipmunk (Tamias striatus)"}],"turkey":[{"f":"../photos/sp_wg_turkey_0.jpg","by":"Judy Gallagher","lic":"BY 2.0","src":"https://www.flickr.com/photos/52450054@N04/24350524238","t":"Wild Turkey - Meleagris gallopavo, Occoquan Bay National Wildlife Refuge, Woodbridge, Virginia"},{"f":"../photos/sp_wg_turkey_2.jpg","by":"Mary Keim","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/38514062@N03/23837720052","t":"Wild Turkey (Meleagris gallopavo)"}],"fox":[{"f":"../photos/sp_wg_fox_1.jpg","by":"Peter O'Connor aka anemoneprojectors","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/58414938@N00/23584112372","t":"Red Fox (Vulpes vulpes)"},{"f":"../photos/sp_wg_fox_2.jpg","by":"Billy Lindblom","lic":"BY 2.0","src":"https://www.flickr.com/photos/41502344@N02/4803601063","t":"Red Fox (Vulpes vulpes)"},{"f":"../photos/sp_wg_fox_3.jpg","by":"HyperViper","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/76699800@N00/60596813","t":"Red Fox (Vulpes vulpes) שועל מצוי"}],"vulture":[{"f":"../photos/sp_wg_vulture_0.jpg","by":"bob in swamp","lic":"BY 2.0","src":"https://www.flickr.com/photos/50152666@N02/12715999235","t":"Turkey Vulture (Cathartes aura)"},{"f":"../photos/sp_wg_vulture_1.jpg","by":"docentjoyce","lic":"BY 2.0","src":"https://www.flickr.com/photos/99003655@N00/11229180854","t":"Turkey Vultures (Cathartes aura) Preflight Warmup"}],"kingfisher":[{"f":"../photos/sp_hl_kingfisher_0.jpg","by":"airboy123","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/42478987@N07/50279838436","t":"Belted Kingfisher"},{"f":"../photos/sp_hl_kingfisher_1.jpg","by":"airboy123","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/42478987@N07/51415518832","t":"Belted Kingfisher"}]},"flower":{"wg_trillium":[{"f":"../photos/sp_wg_trillium_0.jpg","by":"kasio69","lic":"BY 2.0","src":"https://www.flickr.com/photos/37904342@N04/14050718697","t":"_BRK8365 Trillium grandiflorum [EXPLORED]"},{"f":"../photos/sp_wg_trillium_2.jpg","by":"Charles de Mille-Isles","lic":"BY 2.0","src":"https://www.flickr.com/photos/46639194@N05/5746872117","t":"Trillium grandiflorum / Trille blanc / White trillium"}],"wg_columbine":[{"f":"../photos/sp_wg_columbine_1.jpg","by":"Vicki's Nature","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/7327719@N06/16417742005","t":"columbine (Aquilegia canadensis)"},{"f":"../photos/sp_wg_columbine_2.jpg","by":"D.Eickhoff","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/50823119@N08/27163975615","t":"Aquilegia canadensis"},{"f":"../photos/sp_wg_columbine_3.jpg","by":"ejmc","lic":"BY 2.0","src":"https://www.flickr.com/photos/31821378@N00/5728503303","t":"Aquilegia canadensis"}],"wg_jewelweed":[{"f":"../photos/sp_wg_jewelweed_0.jpg","by":"Sam Droege","lic":"PDM 1.0","src":"https://www.flickr.com/photos/54563451@N08/24349699538","t":"Impatiens capensis, Jewelweed, Howard County, MD, Helen Lowe Metzman_2017-09-28-17.52"}],"wg_raspberry":[{"f":"../photos/sp_wg_raspberry_0.jpg","by":"BlueRidgeKitties","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/41380738@N05/5915860861","t":"Rubus odoratus"},{"f":"../photos/sp_wg_raspberry_1.jpg","by":"AnnaKika","lic":"BY 2.0","src":"https://www.flickr.com/photos/23193408@N00/174632849","t":"Rubus odoratus"}],"wg_bloodroot":[{"f":"../photos/sp_wg_bloodroot_2.jpg","by":"janet.powell","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/55854130@N00/129732966","t":"Sanguinaria canadensis, bloodroot / Bluegrass, Kentucky"},{"f":"../photos/sp_wg_bloodroot_3.jpg","by":"janet.powell","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/55854130@N00/129743374","t":"Sanguinaria canadensis, bloodroot / Bluegrass, Kentucky"},{"f":"../photos/sp_wg_bloodroot_0.jpg","by":"Sam Droege","lic":"PDM 1.0","src":"https://www.flickr.com/photos/54563451@N08/33034024904","t":"Sanguinaria canadensis, Bloodroot, Howard County, MD, Helen Lowe Metzman_2017-04-03-16.07.58 ZS PMax UDR"}]}};
+/* ================= terrain ================= */
+const X0=-6150,X1=-350,N0=-2600,N1=300,STEP=30;
+const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
+function hash(i,j){let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return (a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v)*2-1;}
+function fbm(x,y){let s=0,a=.5,f=1;for(let o=0;o<4;o++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5;}return s;}
+function closest(pts,x,n){let bd=1e9,bf=0;for(let k=0;k<pts.length-1;k++){const a=pts[k],b=pts[k+1];const dx=b[0]-a[0],dn=b[1]-a[1];let t=((x-a[0])*dx+(n-a[1])*dn)/(dx*dx+dn*dn);t=t<0?0:t>1?1:t;const d=Math.hypot(x-(a[0]+dx*t),n-(a[1]+dn*t));if(d<bd){bd=d;bf=a[2]+(b[2]-a[2])*t;}}return {d:bd,f:bf};}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25;}
+function creekDist(x,n){let m=1e9;for(const c of CANYONS){const r=closest(c.pts,x,n);if(r.d<m)m=r.d;}return m;}
+function interpField(A,idx,cum){const known=[];A.forEach((a,i)=>{if(a[idx]!==null)known.push(i);});return A.map((a,i)=>{if(a[idx]!==null)return a[idx];const lo=known.filter(k=>k<i).pop(),hi=known.find(k=>k>i);const t=(cum[i]-cum[lo])/(cum[hi]-cum[lo]);return A[lo][idx]+(A[hi][idx]-A[lo][idx])*t;});}
+TRAILS.forEach(T=>{const A=T.anchors,cum=[0];for(let i=1;i<A.length;i++)cum.push(cum[i-1]+Math.hypot(A[i][0]-A[i-1][0],A[i][1]-A[i-1][1]));
+  const E=interpField(A,2,cum),M=interpField(A,3,cum),pts=[];
+  for(let i=0;i<A.length-1;i++){const L=cum[i+1]-cum[i],st=Math.max(1,Math.ceil(L/30));for(let s=0;s<st;s++){const t=s/st;pts.push({x:A[i][0]+(A[i+1][0]-A[i][0])*t,n:A[i][1]+(A[i+1][1]-A[i][1])*t,e:E[i]+(E[i+1]-E[i])*t,m:M[i]+(M[i+1]-M[i])*t});}}
+  const L=A.length-1;pts.push({x:A[L][0],n:A[L][1],e:E[L],m:M[L]});T.pts=pts;
+  let gain=0,hi=-1e9,lo=1e9;pts.forEach((p,i)=>{if(i&&p.e>pts[i-1].e)gain+=p.e-pts[i-1].e;hi=Math.max(hi,p.e);lo=Math.min(lo,p.e);});T.gain=gain;T.hi=hi;T.lo=lo;T.total=pts[pts.length-1].m;});
+const TR=Object.fromEntries(TRAILS.map(t=>[t.id,t]));
+const Hg=new Float32Array(NX*NN);
+const DEM_B64="BAQFBAQEBAQDBAIEAgQCBAIEAgQCBAMEBAQEBAMEAAT9A/0D/wP/A/sD+wP7A/oD+wP7A/wD/AP8A/wD+wP7A/oD+gP6A/kD+QP5A/kD9wP4A/gD+QP6A/oD+gP4A/cD9QP0A/MD8wP0A/QD8wPxA+8D6wPoA+YD5QPiA+AD3APVA9cD3APiA+YD5wPnA+gD5gPfA9gD1wPYA9cD1QPUA9IDzgPOA88DzgPOA84DywPJA8UDwQO+A7sDuAO3A7UDtQO0A7QDuAPAA8QDxAPCA8EDvgO9A74DvgO+A74DvAO8A7wDuwO6A7oDugO5A7gDtwO1A7MDrwOrA6gDpAOgA50DmQOUA4wDgAN4A3EDaANfA1gDUQNKAz0DPAM7AzUDMgMuAyoDJwMjAyADHgMbAxgDFgMTAxADDgMMAwkDBgMDA/4C+wL4AvYC8wLvAusC6QLnAuUC4wLlAucC5QLjAuAC2wLZAtkC2ALWAtECyALCAsECwwLEAsICwQK+AroCtwKzAgQEBAQFBAQEBAQDBAIEAwQCBAIEAgQDBAQEBAQDBAAE/QP+A/8D/gP5A/sD+gP6A/oD+wP7A/sD+wP7A/sD+gP6A/oD+QP5A/gD+QP4A/cD+AP4A/gD+gP5A/kD+AP3A/UD9APyA/ID8wPzA/ID8QPuA+0D6gPoA+UD4wPgA94D2QPSA9cD3wPkA+YD5gPmA+QD3QPVA9MD0wPTA9ID0gPSA9ED0APQA9ADzwPOA8sDyAPEA8IDvgO7A7kDtwO1A7QDsgOyA7YDuwO+A74DvAO6A7cDtgO4A7wDuwO7A7kDuQO6A7kDtwO3A7kDuQO4A7kDuQO4A7UDsQOtA6kDpAOfA5kDlQOSA4cDewN1A2wDYwNaA1MDSgM8AzwDOwM1AzIDLgMpAyYDIgMfAxwDGQMXAxUDEgMQAw0DDAMJAwcDAwP/AvoC9wL1AvIC7gLrAugC5wLkAuEC3gLgAuAC4ALcAtgC2ALXAtYC0wLPAsoCxALAAr8CvwK+ArwCugK4ArYCtAIFBAUEBQQEBAQEAwQCBAMEAgQBBAIEAwQEBAQEAgQABP0D/gP/A/wD+QP7A/oD+gP6A/oD+wP6A/oD+gP6A/oD+gP5A/kD+AP4A/gD9wP3A/gD+AP4A/kD+QP5A/gD9gP0A/MD8gPxA/ED8QPwA+8D7wPuA+wD6QPlA+UD4gPfA9wD1QPQA9oD4APjA+QD5APgA9gD0QPRA88DzwPPA88D0QPSA9MD0wPTA9MDzwPMA8cDwwPBA70DugO3A7YDtAOzA7IDsQOxA7UDuQO4A7gDtAOzA7MDtgO7A7sDugO6A7oDuAO1A7YDuAO4A7gDtwO4A7kDuAO2A7MDrwOrA6YDoQOcA5cDjwONA4EDdwNwA2cDXQNVA0oDPAM7AzoDNgMzAywDKQMlAyEDHgMaAxcDFQMSAxEDDgMMAwsDCAMFAwID/wL8AvgC9QLxAu4C6wLoAuYC4wLgAt0C2wLaAtkC2ALWAtYC1gLVAtICzwLLAsYCwgK9ArsCuQK4ArYCtQK0ArICBAQFBAUEBAQDBAIEAgQCBAIEAgQCBAMEBAQEBAIE/wP9A/4D/wP7A/oD+wP6A/oD+gP6A/sD+gP6A/oD+gP6A/kD+QP4A/gD+AP3A/YD+AP5A/gD9wP3A/gD+AP3A/QD8wPyA/ED8APwA+8D7gPuA+4D7QPrA+kD5QPkA+QD4APeA9YDzwPXA9sD3QPfA+AD3QPUA9ED0APQA84DzwPPA88D0QPSA9MD1QPUA9EDzAPGA8MDwQO/A7oDtgO1A7MDsgOxA7EDsQO0A7kDugO6A7QDsAOyA7UDugO7A7sDuQO6A7gDtAO1A7cDuAO4A7cDuAO5A7gDtwO1A7ADrQOoA6MDngOaA5EDigOHA3sDcwNqA2ADVwNNAz4DOwM6AzcDNQMsAygDJAMhAx0DGQMWAxMDEQMPAw0DCwMJAwcDBgMCA/4C/AL6AvYC8QLtAusC6ALmAuMC4ALcAtoC2QLYAtcC1QLUAtQC1ALUAs8CygLHAsQCwAK8ArYCtQKyArACrwKuAgAEAgQDBAMEAwQCBAIEAgQCBAIEAwQEBAQEBAQCBP4D/gP+A/4D+QP7A/oD+gP6A/oD+gP7A/sD+gP6A/oD+gP6A/kD+QP5A/gD9gP2A/gD+QP4A/cD9gP2A/YD9QP1A/QD8wPxA/AD8APuA+wD6wPsA+sD6gPpA+UD4QPiA+AD3QPYA84D1QPXA9kD2gPcA9kD0wPRA9AD0APQA9AD0QPQA9ADzwPQA9ID0APOA8gDxwPDA8ADwAO6A7YDtAOzA7IDsAOxA7EDtQO5A7oDuQO1A68DsAO0A7kDvAO7A7kDtwO2A7UDtQO3A7gDuAO4A7cDuAO4A7cDtgOzA68DqwOmA6ADmwOXA4sDhgOBA3YDbQNiA1kDUANFAzsDOgM5AzgDMQMnAyMDHwMcAxgDFAMRAw8DDQMMAwkDBgMGAwID/wL+AvwC+QL2AvIC7gLrAugC5QLjAuAC3ALaAtkC1wLWAtUC0wLSAtEC0ALMAskCxgLFAsICvQK4ArUCsQKuAqsCqQL8A/8DAAQBBAEEAAQABAEEAQQCBAMEBAQDBAMEAQT9A/4D/gP8A/kD+wP6A/oD+gP5A/kD+gP6A/oD+gP6A/kD+QP5A/kD+AP3A/YD9gP3A/kD+AP3A/cD9QP0A/QD9APzA/ID8QPwA+8D7QPrA+oD6wPrA+kD6QPnA+ID4QPgA90D2wPWA80D1APXA9gD1wPVA9MD0QPRA9AD0APPA9AD0APQA84DzgPOA8sDyQPHA8cDwwO/A70DugO2A7QDsgOxA7EDrwOwA7MDtQO1A7YDtQOyA7EDtgO5A7wDuwO6A7kDtwO2A7YDuAO4A7gDuAO3A7gDuAO3A7cDtAOwA6wDqAOjA50DmQOSA4UDgQN6A3EDZQNcA1MDSAM7AzoDOQM5AzUDJgMiAx0DGgMXAxMDEAMOAwsDCgMIAwYDCAMEAwAD/QL7AvgC9QLyAu8C6wLoAuQC4QLeAtwC2wLaAtgC1gLUAtIC0QLPAs0CywLIAsYCwwLAAr0CuQK2ArICrgKrAqgC9AP3A/kD+wP8A/0D/gP/A/8DAQQDBAMEAwQCBP8D/QP+A/4D/AP7A/sD+gP6A/oD+gP5A/kD+gP6A/kD+QP5A/kD+AP4A/cD9wP2A/UD9wP4A/YD9gP2A/UD8wPzA/MD8gPxA+8D7gPuA+wD7APqA+kD6gPoA+cD5QPjA+AD3wPfA9wD2gPRA84DzAPNA9MD0wPRA9ADzwPOA80DzQPNA84DzwPOA84DzgPKA8cDxwPFA8ADvAO6A7gDtQO0A7IDsQOvA7ADsAOwA7ADsQOzA7QDswO0A7cDuQO7A7sDuwO6A7cDtQO3A7kDuQO5A7kDuAO5A7kDtwO3A7UDsQOuA6oDpQOfA5oDlgOKA34DewN0A2kDXgNVA0YDPAM7AzkDOgM0AyQDIAMcAxkDFgMTAxADDQMLAwkDBgMGAwcDBAMAA/0C+gL3AvMC8QLuAusC6ALjAuAC3gLdAtoC1wLTAtACzwLOAs0CzALKAsgCxwLEAsECvgK7ArgCtQKyArACrQKpAusD7gPxA/MD9AP2A/cD+gP+AwIEAwQDBAIEAQT+A/4D/QP+A/sD/AP7A/sD+gP6A/oD+QP5A/kD+QP5A/gD+AP4A/gD9wP2A/YD9QP1A/UD9gP1A/UD9APzA/ID8gPxA/AD7wPuA+0D7APqA+kD5QPlA+gD5wPlA+ID4QPhA+AD4APdA9oD2APQA8wDyAPJA8sDzgPOA8wDywPKA8oDygPLA8sDzAPNA80DywPIA8YDwgO9A7oDuAO2A7QDsgOwA68DrgOwA68DrwOvA68DsgO1A7UDtAO3A7oDugO7A7sDuQO2A7YDuAO5A7kDuQO5A7kDuQO5A7gDtwO3A7MDsAOsA6YDoQOcA5gDkAOBA3kDdgNrA2ADVwNEAzwDOwM6AzoDMgMjAx4DGgMXAxQDEQMPAw0DCwMJAwUDBAMCAwAD/gL8AvoC9gLzAu8C7QLqAuYC4gLgAt4C2wLXAtMCzgLLAsoCyQLJAsgCxQLEAsMCwgLAAr8CvAK5ArYCswKvAqwCqQLnA+kD7APtA+4D7wPwA/MD+QP/AwIEAgQBBAAE/gP+A/0D/QP8A/wD+wP6A/kD+QP5A/kD+QP5A/gD+QP4A/gD9wP3A/YD9gP1A/QD9AP0A/QD9APzA/ID8QPxA/AD8APwA+4D7QPrA+kD5wPjA+AD4QPkA+QD4wPgA+AD4wPjA+ED3gPcA9kD1wPWA88DxwPJA8gDxgPIA8kDyQPIA8kDyAPJA8oDzAPLA8sDyAPGA8ADvAO5A7cDtQOzA7EDrwOuA64DrgOuA68DrwOwA7UDugO6A7YDuQO7A7sDuwO6A7kDuAO4A7gDuAO4A7kDuAO4A7gDuAO3A7YDtgO1A7EDrQOoA6MDngOaA5MDhwN5A3QDbgNjA1kDSQNBAzwDOwM5Ay4DIwMdAxkDFwMTAxADDQMLAwoDCQMFAwID/wL8AvoC+QL3AvUC8wLvAusC5gLkAuIC4QLeAtkC1QLSAs4CywLIAsYCxgLEAsECwAK/Ar4CvgK9ArwCuwK4ArQCsAKrAqcC4wPmA+gD6gPrA+sD7APsA/AD9gP+AwAE/wP/A/4D/QP9A/wD/QP8A/sD+QP5A/gD+QP4A/gD+QP4A/gD+AP3A/YD9gP2A/UD9QP0A/QD9APyA/ED8QPxA/AD7wPvA+8D8APuA+sD6APmA+MD3wPfA+AD4QPiA+AD3wPhA+MD5APiA94D3APbA9kD1wPUA9IDzwPGA8EDwwPEA8MDxQPEA8UDxwPJA8sDygPJA8cDxgO/A7oDuAO2A7QDsgOxA7ADrwOuA64DrgOuA68DswO5A70DvgO8A7oDuwO7A7sDuQO4A7gDuAO4A7kDuQO5A7kDuAO4A7cDtgO2A7YDtQOyA64DqgOlA6ADmwOWA4wDfgNyA28DZQNbA1IDSAM+AzsDNQMoAyIDHQMZAxYDEwMPAwwDCQMIAwYDBQMCA/4C+wL4AvYC9QLzAvEC7QLnAuMC4wLiAt8C3QLaAtYC0gLOAsoCxwLEAsQCwQK+ArwCuwK6ArkCuQK6AroCuAK1ArECrQKoAtwD4APiA+YD6QPqA+oD6gPqA+4D9QP8A/4D/gP9A/0D/AP8A/0D+wP6A/kD+AP4A/gD+AP5A/gD+AP4A/gD9wP2A/YD9QP1A/QD8wPzA/MD8QPvA+8D7wPuA+0D7APsA+0D6wPoA+cD5APhA94D4APgA+AD4QPgA94D4APjA+UD4gPeA9wD3APbA9sD2gPVA9ED0QPNA8MDvgO9A78DugPAA8UDxgPJA8gDxwPFA8MDvQO5A7YDtQO0A7IDsgOxA68DrQOtA64DrgOxA7QDuAO7A70DvAO6A7oDuwO6A7kDuAO4A7gDuQO6A7kDuQO4A7gDtwO3A7UDtQO1A7UDswOvA6sDpgOgA5sDmAOQA4MDdANsA2gDXgNTA0kDQQM6Ay8DKQMjAx0DGQMVAxIDDwMLAwgDBQMDAwIDAQP+AvsC+AL1AvIC8QLvAukC5ALkAuMC4ALbAtoC2ALWAtMCzwLMAscCwwLBAr8CvQK7ArkCtwK2ArUCtQK2ArUCswKxAq0CqQLbA9sD2wPfA+ID5QPnA+gD6APoA+0D9QP6A/sD/AP8A/wD/gP9A/sD+gP5A/gD+AP4A/gD+AP3A/cD9wP3A/YD9QP1A/QD9APzA/ID8QPwA+4D7APsA+0D7QPrA+oD6gPpA+cD5QPlA+ID4APfA+AD4APgA+ED3wPeA+AD4gPjA+ED3gPdA9sD2wPdA9wD2QPXA9gD0wPNA8kDxwO/A7oDugPAA8MDxgPHA8UDwgPBA7wDuQO3A7UDtAOzA7MDsQOvA60DrAOtA64DsQO0A7cDuAO6A7sDuwO7A7oDugO5A7kDuQO6A7oDugO4A7gDtwO3A7YDtgO1A7QDtAO1A7QDsAOtA6cDogOcA5kDkgOGA3oDbANnA2ADVQNLA0MDOgMvAykDJAMdAxgDFQMRAw4DCwMHAwQDAQP/Av4C/AL6AvgC9ALyAu8C6gLmAuUC5ALiAt0C2gLYAtYC0wLRAs8CzALIAsMCvwK+ArwCuQK3ArUCsgKwAq8CrwKvAq8CrwKsAqgC2wPaA9kD2gPcA98D4wPkA+QD5QPoA+4D9AP2A/sD+wP7A/4D/QP7A/kD+AP4A/gD+AP4A/cD9wP2A/YD9gP1A/UD9APzA/ID8APvA+0D7QPsA+sD6wPrA+sD6gPpA+kD6APnA+YD5QPjA+ED4APfA98D3wPgA90D3QPfA98D3wPeA90D3APaA9sD3APbA9gD2QPXA9MDzwPLA8kDxQPFA7sDugO/A8MDxgPFA8IDvgO7A7gDtwO2A7UDtAOyA7ADrQOtA6wDqwOuA7EDswO2A7gDuQO6A7sDuwO7A7oDugO6A7oDugO5A7gDuAO3A7cDtgO2A7UDtAO0A7MDswO0A7EDrgOpA6MDngOZA5QDiQN+A3IDZQNiA1cDTANEAzoDMAMqAyQDHgMYAxQDEAMNAwoDBgMCA/4C/AL7AvoC+AL2AvIC8QLsAuYC5gLlAuQC4QLdAtoC2ALUAtICzwLNAssCyQLFAsACvQK7ArgCtQKyArACrQKqAqgCqQKqAqkCqAKnAtoD2gPZA9kD2QPaA9wD3gPgA+ID5QPpA+8D8gP7A/sD/AP9A/wD+gP5A/cD9wP3A/cD9wP3A/cD9gP2A/YD9QP0A/MD8gPwA+8D7gPtA+wD7APrA+sD6gPqA+kD6APoA+gD5wPmA+QD4wPhA98D4APgA98D3gPcA9sD3QPdA9wD3APcA9sD2gPbA9wD2QPWA9QD0wPRA80DywPJA8cDxQPCA7oDtgO+A8IDwwPAA7sDugO4A7cDtwO2A7QDsAOuA6wDrAOqA6oDrQOwA7MDtQO3A7kDuQO6A7kDuQO5A7kDuQO5A7gDuAO3A7cDtwO2A7YDtQO1A7QDswOyA7IDswOyA68DqgOkA58DmgOWA4sDfwN3A2gDXwNbA04DRQM7AzADKwMlAx8DGAMTAw8DDAMJAwUDAQP9AvoC+AL4AvUC8wLwAu4C6ALlAuUC5ALjAuEC3QLaAtgC1ALSAs8CzALIAsYCwwLAAr0CvAK6ArkCtwKzArACqwKmAqUCowKjAqMCogLaA9oD2QPYA9gD2APZA9kD2wPeA+ID5gPrA/AD9wP7A/4D/gP7A/oD+QP3A/cD9gP3A/cD9wP3A/YD9QP0A/QD9APyA/ED8APwA+8D7wPtA+wD6wPqA+kD5wPnA+YD5gPmA+UD5APkA+ID4APeA+AD4QPhA98D2wPZA9oD2wPaA9oD2gPZA9oD2gPZA9YD0gPRA9ADzgPMA8oDyAPGA8UDwwO+A7UDugO9A8ADvQO6A7sDugO4A7cDtAOwA60DrQOoA6kDqAOoA6sDrwOzA7UDtgO4A7gDuQO4A7gDuAO4A7gDuAO3A7cDtwO3A7cDtgO1A7QDtAOzA7MDsgOxA7IDswOwA6wDpgOgA5sDlwONA4EDegNvA2ADWwNTA0gDPAMxAysDJQMfAxgDEwMPAwsDCAMEAwAD+wL3AvYC9wLzAvAC7QLrAuYC5QLlAuQC4gLeAtsC2ALVAtIC0ALPAswCyALEAsECvwK8AroCugK6ArkCtgKxAqwCqAKkAqECnwKdApsCygPRA9oD2wPXA9cD2APYA9kD2wPdA+ID5wPrA/YD+wP9A/0D+wP5A/gD9wP3A/cD9gP2A/cD9gP2A/UD8wPzA/ID8QPwA/ED8QPxA+8D7gPrA+kD6QPnA+YD5gPmA+UD5APkA+QD4wPiA+ED4APhA+ID4wPgA9wD2QPXA9cD2APYA9cD1wPXA9YD1APSA88DzgPNA8sDygPJA8cDxgPFA8MDwAO4A7MDuQO6A7oDuQO1A60DrQOwA68DqwOpA6cDpAOlA6UDpQOnA60DsgO1A7YDuAO5A7gDtwO4A7cDtwO3A7cDtgO2A7YDtgO1A7QDtAO0A7MDswOyA7IDsQOyA7MDsQOsA6cDoQOcA5gDkAODA3oDcwNlA1gDVQNLAz0DMwMsAyYDHwMZAxQDDwMLAwcDBAMAA/oC9QL2AvYC8ALtAuoC6ALlAuUC5ALkAuAC2QLXAtQC0QLOAs0CzALJAscCwwK/Ar0CuwK4ArcCtwK4ArcCswKuAqkCpQKhAp8CnAKaAqUDuAPKA88DxgPJA9YD1QPSA9UD2wPfA+MD6AP5A/oD+wP8A/sD+QP4A/cD9wP3A/cD9gP2A/YD9QP1A/MD8gPxA/AD8APxA/ED8APuA+wD6QPoA+cD5wPnA+YD5QPkA+QD4wPjA+ID4wPjA+MD4wPkA+MD4APdA9kD1QPUA9UD1QPVA9MD0gPQA84DzQPMA8sDygPJA8kDxwPGA8YDxQPDA8ADvAO0A7IDsQOvA68DqwOkA6QDpwOrA6kDpgOlA6QDpAOiA6ADowOqA7ADtAO2A7kDuQO5A7gDuAO3A7cDtwO2A7YDtgO2A7UDtAOzA7MDswOyA7IDsgOyA7IDsgOzA7EDrQOoA6IDnAOZA5IDhQN7A3UDaQNbA1IDTgNBAzQDLQMnAyADGQMUAw8DCgMGAwID/gL6AvcC9wL0Au0C6gLnAuUC5ALkAuMC5QLeAtUC0wLQAs4CywLJAscCxQLCAr8CvQK7ArkCtgK1ArQCtAK1ArUCrwKqAqUCoQKeApwCmgJ7A5cDqQOvA6gDtQPIA8QDwQPOA9gD3APgA+oD/AP5A/gD+gP6A/kD+AP3A/cD9wP2A/YD9gP1A/QD9APyA/ED8APwA/AD7wPuA+0D6wPpA+gD5wPnA+cD5wPmA+UD5APkA+MD4wPjA+QD5APlA+UD5APjA98D2wPXA9QD0wPTA9MD0QPQA88DzAPJA8kDyQPIA8cDyAPHA8YDxQPFA8UDwwPBA8ADvAOxA6wDqgOpA6oDrgOlA6EDpgOkA6IDoQOeA54DnwOeA58DpgOtA7IDtQO4A7kDuQO5A7gDuAO3A7cDtwO2A7YDtgO2A7UDtAO0A7MDsgOxA7EDsgOyA7IDsgOwA64DqQOjA50DmQOUA4gDfQN3A2sDYANSA04DRwM4Ay4DKAMhAxoDFQMPAwsDBQMBA/4C/AL5AvYC8QLuAuoC5wLjAuMC5ALjAuQC2wLTAtECzgLOAsoCxwLEAsICwAK+ArsCuAK3ArUCtQKyArACsAKxAq4CqwKnAqICngKbApkCYgN3A4cDjQOOA6ADqwOqA6kDvgPJA9AD1APfA/MD9QPyA/YD9wP4A/gD9wP2A/YD9QP2A/UD9AP0A/ID8QPwA/AD7wPuA+0D7APqA+kD6QPnA+cD6APoA+gD5wPmA+QD5APkA+QD5APlA+UD5gPmA+MD4APbA9YD0wPRA9ED0QPQA84DzQPMA8oDyQPJA8gDxwPIA8gDxwPGA8UDxQPFA8QDwgPAA78DugO0A7QDtAO0A7kDrQOiA6ADngOcA5oDlgOWA5gDmwOaA6EDqAOvA7QDuAO5A7kDuAO4A7gDtwO3A7cDtwO2A7YDtgO2A7UDtQO0A7MDsgOxA7EDsgOzA7IDsAOuA6oDpAOeA5oDlQOKA34DeANuA2IDWANMA0kDPgMyAysDJAMcAxgDEQMMAwcDAgMAA/0C+gL2AvIC7wLsAugC5ALiAuMC4wLkAt4C2QLWAtMC0gLOAsoCxwLEAsMCwgK+ArkCtwK1ArMCrwKtAqsCqwKqAqkCqQKkAqACnAKYAl4DYQNpA3EDewOLA5IDkgOPA5wDqAOxA7gDxwPaA+cD6wPwA/ID9AP2A/UD9AP0A/QD9QP1A/QD8wPxA/AD8APwA+4D7QPsA+sD6gPqA+oD6QPoA+kD6QPpA+kD5wPmA+UD5QPlA+YD5gPnA+cD5QPgA9sD1QPRA9ADzwPPA88DzgPMA8sDygPJA8kDyAPIA8cDxwPHA8cDxgPFA8UDxAPDA8IDwQPAA78DvgO7A74DvAO7A7sDsAOqA6MDpAOlA50DmgOVA5UDmAOYA6QDrAOxA7cDugO6A7kDuAO3A7cDtwO3A7cDtwO2A7YDtgO1A7UDtQO0A7MDsgOxA7IDsgOyA7ADrgOqA6UDnwObA5cDjQOBA3kDcANkA1sDTgNGA0MDNwMuAyYDHgMZAxQDDQMIAwMDAAP+AvsC+AL1AvEC7gLpAuUC4gLkAuUC5QLlAuUC4gLeAtoC1wLTAs8CzALJAsUCwgK+ArkCtgKxAq0CrAKpAqYCpAKkAqQCowKhApwClwJhA10DXwNmA24DfwOBA38DfQOHA40DjgOcA7ADxgPWA98D5wPrA+8D8wPzA/MD8wPzA/MD9AP0A/ID8QPwA/AD8APuA+wD7APsA+sD6wPqA+gD6QPsA+0D7QPsA+sD6gPpA+gD5wPnA+gD5wPmA+ED2gPVA9ADzwPOA84DzgPOA80DywPLA8oDyQPJA8gDyAPIA8cDxwPGA8YDxgPFA8QDwwPCA8EDwQPBA8IDwQO/A70DvAO9A70DvQO6A7gDtwOvA6YDnQOWA5ADkwOhA6kDrgO1A7oDuQO4A7gDtwO3A7cDtwO2A7YDtgO1A7QDtAOzA7MDsgOyA7IDsgOxA7EDsQOwA60DqwOnA6EDnAOYA48DgwN7A3IDZgNaA1EDRwNCAzwDMAMnAyADGgMUAw0DCAMDAwAD/AL6AvkC9gLzAu8C6gLmAuQC5QLmAuYC5QLlAuQC4wLjAt8C2gLVAtACzALIAsQCwAK8ArgCtAKvAqwCpwKkAqICoQKdAp8CnwKbApcCegNeA10DXgNkA2kDbQNwA3MDdAN0A3MDfAOMA6YDvQPEA9cD5gPqA+4D8APxA/ED8gPyA/MD8wPyA/AD7wPvA/AD7QPsA+0D7QPrA+oD6APoA+sD7gPuA+4D7gPtA+wD7APqA+oD6APmA+QD3wPaA9QD0APOA84DzQPNA80DzAPMA8wDywPKA8kDyQPIA8gDyAPIA8cDxgPGA8YDxQPEA8QDxAPDA8IDwgPDA8IDwQO+A74DvgO+A78DvwO9A7wDtwOuA6MDmAOQA48DnQOlA6wDswO4A7cDtwO2A7YDtgO2A7YDtQO1A7QDtAOzA7EDsQOwA68DrwOwA7ADrwOuA64DrgOrA6kDpgOhA5wDmQOSA4YDewNuA2MDWwNUA0sDQAM9AzQDKAMfAxkDEwMNAwkDBQMAA/4C+wL4AvQC8QLuAuwC6gLqAucC5wLnAuUC5QLkAuQC4wLiAuEC3QLXAtECywLHAsICvgK5ArYCsgKsAqgCpAKhAp4CmwKZApsCmgKWAqEDgwNnA1sDXgNgA2EDYQNjA2gDYwNhA2ADZgN4A5UDpwPMA94D4gPmA+gD6wPtA/AD8gPzA/MD8QPwA+4D7wPvA+0D7QPtA+0D6wPpA+YD5gPsA+4D7APqA+gD6APpA+kD5wPkA+ED3gPbA9cD1APQA84DzQPNA80DzAPMA8sDywPLA8oDygPJA8kDyQPIA8kDyAPGA8YDxgPFA8UDxAPEA8QDxAPEA8QDwwPCA8EDvwO/A78DvwO/A78DvgO7A7gDsAOmA5gDkAOPA5kDoQOrA7MDtgO2A7YDtQO1A7QDtAO0A7MDswOyA7IDsQOwA7ADsQOzA7EDsAOvA64DrQOtA6wDqgOoA6UDogOdA5cDjQODA3oDcgNqA2IDWQNRA0MDPAM4AywDIAMZAxMDDgMJAwQDAQP+AvwC+AL1AvIC8ALuAu0C7ALrAukC6ALqAuwC6ALkAuMC4wLjAuIC4ALXAs4CygLFAsACvAK4ArUCrwKrAqUCoQKdApoClwKWApYClQLAA7MDhQNoA1oDWQNZA1oDWgNdA1sDWQNYA1gDXgNsA40DvAPXA9wD3QPfA98D3wPkA+wD7APiA+QD7APsA+sD7QPtA+0D7wPuA+wD6wPmA+cD6gPpA+YD4APeA94D3wPdA9wD2QPXA9UD0wPRA9ADzwPOA80DzQPMA8sDywPLA8oDygPKA8oDygPKA8kDyAPIA8cDxgPGA8UDxQPEA8MDwwPCA8IDwgPDA8IDwQPAA8ADwAPAA8ADvwO+A7wDugO4A7IDpgOSA4oDkAOUA54DqQOxA7UDtQO1A7QDtAOzA7MDsgOyA7IDsQOxA7ADsAOyA7QDtQO0A7IDsAOvA60DrQOsA6oDqAOmA6MDngOZA5IDiAOAA3oDcgNoA10DVgNJAzwDOAMxAyQDGgMUAw8DCgMEAwED/gL8AvkC9gLzAvEC7wLuAu0C7QLrAuoC7gLwAu4C7ALpAuQC4gLiAuIC3wLWAs8CygLCAr8CugK3ArICrQKoAqICngKaApcClQKRApICvQO4A6IDkAN+A3kDdgNpA2gDaANlA2oDZgNgA1kDWQNvA6UDwgPLA9AD1APOA8YDzAPWA9UDxgPNA9gD3wPkA+YD5wPoA+oD6wPoA+UD4APhA+AD3QPaA9UD0wPTA9MD0gPRA9ED0APOA8wDzAPOA84DzgPNA8wDzAPLA8sDygPKA8oDygPLA8sDygPIA8gDxwPGA8UDxQPEA8QDxAPDA8IDwQPBA8IDwgPCA8EDwAPBA8EDwQO/A70DvAO7A7kDtwOxA6UDjQOIA44DjgOZA6UDrQO1A7UDtQO0A7QDswOyA7IDsgOyA7IDsQOxA7IDtAO1A7UDtAOzA7EDsAOtA60DrAOqA6gDpgOkA6ADmwOYA5ADhgN+A3gDbQNiA1sDTwNBAzcDMwMqAx0DFgMRAwwDBgMBA/4C+wL4AvUC8wLxAvAC8ALwAu4C7ALtAvEC8QLxAvAC7gLrAuYC4gLiAuIC4ALXAs8CxgLCArwCuQKzAq8CqQKkAqACmgKWApQCkQKOAqYDowOmA6wDrAOvA6EDjwOUA5ADjAOIA3kDbQNgA1oDWwOIA6EDrQO1A7cDtAOtA7ADsgOxA6oDtAO9A8gD1APcA+AD4QPhA+ED3wPbA9cD1wPVA9IDzwPMA8wDzAPMA8sDywPLA8oDyAPGA8gDywPLA8wDzQPNA8wDywPLA8wDzQPNA8wDzAPKA8cDxQPFA8QDwgPCA8MDxAPEA8QDwwPDA8IDwwPDA8MDwgPBA8EDwQPBA8ADvgO8A7wDugO4A7UDqwOgA40DhgOLA4oDlgOkA6wDtAO0A7QDtQO0A7MDswOyA7MDsgOyA7MDswOzA7QDtQO1A7QDswOxA68DrQOtA60DqgOoA6YDpAOgA5wDmQOTA4sDggN7A3IDZwNfA1UDRwM5AzIDLgMjAxkDEwMOAwcDAQP+AvsC9wL1AvMC8gLxAvEC8QLvAu4C7wLxAvIC8gLxAvAC7wLsAuYC4gLiAuIC3gLTAsoCxAK+AroCtAKwAqoCpQKgApsClwKTApECjQKLA40DlwOmA7MDwQO3A7UDvAO3A7MDnwOMA3sDbANeA1gDaAN9A4gDjgOOA4oDiwOMA4oDigONA5cDoQOuA7wDzAPbA9sD2gPYA9YD0wPPA80DzAPJA8UDwwPEA8QDwwPDA8IDwQPAA8ADwAPCA8UDxQPHA8kDyQPIA8cDyAPJA8sDywPKA8gDwwO/A70DvAO7A7oDuwO9A8IDxAPEA8QDxAPEA8QDxAPDA8MDwgPBA8EDwAO+A70DvAO7A7kDuAO1A6kDnAOQA4IDiAOMA5kDpgOwA7UDtQO1A7UDtQO0A7QDtAO0A7MDswOzA7MDswO0A7UDtQO0A7IDsQOvA64DrQOsA6kDpwOlA6MDoAOdA5oDlgOQA4cDfwN3A20DZQNZA00DPwMzAy4DKAMdAxYDEAMJAwID/gL6AvcC9QLzAvMC8gLyAvIC8ALwAvEC8gLzAvMC8gLxAvAC7wLsAuYC4gLiAuIC2gLOAsgCwQK8ArUCsAKqAqYCoAKbApcCkwKPAowCcQN2A4YDmAOmA7cDwgPJA8oDywPEA7MDoQONA3oDZQNaA1gDYwNpA2sDawNkA2QDZgNpA2gDbgN5A4IDkAOcA7UDywPRA9MD0gPPA8sDxwPEA8EDvgO7A7oDugO5A7gDuAO3A7MDswO2A7cDuQO7A7wDvgPBA8EDwAO/A8ADwAPBA78DvQO8A7gDtQOyA7EDsQOyA7MDtQO7A8MDxAPEA8QDwwPDA8MDwgPBA8ADwAO/A70DvAO7A7sDuQO5A7kDtgOpA5sDkQOCA4YDkQOcA6oDtQO3A7cDtwO3A7YDtgO1A7UDtQO0A7QDtAO0A7QDtQO1A7QDswOyA7EDsAOuA6wDqQOnA6UDpAOiA6ADngObA5cDkQOKA4IDegNxA2gDXANRA0UDOAMtAyoDIgMXAxEDCwMEA/4C+gL3AvUC9AL0AvQC8wLzAvAC8QLyAvIC8gL0AvMC8gLyAvEC7wLrAuQC4gLiAuAC1QLMAsQCvgK3ArACqwKmAqECnAKXApICjgKLAmsDbQN5A4sDmwOsA74DzgPQA80DzAPGA7cDogOKA3UDYQNZA1gDWANXA1YDVwNXA1cDVgNWA1cDXANkA2sDdwOYA60DvgPGA8UDwgO+A70DuwO4A7UDsgOyA7EDsAOuA60DrAOqA6kDrQOtA60DrwOxA7QDtgO2A7UDtQO3A7gDtgOwA60DrAOqA6cDpwOoA6gDqQOrA60DsgO9A8MDwwPCA8IDwAPBA8EDvgO9A70DuwO7A7sDuwO6A7oDugO5A7EDogOXA5ADgQOCA4sDmwOrA7cDtwO3A7cDtwO3A7YDtgO1A7QDswOzA7QDtAO1A7YDtQO0A7IDsQOwA64DrAOqA6gDpgOiA6EDngOdA50DmwOVA44DiAOCA3oDdANpA18DVQNKAz4DMAMoAyUDGgMSAw0DBgP+AvkC9wL2AvUC9AL0AvMC8wLxAvEC8wLzAvMC8wL0AvMC8gLyAvAC7gLoAuMC4gLiAtoC0ALHAsACuAKwAqoCpQKhApwClgKRAo0CiQJtA2wDcgOAA5MDowO2A8wD1gPTA9ID0APNA7kDoQOSA3wDZgNdA18DXwNfA2MDaANtA2gDaQNfA1YDVQNUA10DdQORA6QDsAOwA64DrwOvA68DrgOuA6sDqwOqA6kDqAOmA6UDpAOjA6QDpAOjA6MDpQOnA6gDpgOkA6IDpgOqA6cDoQOeA54DmwOZA5oDnAOeA6EDpAOmA6oDtAPAA8IDwQPAA78DvwO/A7wDugO3A7QDtwO5A7oDugO7A7oDswOkA5gDlQOPA4ADfwOGA5cDrAO3A7gDuAO3A7cDtgO2A7QDsgOwA68DrwOwA7IDswO0A7MDsgOyA7ADrgOrA6kDqAOmA6MDngOXA5QDlAOUA5QDkAOKA4QDfwN8A3gDcQNmA1wDTwNCAzYDKQMkAyADFAMOAwcD/wL6AvgC9wL1AvUC9ALzAvMC8gLyAvQC9ALzAvMC8wL0AvMC8wLxAvAC7ALlAuIC4gLgAtQCygLCArsCsgKqAqQCnwKaApUCkAKMAogCbwNrA3ADfQOPA6EDtAPIA9sD2gPXA9YD0wPEA7cDswOnA4wDiQONA4wDiQOOA48DkQOPA4wDhQN5A2sDWQNWA2MDfAOLA5IDlQOXA5oDnQOhA6MDpgOlA6UDpAOiA6EDngOdA50DngOfA54DngOeA5wDnAOcA5oDmAOXA5oDnQOaA5UDkgOSA5EDjgOQA5IDlQOaA50DnwOkA6sDtgO+A8ADwQPAA70DtgOwA6sDqQOpA6sDrQOvA7EDtgO0A6cDmgOWA5MDiwODA3wDggOcA68DuAO4A7cDtgO1A7QDtAOwA60DrQOsA6wDrAOtA68DsAOwA68DrgOsA6sDqQOnA6YDowOfA5kDkwOTA48DjAOKA4gDhgOGA4YDhAN+A3YDawNfA1MDRgM5Ay8DJAMhAxgDDwMJAwED+wL4AvcC9gL1AvQC9ALzAvMC8wL0AvQC9ALzAvMC9AL0AvQC8wLxAvAC6ALjAuIC4gLaAs0CxAK9ArYCrAKkAp0CmAKUAo8CiwKIAm8DbANvA3sDiwOeA7EDxgPbA+ED3gPcA9kDzwPMA8wDxgO7A70DuQOxA7MDtAO2A7IDsgOsA6QDmQOLA3YDWgNVA18DawN2A30DfgOBA4cDjgOUA5wDnAOdA50DmgOaA5cDlQOWA5UDlgOXA5YDkwOKA4wDjAOLA4kDigOLA4sDiQOEA34DgQODA4QDhAOHA4wDkgOVA5YDnQOiA6gDrgOzA7gDuAOwA6YDngOZA5kDmgObA5sDnAOgA6cDpwObA5UDkwOPA4cDfwN5A4gDoAOxA7YDtAOzA7IDsQOwA64DrAOrA6oDqgOrA6oDqwOsA6wDrAOrA6oDqAOlA6MDogOhA54DnQOaA5gDnAOZA5QDkAOPA48DkQOQA40DggN5A28DYwNYA0oDPQMzAycDHwMcAxIDCwMDA/wC+QL3AvYC9gL1AvUC9AL0AvQC9AL0AvQC9AL0AvQC9AL0AvQC8gLyAuwC5ALiAuIC3wLTAsgCwAK5ArACpQKcApUCkAKNAokChgJvA20DbwN5A4kDmQOsA8ED2gPoA+kD5gPhA9sD2gPbA9kD1gPWA9EDywPMA8wDzQPKA8kDwwO8A7MDoAOMA3YDXQNRA1UDWwNiA2UDZgNuA3gDhAONA48DkQOVA5QDkwOSA5IDkgOPA48DhgN/A3oDdgN3A3kDeQN4A3cDcgNtA2kDYwNfA2IDagNyA3gDfAOEA4cDiwOOA5UDmgOdA58DowOoA6cDoAOXA44DiQOKA40DjgOOA44DkQOYA5gDlAOTA48DiQODA3oDeQOPA6IDrwOvA64DrQOtA60DrQOrA6oDqgOqA6kDqQOoA6kDqQOpA6gDpwOmA6MDoAOeA50DmwOaA5kDmgOeA6IDogOgA50DmwOaA5gDlgORA4cDfANyA2cDXANPA0EDNQMrAyADGwMWAw0DBQP/AvoC+AL4AvYC9QL1AvQC9AL0AvUC9QL1AvUC9QL1AvQC9AL1AvQC8wLvAuYC4gLiAuEC2ALMAsMCvAKzAqcCnQKVAo8CiwKHAoMCbQNtA28DdwOHA5kDqwO+A9cD6wPzA+8D5APhA+AD4QPgA94D3gPdA9cD0gPRA9ED0QPPA8wDyQO/A60DmQONA3sDaANaA08DUANSA1IDVQNbA2IDaQN1A34DhAOIA4oDiwOGA4EDhQN6A20DYgNcA1oDWgNbA1oDWQNWA1IDUANMA0kDSQNKA0sDWANoA3ADeQN+A4IDigOPA5IDlQOWA5gDmgOYA5QDigOCA38DgAOCA4MDhQOFA4gDjAOPA48DjAOHA4IDfANzA3sDkgOjA64DrgOuA60DrQOsA6wDqwOrA6oDqgOpA6kDqAOoA6cDpwOmA6UDowOiA6EDoAOfA50DnQOeA6ADogOiA6MDpAOiA6ADngObA5gDlAOMA4ADdgNrA18DVANGAzkDLgMjAxoDGAMRAwgDAgP9AvkC+QL3AvYC9gL1AvUC9QL1AvYC9gL1AvUC9QL1AvUC9QL0AvMC8gLqAuMC4gLiAt0C0gLHAr8CtwKsAqEClwKPAokChQKBAmwDbgNxA3gDiAOeA7ADwwPZA+0D9gPwA+UD4wPhA+ED4QPhA+ED4QPcA9QD0QPQA9AD0APPA84DxwO5A6oDnwOYA44DfQNrA2IDYQNeA1sDUwNNA00DVwNgA2YDawNtA3ADagNkA2QDWgNTA00DSANJA04DTgNKA0oDSwNMA0wDUgNVA1cDWANNA0sDRgNPA2MDZAN6A4QDiAOMA48DkAORA5ADjgOLA4IDfAN7A3oDewN7A3wDfQOAA4QDiAOGA4IDgAN6A3IDcgOBA5QDpgOvA68DrgOuA64DrQOsA6sDqgOqA6kDqQOpA6gDpwOnA6YDpgOlA6QDpAOmA6YDpQOjA6QDpQOlA6QDogOjA6QDowOhA58DnAOZA5cDkAOEA3kDbwNjA1gDSgM8AzEDJwMcAxYDEwMLAwQDAAP7AvkC+AL3AvYC9gL2AvYC9gL2AvYC9gL2AvYC9QL1AvUC9AL0AvMC7gLkAuIC4gLhAtcCywLCArsCsgKmApkCjwKIAoMCfwJuA3IDdwN+A4wDoAOzA8gD3gPvA/QD7QPnA+UD4gPhA+ED4APgA+AD3wPbA9QD0gPPA9AD0APPA80DxAO7A7IDqwOoA58DkwOHA4MDfAN2A2oDYQNYA1MDTwNOA1EDUQNRA1ADTANJA00DUANVA1wDZANsA2oDZgNkA2YDaQNrA3UDeAN4A3oDbwNeA0EDPQM8A0MDcwN7A4EDhgOKA4wDjQOMA4kDhAN/A3sDeAN3A3cDdgN1A3YDeQN9A4ADfwN8A3oDcgNuA3gDiAOXA6gDsAOvA68DrgOsA6oDqgOpA6kDqgOqA6kDqAOoA6cDpwOnA6YDpgOmA6cDqQOpA6gDpwOnA6YDpQOkA6MDowOjA6QDogOgA54DmgOYA5MDhwN8A3MDZwNbA00DPwM0AyoDIAMXAxMDDgMHAwED/QL7AvkC+AL3AvcC9wL3AvcC9wL3AvcC9gL2AvYC9gL1AvUC9AL0AvEC6ALiAuIC4gLbAtACxQK9ArUCqAKaApAChwKBAn0CcgN3A30DhwOSA6IDtAPJA98D8gPzA+sD6APnA+UD4gPhA+AD4APgA+AD3wPZA9YD0APPA88D0APPA80DyAPCA7sDtAOrA6IDmwOTA4wDhgOAA3wDdANsA2EDWgNbA1sDVwNXA1gDXQNnA2sDdgOEA4sDjgOJA4oDhgOEA4kDjQOPA5EDjAOMA4cDfANlA1QDNAM6A04DYgN2A38DgwOHA4gDiAOEA38DfAN4A3YDdQN0A3IDcQNxA3MDdAN2A3cDdwN0A20DcAN9A4kDlgOlA60DrQOrA6gDpQOgA58DoAOhA6QDpwOoA6kDqAOpA6gDqAOnA6cDpwOnA6gDqAOoA6cDpgOlA6UDpQOkA6MDowOkA6QDoQOfA5wDmQOVA4oDfgN1A2oDXgNQA0MDNwMuAyMDGwMSAw8DCwMDA/8C/gL8AvoC+AL4AvgC+AL4AvgC+AL3AvcC9wL2AvYC9gL1AvUC9QLzAuwC4wLiAuIC3wLVAsoCwAK4AqwCngKTAogCgAJ7AncDfQOCA40DnAOrA7sDzgPkA/UD8APoA+gD6APnA+QD4QPgA+AD4APfA98D3gPaA9MD0APPA88D0APPA84DywPDA7oDsAOoA6IDnAOVA5ADjAOKA4gDgwOBA34DfAN5A3gDewOCA4UDhwOIA44DlQOWA5YDlQOVA5QDlAOYA5oDnAOcA5kDlgOQA4YDdwNlA2ADSgMsAz4DWAN0A34DggOAA38DfQN8A3kDdgN1A3MDcgNwA24DbQNtA20DbgNvA3EDcANrA3ADfAOHA5ADmwOlA6YDoAOaA5cDkwORA5IDkgOWA5wDogOoA6kDqQOpA6gDqAOoA6cDpwOnA6cDpgOmA6UDpQOlA6UDpQOkA6QDpAOkA6IDnwOcA5kDlgOMA38DdwNsA2ADUwNFAzkDMQMnAx0DFgMOAwsDBgMBA/8C/QL7AvoC+QL5AvkC+QL5AvkC+AL4AvcC9wL2AvYC9QL1AvUC9ALvAuUC4gLiAuIC2QLOAsMCugKwAqMClgKKAoACegJ9A4YDiwOVA6UDtgPFA9cD6wP0A+8D6APpA+cD5gPlA+MD4QPhA+ED4APgA98D3QPZA9MDzwPOA84DzwPPA80DyQPAA7gDsAOrA6YDnwObA5gDlAOSA5ADjgOMA40DjAOKA48DlQOXA5gDmQObA6EDpAOkA6EDnwOeA6ADowOmA6oDqwOmA58DlgOMA4ADcwNtA2YDXAM9AzMDVwNnA3QDeAN3A3gDdwN2A3QDcgNvA20DawNpA2gDaANpA2kDawNsA2wDaQNtA3cDgAOIA48DlwOZA5MDkAOOA44DjQONA40DjgOPA5QDnAOkA6kDqQOpA6gDqAOoA6cDpwOnA6cDpgOmA6UDpQOlA6UDpQOkA6QDpAOjA58DnAOaA5YDjQOAA3cDbANhA1QDRwM7AzMDKgMgAxkDEgMKAwgDBAMAA/4C+wL7AvsC+wL6AvoC+gL6AvoC+QL4AvgC9wL1AvUC9QL1AvQC8gLqAuMC4wLjAt4C0gLGAr0CtAKnApoCjQKCAnoCiQOUA5oDoAOtA78D0QPkA/AD8wPuA+kD6QPmA+YD5gPlA+ID4APgA+AD4APfA94D3QPaA9QDzwPOA84DzgPOA8wDyAPBA7oDuQOyA6sDqAOlA6ADnwOfA5wDmQOYA5gDmQOcA6EDpAOoA6oDrAOvA7MDsAOtA6sDqgOtA7ADswO1A7UDsQOoA50DlAOKA4ADeANyA2sDXANKAzMDKANIA2wDbwNxA3ADbwNuA2wDaQNoA2YDZQNlA2QDZQNnA2cDaANnA2YDaQNtA3cDfwOFA4oDjgOPA44DjwOOA44DjQOMA4wDjAOMA5ADmQOkA6kDqQOoA6gDqAOoA6gDqAOnA6cDpwOmA6YDpQOlA6UDpQOlA6UDowOfA5wDmQOWA40DgAN3A20DYQNVA0cDOwM0AywDJAMcAxYDDgMGAwUDAQP+AvwC/AL8AvwC/AL8AvsC+wL7AvoC+QL4AvYC9QL1AvYC9QL1AvQC8ALmAuQC5ALiAtYCygLAArcCrAKfApECgwJ6ApsDowOrA7ADugPKA90D7QPzA/QD7wPrA+kD5wPmA+YD5QPjA+ED4APgA98D3wPeA94D3QPbA9UDzwPOA84DzQPNA8sDxgPCA78DugO3A7MDsQOtA6oDpgOlA6MDowOmA6cDqgOuA7EDtAO2A7gDuAO5A7cDtgO1A7UDtQO2A7YDtgO2A7UDqwOgA5oDkgOIA4MDegN0A24DYQNPAzgDGQM2A1UDWwNpA2YDagNqA2kDZwNnA2YDZANjA2MDYgNiA2QDYwNhA2YDZwNtA3UDfQODA4sDjwOPA48DjgOPA44DjQOMA4wDiwOLA5ADmwOkA6kDqQOpA6kDqQOoA6gDpwOnA6cDpwOmA6YDpQOlA6UDpQOlA6MDoAOcA5kDlQOLA38DdgNsA2ADVANHAzwDNAMsAyYDHwMXAxIDCwMEAwED/wL+Av0C/QL9Av0C/AL8AvwC/AL8AvsC+QL1AvUC9QL1AvQC9AL0AvMC7QLlAuUC5QLaAs4CwwK6ArACowKWAokCewKwA7kDvwPFA80D2APpA/ID8wPzA+8D7QPsA+sD6QPmA+UD5QPjA+AD3wPfA94D3gPdA90D3QPbA9UDzwPOA80DzAPLA8oDyQPEA8ADvQO7A7oDugO2A7IDrwOuA7ADtQO1A7gDuwO7A7sDuwO7A7sDugO6A7kDuQO5A7gDuAO3A7cDtgO2A7EDowOeA5cDkwOMA4QDgAN4A3EDaQNbA0MDOQM1AyEDSANgA0EDPwM4A0ADNgM4A0EDSQNMA1MDXQNTA1QDWQNeA2EDZANsA3MDfAOIA44DjgOOA40DjQOMA4sDiwOKA4oDiQOKA5ADmwOgA6IDowOlA6gDqQOoA6cDpgOmA6YDpgOlA6UDpQOkA6QDpAOjA6ADmwOWA48DhgN7A3MDagNeA1IDRgM7AzMDLQMpAyIDGQMTAw4DCAMDAwAD/wL+Av4C/gL+Av0C/QL8AvwC/QL9AvwC+AL0AvUC9ALzAvQC9AL0AvMC7QLoAuYC3gLSAsYCvQKzAqcCmwKNAn4CwwPMA9YD2gPiA+kD8APyA/MD8wPwA+8D7QPtA+oD6APmA+UD5QPkA+ED3gPeA94D3QPdA9wD2wPYA9MDzwPNA8wDzAPMA8sDyAPFA8IDwAO/A74DvAO7A7oDugO6A7sDuwO9A70DvQO8A7sDuwO6A7oDuQO5A7kDuAO4A7gDuAO4A7cDtgO0A6sDoQObA5kDlQOPA4oDgwN9A3UDbgNsA10DSwM2AzADMQMhAxkDFAMWAxEDDwMTAxUDFwMiAxsDDQMZAzADUgNYA2EDZgNtA3gDhgOOA40DjQOMA4wDiwOLA4sDiwOLA4kDhgOHA40DkAOSA5UDmAOdA6IDpQOnA6cDpgOmA6UDpQOkA6QDpAOlA6QDoAOaA5IDigOCA3oDcQNpA2EDWQNPA0QDOQMyAy0DKgMkAxwDEwMQAwwDBwP/Av0C/gL/AgAD/gL9Av0C/QL8Av0C/AL9AvsC+AL0AvMC9AL0AvQC9AL0AvIC7ALnAt8C1QLKAr8CtgKqAp0CkAKBAtgD3wPrA+0D7wPxA/AD8gPzA/ID8QPvA+0D7APqA+oD6QPmA+UD5gPlA+ID4APfA90D3QPcA9sD2wPZA9UD0gPOA80DywPKA8kDyAPHA8QDwgPAA78DvgO+A70DvQO8A7sDuwO7A7sDuwO7A7sDuwO6A7oDuQO5A7gDuAO3A7cDtwO2A7YDtQOyA6cDnwObA5kDlgOSA44DiAOCA3sDcwNvA2sDZQNLAzkDQQM9AygDEQMVAw8DDgMNAw4DEgMQAwoDAgMEAykDNQNOA2EDaQN0A4MDjQONA4wDjQOMA4wDjAOMA4sDiAODA30DegN8A30DfwOCA4UDiwORA5gDnwOkA6QDpAOjA6MDowOjA6ADnQOZA5MDigOBA3gDcANoA18DVwNQA0sDRQM+AzcDMAMqAyIDGwMXAw0DBwMAA/0C+wL6AvoC+wL7Av8C/gL+Av4C/QL8AvwC/AL9AvwC9gL0AvQC9AL0AvMC8wLyAusC5wLiAtgCzQLBArgCrAKfApICgwLtA/AD9QP2A/MD8APxA/ID8wPyA/ED7wPtA+sD6wPqA+oD6APlA+QD5QPlA+QD4QPfA+AD4APgA+AD3wPdA9sD1wPTA9ADzgPNA8wDzAPKA8cDxQPDA8EDvgO9A70DvAO8A7wDuwO7A7oDugO6A7oDugO5A7kDuAO4A7cDtwO3A7YDtgO2A7YDtQOuA6MDnwOcA5kDmAOVA5ADiwOFA34DeQNzA20DbQNrA2kDawNVAz4DNQM4AzEDPgNGA0QDTgNNAzcDHQMPAwIDLgNUA2UDcAN9A4kDjAONA4wDjQONA4sDiAODA3wDdANvA2wDawNsA20DcAN0A3kDfwOHA5ADmAOaA5kDlwOYA5kDmAOSA4wDhwOAA3gDbwNlA10DVgNOA0UDPQM4AzIDMAMtAycDHgMUAw8DCwMAA/YC7wLsAu4C7wLwAvIC9AL7Av8C/gL9Av0C/AL8Av0C/gL9AvoC9QL0AvQC9ALzAvMC8wLtAuYC5QLaAs8CwwK6Aq4CoQKTAoIC9gP1A/UD9AP0A/ID8gPzA/ID8gPxA+4D7APsA+sD6gPqA+kD5wPlA+QD5APjA+ID4QPjA+MD4gPiA+ID4QPhA+AD3gPbA9gD1gPWA9YD1QPSA84DywPIA8QDwQPBA8ADvwPAA78DvwO+A70DvQO8A7sDuwO5A7kDuQO4A7cDtwO2A7YDtgO2A7UDswOpA6IDngOcA5kDmAOVA5ADiwOGA4IDfQN4A3QDcANwA3ADdQNzA2YDbQNdA2kDcgNwA2oDZgNjA1MDKwPxAhcDSwNfA2oDdAOAA4cDhwOFA4gDiAOEA3wDdANtA2cDZQNjA2ADYANhA2IDZQNqA28DdwOAA4cDhwOGA4QDhQOHA4UDgQN7A3YDbwNnA14DVQNMA0UDPgM1Ay0DJgMgAxwDGgMUAwwDBgMFA/wC8gLpAuYC4wLeAt4C4ALjAukC8AL7Av4C/gL9Av0C/AL8Av4C/gL9AvgC9gL0AvQC9AL0AvMC9QLnAuQC3QLSAsUCuwKvAqICkwKCAvUD9AP1A/UD9QPzA/ID8wPyA/ED8QPuA+wD7APrA+oD6gPqA+oD6QPmA+QD4gPiA+ED4QPhA+ID4gPiA+ID4gPhA+ED4APfA98D3gPeA90D3APZA9QD0QPOA8kDxwPFA8QDxAPEA8QDxAPEA8UDxQPEA8IDwAO/A78DvgO7A7kDtwO3A7YDtgO1A7QDsAOoA6MDoAOfA50DmwOZA5YDkAOLA4cDgwN/A3wDfQN8A3wDfAN9A30DfwN8A3gDdwNwA2cDYwNYA0MD/gL/AksDWwNlA20DdgN+A3wDegN5A3kDdANtA2cDYwNgA18DXgNcA1sDWwNaA1wDXgNiA2gDcQN1A3MDcgNxA3IDcwNxA20DaANiA1wDVANMA0MDOwMzAywDJAMcAxUDDwMKAwYDAAP/AvkC8gLrAuQC4ALgAtwC2ALVAtQC1ALZAuQC8AL7AvsC/AL9Av0C/QL9Av0C/wL8AvcC9gL0AvQC9AL0AvMC6wLlAt4C0wLHArwCsAKiApQCggL2A/QD9AP1A/QD8wPyA/MD8gPxA/AD7QPsA+wD6wPqA+oD6gPrA+oD6APmA+UD5APiA+ID4QPhA+AD4QPhA+ID4QPhA+AD3wPfA98D3wPdA9wD3APaA9cD1gPTA9ADzQPLA8oDygPKA8kDyQPJA8oDygPLA8oDygPJA8kDxgPDA78DvQO8A7oDtgO0A7MDrwOrA6oDqAOnA6cDpwOiA5oDlAOPA40DiQOIA4gDhgOEA4IDgwOFA4gDiAOEA4ADdQNqA2UDYANHAwUD6gIzA1wDXwNpA28DcwNyA3ADbgNqA2YDYwNgA14DXgNdA1wDWwNaA1sDWgNXA1kDWwNgA2MDYQNgA2EDXwNgA2EDXwNbA1cDUANKA0MDOgMyAyoDIwMcAxQDDAMGA/8C+wL4AvMC7QLqAuYC4ALcAtsC2QLXAtQC0gLQAtAC0ALYAuQC7gLxAvYC+gL7AvwC/QL9Av4C/QL4AvcC9gL0AvQC8gLwAu4C5wLgAtUCyAK8ArACogKUAoAC9wP1A/MD8wP0A/ID8gPzA/ID8gPwA+0D7APsA+wD6gPqA+oD6wPqA+gD5wPnA+cD5wPmA+UD4wPhA+AD4APgA+AD4APfA98D3wPfA94D3gPeA90D3APbA9wD3APbA9kD1wPWA9MD0gPSA9ID0QPQA9AD0gPTA9ED0APPA9AD0APNA8sDxwPFA8EDvQO4A7QDsgOxA7ADsAOwA7ADrgOoA6ADmgOWA5MDkgOQA48DjAOLA4oDjAOPA5IDjgOFA3gDbgNoA2MDTgM1A/sCDANJA1gDZwNoA2kDaANnA2QDXgNdA1wDWwNcA10DXQNcA1sDWwNZA1cDVgNXA1kDWANTA1ADTQNMA0wDTQNNA0sDSANDAz4DOAMwAykDIQMZAxIDCwMDA/0C+AL0AvMC7wLmAuIC3wLeAtsC2QLYAtcC1QLUAtICzwLNAssCzQLTAtoC4QLlAugC7QLxAvYC+QL4AvcC9gL3AvcC9QLzAvIC8ALuAukC4ALXAskCvQKxAqMClQKDAvYD9gP0A/MD8wPxA/ID8wPyA/ID7wPtA+wD7APsA+oD6gPqA+oD6gPoA+cD5wPnA+cD5gPlA+UD5QPkA+MD4QPgA98D3gPeA94D3gPdA90D3QPdA90D3QPeA98D3wPeA94D3QPcA9sD2wPbA9oD2QPYA9cD2APYA9cD1gPZA9oD2QPXA9UD0wPQA8sDxAO9A7cDswOzA7MDsgOxA7ADrwOtA6gDowOfA5wDmgOZA5cDlAOTA5IDlAOVA5ADhwN8A3EDawNkA1sDSQMZA+ICFwNTA1wDXQNeA14DXANaA1kDVwNVA1QDVANUA1UDVQNXA1UDVgNXA1QDVANSA0sDQwM+AzsDOwM6AzsDOgM4AzUDMQMsAyYDHgMXAxADCgMEA/wC9gLyAvIC8ALtAucC4QLgAt4C2wLZAtYC1gLVAtQC0gLQAs4CywLHAsYCxQLHAswC0QLWAtoC3gLmAu0C9AL2AvUC9QL0AvQC8wLyAvEC7gLqAuIC2ALKAr4CsgKlApcCiAL1A/UD8wPzA/ID8QPzA/MD8gPxA+4D7APsA+wD6wPqA+oD6gPpA+kD6APoA+cD5wPmA+YD5gPlA+UD5QPkA+QD4wPiA+ED4APgA98D3wPeA94D3gPeA94D3gPeA94D3gPeA90D3QPdA90D3QPdA9wD2wPaA9oD2gPaA9oD2gPZA9oD2QPYA9cD1gPUA9EDyQPAA7kDtAOyA7IDsQOwA7ADsAOuA60DqwOpA6gDpgOkA54DmAOWA5YDlQOQA4oDggN3A20DZgNhA1EDIQPeAusCGQNPA1cDYgNeA2ADWANQA08DTwNQA0kDRwNKA0wDTwNNA0gDTgNNA0oDRQM9AzYDLgMrAyoDKwMrAygDJgMjAyADGwMWAw4DBwMCA/wC+AL0AvEC8ALvAuwC5wLhAt8C3wLeAtsC2QLVAtQC0wLRAs8CzALJAsYCxALAAr0CvAK9Ar8CxQLIAs4C0wLcAuYC7wLzAvIC8gLzAvMC8gLxAu4C6wLlAtkCywK/ArUCpAKSAoAC9gPzA/ID8gPxA/ID9APzA/ID8QPuA+wD7APsA+sD6QPqA+oD6QPpA+kD6APnA+cD5gPmA+YD5gPlA+QD5APkA+QD4wPiA+ED4QPgA+AD3wPfA98D3gPeA94D3QPdA90D3QPdA90D3QPcA9wD3APcA9sD2wPaA9oD2gPaA9kD2QPYA9gD1wPWA9YD1gPVA9IDzQPFA7wDtgOzA7EDsQOxA7ADsAOvA68DrwOuA60DqwOmA54DmgOZA5gDlQOQA4kDgAN0A2oDZANbAzED8QLcAuQCAgMMAxYDOQMoAzoDSgNCAz0DNAMpAyYDLgP5AuwC6QISAxwDPAM3AzIDLQMnAyEDHgMcAxwDGwMYAxQDEQMNAwsDCAMCA/0C+QL1AvMC8ALuAu0C6gLmAuIC3wLfAt4C3QLcAtgC0wLSAtECzQLLAscCxALBAr0CuQK2ArQCtAK1ArcCugLAAsQCywLVAt8C6ALwAvEC8QLyAvIC8QLvAuwC5gLbAs4CwQKvApoChQJyAvcD8gPyA/ED8QPyA/MD8wPyA/ED7QPsA+wD6wPqA+oD6gPqA+gD6APoA+gD5wPnA+cD5gPlA+UD5QPlA+UD5APjA+MD4gPhA+AD4APfA98D3wPeA94D3QPdA90D3QPcA9wD3APcA9wD2wPcA9sD2wPbA9oD2gPaA9oD2gPZA9kD2APYA9cD1wPWA9YD1QPVA9MD0APJA8EDugO1A7MDsQOwA7ADrwOvA64DrgOuA60DqwOnA6IDnwOcA5gDkwONA4cDfgNxA2cDYANJAxsDAwPhAs8CzQLEAtYCyQLfAvEC7ALoAuAC2wLZAt0CsQKmAqQCyALbAhYDKwMrAyEDHAMZAxYDFQMSAxADDAMIAwYDBAMBA/4C+wL5AvcC9ALxAukC6ALoAuUC4gLgAt8C3wLfAt4C3gLXAtECzgLMAsgCxQLDAsACvAK3ArQCrwKuAq4CrwKvArICtgK8AsECyALSAtwC6gLwAvAC8QLxAvAC7gLsAucC3QLSAr8CpQKPAnkCZwL2A/ID8gPxA/ID8gPxA/ID8gPwA+0D7APsA+sD6gPqA+oD6gPoA+cD5wPoA+cD5wPmA+YD5gPlA+UD5APkA+QD5APkA+MD4wPiA+AD4APgA98D3gPdA90D3QPdA90D3APbA9sD2gPaA9oD2wPbA9oD2gPaA9oD2QPZA9kD2QPZA9kD2APXA9cD1wPXA9YD1QPVA9QD0gPOA8gDwQO7A7cDtAOyA7ADrwOuA64DrgOtA60DrAOqA6cDpAOhA50DlgOOA4cDfANuA2gDWQNJAzgDFwPuAtsCzQK6ArcCrAKiAqACogKlAqYCpgKlAqwCrwKvAqUCtwLSAv0CEgMWAxoDFQMTAxADDQMKAwYDBAMCA/8C+wL5AvgC9wL2AvMC6wLkAuQC5ALiAuEC4ALfAt4C3QLbAtkC0wLNAskCxgLDAsACvwK9ArgCsgKvAqsCqAKoAqgCqQKqAqwCsgK5AsACxwLSAuAC7QLwAvEC8QLvAu0C6wLmAt4C0QK4AqECigJ0AmEC9QPyA/ID8QPyA/ID8gPyA/ID7wPsA+wD7APrA+oD6gPqA+oD6APnA+YD5wPnA+cD5QPmA+YD5gPlA+QD5APkA+QD5APjA+MD4wPiA+AD4APgA98D3gPdA9wD3APcA90D3APbA9oD2gPZA9kD2gPZA9oD2QPZA9kD2QPZA9kD2QPZA9gD1wPXA9cD1gPWA9YD1gPVA9UD0wPQA8oDxwPFA8ADuwO2A7IDsAOuA64DrQOtA6wDrAOsA6sDqwOoA6MDmwOSA4YDegNyA2cDXQNRA1QDJgMTAw8DDwP9At8C0ALOAsECtAK2ArsCugK0ArACrgKtAqsCpALAAt8C9QIFAwoDCwMKAwkDBwMFAwID/gL5AvkC+QL4AvUC8wLwAugC5ALjAuIC4QLgAt8C3ALaAtkC1QLRAs0CyQLGAsMCwQK8Ar0CuwK1ArACrAKoAqYCpAKkAqMCogKiAqYCsAK6Ar4CyALWAuYC8ALxAvAC7gLrAuoC5QLbAsoCswKdAocCcwJeAvQD8gPxA/ED8gPyA/ED8QPxA+8D7QPsA+wD6gPqA+kD6QPpA+gD5wPmA+YD5gPmA+YD5QPlA+UD5QPlA+UD5APkA+MD4wPjA+MD4gPhA+AD4APgA98D3gPdA9wD3APcA9wD3APcA9sD2gPZA9kD2APYA9gD2QPYA9gD2APYA9cD1wPYA9cD1wPWA9YD1gPVA9UD1QPUA9IDzwPNA88DzwPMA8kDwwO8A7YDsAOuA60DrAOrA6sDqwOqA6oDqgOpA6YDngOSA4YDfQN1A2oDYQNbA1oDVgNQA0sDQwMjAxcDHgMDA94C1wLkAtwC1QLDArUCsAKqAqkCrgK4AsEC0QLnAvEC+QIFAwIDAQP+AvsC+AL4AvcC9QLxAu8C7ALmAuQC4wLhAuAC3gLbAtoC1wLUAtIC0ALKAsQCwgLAAsACvQK9ArsCtgKyAq0CqgKoAqMCoAKfAp0CmwKdAqUCsQK6AsACzQLeAuwC7gLsAusC6QLoAuMC1gLDAq0CmAKCAm4CWgLzA/ED8QPyA/ID8gPxA/ED8QPuA+0D7APrA+oD6gPpA+gD6QPoA+cD5gPjA+QD5QPmA+QD5APlA+UD5QPkA+QD5APkA+MD4wPjA+ID4gPgA98D3wPfA98D3QPcA9sD2wPcA9wD3APcA9sD2gPZA9gD2APXA9cD1wPWA9YD1gPWA9YD1gPWA9cD1gPVA9YD1QPVA9UD1APTA88DzgPQA9ED0gPRA80DxgPAA7kDsgOuA60DrAOrA6oDqgOqA6oDqgOpA6cDnwOVA4wDgwN6A28DaANiA10DWQNWA1EDTQNIA0QDPgMgAw0DEgMLAwYD6ALMAr8CtQKvAqECpQKxArUCvwLLAtQC6wLlAuYC+AL1AvQC9ALyAvEC8ALtAugC5QLkAuIC3gLdAt0C2wLZAtICzwLNAsoCxgLAAr8CvwK+Ar4CvQK6ArcCtAKwAqwCqQKmAqACnAKZApYClgKaAqcCtAK8AsUC1gLlAugC5QLlAuUC4ALbAtYCwgKqApUCfwJrAlcC8wPyA/ID8gPyA/ED8QPxA/AD7QPtA+wD6wPqA+oD6QPoA+gD6APmA+QD4APfA+MD5gPlA+QD5QPlA+UD5APkA+MD5APjA+MD4gPiA+ID4QPgA98D3gPeA94D3QPbA9oD2wPbA9wD3APbA9oD2QPZA9gD2APXA9YD1gPWA9YD1QPVA9UD1APUA9MD0wPUA9QD1APVA9QD0wPQA9AD0APRA9ID0wPRA88DzAPEA70DtwOyA64DrAOrA6oDqgOpA6kDqAOoA6YDoQOaA5IDhgN7A3cDbwNnA2EDXANXA1YDUwNPA0gDQgM9AzcDLQMmAxkDCQPiAs4CuwKwAqoCoAKaApgCqAKkArACqQK1AuYC4gLnAvIC7wLwAu0C6gLnAuUC4gLgAt4C3gLdAtkC0wLNAssCyALCAsACvgK+Ar4CvAK8ArkCtwK1ArICrgKsAqkCpgKjAp8CmgKWApMClAKeAq8CuQLAAs8C3gLiAt8C3gLbAtkC1gLTAsECqAKTAn4CbAJZAvED8gPyA/ID8QPxA/ED8QPvA+wD7QPsA+sD6gPqA+gD5wPnA+cD5QPiA+ED4APiA+UD5QPkA+QD5APmA+UD5APjA+MD4wPjA+ID4gPhA+AD4APgA98D3gPeA94D3QPbA9oD2wPbA9sD2wPaA9kD2QPZA9gD1wPXA9YD1gPWA9UD1QPVA9QD1APUA9QD0wPTA9MD0wPTA9ID0QPQA9ED0gPSA9ID0gPSA9EDzwPKA8QDvwO6A7UDswOwA6wDqQOoA6gDqAOoA6cDpQOdA48DiwOJA4EDdwNvA2gDYgNeA1oDVgNRA0wDRgNBAz4DPAM2AywDHQMUAwADxQKvAq0CrAKuAq4CrQKqApIClAKtArICxgLQAtMC1wLaAt4C4gLgAt4C3gLdAtsC1wLTAs0CygLHAsECvQK9Ar0CvQK9ArsCtwK0ArMCsQKuAqwCqQKnAqUCogKfApsClwKUApICmQKpArcCvALJAtcC3ALaAtgC1QLUAtEC0AK/AqgCkwJ/Am0CWwLwA/ED8gPyA/ED8QPxA/AD7gPsA+wD7APrA+oD6QPoA+cD5gPlA+QD4gPhA+AD4gPlA+UD5APkA+MD5APlA+UD5APjA+ID4gPiA+ID4gPhA+ED4APfA98D3gPeA90D3APbA9oD2gPaA9oD2gPZA9kD2QPYA9gD1wPXA9cD1gPWA9YD1QPVA9QD1APUA9MD0wPTA9MD0gPRA9ED0APRA9ID0wPSA9ID0gPRA9ED0APNA8sDxwPDA78DuwO2A7EDrAOqA6gDpwOmA6YDnwOYA5sDmQOQA4UDewNxA2gDYwNeA1gDVwNRA0kDRQNBA0EDPgM6AzcDMAMlAwgD6QLEAsECwALFAswCxQKrAqIClwKOAoYCjQKYAqQCyALMAtQC2QLbAtwC2QLUAtECzQLKAsYCwgK9ArwCvQK9ArwCugK4ArYCsQKvAqwCqQKpAqgCpQKhAp8CnQKaApcClAKRApQCowKwArcCwQLMAtIC0gLSAs8C0ALPAs4CxAKtApgCgwJvAl0C7wPxA/ED8QPxA/ED8QPvA+0D7APsA+sD6wPqA+kD6QPoA+cD5QPkA+MD4gPhA+QD5gPlA+MD5APjA+MD5APkA+MD4gPiA+ID4gPhA+ED4gPhA+AD4APfA98D3wPeA90D3APaA9oD2gPaA9oD2gPaA9oD2QPZA9kD2APXA9cD1wPWA9UD1QPVA9UD1APTA9MD0wPTA9MD0QPQA9AD0QPRA9ID0gPSA9ID0QPQA9AD0APQA84DzQPLA8cDxAO+A7gDswOvA64DqwOqA6YDpAOkA6ADmAOQA4cDewNvA2kDYQNYA1YDVANPA0gDQgNAAz4DPgM7AzUDMAMvAx0D/QL0AuoC8wL1AuUC0wLFArcCqAKTApECkwKXAo8CpgLHAuAC1QLMAs8CzgLNAsoCxQLAAr0CuQK1ArYCuAK2ArUCswKvAqsCqgKpAqcCpgKjAqACnQKdApsCmAKVApMCkQKRApcCoQKqArMCuwLAAsICxALCAsUCyALJAsUCtgKfAooCdgJjAvAD8APxA/AD8QPxA/AD7wPtA+sD6wPqA+oD6gPpA+kD6QPoA+cD5QPkA+QD5APlA+cD5QPjA+MD5APjA+MD4wPjA+ID4gPiA+ED4QPhA+ED4QPhA+ED4APfA94D3gPeA90D3APaA9kD2gPZA9oD2gPZA9kD2QPZA9kD2APXA9cD1wPWA9YD1QPVA9QD0wPTA9MD0gPSA9ED0APPA9AD0APQA9AD0QPRA9ED0APPA88DzwPPA88DzwPOA80DygPGA8IDvgO7A7gDtwO2A7IDrQOmA6EDnQOTA4gDfQNzA2gDXANWA1MDTwNHA0MDQQM/Az4DPwM+AzsDNgMxAy0DIwMZAxgDEwMCA/YC5wLXAskCwQK6ArYCsQKRAnkCpQK1Ap4CmQKfAqECrAK4Ar0CvgK7ArkCuAK3ArgCtAKxAq8CqgKnAqICoQKfAp8CnAKZApwCmAKVApQCkwKSApACjgKMApMCmgKiAqkCrQKuArACsQK0AroCvAK4ArECowKWAoQCcwLwA/AD8APxA/MD8QPvA+4D7QPsA+sD6gPqA+kD6QPpA+kD6APoA+YD5gPlA+UD5QPmA+YD5APjA+MD4wPjA+MD4wPiA+ID4QPhA+ED4APgA+ED4APgA+AD4APfA98D3gPeA94D3APaA9kD2QPZA9kD2QPZA9gD2APYA9gD2APXA9cD1gPWA9UD1QPUA9MD1APUA9ID0QPQA88DzwPPA88DzwPPA9AD0QPQA9ADzwPPA88DzgPOA84DzgPOA80DzQPMA8kDxwPGA8UDxAPBA7oDrwOoA6UDnwOWA4sDfwNzA2UDWgNRA0sDRQNCA0EDPwM+Az4DPQM9AzwDOgM2AzEDLAMjAxsDFAMNAwED7ALeAtYC1ALSAtECxwKOApICfAJwAnkCbgJwAnsCiAKRApUCmgKgAp0CngKfAqQCnwKeAp0CnwKoAqYCqAKlAqMCogKOApMCkwKSAo0CjQKMAokChwKJAowCkgKYApsCnAKdAp8CogKnAqkCpQKfApoClAKHAnsC8APwA/AD8QPwA+8D7QPrA+sD6wPrA+oD6APoA+kD6QPpA+gD6APnA+YD5QPkA+UD5QPmA+UD4wPjA+MD4gPiA+ID4gPiA+ED4QPgA+AD4APgA+AD4APgA+AD4APfA94D3gPdA90D2wPZA9kD2QPZA9kD2QPYA9gD1wPXA9cD1wPWA9UD1gPVA9UD1APTA9MD0wPSA9EDzwPOA84DzgPOA88DzwPQA9AD0APQA88DzwPOA84DzgPOA84DzQPMA8wDzQPNA80DzQPKA8sDyAPCA7gDrAOmA6UDoQOYA4sDfQNtA18DUwNJA0QDQgNBA0ADPgM9Az0DPAM7AzoDOQM5AzYDLwMoAx0DFgMQAwYD/AL1AvAC7QLoAtcCywKzApgCmwKhAosCjgKJAoMCegJxAm0CdAJpAmwCbQJ4AnMCdAJ0AnMCfQJzAnoCdAJ4An0CXAJqAnwChgKJAooChQKEAoICgwKDAoQChwKJAosCjAKNApAClAKVApICjAKGAn8CdwJvAvAD7wPwA+4D7QPtA+wD6gPoA+kD6gPqA+kD6APoA+gD6APoA+gD5wPnA+YD5QPkA+QD5QPkA+QD4wPiA+ID4gPiA+ID4gPhA+ED4APgA+AD3wPfA+AD4APfA98D3wPeA90D3QPcA9wD2gPYA9kD2APYA9gD2APYA9cD1gPWA9YD1QPWA9UD1QPUA9QD0wPSA9ID0QPQA88DzgPOA84DzgPPA9AD0APQA88DzwPPA88DzgPOA84DzgPNA8wDzAPMA8wDzAPMA8wDywPKA8gDxAO9A7MDqQOkA6QDoQOUA4MDcwNkA1cDTANFA0IDQAM/Az4DPQM8AzsDOwM6AzkDNwM3AzYDMwMoAx0DGAMUAxADCwMHA/8C9QLrAt4C1gLRAtACzALJAsUCvwK3AqwCmwKCAnwCeAJ4Am0CagJkAmcCZQJYAj0CJwIaAhACFgIhAiMCJQJFAmcCfQKAAoECfwJ+An4CfgJ+An4CfgJ+An0CfQJ+AoICgwKAAnsCdAJtAmYCXwLvA+4D7QPuA+8D7APqA+kD6APnA+cD5wPpA+kD6APoA+gD6APoA+kD6QPoA+kD5gPkA+QD5APjA+MD4gPiA+ID4wPjA+MD4wPiA+ED3wPgA98D3wPfA98D3wPfA94D3gPeA90D3APbA9sD2gPYA9gD2APYA9cD1wPXA9cD1gPWA9UD1gPVA9UD1QPUA9QD0wPSA9ED0APQA88DzwPPA84DzwPPA9AD0APPA88DzgPOA84DzgPOA84DzQPMA8sDywPMA8wDzAPLA8oDyQPIA8QDvQO2A68DqAOkA6IDmQOJA3kDagNdA1IDRwNBA0ADPgM9Az0DPAM7AzoDOQM5AzcDNgM2AzQDMgMrAx8DGAMWAxMDEQMKAwMD+wL0AuwC4wLcAtUC0ALMAscCxALAAr4CuQKzArACsAKeApoCmAKXApoClwKIAncCVQIwAgwCFAIPAhsCKAIzAkQCVQJ2AnwCewJ8An0CfQJ8AnsCewJ4AnICbwJxAnECbgJpAmMCXQJXAlIC7QPsA+0D7gPsA+gD5wPrA+wD6wPoA+YD5wPoA+kD6APoA+cD5wPoA+kD6QPpA+YD5APjA+QD4wPjA+ID4QPiA+MD5APjA+MD4gPhA+AD3wPeA94D3wPfA98D3gPeA90D3QPdA9wD3APbA9sD2QPYA9cD1wPXA9cD1gPVA9UD1QPVA9UD1QPVA9QD1APTA9MD0gPRA9ADzwPPA9ADzwPPA84DzwPPA88DzwPPA84DzgPOA84DzgPNA80DzAPLA8sDywPMA8sDygPKA8kDxgPBA7sDtQOxA60DqAOjA5sDjgN/A3IDZQNYA0wDRAM/Az4DPQM8AzsDOwM6AzkDOAM3AzYDNgM0AzMDMQMtAyMDGQMXAxYDFAMPAwoDAwP+AvYC7gLmAuEC3gLbAtcC0wLLAsMCwgK+ArwCugK3ArQCrQKnAqMCnwKbApUCfQIrAhgCFQIcAhUCCAIUAi4CSgJzAnECdwJ0AnQCeAJ4AnoCeAJyAmYCYQJgAl0CWQJVAlECTgJHAuwD7APtA+4D6APkA+QD5QPlA+YD6QPsA+gD5gPoA+gD6APoA+cD6APpA+kD6QPmA+QD4wPjA+MD4wPiA+ED4QPiA+MD4wPiA+ID4QPhA+AD3gPdA94D3gPeA94D3QPdA9wD3APcA9wD2wPaA9oD2QPYA9cD1gPWA9cD1gPWA9UD1APVA9UD1QPWA9UD0wPTA9ID0QPQA9ADzwPQA9AD0APOA84DzgPOA84DzgPOA84DzgPOA80DzAPMA8wDygPIA8YDxgPGA8YDxQPEA8EDvAO3A7MDsAOwA6wDpgOeA5MDiAN7A20DYgNXA0wDQwM/Az0DOwM6AzoDOQM4AzgDNwM2AzUDNAMzAzEDMAMsAycDHQMXAxYDFAMTAxADDAMGA/4C9wLzAvEC7gLpAuUC3QLVAs8CzALJAscCxgLDArwCtQKuAqkCpAKgApoChQJKAiUCKwItAiECHgINAiwCTAIYAvsBHAJTAnQCcAJqAmYCagJgAlcCUwJRAlACTAJJAkUCPALqA+cD6wPoA+QD4QPiA+ID4gPjA+YD5wPoA+sD6APmA+cD6APnA+cD6APpA+gD5gPlA+QD4wPjA+ID4gPhA+ED4QPhA+ID4gPiA+ED4QPhA98D3QPdA90D3QPeA90D3APcA9wD2wPbA9sD2gPaA9oD2QPYA9cD1gPWA9YD1gPVA9QD1APUA9QD1QPUA9MD0wPSA9ED0QPQA9ADzwPPA88DzgPNA80DzQPNA80DzQPNA80DzAPMA8sDyQPFA8EDvgO8A7oDugO6A7gDtwO0A7ADrAOqA6cDpAOlA6gDpAOcA5MDhgN5A24DYwNZA04DRQM/AzwDOQM5AzkDOAM3AzYDNQM0AzMDMwMxAzADLgMtAygDHgMYAxcDFQMVAxQDEQMPAwwDCgMFAwED/AL4AvIC7ALlAuAC3ALaAtgC1ALNAscCwgK8ArQCrAKqAqkCjQJ2AnUCcQJnAj0C6AH1AfcB3QHRAeAB9wEFAg4COgJfAlgCVAJSAk4CTQJJAkYCQAI5AjMC5APkA+QD5APgA94D4APiA+ID4wPkA+QD5gPoA+kD6wPnA+YD5wPnA+cD5wPnA+YD5gPmA+QD4gPhA+ED4QPhA+ED4QPiA+ED4QPgA+AD4APfA90D3QPdA9wD3APcA9sD2wPbA9sD2wPbA9oD2gPaA9kD2APYA9cD1wPWA9UD1QPUA9QD0wPTA9MD0wPTA9MD0gPRA9ID0gPQA88DzwPOA84DzQPNA8wDzAPMA8wDywPLA8sDywPIA8EDuQO1A7IDrgOsA6sDqwOpA6cDpQOhA50DmwOZA5QDmAOfA6QDpAOfA5QDiQN9A3EDZgNcA1IDSgNDAzwDOgM3AzYDNgM1AzUDNAMzAzIDMQMwAy4DLQMsAykDIgMbAxUDFAMUAxQDFAMTAxADDAMKAwcDBAMAA/sC9ALvAu4C7QLpAuIC3gLbAtcCzgLGAsICvgK1ArACqQKdAo8CgAJlAhoC3AHTAdcB3AHZAdMB0AHWAe4BCgJUAlECSAJMAkoCQQI6AjYCMwIlAtwD3wPgA+ID3QPcA94D4APhA+ID4wPlA+UD5QPnA+kD5wPnA+UD5QPmA+YD5wPmA+YD5wPmA+QD4gPhA+ED4QPgA+AD4QPhA+ED4APgA98D3wPeA9wD3QPcA9wD3APbA9oD2gPaA9oD2gPaA9kD2QPZA9gD2APYA9cD1gPVA9YD1APTA9MD0gPRA9ADzgPOA88D0QPSA9ID0gPRA88DzwPOA84DzgPNA80DzAPMA8wDzAPLA8oDwQO2A64DqwOoA6MDoQOgA58DnAOZA5cDlQORA40DiwOKA48DlwOdA58DoQOfA5cDigN/A3QDaQNgA1YDTwNHA0EDPAM3AzYDNAM0AzQDMgMyAzEDMAMvAy4DLAMsAyoDJQMeAxYDFAMUAxMDEgMQAw4DDQMLAwkDBQP+AvgC9ALzAvMC7gLlAuMC4wLgAtsC0ALKAscCxAK9ArECoQKQAoACeQJZAvIB4gHdAdYB2AHaAdsB2QHVAdgBBwI8AkUCQQI+AjkCNQIyAisCHgLXA9oD3gPfA9wD2wPdA98D4APhA+ID5APlA+YD5gPlA+YD5wPoA+cD5APlA+UD5gPmA+cD6APnA+UD4wPhA+AD4APgA+AD4APhA+AD4APfA98D3gPdA9wD3APcA9wD2wPbA9oD2QPZA9kD2QPYA9gD2QPYA9gD2APXA9YD1gPWA9QD0wPSA9EDzgPLA8gDygPNA88D0QPSA9ID0QPQA88DzwPPA88DzgPOA80DzQPNA80DzAPGA7kDrAOkA6ADnwObA5cDlQOTA44DiQOHA4YDgwOBA4ADgQOFA4sDjgORA5kDoAOgA5gDjAOBA3cDbQNkA10DVANNA0YDPwM6AzYDNAMzAzIDMQMxAzADLwMuAy0DLAMsAywDJwMdAxYDFAMUAxMDEwMRAxADDwMNAwYD/QL4AvQC8wLyAu4C5gLiAuIC4QLgAtYCywLIAscCxQK6AqoCmgKNAoYCdQI+Au4B7AHjAeEB2AHWAdYB1wHZAdEB/gEnAj4CPQI4AjQCLgIiAhoC1gPYA9wD3QPcA9wD3gPeA98D3wPhA+MD5APlA+UD5QPlA+QD6APoA+YD5QPkA+UD5QPmA+YD5wPnA+YD5APhA98D3wPgA+AD4APgA+AD3wPeA94D3QPcA9wD3APbA9sD2wPaA9kD2APYA9cD1wPYA9gD1wPXA9gD2APXA9UD1APTA9IDzgPKA8YDwwPEA8oDzQPPA9AD0QPSA9ED0QPQA88DzwPPA84DzgPOA80DzgPNA8gDvgOvA6MDmwOXA5YDkwOPA4sDhgOAA3sDeQN5A3cDeAN7A3sDfAN+A4EDhQOOA5oDoAOfA5kDkAOFA3wDcwNrA2EDWQNSA0sDRAM+AzoDNgMyAzEDMAMvAy4DLgMtAywDLAMsAysDJQMaAxQDFAMTAxMDEgMSAxEDDQMGA/8C+wL3AvQC8gLuAucC4wLjAuEC4ALcAs8CyALHAsUCwQK0AqYCnQKZAocCgQIIAukB8QHtAeEB3wHbAdgB1QHYAdEB7gERAiECLAIsAikCHgIVAtUD2APbA9sD2wPcA90D3APcA90D3wPhA+ID4wPkA+UD5QPlA+QD5QPoA+YD4wPjA+QD5APkA+YD5gPmA+UD4wPgA94D3wPfA98D4APgA98D3wPeA90D3APbA9sD2wPaA9oD2QPZA9kD2APYA9cD1wPXA9cD1wPXA9YD1gPVA9QD0gPNA8YDwAO8A74DxAPJA80DzwPQA9AD0APRA9AD0APPA88DzwPOA84DzQPOA8wDyQO/A7IDogOZA5IDjQOLA4kDhQOAA3sDdgN0A3QDdANzA3UDfAN7A3sDegN8A3wDfwOQA5kDnAOeA5oDlQOMA4MDegNvA2YDXwNYA1IDTANHAz8DOQM2AzEDLwMuAy0DLQMsAywDLAMsAyoDIgMYAxQDEwMTAxMDEgMRAw0DBwMBAwAD/gL5AvQC8ALqAuUC4wLhAuAC3wLVAswCyALGAsQCvwK1Aq8CqgKYAoMCSQIFAvIB7AHvAe0B5wHiAdsB1QHUAdAB0wHoAQACEQIZAhcCFALVA9cD2gPaA9oD2APXA9gD2APaA90D4APgA+ED4wPkA+QD5APkA+QD4wPkA+QD4gPiA+ID4wPjA+MD5APjA+ID4APeA94D3wPfA98D3wPfA98D3gPeA90D3APbA9oD2gPZA9oD2wPcA9oD2QPYA9cD1wPWA9YD1gPVA9UD1APUA9EDxwO9A7kDuAO+A8YDygPOA9AD0APQA88DzwPPA88DzwPPA84DzgPOA84DzgPIA8ADsgOjA5YDjgOHA4EDfgN/A3oDdwN2A3YDdQN1A3UDdAN0A3wDfAN6A3kDdwN0A3UDfgOJA5QDmQObA50DmAORA4YDegNzA2wDZQNfA1kDUwNMA0YDPgM3AzIDLwMtAywDLAMsAysDKwMqAyoDIQMXAxQDEwMTAxIDEQMMAwgDBAMCAwID/wL6AvYC8wLsAuYC4wLhAt8C2gLSAssCyALDAsQCwgK9ArcCpAKNAoQCWQIKAvIB7QHsAewB6wHqAeEB3AHXAdQB0gHYAecB8wH/AQYC1QPYA9kD2gPYA9UD0gPRA9QD1gPaA90D3gPfA+AD4gPjA+QD5APjA+MD4gPiA+ED4gPiA+ID4gPiA+ID4QPgA98D3gPdA94D3wPeA94D3gPeA94D3gPeA90D3APbA9sD3APeA94D3QPcA9oD2gPZA9gD1wPWA9UD1QPUA9MD0wPQA8YDuwO4A7gDwAPHA8wDzwPQA9AD0APQA88DzwPPA84DzwPOA84DzgPOA8wDxQO3A6gDmQOMA4MDewNzA3EDdwN3A3YDdgN2A3UDdQN1A3QDdAN2A3cDcwN2A3MDcQNzA3QDeAOBA4sDlAOVA5kDmAOPA4QDfgN5A3MDbQNnA2EDWgNSA0kDQgM5AzEDLgMsAysDKwMqAyoDKgMpAycDHwMYAxQDEwMSAxEDDQMLAwgDBgMGAwYDBAMBAwAD+wLzAusC5gLjAuEC1wLQAssCxQLDAsMCwwK+ArACngKHAm8CQgIXAvMB7gHrAesB6wHqAekB5QHdAdUB0wHTAdQB2AHfAdUD1wPZA9kD1gPSA88DzwPQA9ID1gPZA9oD3QPfA98D4QPjA+MD4wPiA+ID4gPhA+ED4wPjA+ED4gPhA+AD4APfA94D3QPeA94D3gPeA94D3gPeA94D3gPdA90D3QPdA94D3wPeA9wD2wPbA9sD2wPbA9kD1gPVA9QD0gPRA9ADzwPHA74DugO7A8MDygPNA9AD0APQA9AD0APQA9ADzwPPA84DzQPOA84DzgPKA8ADrgOfA5ADhAN6A3IDagNnA28DdwN2A3cDdgN1A3UDdQN1A3UDdQN1A3MDcgNyA3EDdAN7A3oDdgN6A4IDiwOSA5MDkgOJA4IDgAN9A3kDcwNtA2UDXQNVA0sDQQM3AzADLAMrAyoDKgMqAykDKQMoAyYDHgMYAxUDFAMSAxADDgMNAwwDDgMOAw4DDgMOAwoDAgP5AvEC6QLkAt4C1QLOAskCxQLEAsMCwgK3AqICjgJ8AmMCOAISAvoB6wHrAeoB6gHpAegB5wHlAd4B0wHSAdEB0gHVA9cD2QPXA9UD0QPOA84DzgPPA9ID1APUA9cD2gPaA9wD3wPiA+ID4gPjA+ID4gPiA+MD4wPjA+ED3wPeA98D3wPeA90D3QPeA94D3QPdA90D3QPdA90D3QPdA90D3QPeA94D3QPcA9sD2wPcA9wD3APbA9cD0wPRA88DzgPMA8sDyAPEA74DwAPIA8wDzwPRA9AD0APQA9AD0APQA88DzwPOA80DzgPOA88DyQO6A6cDlgOJA30DcwNsA2gDZwNvA3oDdgN1A3UDdQN2A3cDewN3A3QDdQNyA28DbgNxA2wDcQN0A3gDegN2A3oDgQOKA48DjgOJA4EDgAOAA30DeQNxA2gDXwNVA0kDPwM0Ay4DKwMqAykDKQMpAygDKAMnAyQDIAMaAxcDFgMUAxMDEQMSAxQDFQMVAxYDFwMXAxEDBwP9AvUC8ALqAuEC2ALOAssCxwLEAsQCvgKsApYChQJ1AlkCPQIoAg8C8QHoAeUB5QHnAekB6AHlAeIB4AHYAdEB1QPWA9cD1gPUA9EDzgPOA80DzQPNA84DzwPQA9ID0wPWA9sD4APiA+MD5APjA+MD4gPjA+ID4QPfA98D3QPdA98D3QPcA9wD3QPdA90D3APcA90D3QPdA9wD3QPdA90D3QPdA9wD3APbA9sD2wPbA9sD2QPUA9EDzwPOA8wDywPLA8kDxwPDA8UDzAPOA9AD0QPQA9AD0APQA9AD0APPA88DzgPNA80DzgPNA8YDtAOfA44DgQN4A3ADawNoA2gDawN3A3YDdQN1A3UDdAN6A38DeQN0A3UDcgNuA2wDaANgA14DYQNoA28DcwN2A3oDfQOBA4gDigOHA4IDggOAA34DewNyA2gDXQNSA0YDOwMxAywDKQMpAygDKAMoAygDJwMmAyQDIAMdAxoDGgMZAxcDGAMZAxkDGgMcAx0DHQMZAxYDDgMEAwAD+gLxAuYC2gLRAsoCyQLGAsMCtAKiApQChAJwAl8CUwJAAh8CFQIZAg8C+AHlAeQB5wHnAeUB4gHfAdUD1gPWA9YD0wPRA88D0APOA80DzAPLA84DzgPOA88D0gPZA+AD4gPkA+cD5wPlA+MD4gPgA98D3gPdA90D3QPeA90D3QPbA9sD3APcA9wD2wPbA9wD3QPcA90D3QPcA90D3QPdA9wD3APbA9oD2QPXA9MD0APOA84DzgPPA84DzQPLA8gDxgPJA84D0APQA9AD0APQA9AD0APQA88DzwPPA84DzQPNA80DywPCA68DmQOJA34DdgNuA2oDaANnA2cDdQN2A3UDdAN0A3QDdwN4A3YDcwNyA3EDbgNrA2MDWwNXA1QDVgNdA2UDawNwA3MDeAN+A4MDhQOBA38DfgN9A34DewNwA2QDWgNNA0EDNgMuAyoDKQMoAygDJwMnAyYDJgMlAyQDIwMhAyEDIAMeAx4DHgMeAyADIAMgAx8DHQMbAxkDFAMRAwkD/wLzAugC3ALSAssCyQLHAsACswKjApECgAJ4AmcCVAJCAjwCQgI1Ah8CDQL5AeUB4gHkAeUB5QHUA9YD1gPWA9QD0QPQA9ED0APPA80DzQPPA80DzQPOA9AD1gPdA+AD4wPoA+kD5wPjA+AD3QPcA9oD2QPaA9oD3APdA90D3APaA9kD2gPaA9kD2APZA9sD3APcA9wD3APdA90D3QPdA9wD2wPaA9YD0QPOA80DzQPOA9AD0QPQA84DzAPKA8gDzAPQA9AD0APQA9AD0APPA88DzwPPA88DzwPOA80DzAPMA8oDvwOrA5YDiQOAA3YDbQNpA2gDZgNoA3UDdwN4A3gDdQN0A3MDcgNyA3YDcwNqA2oDZwNiA1kDVANTA1MDVANZA2ADaANvA3UDewN/A38DgAN/A30DfQN9A30DeANsA2EDVQNJAz0DMwMtAykDKAMnAycDJgMmAyYDJgMlAyUDJQMkAyMDIgMiAyEDIQMiAyEDIAMfAx4DHAMbAxsDGQMVAwwDAQP2AusC4ALUAs8CygLKAsICsgKgApQCiQJzAl8CVAJSAlMCSQI/AjMCGgL/AfIB5wHjAeMB1QPWA9cD1gPVA9MD0QPRA9ED0QPQA88D0QPOA8wDzAPOA9ID1wPcA+ED5gPmA+QD4APbA9gD1QPVA9UD1gPXA9oD2gPbA9wD2gPZA9gD2APXA9YD1gPZA9wD3APcA9wD3APdA90D3QPcA9sD2QPTA84DzQPNA84D0APRA9EDzwPMA8sDygPKA84D0QPRA9ADzwPPA88DzwPPA84DzgPOA84DzQPNA8wDzAPIA7sDpgOXA40DgwN3A2wDaANoA2YDaQN4A3YDeQN6A3UDdAN2A3UDcgNzA28DZQNkA2IDXgNTA1EDVANUA1gDYgNrA3IDdQN4A3wDfgN/A38DfwN+A30DfAN9A3wDcwNnA1wDUQNEAzkDMAMqAygDJwMmAyYDJQMlAyUDJQMkAyQDIwMjAyMDIgMhAyEDIQMgAx8DHwMfAx4DHAMbAxkDFwMTAwwDBAP5Au4C4wLYAtECygLJAsACswKoApQCgQJ1Am4CaQJkAloCSwI7Ai0CIAIMAvMB5wHkAdUD1wPXA9cD1gPUA9MD0wPSA9MD0wPQA9ADzwPMA8oDzAPPA9ID1wPeA+ID4gPfA9oD1QPQA80DzQPQA9MD1QPWA9gD2QPZA9oD2wPYA9cD1gPVA9UD1wPbA9wD3APbA9wD3APcA9wD2wPZA9YD0APNA80DzgPRA9ID0gPPA8wDygPKA8oDzQPQA9ED0QPQA88DzwPPA84DzgPOA80DzQPNA8wDzAPLA8sDxAO0A6QDmQOQA4UDegNvA2kDZwNmA2gDeAN1A3UDcwN2A3IDcgNyA2kDZgNkA2QDXgNeA1sDVANSA1QDWQNiA24DcwN5A3oDegN7A3wDfAN9A30DfQN9A30DfQN9A3gDbQNiA1gDTANAAzYDLgMpAycDJgMmAyUDJQMkAyQDJAMkAyMDIwMjAyIDIgMhAyADIAMgAyADHwMeAxwDGgMYAxUDEwMRAw0DAwP4AuwC4QLaAs4CyQLHAsECtAKjApMCiwKBAnMCbQJkAlcCSAI7AioCFgL+Ae0B5AHWA9cD2APXA9cD1gPVA9QD0wPUA9MD0APPA84DzQPKA8oDzgPPA9MD2APcA94D2gPVA88DygPHA8cDyQPMA88D0QPTA9UD1wPYA9kD2wPZA9YD1QPUA9YD2gPbA9sD2wPcA9wD3APbA9kD1QPRA84DzAPMA88D0gPTA9ADzQPMA8wDzAPOA9AD0QPRA9AD0APPA88DzwPPA84DzgPNA80DzQPMA8sDywPJA78DswOoA50DkgOIA30DdgNrA2YDZQNlA3IDdQN0A3UDdwNsA2MDYANcA10DXgNbA1gDWQNaA1gDVQNWA2ADaANpA2gDbQNwA3MDdgN3A3kDegN7A3sDfAN8A3wDfAN6A3IDZwNeA1MDRwM9AzMDLAMoAyYDJQMlAyUDJAMkAyMDIwMjAyMDIgMiAyIDIQMgAx8DHwMfAx4DHAMaAxcDFQMUAxMDEAMMAwID+QLtAuMC3ALUAscCwwK8ArICqAKeApECgQJ0Am4CagJiAlQCRAIvAhYC/gHsAeMB1wPZA9kD2QPZA9kD2APVA9UD1QPRA9ADzgPNA8wDywPKA8wDzQPRA9UD2APaA9cD0QPMA8cDxQPGA8YDxgPGA8cDzQPSA9QD1gPXA9gD3APXA9QD1APVA9gD2gPaA9oD2wPcA9sD2QPVA88DzQPMA8wDzAPPA9ID0wPRA88DzgPPA9AD0QPSA9ID0gPRA9AD0APQA9ADzwPPA84DzgPOA80DzAPLA8sDyAO/A7kDrQOhA5QDiwOBA3cDbwNlA2ADYwNyA3UDdAN8A3ADZwNdA1UDWQNXA1YDUgNRA1MDVQNVA1MDWQNdA2EDYQNjA2MDZQNpA2wDbwNzA3YDdwN4A3kDeQN5A3kDdwNyA2gDYQNYA04DRQM5AzADKwMoAycDKAMpAycDJAMjAyMDIwMjAyMDIgMiAyEDIQMfAx4DHQMbAxkDFwMVAxQDEQMPAwkDAwP8AvQC6ALfAtwC0ALEAr0CtwKtAqICmAKMAn4CdgJuAmsCaAJaAkECKwIVAv8B7AHiAdgD2wPbA9sD3APcA9sD2QPWA9MD0APPA84DzQPMA8wDygPKA8wDzgPTA9cD1wPUA88DygPGA8UDxgPGA8UDxQPFA8wD0QPSA9UD2APVA9cD2APUA9MD1APYA9kD2gPaA9oD2wPaA9gD0wPNA8sDygPLA80D0QPTA9MD0gPRA9ED0gPTA9MD0wPTA9MD0wPSA9ID0QPQA88DzwPOA84DzgPOA80DywPLA8oDxQO+A7QDqAOcA5IDiAN9A3YDagNfA2wDdQN0A3UDeQNtA18DWANRA1UDUwNNA0YDRQNHA0sDTgNPA1UDWANZA1kDWwNcA14DYQNiA2QDZwNqA2wDbwNwA3IDcgNxA3ADbANlA2ADWgNTA0wDQAM2AzEDLwMuAy8DMQMuAykDJwMlAyMDIwMiAyIDIgMhAx8DHQMbAxkDFwMVAxMDEgMPAwsDBQP/AvsC8wLpAt4C3ALUAsQCvwK5ArECpwKeApMChQJ6AnMCbwJrAmkCWwJCAiwCFwIDAvAB4wHYA9oD2wPdA98D3gPcA9oD1QPSA9ED0APQA84DzAPLA8kDyQPLA80D0QPVA9YD0wPQA8wDxwPGA8cDxgPFA8cDywPPA9AD0QPTA9YD1QPTA9UD0wPSA9MD1QPXA9cD2APZA9oD2QPYA9QDzwPLA8oDywPOA9ID1APUA9MD0wPUA9QD0wPTA9MD1APUA9QD1APUA9MD0QPQA88DzgPOA84DzgPNA8wDzAPLA8kDwwO5A68DogOYA40DggN5A3IDcAN0A3UDcwN6A3cDaANbA1QDTANTA1UDSANEA0MDQwNEA0gDRwNLA1IDUgNTA1MDVQNXA1gDWgNcA14DYANiA2MDZANlA2UDZQNkA2MDYANcA1gDUAM+AzkDOQM3AzYDNgM1AzUDMgMuAysDKQMnAyUDJAMjAyEDHgMbAxkDFwMVAxQDEwMPAwwDBgMCA/0C+QLyAuYC4ALbAtMCxQK/AroCsgKpAqICmgKNAoACeAJyAm4CZgJjAlkCRQIxAh0CDALzAeQB2APXA9cD3APgA98D3APbA9UD0gPSA9ID0QPQA84DywPHA8cDywPNA9AD1APUA9ID0APOA8sDxwPHA8YDxwPKA84DzwPQA9ED0gPSA9QD0gPSA9ID0gPSA9ID0wPUA9QD1APVA9YD1QPTA88DzAPLA80D0gPUA9UD1APUA9QD1APUA9QD1APUA9QD1APVA9UD1QPUA9ID0QPQA88DzgPOA80DzQPMA8wDzAPNA8sDwQO0A6kDnQOQA4UDfAN4A3oDdwN0A3QDfANyA2IDVgNQA0oDUANSA0MDQgNBA0MDQQNEA0ADRQNJA0kDSgNKA0sDTQNOA1ADUQNTA1UDVwNXA1kDWgNbA1sDWgNZA1cDVANSA0QDNQM2AzkDOQM5AzgDNgMzAzEDLwMtAysDKAMkAyEDHQMaAxgDFgMVAxQDEQMMAwgDBgMCA/8C/AL2Au0C5ALfAtoC0QLEAr4CuQKxAqgCogKdApQCiAJ9AnICagJmAmACXgJZAksCOgIpAhcCAQLyAdgD1QPWA9oD3QPeA94D3APWA9MD0wPTA9ID0gPPA8kDxgPHA8oDywPOA9ID0wPSA9ADzwPJA8cDyAPJA8sDzQPOA88D0APRA9ID0gPSA9ED0QPRA9ID0QPRA9ID0QPRA9ED0QPQA88DzgPOA80DzQPQA9QD1QPVA9UD1QPVA9UD1QPVA9YD1gPVA9UD1QPVA9UD1APTA9ID0QPQA9ADzwPOA80DzQPNA8wDzQPNA8kDvAOtA58DlAOJA38DfAN7A3cDdAN1A3YDZgNYA1IDUANMA00DSQNAA0ADQANBA0EDQQM9A0EDQQNBA0EDQgNCA0MDRANFA0YDRwNJA0oDSgNMA00DTANNA00DTANKA0kDSAM+AzQDNgM3AzcDNgMzAzIDMAMvAy0DKwMnAyIDHQMaAxcDFQMUAxQDEgMMAwUDAAP+Av4C+gL3AvEC6ALiAt4C2QLPAsMCvQK3Aq4CpwKhApsCkgKGAnoCdAJsAmMCXwJcAloCWQJTAkgCNQIgAg4CAQLYA9UD1QPZA9oD3APfA94D2QPVA9QD0wPTA9IDywPGA8cDyAPJA8kDywPQA9ID0QPQA8wDyAPKA8wDzAPNA80DzgPPA9AD0QPRA9ID0APPA9AD0APQA9AD0QPRA9ED0QPPA88DzAPLA8sDywPMA88D0wPVA9YD1gPWA9YD1gPXA9cD1wPXA9cD1gPWA9YD1gPVA9MD0gPSA9ED0QPQA9AD0APPA84DzgPNA84DygPLA78DrgOiA5YDjAOCA38DewN2A3MDcQNpA1cDTQNLA0sDTANKA0EDQANAAz8DQQNDAzwDOgM/AzsDOgM6AzoDOgM6AzsDOwM7AzwDPAM9Az0DPgM+Az4DPwM/Az4DPQM8AzsDOAM1AzUDNgM2AzQDMwMvAysDKAMkAyIDHgMZAxcDFQMVAxMDDwMNAwgDAwP+AvoC9wLzAu8C6gLjAt8C3QLYAs0CwgK7ArUCrQKlAp0CkwKKAoQCeQJuAmcCYwJdAloCVwJWAlcCVwJOAjsCJQIPAvwB1wPWA9UD2APZA9sD3wPfA9sD1wPUA9QD0gPRA8kDxwPIA8wDzAPMA8sDzAPPA9EDzgPJA8wDzwPNA84DzQPNA84DzwPQA9ED0QPRA9AD0APPA84DzwPQA9AD0APRA88DzQPMA8kDxwPGA8cDywPQA9MD1QPWA9YD1gPXA9cD2APYA9gD2APYA9cD1wPXA9YD1APTA9ID0gPRA9AD0QPRA9ADzwPPA88DzwPNA8cDwgO4A6wDoQOXA40DhQOBA3sDdQNzA2gDWQNNA0kDRANEA0oDSANAA0ADQANCAz8DOwMzAzUDOQM0AzMDMwMyAzMDMgMzAzMDMwMzAzQDNAM0AzQDNAM1AzUDNAMzAzMDMgMyAzEDNAM0AzQDNQMzAy0DJgMhAx0DGgMXAxUDFQMUAxADDQMKAwUDAQP9AvsC+QLzAu0C6ALjAuEC3QLaAtQCyALAArkCtAKqAqAClgKQAoQCeQJ0Am0CZAJdAlkCVwJVAlQCVAJUAlMCSQI1AiACCQLwAdMD1QPWA9cD2APbA94D3gPbA9cD1QPUA9ID0APKA8kDzAPRA9ED0QPOA8oDygPOA8oDyQPNA80DywPNA80DzgPOA88D0APRA9ED0APRA9ADzgPNA84DzwPPA9AD0APQA84DygPGA8QDwwPEA8kDzwPTA9QD1gPXA9cD1wPYA9kD2QPZA9kD2QPYA9gD2APWA9QD0wPSA9ID0gPUA9MD1APRA9AD0APOA8sDxAPAA7UDrwOmA50DlQONA4cDgAN4A3QDcgNfA1EDTANHA0QDRgNJA0UDQQNBA0EDPwM3AywDLAMxAzADLQMuAy0DLQMtAywDLQMsAywDLQMtAy0DLQMtAywDLAMsAyoDKQMsAy4DLwMwAzADMQMzAzMDLgMeAxgDFwMWAxUDFAMRAw4DDQMIAwID/wL8AvgC9ALvAuoC5gLjAt8C3QLbAtQCywLEArsCuAKwAqYCngKUAocCgQJ6Am4CZQJdAlgCVgJUAlMCUgJSAlQCVQJQAkICKQITAv4B6wHSA9MD1QPWA9gD2gPeA94D2wPWA9QD0wPQA80DygPLA9AD0APQA9ADzwPKA8kDyQPJA8kDygPKA8kDyQPMA84DzgPOA88D0APQA9AD0QPOA80DzQPNA80DzgPPA88D0QPQA8wDxQPDA8MDwwPGA84D0gPUA9YD2APYA9gD2QPZA9oD2gPaA9kD2QPZA9gD1gPUA9MD0gPSA9MD2gPWA9MD0gPPA8wDxwO/A7oDsgOtA6cDoQOaA5IDjAOIA3sDdAN0A2wDXANQA0oDRANFA0gDRQNAA0EDPwM8AzQDLAMqAywDLwMoAyMDJQMlAyQDIwMjAyIDIgMhAyIDIQMhAyEDIQMgAx8DHwMfAyADIgMkAyUDJwMrAy0DLgMrAx8DFQMUAxIDEQMOAw4DCQMDAwAD/QL6AvYC8gLsAuYC4wLfAt0C2QLUAtECygLCAroCuAK1AqsCowKYAo0CiQJ9AnECZgJfAlkCVgJTAlICUQJQAk4CTgJRAlICSQI4AiECCALxAeEB0APRA9MD1gPYA9sD3QPcA9kD1QPSA88DywPJA8kDzAPQA9AD0APQA84DygPJA8gDygPJA8kDyQPJA8kDywPOA84DzgPOA88DzwPRA84DzAPMA8wDzAPMA80DzgPPA9AD0APNA8gDxAPDA8MDxwPNA9ED1APWA9gD2APYA9kD2QPaA9oD2gPaA9kD2QPYA9UD0wPTA9ID0gPUA9UD1APRA84DyAPBA7oDtQOwA6oDpgOgA5sDlAOUA48DgwN4A3UDbgNkA1kDTQNHA0QDRQNIA0MDQQM/AzYDMAMwAysDLQMsAyYDHwMdAxwDGwMbAxoDGgMZAxoDGQMZAxkDGAMYAxgDGAMYAxcDFwMWAxYDFgMVAxkDIAMiAyADGAMQAw8DDQMKAwcDAwMAA/4C+wL4AvMC7gLoAuQC4ALdAtsC2ALVAs8CxwK+ArYCtgK3ArECqQKdApUCkAKCAncCawJhAloCVwJUAlECUQJPAk0CSwJIAkYCSQJFAj0CLwIYAv4B6AHdAc0DzwPRA9QD2APbA9wD1wPTA9ADzQPKA8cDxgPIA8kDzgPQA9AD0APPA8oDyQPJA8kDyQPJA8kDyQPLA80DzQPNA80DzQPPA9ADzQPLA8sDygPJA8kDzAPMA80DzgPPA9EDzgPJA8cDwwPDA8gDzQPQA9QD1gPXA9gD2APYA9kD2gPaA9oD2gPaA9kD1gPVA9QD0wPSA9ID0gPSA9ADywPDA7wDtgOxA64DpgOkA54DmAOZA5oDlQONA4EDdwN0A2kDXwNWA0oDRwNEA0EDRANCA0EDNQMtAygDJwMqAygDIgMdAxsDFwMVAxUDFQMVAxUDFAMUAxQDFAMUAxQDFAMTAxMDEwMSAxIDEgMRAxADEAMPAw8DDwMNAwkDBgMEAwED/wL+AvsC+AL1AvAC6wLmAuIC3wLcAtoC1gLRAswCxwLCArgCsgKzArICrQKiAp0ClgKJAn4CcgJnAmECWQJUAlECUAJOAkwCSgJGAkMCQAI/Aj0COgI3AicCDgL3AeMB3AHLA80DzwPTA9YD3APaA9IDzgPLA8kDxgPFA8UDxgPIA80D0APQA9AD0APNA8kDyQPJA8kDygPKA8kDywPMA80DzQPNA9ADzwPOA8sDygPIA8cDxgPGA8gDzAPMA84DzwPQA9ADzAPIA8cDxgPKA80D0APUA9YD1wPYA9gD2APZA9oD2gPbA9sD2wPaA9cD1QPUA9MD0gPRA9EDzAPGA78DtwOyA6wDrAOnA6EDnQOZA50DmQOUA4wDgQN4A3YDbgNiA1cDTQNJA0cDQgNAA0EDQAM/AzUDKAMiAx4DHgMbAxgDFgMVAxMDEAMRAw8DDwMPAw8DDwMPAw8DDwMPAw8DDwMOAwwDDAMLAwgDBwMHAwUDBAMCAwEDAAP/Av0C+wL5AvcC8wLwAuwC6ALjAuAC3QLbAtgC1ALPAskCxALAAr0CuQKzAq4CrAKoAqICmgKQAoUCeQJuAmMCWwJXAlICUAJOAkwCRgJDAkECPgI8AjoCNwI1AjMCKgIZAgUC7wHfAdsBywPMA88D0QPSA9UD0APMA8oDxwPGA8UDxQPFA8UDxwPKA9AD0APQA9EDzwPKA8kDyQPJA8kDygPJA8sDzAPMA9AD0APPA88DzQPKA8gDxgPGA8YDxgPGA8oDzAPNA88DzwPRA88DywPIA8kDywPNA9ED1APXA9cD2APYA9gD2QPaA9oD2wPbA9sD3APZA9UD0wPTA9IDzwPJA8EDuwO0A68DqQOnA6QDogOcA5oDmwOZA5EDiQN+A3kDdgNvA2YDVwNOA0gDSgNGA0UDQwNAA0IDPAMuAyIDHQMZAxUDEwMTAxIDEQMQAw0DDAMJAwgDCAMHAwcDCAMFA/8C/AL8Av8CAwMEAwIDAQMAA/8C/gL+AvwC+wL6AvkC+AL1AvIC8ALrAugC5ALhAt8C3QLaAtcC1ALOAscCwwK/ArwCuQK1ArICsAKuAqkCoAKWAo0CgQJ1AmoCYAJZAlUCUQJOAk4CSgJEAj8CPAI5AjcCNAIxAi4CLAImAhoCCgL7AegB3AHbAcsDzAPOA80DzAPLA8oDyAPHA8YDxQPFA8UDxQPFA8YDyAPLA80DzQPMA8sDyQPJA8kDyQPJA8kDyQPLA80D0APQA88DzgPNA8oDyAPHA8YDxgPGA8YDxgPIA8wDzQPNA88D0APRA8wDyQPMA80DzwPSA9YD2APYA9gD2QPZA9kD2gPbA9sD2wPbA9sD1wPUA9MD0QPNA8YDvgO3A7EDrAOnA6MDoQOdA5wDmgOZA5YDjQOEA30DegN0A20DZQNZA0wDSQNJA0YDRQNEA0MDQQM7Ay4DIwMdAxkDFgMSAxEDDwMNAw0DDAMKAwcDAQMAAwAD/wL/Av4C+gL0AvAC7gLuAvAC9wL8AvoC+gL5AvcC9wL1AvMC8gLwAu0C6gLnAuQC4QLfAt0C2wLYAtUC0QLNAscCwgK/ArwCuAKzAq4CqQKoAqkCpwKdApIChwJ9AnICZwJeAlgCVAJQAk0CTAJHAkECOwI4AjMCLwIrAigCJQIiAhwCEAIHAvoB7gHiAdwB2wE=";
+{const bin=atob(DEM_B64),u8=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);const i16=new Int16Array(u8.buffer);for(let k=0;k<NX*NN;k++)Hg[k]=i16[k];}
+function H(x,n){const fi=(x-X0)/STEP,fj=(n-N0)/STEP;const i=Math.max(0,Math.min(NX-2,Math.floor(fi))),j=Math.max(0,Math.min(NN-2,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));const a=Hg[j*NX+i],b=Hg[j*NX+i+1],c=Hg[(j+1)*NX+i],d=Hg[(j+1)*NX+i+1];return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v;}
+function correct(){const R=320,CELL=400,buckets=new Map(),samples=[];
+  TRAILS.forEach(T=>T.pts.forEach((p,i)=>{if(i%2===0)samples.push({x:p.x,n:p.n,dl:p.e-H(p.x,p.n)});}));
+  samples.forEach(s=>{const k=Math.floor(s.x/CELL)+","+Math.floor(s.n/CELL);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(s);});
+  const out=new Float32Array(Hg);
+  for(let j=0;j<NN;j++)for(let i=0;i<NX;i++){const x=X0+i*STEP,n=N0+j*STEP,bx=Math.floor(x/CELL),bn=Math.floor(n/CELL);let sw=0,sd=0;
+    for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=buckets.get((bx+a)+","+(bn+b));if(!arr)continue;for(const s of arr){const d2=(s.x-x)**2+(s.n-n)**2;if(d2>4*R*R)continue;const w=Math.exp(-d2/(R*R));sw+=w;sd+=w*s.dl;}}
+    if(sw>0)out[j*NX+i]+=sd/sw*Math.min(1,sw*1.4);}
+  Hg.set(out);}
+correct();
+function distToTrail(T,x,n){let b=1e9;for(let i=0;i<T.pts.length;i+=3){const p=T.pts[i];const d=Math.hypot(p.x-x,p.n-n);if(d<b)b=d;}return b;}
+const NEAR=1150;
+function nearTrails(x,n){return TRAILS.filter(T=>distToTrail(T,x,n)<NEAR).map(T=>T.id);}
+
+/* ================= scene setup ================= */
+const canvas=$("#gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-2000,2000);
+const dirL=new THREE.DirectionalLight(0xffffff,0.5);scene.add(new THREE.AmbientLight(0xffffff,0.58),dirL,dirL.target);
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const col=h=>new THREE.Color(h);
+const LAM={};const lam=c=>LAM[c]||(LAM[c]=new THREE.MeshLambertMaterial({color:c}));
+const PHO={};const pho=c=>PHO[c]||(PHO[c]=new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0,specular:0x000000}));
+const HULL=new THREE.MeshBasicMaterial({color:PAL.outline,side:THREE.BackSide});
+function ribbon(points,width,mat,lift){
+  const pos=[],uv=[],idx=[];let len=0;
+  for(let i=0;i<points.length;i++){const p=points[i],a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)];
+    if(i)len+=points[i].distanceTo(points[i-1]);
+    let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;const px=-tz*width/2,pz=tx*width/2;
+    pos.push(p.x+px,p.y+lift,p.z+pz,p.x-px,p.y+lift,p.z-pz);uv.push(0,len/3,1,len/3);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}}
+  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
+  return new THREE.Mesh(g,typeof mat==="string"?new THREE.MeshBasicMaterial({color:mat,side:THREE.DoubleSide}):mat);
+}
+function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new THREE.Mesh(geo,phong?pho(color):lam(color));m.position.set(x,y,z);m.scale.set(sx,sy==null?sx:sy,sz==null?sx:sz);parent.add(m);
+  if(hull){const h=new THREE.Mesh(geo,HULL);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(hull);parent.add(h);m.userData.hull=h;}return m;}
+function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
+
+/* tile & organic boundary */
+const C={x0:-5950,x1:-550,n0:-2400,n1:100,ve:2.2};
+const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
+function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
+const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+const mask=(x,n)=>{const t=sm(Math.min((1-Math.abs((x-cx)/(w/2)))*w/2,(1-Math.abs((n-cn)/(d/2)))*d/2)/(0.2*Math.min(w,d)));return t*t*(1.6-0.6*t);};
+const cells=96,nx=Math.round(cells*w/Math.max(w,d)),nn=Math.round(cells*d/Math.max(w,d)),dx=w/nx,dn=d/nn;
+let base=1e9;for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;if(qOf(x,n)<0.9)base=Math.min(base,H(x,n));}base-=10;
+const R1=nx+1,hv=new Float32Array((nx+1)*(nn+1));
+for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;hv[j*R1+i]=base+(H(x,n)-base)*mask(x,n);}
+const diag=new Uint8Array(nx*nn);for(let k=0;k<diag.length;k++)diag[k]=hash(k*7+11,1519)>.5?1:0;
+function surf(x,n){const fi=(x-C.x0)/dx,fj=(n-C.n0)/dn;const i=Math.max(0,Math.min(nx-1,Math.floor(fi))),j=Math.max(0,Math.min(nn-1,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));
+  const a=hv[j*R1+i],b=hv[j*R1+i+1],c=hv[(j+1)*R1+i],e=hv[(j+1)*R1+i+1];
+  if(diag[j*nx+i])return u>=v?a+(b-a)*u+(e-b)*v:a+(c-a)*v+(e-c)*u;
+  return u+v<=1?a+(b-a)*u+(c-a)*v:e+(c-e)*(1-u)+(b-e)*(1-v);}
+const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
+const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
+const world=new THREE.Group();scene.add(world);
+const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
+const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
+let MAXY=0;
+
+// terrain + contours
+(function(){
+  const pos=[],cols=[],r=rng(97),tris=[];
+  function tri(A,B,Q){
+    
+    const ux=B[0]-A[0],uy=B[2]-A[2],uz=B[1]-A[1],vx=Q[0]-A[0],vy=Q[2]-A[2],vz=Q[1]-A[1];
+    let Nx=uy*vz-uz*vy,Ny=uz*vx-ux*vz,Nz=ux*vy-uy*vx;if(Ny<0){Nx=-Nx;Ny=-Ny;Nz=-Nz;}
+    const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
+    const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
+    let c;
+    if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    else if(g>1.0&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
+    else if(me>980&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
+    const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
+    const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
+    W3.forEach(p=>{pos.push(p.x,p.y,p.z);cols.push(c.r,c.g,c.b);MAXY=Math.max(MAXY,p.y);});
+    tris.push([A,B,Q]);
+  }
+  for(let j=0;j<nn;j++)for(let i=0;i<nx;i++){const P=(ii,jj)=>[C.x0+ii*dx,C.n0+jj*dn,hv[jj*R1+ii]];const a=P(i,j),b=P(i+1,j),c=P(i,j+1),e=P(i+1,j+1);
+    if(diag[j*nx+i]){tri(a,b,e);tri(a,e,c);}else{tri(a,b,c);tri(b,e,c);}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));tg.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));tg.computeVertexNormals();
+  topoGroup.add(new THREE.Mesh(tg,new THREE.MeshLambertMaterial({vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+  topoGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(tg,26),new THREE.LineBasicMaterial({color:PAL.terrLine,transparent:true,opacity:.16})));
+  // contour lines every 100 ft, heavier every 500 ft
+  const minor=[],major=[];
+  tris.forEach(T=>{const hs=T.map(v=>v[2]);const lo=Math.min(...hs),hi=Math.max(...hs);if(hi-lo<1)return;
+    for(let L=Math.ceil((lo-base+1)/100)*100+base;L<hi;L+=100){if(L-base<40)continue;const pts=[];
+      for(let k=0;k<3;k++){const P=T[k],Q=T[(k+1)%3];if((P[2]-L)*(Q[2]-L)<0){const t=(L-P[2])/(Q[2]-P[2]);pts.push(Wv(P[0]+(Q[0]-P[0])*t,P[1]+(Q[1]-P[1])*t,L).add(new THREE.Vector3(0,0.06,0)));}}
+      if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
+  const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
+  topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
+  // base: one thin sheet of liquid glass
+  const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
+  const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
+})();
+
+// creeks with flowing texture
+function stripeTex(bg,stroke,w0,h0,n,seed,len){const c=document.createElement("canvas");c.width=w0;c.height=h0;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,w0,h0);const r=rng(seed);x.fillStyle=stroke;
+  for(let i=0;i<n;i++){const px=r()*w0,py=r()*h0,l=len*(0.5+r()),wd=1.5+r()*2.5;x.globalAlpha=0.55+r()*0.45;x.beginPath();x.ellipse(px,py,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py+h0,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py-h0,wd,l,0,0,Math.PI*2);x.fill();}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const creekTex=stripeTex(PAL.water,"#FFFFFF",32,128,10,5,9);
+const creekMat=new THREE.MeshBasicMaterial({map:creekTex,side:THREE.DoubleSide});
+CANYONS.forEach(cy=>{const pts=[];let done=false;
+  for(let k=0;k<cy.pts.length-1&&!done;k++){const a=cy.pts[k],b=cy.pts[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),st=Math.ceil(L/(dx/3));
+    for(let s=0;s<st;s++){const t=s/st,x=a[0]+(b[0]-a[0])*t,n=a[1]+(b[1]-a[1])*t;if(qOf(x,n)>0.95){if(pts.length>1){done=true;break;}continue;}pts.push(G(x,n));}}
+  if(pts.length<2)return;const wd=cy.minor?0.5:0.85;world.add(ribbon(pts,wd+0.4,PAL.waterEdge,0.2));world.add(ribbon(pts,wd,creekMat,0.26));});
+
+// trails
+const trailPts=[],trailMesh={};
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
+  const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
+  world.add(bright,dim);trailMesh[T.id]={bright,dim};});
+TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
+  const pts=T.world.filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
+  g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
+  const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55})));
+  const foot=pts.map(p=>new THREE.Vector3(p.x,0.02,p.z));g.add(ribbon(foot,0.5,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35,side:THREE.DoubleSide}),0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.4,0)))),pts.length*2,0.32,6,false),new THREE.MeshLambertMaterial({color:c})));
+  trail3D.add(g);T.g3=g;});
+const TG=new Map(),tgk=(x,z)=>Math.floor(x/1.6)+","+Math.floor(z/1.6);trailPts.forEach(p=>{const k=tgk(p.x,p.z);(TG.get(k)||TG.set(k,[]).get(k)).push(p);});
+const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=TG.get((i+a)+","+(j+b));if(!arr)continue;for(const p of arr){const ddx=p.x-v.x,ddz=p.z-v.z;if(ddx*ddx+ddz*ddz<2.2)return true;}}return false;};
+
+// trees
+(function(){
+  const types={
+    oak:{geo:new THREE.IcosahedronGeometry(0.8,1),color:PAL.oak,y:1.3,trunk:true},
+    syc:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.sycamore,y:1.2,trunk:true},
+    gold:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.gold,y:1.2,trunk:true},
+    conifer:{geo:new THREE.ConeGeometry(0.6,2.4,7).translate(0,1.45,0),color:PAL.conifer,y:0,trunk:false},
+    shrub:{geo:new THREE.IcosahedronGeometry(0.4,0).scale(1,0.7,1),color:PAL.shrub,y:0.22,trunk:false}};
+  const inst={};Object.keys(types).forEach(k=>inst[k]=[]);
+  const tr=rng(907);
+  for(let t=0;t<9000;t++){
+    const x=C.x0+tr()*w,n=C.n0+tr()*d,q=qOf(x,n);if(q>0.93)continue;
+    const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
+    const cd=creekDist(x,n);if(cd*S<0.8)continue;
+    const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
+    if(mk<0.25){type=null;}
+    else if(g>0.75)type=null;
+    else if(cd<160){type=tr()<.6?"conifer":"syc";p=0.16;}
+    else{const r0=tr();type=r0<.5?"oak":r0<.72?"syc":r0<.86?"gold":"conifer";p=0.05+cl*.05;}
+    if(!type||tr()>p||inst[type].length>420)continue;
+    const v=Wv(x,n,e);if(nearTrail(v))continue;
+    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+  }
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
+  Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
+    const mesh=new THREE.InstancedMesh(T.geo,pho(T.color),list.length),hull=new THREE.InstancedMesh(T.geo,HULL,list.length);
+    list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y+T.y*it.s,it.v.z);sc.setScalar(it.s);m4.compose(pv,q,sc);mesh.setMatrixAt(i,m4);sc.setScalar(it.s*1.12);m4.compose(pv,q,sc);hull.setMatrixAt(i,m4);if(T.trunk)trunks.push({v:it.v,s:it.s,h:T.y});});
+    treeGroup.add(hull,mesh);});
+  const tm=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.08,0.11,1,5).translate(0,0.5,0),lam(PAL.trunk),trunks.length);q.identity();
+  trunks.forEach((t,i)=>{pv.set(t.v.x,t.v.y,t.v.z);sc.set(t.s,t.h*t.s,t.s);m4.compose(pv,q,sc);tm.setMatrixAt(i,m4);});treeGroup.add(tm);
+})();
+
+// boulders
+(function(){const r=rng(41),g=new THREE.IcosahedronGeometry(0.35,0),list=[];
+  CANYONS.forEach(cy=>{for(let k=0;k<cy.pts.length-1;k++){const a=cy.pts[k],b=cy.pts[k+1];for(let s=0;s<6;s++){const t=r(),x=a[0]+(b[0]-a[0])*t+(r()-.5)*160,n=a[1]+(b[1]-a[1])*t+(r()-.5)*160;if(qOf(x,n)>0.85)continue;list.push(G(x,n,0.15));}}});
+  const m=new THREE.InstancedMesh(g,pho(PAL.stone),list.length),h=new THREE.InstancedMesh(g,HULL,list.length),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  list.forEach((v,i)=>{const s=0.7+r()*0.8;q.setFromEuler(new THREE.Euler(r()*3,r()*3,r()*3));sc.set(s,s*.7,s);m4.compose(v,q,sc);m.setMatrixAt(i,m4);sc.multiplyScalar(1.12);m4.compose(v,q,sc);h.setMatrixAt(i,m4);});treeGroup.add(h,m);})();
+
+/* ================= flowers ================= */
+const FGEO={stem:new THREE.CylinderGeometry(0.03,0.03,1,4).translate(0,0.5,0),
+  tube:new THREE.ConeGeometry(0.09,0.34,5).translate(0,0.17,0),cup:new THREE.ConeGeometry(0.2,0.22,6).rotateX(Math.PI).translate(0,0.11,0),
+  dome:new THREE.SphereGeometry(0.2,6,4).scale(1,0.6,1),spike:new THREE.ConeGeometry(0.1,0.55,5).translate(0,0.28,0),
+  berry:new THREE.IcosahedronGeometry(0.075,0),bush:new THREE.IcosahedronGeometry(0.38,0).scale(1,.8,1),frond:new THREE.ConeGeometry(0.07,0.9,3).translate(0,0.45,0),
+  yuccaLeaf:new THREE.ConeGeometry(0.06,0.55,3).translate(0,0.27,0),pad:new THREE.SphereGeometry(0.2,7,5).scale(1,1.25,0.32)};
+function plant(k,sink,r){const sp=SPECIES[k],c=sp.color,G2="#5F8A3E",add=sink;
+  const M=(x,y,z,s,rx=0,rz=0)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,0,rz)),new THREE.Vector3(s,s,s));
+  const Ms=(x,y,z,sx,sy)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(sx,sy,sx));
+  if(sp.shape==="tube"){for(let i=0;i<5;i++){const a=r()*6.28,rr=r()*0.25,x=Math.cos(a)*rr,z=Math.sin(a)*rr,h=0.35+r()*.25;add("stem",G2,Ms(x,0,z,1,h));add("tube",c,M(x,h,z,1,(r()-.5)*.6,(r()-.5)*.6));}}
+  else if(sp.shape==="cup"){add("bush",G2,Ms(0,0.25,0,0.9,0.8));for(let i=0;i<5;i++){const a=i/5*6.28+r(),x=Math.cos(a)*.28,z=Math.sin(a)*.28;add("cup",c,M(x,0.5+r()*.15,z,1));}}
+  else if(sp.shape==="dome"){add("bush",G2,Ms(0,0.2,0,0.8,0.6));for(let i=0;i<4;i++){const a=i/4*6.28+r(),x=Math.cos(a)*.22,z=Math.sin(a)*.22;add("dome",c,M(x,0.45,z,0.9+r()*.3));}}
+  else if(sp.shape==="spike"){add("bush",G2,Ms(0,0.2,0,0.7,0.6));for(let i=0;i<4;i++){const a=r()*6.28,x=Math.cos(a)*.18,z=Math.sin(a)*.18,h=0.5+r()*.3;add("stem",G2,Ms(x,0,z,1,h));add("spike",c,M(x,h,z,1));}}
+  else if(sp.shape==="yucca"){for(let i=0;i<8;i++){const a=i/8*6.28;add("yuccaLeaf","#7E9B5C",M(0,0,0,1,Math.cos(a)*.9,Math.sin(a)*.9));}add("stem","#8FA36A",Ms(0,0,0,1.4,1.6));add("spike",c,M(0,1.6,0,1.6));}
+  else if(sp.shape==="berry"){add("bush","#4F7A3A",Ms(0,0.32,0,1.15,1));for(let i=0;i<7;i++){const a=r()*6.28,b=r()*1.2,x=Math.cos(a)*.38*Math.cos(b-.6),z=Math.sin(a)*.38*Math.cos(b-.6);add("berry",c,M(x,0.32+Math.sin(b)*.3,z,1));}}
+  else if(sp.shape==="pad"){const PADS=[[0,0.24,0,1,0,0],[0.2,0.5,0.02,0.85,0,-0.5],[-0.2,0.48,0,0.85,0,0.5],[0.05,0.75,0.05,0.7,0,-0.2],[0.3,0.24,0.15,0.8,0.5,-0.3]];PADS.forEach(([x,y,z,s,ry,rz])=>{add("pad","#7FA552",new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(0,ry+r()*0.6,rz)),new THREE.Vector3(s,s,s)));});[[0.05,0.98,0.05],[0.32,0.73,0.02],[-0.3,0.72,0]].forEach(([x,y,z])=>add("berry",c,M(x,y,z,1.4)));}
+  else if(sp.shape==="fern"){for(let i=0;i<7;i++){const a=i/7*6.28+r()*.3;add("frond",c,M(0,0,0,1,Math.cos(a)*.95,Math.sin(a)*.95));}}
+}
+const flowerGroups={},clusters=[];
+(function(){
+  const r=rng(53),FS=1.8;
+  TRAILS.forEach(T=>{const buckets={};
+    FLORA[T.id].forEach(k=>{const sp=SPECIES[k];let got=0,tries=0;const want=T.id==="C"?4:3;
+      while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
+        if(qOf(x,n)>0.85)continue;
+        const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
+        plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
+        clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
+    const grp=new THREE.Group();Object.values(buckets).forEach(b=>{const m=new THREE.InstancedMesh(FGEO[b.g],pho(b.c),b.list.length);b.list.forEach((mm,i)=>m.setMatrixAt(i,mm));grp.add(m);});
+    world.add(grp);flowerGroups[T.id]=grp;});
+})();
+
+/* ================= landmarks + waterfall ================= */
+const anim={};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,8),ico=new THREE.IcosahedronGeometry(1,0);
+  const roof=new THREE.CylinderGeometry(0.75,0.75,1,3).rotateZ(Math.PI/2).rotateX(Math.PI/2).rotateY(Math.PI/2);
+  function house(x,n,s,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry;world.add(g);
+    part(g,box,PAL.wall,0,0.6*s,0,1.8*s,1.2*s,1.2*s,1.06);const r=part(g,roof,PAL.roof,0,1.55*s,0,1.25*s,0.95*s,1.2*s,1.06);rot(r,0,Math.PI/2,0);
+    part(g,box,"#6B4F3A",0,0.35*s,0.61*s,0.35*s,0.7*s,0.05,0);}
+  function gate(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);
+    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}
+  function bench(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n,0.05));g.rotation.y=ry||0;world.add(g);part(g,box,"#9C7653",0,0.42,0,1.3,0.1,0.42,1.08);part(g,box,"#9C7653",0,0.75,-0.2,1.3,0.45,0.08,1.08);part(g,box,"#6B4F3A",-0.55,0.2,0,0.1,0.4,0.36,0);part(g,box,"#6B4F3A",0.55,0.2,0,0.1,0.4,0.36,0);}
+  function palm(x,n,h,i){const b=G(x,n);const g=new THREE.Group();g.position.copy(b);g.rotation.y=(i||0)*1.3;world.add(g);
+    const tk=part(g,cyl,"#9A7B5B",0,h/2,0,0.11,h,0.11);rot(tk,0,0,((i||0)%2?0.06:-0.05));
+    for(let f=0;f<7;f++){const a=f/7*Math.PI*2;const fr=part(g,new THREE.ConeGeometry(0.16,1.5,4).translate(0,0.75,0),f%2?"#5E8F3E":"#6FA04A",0,h,0,1,1,1,1.1);rot(fr,Math.cos(a)*1.25,0,Math.sin(a)*1.25);}
+    part(g,new THREE.SphereGeometry(1,6,4),"#8C6B4A",0,h-0.05,0,0.22,0.18,0.22,1.1);}
+  function slab(x,n,sx,sz,c,ry){const p=G(x,n);const m=part(world,box,c||"#D9D4C8",p.x,p.y+0.1,p.z,sx,0.2,sz,1.06);rot(m,0,ry||0,0);return m;}
+  function tower(x,n,h,c){const p=G(x,n);part(world,cyl,c||"#E9E1D2",p.x,p.y+h/2,p.z,0.35,h,0.35,1.06);part(world,new THREE.ConeGeometry(0.6,0.8,8),"#B5523B",p.x,p.y+h+0.4,p.z,1,1,1,1.06);}
+  function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
+    [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
+  function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
+  gate(-885,-478,0.4);gate(-5687,-1556,1.2);
+  house(-625,-349,1.0,0.5);house(-5807,-1336,0.9,0.2);
+  // Suspension Bridge (1870) high over the gorge
+  {const a=G(-1607,-664),b=G(-1591,-768);const m=new THREE.Vector3().addVectors(a,b).multiplyScalar(0.5);const L=a.distanceTo(b);
+    const g=new THREE.Group();g.position.set(m.x,Math.max(a.y,b.y)+0.05,m.z);g.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);world.add(g);
+    part(g,box,"#5A4A3E",0,0,0,0.5,0.08,L,1.06);[-0.25,0.25].forEach(dx=>part(g,box,"#3E3833",dx,0.35,0,0.05,0.05,L,0));
+    for(let i=0;i<7;i++){const z=-L/2+i*L/6;[-0.25,0.25].forEach(dx=>part(g,box,"#3E3833",dx,0.18,z,0.04,0.36,0.04,0));}}
+  // stone bridges: Sentry and Mile Point
+  {const q=G(-930,-597);part(world,box,"#BDB3A2",q.x,q.y+0.15,q.z,0.6,0.3,1.2,1.06);}
+  {const a=G(-4150,-1640),b=G(-4150,-1604);const m=new THREE.Vector3().addVectors(a,b).multiplyScalar(0.5);const k=part(world,box,"#BDB3A2",m.x,Math.max(a.y,b.y)+0.1,m.z,0.55,0.3,a.distanceTo(b)+0.4,1.06);k.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);}
+  // waterfalls along Glen Creek (19 in the gorge; a selection is drawn)
+  {const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
+    const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
+    const rings=[],mist=[];let first=null;
+    [[-1035,-585,1.1,1.0,1.87],[-1266,-693,1.0,1.2,1.79],[-1700,-712,0.9,0.8,1.70],[-2210,-880,0.9,0.9,1.75],[-2470,-985,1.1,1.3,1.96],[-2585,-965,1.0,2.2,1.96],[-2800,-1050,1.4,1.5,1.63],[-3300,-1325,0.9,0.9,1.62],[-3800,-1450,0.8,0.8,2.11],[-4600,-1570,0.8,0.8,1.44],[-5300,-1720,0.8,0.9,2.08]].forEach(([x,n,w,h,ry],i)=>{const F=G(x,n,0.02);const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;world.add(wf);
+      const pl=new THREE.Mesh(new THREE.PlaneGeometry(w,h),fallMat);pl.position.set(0,h/2,0);wf.add(pl);
+      part(wf,box,PAL.rock,0,h+0.08,-0.2,w+0.5,0.25,0.5,1.06);part(wf,ico,PAL.rockDeep,-w/2-0.25,h*0.45,-0.15,0.3,h*0.5,0.3);part(wf,ico,PAL.rock,w/2+0.25,h*0.4,-0.15,0.3,h*0.45,0.3);
+      part(wf,new THREE.CylinderGeometry(1,1,0.05,16),"#7FC8D6",0,0.03,0.45,w*0.6,1,0.4,1.02,false);
+      if(h>1.1){for(let j=0;j<3;j++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:j/3,x:(j-1)*0.25});}}});
+    anim.water={fallTex,rings,mist};}
+  bench(-1164,-578,0.3);
+
+  anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
+})();
+
+TRAILS.forEach(T=>{const g={"A":250,"B":450,"C":520}[T.id];if(g)T.gain=g;});
+/* ================= animals ================= */
+const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
+function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
+const BUILD={
+ chipmunk(){const g=new THREE.Group(),c="#B77A45",lt="#F1E6D6",dk="#3A2A1E";const b=part(g,SPH,c,0,0.35,0,0.26,0.3,0.22);rot(b,0,0,-0.3);part(g,SPH,dk,-0.05,0.4,0.18,0.18,0.24,0.04,0);part(g,SPH,dk,-0.05,0.4,-0.18,0.18,0.24,0.04,0);part(g,SPH,lt,0.1,0.32,0,0.13,0.2,0.15,0);
+   part(g,SPH,c,0.18,0.68,0,0.17,0.15,0.15);part(g,SPH,"#111",0.32,0.71,0.06,0.03,0.03,0.03,0);
+   const tail=new THREE.Group();tail.position.set(-0.22,0.25,0);g.add(tail);[[-0.1,0.12,0.12],[-0.16,0.36,0.13],[-0.08,0.58,0.11]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ turkey(){const g=new THREE.Group(),c="#4A3A2E";part(g,SPH,c,0,0.65,0,0.42,0.38,0.32);part(g,SPH,"#6B4E34",-0.35,0.95,0,0.08,0.55,0.6);
+   part(g,CYL,"#5A4636",0.32,1.0,0,0.06,0.45,0.06);part(g,SPH,"#7FA0C8",0.38,1.25,0,0.1,0.1,0.09);part(g,SPH,"#C8322C",0.45,1.12,0,0.05,0.1,0.04);
+   part(g,CYL,"#B5986E",0.05,0.15,0.12,0.03,0.4,0.03,0);part(g,CYL,"#B5986E",0.05,0.15,-0.12,0.03,0.4,0.03,0);return g;},
+ fox(){const g=new THREE.Group(),c="#C9682E",lt="#F4EDE2",dk="#2A2420";part(g,SPH,c,0,0.8,0,0.7,0.3,0.26);part(g,SPH,lt,0.4,0.74,0,0.24,0.2,0.2);
+   part(g,SPH,c,0.72,1.05,0,0.25,0.22,0.2);const sn=part(g,CONE,c,1.0,1.0,0,0.1,0.34,0.1);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.18,1.0,0,0.04,0.04,0.04,0);
+   part(g,CONE,c,0.68,1.33,0.1,0.07,0.22,0.07);part(g,CONE,c,0.68,1.33,-0.1,0.07,0.22,0.07);
+   const tail=new THREE.Group();tail.position.set(-0.65,0.8,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.12,0,0.42,0.17,0.17);rot(t1,0,0,0.35);part(tail,SPH,lt,-0.74,-0.27,0,0.12,0.11,0.11,0);g.userData.tail=tail;
+   legs4(g,dk,[[0.4,0.13],[0.4,-0.13],[-0.4,0.13],[-0.4,-0.13]],0.6,0.6,0.06);return g;},
+ bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
+   part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
+   legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6";part(g,SPH,c,0,1.35,0,0.85,0.45,0.38);part(g,SPH,lt,-0.8,1.4,0,0.18,0.22,0.22);
+   const neck=new THREE.Group();neck.position.set(0.6,1.5,0);g.add(neck);
+   part(neck,CYL,c,0.18,0.35,0,0.13,0.7,0.13);part(neck,SPH,c,0.35,0.75,0,0.32,0.22,0.2);part(neck,SPH,"#2a2a2a",0.66,0.72,0,0.06,0.06,0.06,0);
+   part(neck,SPH,c,0.15,1.0,0.25,0.2,0.09,0.06);part(neck,SPH,c,0.15,1.0,-0.25,0.2,0.09,0.06);
+   part(neck,CYL,"#8A6A4F",0.25,1.15,0.12,0.03,0.4,0.03,0);part(neck,CYL,"#8A6A4F",0.25,1.15,-0.12,0.03,0.4,0.03,0);
+   legs4(g,c,[[0.5,0.2],[0.5,-0.2],[-0.5,0.2],[-0.5,-0.2]],1.1,1.1,0.08);g.userData.neck=neck;return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C";part(g,SPH,c,0,0.7,0,0.55,0.7,0.45);part(g,SPH,c,0.15,1.45,0,0.38);part(g,SPH,"#F3E7D6",0.45,1.38,0,0.16,0.13,0.18);
+   part(g,CONE,c,0.1,1.85,0.2,0.1,0.25,0.1);part(g,CONE,c,0.1,1.85,-0.2,0.1,0.25,0.1);part(g,SPH,"#111",0.45,1.55,0.14,0.05,0.05,0.05,0);part(g,SPH,"#111",0.45,1.55,-0.14,0.05,0.05,0.05,0);
+   const tail=new THREE.Group();tail.position.set(-0.45,0.35,0);g.add(tail);part(tail,SPH,c,-0.18,0,0,0.22,0.1,0.1);g.userData.tail=tail;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF";part(g,SPH,c,0,1.05,0,0.85,0.38,0.32);part(g,SPH,lt,0.45,0.98,0,0.3,0.25,0.25);
+   part(g,SPH,c,0.85,1.38,0,0.3,0.26,0.24);const sn=part(g,CONE,c,1.18,1.32,0,0.13,0.4,0.13);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.38,1.32,0,0.05,0.05,0.05,0);
+   part(g,CONE,c,0.8,1.68,0.13,0.08,0.26,0.08);part(g,CONE,c,0.8,1.68,-0.13,0.08,0.26,0.08);
+   const tail=new THREE.Group();tail.position.set(-0.8,1.05,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.2,0,0.42,0.16,0.16);rot(t1,0,0,0.5);part(tail,SPH,"#3a3a3a",-0.72,-0.4,0,0.12,0.1,0.1,0);g.userData.tail=tail;
+   legs4(g,c,[[0.5,0.15],[0.5,-0.15],[-0.5,0.15],[-0.5,-0.15]],0.9,0.9,0.07);return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";part(g,SPH,c,0,0.5,0,1.3,0.42,0.5);part(g,SPH,lt,0.3,0.38,0,0.7,0.2,0.38);
+   part(g,SPH,c,1.25,0.82,0,0.38,0.34,0.34);part(g,SPH,lt,1.55,0.74,0,0.16,0.13,0.18);part(g,SPH,"#111",1.68,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,c,1.18,1.16,0.2,0.1);part(g,SPH,c,1.18,1.16,-0.2,0.1);part(g,SPH,"#111",1.5,0.92,0.13,0.04,0.04,0.04,0);part(g,SPH,"#111",1.5,0.92,-0.13,0.04,0.04,0.04,0);
+   const a=part(g,CYL,c,1.2,0.2,0.28,0.1,0.8,0.1);rot(a,0,0,Math.PI/2);const b=part(g,CYL,c,1.2,0.2,-0.28,0.1,0.8,0.1);rot(b,0,0,Math.PI/2);
+   const tail=new THREE.Group();tail.position.set(-1.25,0.45,0);g.add(tail);[[-0.3,-0.1,0.1],[-0.6,-0.15,0.3],[-0.85,-0.05,0.55]].forEach(([x,y,z],i)=>part(tail,SPH,i===2?"#4a3626":c,x,y,z,0.14));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";part(g,SPH,c,0,0.6,0,0.6,0.45,0.42);part(g,SPH,c,0.62,0.82,0,0.32,0.28,0.3);
+   part(g,SPH,dk,0.78,0.86,0,0.16,0.08,0.3,0);part(g,SPH,lt,0.9,0.76,0,0.13,0.1,0.13);part(g,SPH,"#111",1.02,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,lt,0.55,1.08,0.18,0.09);part(g,SPH,lt,0.55,1.08,-0.18,0.09);
+   const tail=new THREE.Group();tail.position.set(-0.55,0.7,0);g.add(tail);for(let i=0;i<5;i++)part(tail,SPH,i%2?dk:"#B9B5AE",-0.12-i*0.16,0.1+i*0.07,0,0.14,0.14,0.14,i===0?1.1:0);g.userData.tail=tail;
+   legs4(g,dk,[[0.35,0.22],[0.35,-0.22],[-0.35,0.22],[-0.35,-0.22]],0.42,0.42,0.08);return g;},
+ squirrel(){const g=new THREE.Group(),c="#9A9A96",lt="#F1EFEA";const b=part(g,SPH,c,0,0.42,0,0.3,0.36,0.25);rot(b,0,0,-0.3);part(g,SPH,lt,0.12,0.38,0,0.16,0.24,0.18,0);
+   part(g,SPH,c,0.2,0.8,0,0.2,0.18,0.17);part(g,SPH,"#111",0.37,0.83,0.07,0.035,0.035,0.035,0);part(g,CONE,c,0.15,1.0,0.08,0.05,0.12,0.05);part(g,CONE,c,0.15,1.0,-0.08,0.05,0.12,0.05);
+   const tail=new THREE.Group();tail.position.set(-0.25,0.3,0);g.add(tail);[[-0.12,0.15,0.2],[-0.18,0.45,0.22],[-0.08,0.75,0.2],[0.05,0.92,0.15]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A";part(g,SPH,c,0,0.32,0,0.32,0.26,0.24);part(g,SPH,"#B98A5E",0.05,0.24,0,0.26,0.16,0.2,0);part(g,SPH,c,0.25,0.56,0,0.15);part(g,SPH,"#111",0.33,0.53,0,0.1,0.07,0.12,0);
+   part(g,SPH,"#FFFFFF",0.36,0.6,0.08,0.03,0.03,0.03,0);const tk=part(g,CONE,"#111",0.33,0.82,0,0.05,0.16,0.05,0);rot(tk,0,0,-0.6);return g;},
+ snake(){const g=new THREE.Group(),segs=[];for(let i=0;i<16;i++){segs.push(part(g,SPH,i%3===0?"#6E5638":"#C2A36E",0,0.12,0,0.16-i*0.004,0.12,0.16-i*0.004,1.12));}
+   part(segs[0],SPH,"#111",0.5,0.5,0.45,0.25,0.25,0.25,0);g.userData.segs=segs;return g;},
+ bird(c,belly,cap){const g=new THREE.Group();part(g,SPH,c,0,0,0,0.35,0.16,0.16);if(belly)part(g,SPH,belly,0.05,-0.07,0,0.26,0.1,0.12,0);part(g,SPH,cap||c,0.32,0.05,0,0.14);
+   const bk=part(g,CONE,"#E3A44A",0.48,0.04,0,0.05,0.12,0.05,0);rot(bk,0,0,-Math.PI/2);
+   const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute([0.18,0,0,-0.2,0,0,-0.05,0,1.1],3));wg.computeVertexNormals();
+   const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
+   const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
+};
+const BIRDC={vulture:["#2A2420", null, "#C8322C"],kingfisher:["#4E7FA8", "#FFFFFF", "#3A6A94"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={chipmunk:2.0,turkey:1.7,fox:1.4,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const animalGroup=new THREE.Group();world.add(animalGroup);
+const animals=[];
+const ANIMALS=[
+ {k:"deer",path:[-4259,-1161,-4308,-1224],per:30},
+ {k:"deer",path:[-3075,-657,-2869,-625],per:28,ph:0.4},
+ {k:"chipmunk",at:[-1763,-540],hop:true},
+ {k:"chipmunk",at:[-2598,-858],hop:true},
+ {k:"squirrel",at:[-1890,-501],hop:true},
+ {k:"squirrel",at:[-5252,-1600],hop:true},
+ {k:"raccoon",path:[-1812,-828,-1896,-836],per:20},
+ {k:"turkey",at:[-4342,-1175],flock:3},
+ {k:"fox",path:[-2745,-1363,-2501,-1294],per:26}
+];
+ANIMALS.forEach((a,idx)=>{
+  const s=a.s||SCALE[a.k];const items=[];
+  const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
+  const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
+  const holder=new THREE.Group();animalGroup.add(holder);
+  if(a.flock){for(let i=0;i<a.flock;i++){const o=make();holder.add(o);items.push({o,dx:(i-1)*90,dn:(i%2)*70});}}
+  else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
+  let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
+  items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
+  animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
+});
+// birds
+const birds=[];
+[["vulture",-44,32,-30,8],["kingfisher",44,26,26,7],["woodpecker",-36,35,40,7],["hawk",34,30,-44,6],["vulture",0,38,-50,10],["kingfisher",-10,28,50,6],["woodpecker",50,34,-10,9]].forEach((b,i)=>{
+  const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
+// clouds with varied shapes
+const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
+  const SHAPES={puff:[[0,0,0,2.6],[2.6,-.4,.4,2.0],[-2.5,-.6,-.2,1.9],[1,1.4,-.3,1.8],[4.4,-.9,.2,1.3]],
+    long:[[-4.5,0,0,1.3],[-2.6,.3,.2,1.7],[-.6,.5,0,2.0],[1.5,.3,-.2,1.8],[3.5,0,.1,1.5],[5.2,-.2,0,1.1]],
+    tower:[[0,0,0,2.2],[0.6,2.2,.2,1.8],[-.3,3.9,0,1.4],[1.9,.4,-.2,1.5],[-1.9,.2,.1,1.5]],
+    wisp:[[0,0,0,1.2],[1.5,.2,0,0.9],[-1.3,-.1,0,0.8]]};
+  [["puff",-46,30,-34,1.6],["long",64,32,-34,1.2],["tower",-60,34,6,1.1],["wisp",36,36,-46,1.6],["long",-8,38,-56,1.0],["wisp",58,30,-6,1.4],["puff",-22,40,-62,1.1]].forEach(([sh,x,y,z,s0],k)=>{const cl=new THREE.Group();
+    SHAPES[sh].forEach(([a,b,c,s])=>{const m=new THREE.Mesh(cg,lam(PAL.cloud));m.position.set(a,b,c);m.scale.set(s,s*(sh==="long"||sh==="wisp"?0.7:1),s);const h=new THREE.Mesh(cg,hm);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(1.05);cl.add(h,m);});
+    cl.position.set(x,y,z);cl.scale.setScalar(s0);scene.add(cl);clouds.push({obj:cl,hx:x,hz:z,hy:y,ph:k*1.9});});})();
+
+/* ================= camera & views ================= */
+const VIEW=100;
+const cur={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()},goal={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()};
+let view="all",hoverKey=null,animalsOn=true,flowersOn=true,topoOn=true,treesOn=true,baseOn=true;
+const dirOf=(az,el)=>new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az));
+const stage=$("#stage");
+const isPhone=()=>innerWidth<=860;
+function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
+const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
+function viewPoints(v){
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
+const VIEWAZ={"all":0.6,"A":0.5,"B":0.6,"C":0.6};
+function fitFor(v,az,el){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
+  const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
+  const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
+  const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 2.6, "B": 2.4, "C": 2.4}[v]||2.4));
+  const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
+  return {zoom,target};}
+function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
+
+/* ================= icons ================= */
+function fIcon(sh,c){const s={tube:`<path d="M6 11V4" stroke="#5F8A3E"/><path d="M4.5 4.5 6 1l1.5 3.5z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  cup:`<circle cx="6" cy="8" r="3.4" fill="#5F8A3E"/><path d="M3.5 4h5L6 7z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  dome:`<circle cx="6" cy="8.5" r="3" fill="#5F8A3E"/><ellipse cx="6" cy="5" rx="3.6" ry="2.2" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  spike:`<path d="M6 11V6" stroke="#5F8A3E"/><path d="M4.6 7 6 1l1.4 6z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  yucca:`<path d="M2 11l4-3 4 3M6 8V3" stroke="#7E9B5C"/><path d="M5 4 6 .5 7 4z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  berry:`<circle cx="6" cy="6.5" r="4.2" fill="#4F7A3A"/><circle cx="4.5" cy="5" r="1" fill="${c}"/><circle cx="7.5" cy="6.5" r="1" fill="${c}"/><circle cx="5.5" cy="8.2" r="1" fill="${c}"/>`,
+  fern:`<path d="M6 11 2 3M6 11 6 1M6 11 10 3" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`,
+  pad:`<ellipse cx="6" cy="8.3" rx="2.6" ry="3" fill="#7FA552"/><ellipse cx="3.6" cy="4.6" rx="1.8" ry="2.2" fill="#7FA552"/><ellipse cx="8.4" cy="4.4" rx="1.8" ry="2.2" fill="#7FA552"/><circle cx="3.6" cy="2.4" r="1.1" fill="${c}"/><circle cx="8.4" cy="2.2" r="1.1" fill="${c}"/>`}[sh];
+  return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true">${s}</svg>`;}
+function paw(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="8" rx="2.6" ry="2.2" fill="${c}"/><circle cx="2.6" cy="5" r="1.1" fill="${c}"/><circle cx="4.6" cy="3" r="1.1" fill="${c}"/><circle cx="7.4" cy="3" r="1.1" fill="${c}"/><circle cx="9.4" cy="5" r="1.1" fill="${c}"/></svg>`;}
+function wing(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6c2-2 3.5-2 5 0 1.5-2 3-2 5 0-1.5.4-3 1.6-5 3C4 7.6 2.5 6.4 1 6z" fill="${c}"/></svg>`;}
+const isBird=k=>!!BIRDC[k];
+const wIcon=k=>isBird(k)?wing(WILD[k].color):paw(WILD[k].color);
+function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;return t?`<span class="bd t" style="--c:var(${TR[t].color})">${id}</span>`:`<span class="bd">${id}</span>`;}
+
+/* ================= callouts ================= */
+const LABELS=[];const labelsBox=$("#labels");
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+  el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
+  el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
+STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+TRAILS.forEach(T=>{
+  const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
+  Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
+    addLabel({key:"w-"+T.id+"-"+a.k,kind:"animal",badge:`<span class="bd ic">${wIcon(a.k)}</span>`,text:a.label||WILD[a.k].name,views:[T.id],pos:item.pos,item});});
+  const bestF={};clusters.filter(c=>c.trail===T.id).forEach(c=>{if(!bestF[c.k]||c.dist<bestF[c.k].dist)bestF[c.k]=c;});
+  Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
+    addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
+});
+function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
+const tmpV=new THREE.Vector3();
+function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
+function layoutLabels(){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins(),ink="#1D2B26";
+  const act=LABELS.filter(o=>{const on=labelOn(o);o.el.hidden=!on;return on;});
+  const P=act.map(o=>{const p=project(o.pos());return {o,x:p.x,y:p.y};});
+  if(isPhone()){P.forEach(p=>{p.o.el.classList.add("dot");p.o.el.classList.remove("left","right");p.o.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`;});$("#lead").innerHTML="";return;}
+  const cxm=(m.l+(W-m.r))/2;let Lf=P.filter(p=>p.x<cxm),Rt=P.filter(p=>p.x>=cxm);
+  while(Lf.length>Rt.length+1){Lf.sort((a,b)=>b.x-a.x);Rt.push(Lf.shift());}
+  while(Rt.length>Lf.length+1){Rt.sort((a,b)=>a.x-b.x);Lf.push(Rt.shift());}
+  const gap=act.length>18?26:30,top=m.t+8,bot=Hh-m.b-8;
+  const spread=arr=>{arr.sort((a,b)=>a.y-b.y);const ys=arr.map(p=>Math.max(top,Math.min(bot,p.y)));for(let i=1;i<ys.length;i++)ys[i]=Math.max(ys[i],ys[i-1]+gap);
+    const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
+    arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
+  spread(Lf);spread(Rt);
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
+  $("#lead").innerHTML=svg;
+}
+
+/* ================= glass card ================= */
+const card=$("#card");let cardItem=null;
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const r10=n=>fmt(Math.round(n/10)*10);
+function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
+function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
+function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
+function openCard(item){cardItem=item;let h="";
+  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+    h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
+  else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
+  else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
+  const ph=photosFor(item);
+  const gal=ph.length?`<div class="gal"><img class="main" src="${ph[0].f}" alt="${ph[0].t||""}"><div class="cr">${credit(ph[0])}</div>${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button class="th${i?"":" on"}" data-i="${i}"><img src="${p.f}" alt=""></button>`).join("")}</div>`:""}</div>`
+    :`<div class="gal"><p class="none">No open-license traveler photos of this exact spot yet.</p></div>`;
+  card.classList.remove("big");
+  card.innerHTML=`<button class="x" aria-label="Close">×</button>`+h+gal+`<div class="more">${ph.length?`Tap for ${ph.length} photo${ph.length>1?"s":""}`:"Tap for photos"}</div>`;card.hidden=false;
+  card.querySelector(".x").onclick=e=>{e.stopPropagation();closeCard();};
+  card.querySelectorAll(".th").forEach(b=>b.onclick=e=>{e.stopPropagation();const p=ph[+b.dataset.i];card.querySelector(".main").src=p.f;card.querySelector(".cr").innerHTML=credit(p);card.querySelectorAll(".th").forEach(t=>t.classList.toggle("on",t===b));});
+  card.onclick=e=>{if(e.target.closest("a,.th,.x"))return;card.classList.toggle("big");positionCard();};
+  positionCard();}
+function closeCard(){cardItem=null;card.hidden=true;}
+function positionCard(){if(!cardItem)return;const p=project(cardItem.pos());const W=stage.clientWidth;const cw=card.offsetWidth,ch=card.offsetHeight;
+  let x=Math.max(cw/2+8,Math.min(W-cw/2-8,p.x)),y=p.y-14;if(y-ch<8)y=ch+8;card.style.transform=`translate(${x-cw/2}px,${y-ch}px)`;}
+
+/* ================= portraits (rendered from the same models) ================= */
+let pr=null;const PCACHE={};
+function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
+  if(!pr){pr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});pr.setPixelRatio(2);pr.setSize(236,184);}
+  const sc=new THREE.Scene();sc.add(new THREE.AmbientLight(0xffffff,0.62));const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-3,5,4);sc.add(dl);
+  const g=new THREE.Group();sc.add(g);
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.35,40),[lam(PAL.band),lam(PAL.ground),lam(PAL.ground)]);disc.position.y=-0.18;g.add(disc);
+  const ring=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,30),new THREE.LineBasicMaterial({color:PAL.slabLine}));ring.position.copy(disc.position);g.add(ring);
+  let subj;
+  if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
+    else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,elk:1.66,moose:1.73,bison:1.66,bighorn:1.43,goat:1.39,marmot:1.16,pika:0.95,chipmunk:1.04,grizzly:1.19,alligator:1.39,turtle:1.04,turkey:1.22,javelina:1.39,armadillo:1.09,heron:1.3,egret:1.3,nene:1.09,fox:1.49,pronghorn:1.49,otter:1.22,beaver:1.22}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+  else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
+  g.add(subj);
+  const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+  const c2=new THREE.OrthographicCamera(-1,1,1,-1,-100,100);const az=0.9,el=0.42;c2.position.copy(ctr).add(new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az)).multiplyScalar(20));c2.lookAt(ctr);
+  const hw=Math.max(size.x*0.62,size.z*0.62,size.y*0.75,1.2),a=236/184;c2.left=-hw*a;c2.right=hw*a;c2.top=hw;c2.bottom=-hw;c2.updateProjectionMatrix();
+  pr.render(sc,c2);const url=pr.domElement.toDataURL("image/png");PCACHE[key]=url;return url;}
+
+/* ================= panel ================= */
+function spark(T,w0,h0){const pts=T.pts.filter((p,i)=>i%3===0);const dd=pts.map((p,i)=>`${i?"L":"M"}${(p.m/T.total*w0).toFixed(1)},${(h0-2-(p.e-T.lo)/(T.hi-T.lo||1)*(h0-4)).toFixed(1)}`).join("");return `<svg width="${w0}" height="${h0}" viewBox="0 0 ${w0} ${h0}" aria-hidden="true"><path d="${dd}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/></svg>`;}
+function profileSVG(T){const w0=320,h0=96,m={l:38,r:8,t:24,b:16};const step=T.hi-T.lo>1000?500:T.hi-T.lo>450?200:100,lo=Math.floor((T.lo-20)/step)*step,hi=Math.ceil((T.hi+40)/step)*step;
+  const X=v=>m.l+v/T.total*(w0-m.l-m.r),Y=e=>m.t+(1-(e-lo)/(hi-lo))*(h0-m.t-m.b);let g="";
+  for(let e=lo;e<=hi;e+=step)g+=`<line x1="${m.l}" x2="${w0-m.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--rule)"/><text x="${m.l-5}" y="${Y(e)+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${fmt(e)}</text>`;
+  const line=T.pts.map((p,i)=>`${i?"L":"M"}${X(p.m).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  g+=`<path d="${line}L${X(T.total)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="var(${T.color})" fill-opacity=".14"/><path d="${line}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/>`;
+  g+=`<text x="${m.l}" y="${h0-3}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">0 mi</text><text x="${w0-m.r}" y="${h0-3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${T.official} mi</text>`;
+  ORDER[T.id].forEach(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);if(!mm)return;const x=X(mm.m),y=Y(mm.e),t=s.trails.length===1?s.trails[0]:null,fill=t?`var(${TR[t].color})`:"#fff",tc=t?"#fff":"var(--ink)",wd=id.length>1?18:14;
+    g+=`<line x1="${x}" x2="${x}" y1="${y}" y2="${y-8}" stroke="var(--ink)" stroke-width=".7"/><rect x="${x-wd/2}" y="${y-21}" width="${wd}" height="13" rx="6.5" fill="${fill}" stroke="${t?fill:"var(--ink)"}"/><text x="${x}" y="${y-11.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="${tc}">${id}</text>`;});
+  return `<svg viewBox="0 0 ${w0} ${h0}" aria-label="Elevation profile">${g}</svg>`;}
+function speciesHere(){const ws=new Set(),fs=new Set();
+  animals.forEach(a=>{if(view==="all"||a.trails.includes(view))ws.add(a.k);});if(view==="all")["hawk","jay","raven","woodpecker"].forEach(k=>ws.add(k));else["hawk","jay"].forEach(k=>ws.add(k));
+  clusters.forEach(c=>{if(view==="all"||c.trail===view)fs.add(c.k);});return {ws:[...Object.keys(WILD)].filter(k=>ws.has(k)),fs:[...Object.keys(SPECIES)].filter(k=>fs.has(k))};}
+function wildList(ks){return `<ul class="list" data-kind="animal">${ks.map(k=>`<li data-k="${k}"><button class="item">${wIcon(k)}<span class="nm">${WILD[k].name}</span><span class="chev">›</span></button></li>`).join("")}</ul>`;}
+function floraList(ks){return `<ul class="list" data-kind="flower">${ks.map(k=>{const sp=SPECIES[k],[st,now]=floraStatus(sp);return `<li data-k="${k}"><button class="item">${fIcon(sp.shape,sp.color)}<span class="nm">${sp.name} <span class="lt">${sp.latin}</span></span><span class="bm${now?" now":""}">${st}</span></button></li>`;}).join("")}</ul>`;}
+function renderPanel(){let h="";const {ws,fs}=speciesHere();
+  if(view==="all"){
+    h=`<div><div class="eyebrow">All trails</div><h2>Nineteen waterfalls in a mile and a half</h2></div>
+    <p>Glen Creek drops about 400 feet through a narrow shale and sandstone gorge at the south end of Seneca Lake, in the village of Watkins Glen. The Gorge Trail follows it on stone stairs, tunnels and bridges, much of them rebuilt by the Civilian Conservation Corps after the 1935 flood. A is a short loop in the lower gorge, B the park’s 2-mile loop to Mile Point Bridge, and C the full Gorge Trail with the North Rim (Indian) Trail back. Pick a trail to focus the model; click anything on it for a quick note.</p>
+    <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
+    <div><h3>How the numbers work</h3><p class="note">All three loops start at the Main Entrance, so the stops in the lower gorge carry plain numbers: 3 is Cavern Cascade on every trail. B and C share the upper gorge up to Mile Point Bridge (6–9). Lettered stops belong to one trail only: C1 is Jacob’s Ladder. Miles are scaled to the park’s official route lengths.</p></div>
+    <div><h3>Wildlife in the park</h3>${wildList(ws)}</div>
+    <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
+    <p class="note">Watkins Glen State Park, 1009 N. Franklin Street, Watkins Glen, NY. Park open year-round, dawn to dusk; vehicle entrance fee $10. The Gorge Trail closes for the season on October 25, 2026 (earlier if nights reach the 30s) because of falling rock and ice, and reopens in mid to late May; the North and South Rim trails stay open all year. No dogs on the Gorge Trail. The South Rim Trail (part of the Finger Lakes Trail) is not modeled. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
+  } else {const T=TR[view];
+    h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
+    <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+    <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
+    <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
+    <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
+    <div><h3>Flowers along the way</h3>${floraList(fs)}</div>
+    <div><h3>Read more</h3><div class="links">${({A:`<a href="https://parks.ny.gov/parks/watkinsglen/details.aspx" target="_blank" rel="noopener">Watkins Glen State Park · NY State Parks</a><a href="https://api.theoutbound.com/new-york/hiking/gorge-trail-and-lovers-lane-loop" target="_blank" rel="noopener">Gorge Trail and Lovers Lane Loop · The Outbound</a>`,B:`<a href="https://www.parks.ny.gov/documents/parks/WatkinsGlenWatkinsGlenTrailMap.pdf" target="_blank" rel="noopener">Trail map (PDF) · NY State Parks</a><a href="https://en.wikipedia.org/wiki/Watkins_Glen_State_Park" target="_blank" rel="noopener">Watkins Glen State Park · Wikipedia</a>`,C:`<a href="https://www.parks.ny.gov/documents/parks/WatkinsGlenWatkinsGlenTrailMap.pdf" target="_blank" rel="noopener">Trail map (PDF) · NY State Parks</a><a href="https://www.harrimanhiker.com/2013/08/watkins-glen-hike-part-2.html" target="_blank" rel="noopener">Watkins Glen hike · Harriman Hiker</a>`})[T.id]||""}</div></div>`;}
+  $("#pbody").innerHTML=h;$("#pbody").scrollTop=0;
+  document.querySelectorAll("#pbody [data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+  document.querySelectorAll('#pbody .list[data-kind="stop"] li').forEach(li=>{const id=li.dataset.id;li.querySelector("button").addEventListener("click",()=>openCard({kind:"stop",id,pos:()=>STOP[id].v}));
+    li.addEventListener("pointerenter",()=>setHover("s-"+id));li.addEventListener("pointerleave",()=>setHover(null));});
+  document.querySelectorAll('#pbody .list[data-kind="animal"] li, #pbody .list[data-kind="flower"] li').forEach(li=>{const kind=li.parentElement.dataset.kind,k=li.dataset.k;
+    li.querySelector("button").addEventListener("click",()=>toggleDetail(li,kind,k));});
+}
+function toggleDetail(li,kind,k){const open=li.classList.contains("open");li.parentElement.parentElement.parentElement.querySelectorAll("li.open").forEach(o=>{o.classList.remove("open");const d=o.querySelector(".detail");if(d)d.remove();});
+  if(open){closeCard();return;}
+  li.classList.add("open");const isA=kind==="animal";const info=isA?WILD[k]:SPECIES[k];
+  const d=document.createElement("div");d.className="detail glass";
+  const ph=(isA?PHOTOS.animal[k]:PHOTOS.flower[k])||[];
+  d.innerHTML=`<div>${ph.length?`<img alt="${info.name}" src="${ph[0].f}"><div class="cap">${credit(ph[0])}</div>`:`<img alt="${info.name}, drawn in the model's style" src="${portrait(kind,k)}"><div class="cap">Model drawing</div>`}</div><div><p>${info.sum}</p>${isA?"":`<p style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i>${info.latin}</i> · ${floraStatus(info)[0]}</p>`}</div>`;
+  li.appendChild(d);
+  // also point to it on the model
+  if(isA){if(isBird(k)){const b=birds.find(b=>b.k===k);if(b)openCard({kind:"animal",k,a:null,pos:()=>b.obj.position});}
+    else{const a=animals.find(a=>a.k===k&&(view==="all"||a.trails.includes(view)));if(a&&animalsOn)openCard({kind:"animal",k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))});}}
+  else{const c=clusters.filter(c=>c.k===k&&(view==="all"||c.trail===view)).sort((a,b)=>a.dist-b.dist)[0];if(c&&flowersOn)openCard({kind:"flower",k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))});}}
+$("#switch").innerHTML=`<button data-v="all" aria-pressed="true"><span class="sl">Overview</span><span class="sn">All trails</span></button>`+TRAILS.map(T=>`<button data-v="${T.id}" aria-pressed="false"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="sn">${T.short}</span></button>`).join("");
+document.querySelectorAll("#switch button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.v)));
+function applyVisibility(){
+  animals.forEach(a=>{a.holder.visible=animalsOn&&(view==="all"||a.trails.includes(view));});
+  birds.forEach(b=>b.obj.visible=animalsOn);
+  Object.entries(flowerGroups).forEach(([t,g])=>g.visible=flowersOn&&(view==="all"||view===t));
+  topoGroup.visible=topoOn;treeGroup.visible=treesOn;baseGroup.visible=baseOn;trail3D.visible=!topoOn;TRAILS.forEach(T=>{T.g3.visible=view==="all"||view===T.id;});
+  if(cardItem&&((cardItem.kind==="animal"&&!animalsOn)||(cardItem.kind==="flower"&&!flowersOn)))closeCard();}
+function select(v){view=v;document.querySelectorAll("#switch button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  TRAILS.forEach(T=>{const on=v==="all"||v===T.id;trailMesh[T.id].bright.visible=on;trailMesh[T.id].dim.visible=!on;});
+  goal.az=VIEWAZ[v];goal.el=v==="all"?0.58:0.66;LABELS.forEach(o=>o.ly=null);closeCard();fitGoal();applyVisibility();renderPanel();setHover(null);
+  try{history.replaceState(null,"",v==="all"?location.pathname+location.search:"#trail-"+v);}catch(e){}}
+
+/* ================= interaction ================= */
+const ptrs=new Map();let pinch0=0,zoom0=1,down=null;
+function pickAt(px,py){let best=null,bd=26;
+  const test=(item,v)=>{const p=project(v);const dd=Math.hypot(p.x-px,p.y-py);if(dd<bd){bd=dd;best=item;}};
+  STOPS.forEach(s=>{if(view==="all"||s.trails.includes(view))test({kind:"stop",id:s.id,pos:()=>s.v},s.v);});
+  if(animalsOn){animals.forEach(a=>{if(!a.holder.visible)return;const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};test(item,a.pos().clone().add(new THREE.Vector3(0,0.8,0)));});
+    birds.forEach(b=>test({kind:"animal",k:b.k,a:null,pos:()=>b.obj.position},b.obj.position));}
+  if(flowersOn)clusters.forEach(c=>{if(view!=="all"&&c.trail!==view)return;test({kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))},c.v.clone().add(new THREE.Vector3(0,0.6,0)));});
+  return best;}
+stage.addEventListener("pointerdown",e=>{if(e.target.closest("#card,.kn"))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now()};stage.setPointerCapture(e.pointerId);stage.classList.add("dragging");
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);zoom0=goal.zoom;}});
+stage.addEventListener("pointermove",e=>{const p=ptrs.get(e.pointerId);
+  if(!p){const r=stage.getBoundingClientRect();stage.classList.toggle("pick",!!pickAt(e.clientX-r.left,e.clientY-r.top));return;}
+  if(ptrs.size===2){p.x=e.clientX;p.y=e.clientY;const [a,b]=[...ptrs.values()];const dd=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)goal.zoom=Math.max(.5,Math.min(30,zoom0*dd/pinch0));return;}
+  const ddx=e.clientX-p.x,ddy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;goal.az-=ddx*0.006;goal.el=Math.max(0.3,Math.min(1.25,goal.el+ddy*0.004));});
+const endP=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!ptrs.size)stage.classList.remove("dragging");pinch0=0;
+  if(down&&e.type==="pointerup"&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&performance.now()-down.t<500){const r=stage.getBoundingClientRect();const it=pickAt(e.clientX-r.left,e.clientY-r.top);if(it)openCard(it);else closeCard();}down=null;};
+stage.addEventListener("pointerup",endP);stage.addEventListener("pointercancel",endP);
+stage.addEventListener("wheel",e=>{e.preventDefault();goal.zoom=Math.max(.5,Math.min(30,goal.zoom*Math.exp(-e.deltaY*0.0015)));},{passive:false});
+$("#zin").onclick=()=>goal.zoom=Math.min(30,goal.zoom*1.3);$("#zout").onclick=()=>goal.zoom=Math.max(.5,goal.zoom/1.3);
+$("#zfit").onclick=()=>{goal.az=VIEWAZ[view];goal.el=view==="all"?0.58:0.66;fitGoal();};
+const tog=(id,fn)=>$(id).addEventListener("click",e=>{const v=fn();e.currentTarget.setAttribute("aria-pressed",String(v));applyVisibility();});
+tog("#tgTopo",()=>topoOn=!topoOn);tog("#tgBase",()=>baseOn=!baseOn);tog("#tgTrees",()=>treesOn=!treesOn);tog("#tgAnimals",()=>animalsOn=!animalsOn);tog("#tgFlowers",()=>flowersOn=!flowersOn);
+addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey)return;const k={"0":"all","1":"A","2":"B","3":"C",Escape:"esc"}[e.key];if(!k)return;if(k==="esc"){if(cardItem){closeCard();return;}select("all");}else select(k);});
+function resize(){const W=stage.clientWidth,Hh=stage.clientHeight;if(!W||!Hh)return;renderer.setSize(W,Hh,false);const a=W/Hh;cam.left=-VIEW*a/2;cam.right=VIEW*a/2;cam.top=VIEW/2;cam.bottom=-VIEW/2;}
+new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
+
+/* ================= animation ================= */
+const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
+function animate(tt,dt){
+  animals.forEach(a=>{
+    if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
+      const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
+      if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
+        o.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(tt*3-i*0.6)*0.18);sg.userData.hull.position.copy(sg.position);});return;}
+      o.position.copy(G(x,n));const head=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y+=((head-o.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI)*0.08;
+      const spd=a.k==="raccoon"?7:a.k==="coyote"?6:5,sw=Math.sin(tt*spd+a.ph*20)*0.45;(o.userData.legs||[]).forEach((L,i)=>L.rotation.z=(i%2?sw:-sw)*(i<2?1:-1));
+      o.position.y+=Math.abs(Math.sin(tt*spd))*0.05*a.s;if(o.userData.tail)o.userData.tail.rotation.y=Math.sin(tt*3+a.ph)*0.3;}
+    else if(a.items[0].o.userData.neck&&!a.flock){const gz=(Math.sin(tt*0.6+a.ph*5)+1)/2;a.items[0].o.userData.neck.rotation.z=-gz*1.1;}
+    else if(a.items[0].o.userData.tail&&!a.hop&&!a.flock){a.items[0].o.userData.tail.rotation.y=Math.sin(tt*(a.k==="lion"?1.2:2.2)+a.ph)*0.6;}
+    else if(a.hop){const o=a.items[0].o,u=(tt*0.35+a.ph)%1,ang=u*Math.PI*2,rr=60;const x=a.x+Math.cos(ang)*rr,n=a.n+Math.sin(ang)*rr;o.position.copy(G(x,n,Math.abs(Math.sin(tt*6+a.ph*9))*0.35));o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;o.userData.tail.rotation.z=Math.sin(tt*6)*0.25;}
+    else if(a.flock){a.items.forEach((it,i)=>{const ang=tt*0.25+i*2.1+a.ph,x=a.x+it.dx+Math.cos(ang)*50,n=a.n+it.dn+Math.sin(ang)*50;it.o.position.copy(G(x,n,Math.abs(Math.sin(tt*5+i))*0.12));it.o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;});}
+  });
+  birds.forEach(b=>{const ang=tt*b.sp+b.ph;b.obj.position.set(b.cx+Math.cos(ang)*b.r,b.cy+Math.sin(tt*0.5+b.ph)*1.2,b.cz+Math.sin(ang)*b.r);
+    const s=Math.sign(b.sp),vx=-Math.sin(ang)*s,vz=Math.cos(ang)*s;b.obj.rotation.set(0,Math.atan2(-vz,vx),0);b.obj.rotateX(-0.28*s);
+    const flap=Math.max(0,Math.sin(tt*0.9+b.fl))**2;const fa=Math.sin(tt*9+b.fl)*0.7*flap+0.1;b.obj.userData.w[0].rotation.x=-fa;b.obj.userData.w[1].rotation.x=fa;});
+  cloudLift+=((view==="all"?12:48)-cloudLift)*Math.min(1,dt*1.5);
+  clouds.forEach(c=>{c.obj.position.x=c.hx+Math.sin(tt*0.06+c.ph)*8;c.obj.position.z=c.hz+Math.cos(tt*0.05+c.ph)*3;c.obj.position.y=c.hy+cloudLift+Math.sin(tt*0.3+c.ph)*0.4;});
+  creekTex.offset.y-=dt*0.35;
+  const W=anim.water;W.fallTex.offset.y+=dt*0.9;
+  W.rings.forEach((rg,i)=>{const u=(tt*0.5+i/3)%1;rg.scale.setScalar(0.5+u*1.6);rg.material.opacity=(1-u)*0.85;});
+  W.mist.forEach(m=>{const u=(tt*0.35+m.ph)%1;m.m.position.set(m.x+Math.sin(tt+m.ph*6)*0.15,0.2+u*1.6,0.9+u*0.4);m.m.scale.setScalar(0.6+u*1.2);m.m.material.opacity=(1-u)*0.7;});
+}
+let last=performance.now(),T0=last,lastRender=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+  const moving=Math.abs(goal.az-cur.az)>1e-3||Math.abs(goal.el-cur.el)>1e-3||Math.abs(goal.zoom-cur.zoom)/goal.zoom>1e-3||cur.target.distanceTo(goal.target)>1e-2||ptrs.size>0;
+  if(!moving&&t-lastRender<33)return;lastRender=t;
+  const dt=Math.min(0.05,(t-last)/1000);last=t;
+  const k=reduced?1:1-Math.exp(-dt*3.2);
+  cur.az+=(goal.az-cur.az)*k;cur.el+=(goal.el-cur.el)*k;cur.zoom+=(goal.zoom-cur.zoom)*k;cur.target.lerp(goal.target,k);
+  const fwd=dirOf(cur.az,cur.el);cam.position.copy(cur.target).addScaledVector(fwd,500);cam.up.set(0,1,0);cam.lookAt(cur.target);cam.zoom=cur.zoom;cam.updateProjectionMatrix();
+  const right=new THREE.Vector3().crossVectors(fwd.clone().negate(),UPV).normalize();
+  dirL.position.copy(cur.target).addScaledVector(right,-100).add(new THREE.Vector3(0,95,0)).addScaledVector(fwd,25);dirL.target.position.copy(cur.target);
+  if(!reduced)animate((t-T0)/1000,dt);
+  renderer.render(scene,cam);layoutLabels();positionCard();}
+resize();
+const h0=(location.hash||"").replace("#trail-","");
+select(TR[h0]?h0:"all");
+cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
+if(reduced)animate(6,0.016);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
+})();
+</script>
