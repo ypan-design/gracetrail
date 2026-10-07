@@ -27,16 +27,24 @@ a{color:inherit}
 body[data-l=la] #g-la{stroke:#2F5E50;stroke-width:2.2px;fill:#B9D9C7}
 body[data-l=ca] #g-ca{stroke:#2F5E50;stroke-width:2.2px;fill:#C9E3D5}
 #marks{position:fixed;inset:0;pointer-events:none;z-index:4}
+#leaders{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+#leaders path{fill:none;stroke:#1D2B26;stroke-width:1.1;stroke-dasharray:4 4;opacity:.55}
 .mk{position:absolute;left:0;top:0;width:2px;height:2px;pointer-events:auto;border:0;padding:0;background:none;cursor:pointer;transform:translate(-9999px,-9999px)}
 .dot{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 2px 8px rgba(29,43,38,.35)}
+.mk.grp .dot{left:-11px;top:-11px;width:22px;height:22px}
+.mk.closed .dot{background:#9C6B4E}
 .dot::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--ink);opacity:0;animation:ping 2.6s ease-out infinite}
 @keyframes ping{0%{transform:scale(.5);opacity:.55}100%{transform:scale(1.8);opacity:0}}
-.chip{position:absolute;left:16px;top:-17px;white-space:nowrap;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:18px;font-size:13.5px;font-weight:600;transition:opacity .4s ease}
+.lab{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 7px;border-radius:17px;font:600 13px var(--body);color:var(--ink);transform:translate(-9999px,-9999px);transition:box-shadow .2s,background .2s}
+.lab:hover,.lab.hot{background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.75))}
+.lab .no{flex:none}
+.lab.closed .no{background:#9C6B4E}
 .no{font-family:var(--mono);font-size:11px;font-weight:500;background:var(--ink);color:#fff;border-radius:11px;padding:3px 7px}
-.mk.flip .chip{left:auto;right:16px}
-.mk.up .chip{left:0;top:-52px;transform:translateX(-50%)}
-.mk.down .chip{left:0;top:16px;transform:translateX(-50%)}
-.mk:focus-visible .dot{outline:3px solid var(--tB);outline-offset:3px}
+.mk:focus-visible .dot,.lab:focus-visible{outline:3px solid var(--tB);outline-offset:3px}
+#zoomctl{position:fixed;right:32px;bottom:88px;z-index:5;display:flex;flex-direction:column;border-radius:16px;padding:3px}
+#zoomctl button{width:38px;height:38px;border:0;background:transparent;font:500 18px var(--body);color:var(--ink);cursor:pointer;border-radius:12px}#zoomctl button:hover{background:rgba(207,230,218,.7)}
+@media (max-width:820px){#hint{display:none}}
+#hint{transition:opacity .6s;position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:4;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);pointer-events:none}
 /* hero cat */
 #hero{position:fixed;z-index:3;pointer-events:none;height:min(55vh,58vw*.75);aspect-ratio:1448/1086;left:50%;bottom:0;transform:translateX(-50%)}
 #kit{position:absolute;inset:0}
@@ -44,12 +52,17 @@ body[data-l=ca] #g-ca{stroke:#2F5E50;stroke-width:2.2px;fill:#C9E3D5}
 #kit img{filter:drop-shadow(0 18px 30px rgba(29,43,38,.18))}
 /* chrome */
 header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(100vh - 52px);display:flex;flex-direction:column}
+#home{display:block;flex:none;align-self:flex-start;text-decoration:none;color:inherit;border-radius:22px;padding:14px 20px 12px;position:relative;overflow:hidden;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+#home::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 80% at 15% 0%,rgba(255,255,255,.95),rgba(255,255,255,0) 55%),linear-gradient(120deg,rgba(207,230,218,.55),rgba(255,255,255,.2) 45%,rgba(196,222,236,.45));pointer-events:none}
+#home::after{content:"";position:absolute;top:-60%;left:-40%;width:40%;height:220%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.7),rgba(255,255,255,0));transform:rotate(18deg) translateX(-120%);transition:transform .9s ease;pointer-events:none}
+#home:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 24px 50px rgba(29,43,38,.18)}#home:hover::after{transform:rotate(18deg) translateX(520%)}
+#home>*{position:relative}
 .word{font-family:var(--display);font-stretch:125%;font-weight:260;font-size:44px;line-height:.9;letter-spacing:-.03em;margin:0}
-.sub{margin:10px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sub{margin:8px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 #panel{margin-top:18px;border-radius:18px;padding:16px 14px 10px;overflow:auto;min-height:0}
 .lede{margin:0 6px 10px;font-size:14.5px;line-height:1.55;color:#2F3F39}
 #panel h2{margin:14px 6px 8px;font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;color:var(--ink)}
-#scale{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.8)}
+#scale{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.8)}
 #scale button{border:0;background:transparent;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding:0 8px;min-height:40px;border-radius:12px;cursor:pointer;transition:background .3s,color .3s;white-space:nowrap}
 #scale button:hover{background:rgba(207,230,218,.7)}
 #scale button[aria-pressed=true]{background:var(--ink);color:#fff}
@@ -82,7 +95,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   #hero{height:min(46vh,100vw*.75)}
   header{left:12px;top:12px;right:12px;width:auto}.word{font-size:30px}.sub{display:none}
   #panel{margin-top:10px;padding:6px;border-radius:16px}.lede,#index,#panel h2{display:none}
-  #scale{background:none;border:0;padding:0;grid-template-columns:repeat(4,1fr)}#scale button{font-size:9.5px;letter-spacing:.02em;padding:0 4px;white-space:normal;line-height:1.1}
+  #scale{background:none;border:0;padding:0;grid-template-columns:repeat(3,1fr)}#scale button{font-size:9.5px;letter-spacing:.02em;padding:0 4px;white-space:normal;line-height:1.1}
   #legend{display:none}#north{display:none}#card{width:min(330px,calc(100vw - 24px))}
 }
 @media (prefers-reduced-motion:reduce){.dot::after{animation:none}}
@@ -100,7 +113,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   <g id="kp"><image href="keyplan.svg" x="0" y="0" width="1850" height="1650" preserveAspectRatio="none" mask="url(#fm)"></image>
     <g id="rects" style="display:none"></g><g id="trails"></g></g>
 </g></svg>
-<div id="marks"></div>
+<svg id="leaders"></svg><div id="marks"></div><div id="hint">Scroll or pinch to zoom · drag to move</div>
 
 <div id="hero" aria-label="A tabby kitten in a bucket hat whose eyes follow your cursor">
   <div id="kit">
@@ -124,15 +137,14 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 </div>
 
 <header>
-  <h1 class="word">Grace&rsquo;s<br>Trail</h1>
-  <p class="sub">Hikes, drawn as maps</p>
+  <a id="home" class="glass" href="./" aria-label="Grace&rsquo;s Trail home"><h1 class="word">Grace&rsquo;s<br>Trail</h1>
+  <p class="sub">Hikes, drawn as maps</p></a>
   <aside id="panel" class="glass">
     <p class="lede">Grace&rsquo;s Trail is a growing atlas of hikes, each one drawn as a 3D map from real elevation data: the climbs, the creek crossings, the overlooks, and the numbered stops worth pausing at, with the animals and flowers you might meet along the way.</p>
     <p class="lede">It started in the San Gabriel Valley and now runs from the Malibu coast to Mount Baldy, with a few favorites in San Francisco and San Diego. Grace is already looking up at where to go next. Pick a region, pick a trail, and go explore.</p>
     <h2><span>Explore by region</span></h2>
     <div id="scale" role="group" aria-label="Map region">
-      <button data-l="sgv" aria-pressed="true">San Gabriel Valley</button>
-      <button data-l="la" aria-pressed="false">Los Angeles</button>
+      <button data-l="la" aria-pressed="true">Los Angeles</button>
       <button data-l="ca" aria-pressed="false">California</button>
       <button data-l="us" aria-pressed="false">United States</button>
     </div>
@@ -143,8 +155,9 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
     </nav>
   </aside>
 </header>
-<div id="legend"><b id="lv">San Gabriel Valley</b><br><span id="cnt">25 places</span> to explore · more on the way</div>
+<div id="legend"><b id="lv">Los Angeles area</b><br><span id="cnt">25 places</span> to explore · more on the way</div>
 <svg id="north" viewBox="0 0 28 44" aria-hidden="true"><path d="M14 40V4M14 4 8 16M14 4l6 12" fill="none" stroke="#1D2B26" stroke-width="1.5"/><text x="14" y="44" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#1D2B26" dy="0">N</text></svg>
+<div id="zoomctl" class="glass"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div>
 <div id="card" class="glass" role="dialog" aria-live="polite"></div>
 
 <script src="geo.js"></script>
@@ -169,9 +182,9 @@ var SHEETS=[
   trails:[['A','Solstice Canyon Trail to the Waterfall','2.6 mi'],['B','Solstice Canyon Loop','2.9 mi'],['C','Sostomo Trail and Deer Valley','6.5 mi']],high:'1,335 ft'},
  {id:'08',name:'Point Dume',where:'State Beach & Preserve · Malibu',href:'point-dume/',ll:[141.5983,296.6863],grp:'mal',
   trails:[['A','Summit & Boardwalk Loop','1 mi'],['B','Bluff Loop & Dume Cove Stairs','1.5 mi'],['C','Westward Beach to Dume Cove','2.2 mi']],high:'203 ft'},
- {id:'09',name:'Runyon Canyon Park',where:'Hollywood Hills, above Franklin Ave at the top of Fuller Ave',href:'runyon-canyon/',ll:[148.8635, 296.4896],grp:'la',status:'',
+ {id:'09',name:'Runyon Canyon Park',where:'Hollywood Hills, above Franklin Ave at the top of Fuller Ave',href:'runyon-canyon/',ll:[148.8635, 296.4896],grp:'la',status:'partly closed',
   trails:[['A','East Trail to Clouds Rest','1.9 mi'],['B','Indian Rock and West Trail','2.7 mi'],['C','Runyon Canyon full loop','3.3 mi']],high:'1,320 ft'},
- {id:'10',name:'Mount Baldy',where:'Manker Flat, Mount Baldy Road, Angeles National Forest',href:'mount-baldy/',ll:[160.3326, 296.08],grp:'mtn',status:'permit required',
+ {id:'10',name:'Mount Baldy',where:'Manker Flat, Mount Baldy Road, Angeles National Forest',href:'mount-baldy/',ll:[160.3326, 296.08],grp:'mtn',status:'',
   trails:[['A','San Antonio Falls','1.4 mi round trip'],['B','Mount Baldy via the Ski Hut Trail','9 mi round trip'],['C','Mount Baldy Loop via Devil\'s Backbone','11.3 mi']],high:'10,064 ft'},
  {id:'11',name:'Sandstone Peak & Circle X Ranch',where:'Circle X Ranch, Santa Monica Mountains NRA, Yerba Buena Road',href:'sandstone-peak/',ll:[140.4161, 294.262],grp:'mal',status:'',
   trails:[['A','Sandstone Peak Trail','3 mi round trip'],['B','Mishe Mokwa Trail to Split Rock','3.5 mi round trip'],['C','Mishe Mokwa and Backbone Loop','6 mi']],high:'3,111 ft'},
@@ -223,124 +236,146 @@ SHEETS.forEach(function(s){var r=s.rect;if(!r){s.p=s.ll;return;}
   s.p=kp2p(r[0]+r[2]/2,r[1]+r[3]/2);
 });
 // markers + index
-var marks=$('marks'),list=$('list');
-var GH={sgv:'San Gabriel Valley',la:'Los Angeles & Glendale',mal:'Malibu'};
+var marks=$('marks'),list=$('list'),LS=$('leaders');
 function mean(L){var x=0,y=0;L.forEach(function(s){x+=s.p[0];y+=s.p[1]});return [x/L.length,y/L.length]}
+function bbox(L,padMin){var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;L.forEach(function(s){x0=Math.min(x0,s.p[0]);y0=Math.min(y0,s.p[1]);x1=Math.max(x1,s.p[0]);y1=Math.max(y1,s.p[1]);});
+  var cx=(x0+x1)/2,cy=(y0+y1)/2,w=Math.max(x1-x0,padMin),h=Math.max(y1-y0,padMin*.6);return [[cx-w*.65,cy-h*.75],[cx+w*.65,cy+h*.75]];}
+function mkMarker(o,kind,num,label,onclick){
+  var b=document.createElement('button');b.className='mk'+(kind!=='park'?' grp':'')+(o.status==='closed'?' closed':'');b.setAttribute('aria-label',label);b.innerHTML='<span class="dot"></span>';
+  var c=document.createElement('button');c.className='lab glass'+(o.status==='closed'?' closed':'');c.innerHTML='<span class="no">'+num+'</span><span class="tx">'+label+'</span>';
+  [b,c].forEach(function(e){e.addEventListener('click',function(ev){ev.stopPropagation();onclick(o)});e.addEventListener('pointerdown',function(ev){ev.stopPropagation()});
+    e.addEventListener('pointerenter',function(){c.classList.add('hot')});e.addEventListener('pointerleave',function(){c.classList.remove('hot')});});
+  marks.appendChild(b);marks.appendChild(c);o.mk=b;o.lab=c;o.kind=kind;}
+SHEETS.forEach(function(s){mkMarker(s,'park',s.id,s.name,function(o){focusPark(o)});});
 MACROS.forEach(function(m){m.items=SHEETS.filter(function(s){return GROUPS.some(function(g){return g.k===s.grp&&g.m===m.k})});m.p=mean(m.items);
-  var b=document.createElement('button');b.className='mk grp';b.setAttribute('aria-label',m.items.length+' places in '+m.name);
-  b.innerHTML='<span class="dot"></span><span class="chip glass"><span class="no">'+m.items.length+'</span>'+m.name+'</span>';
-  b.addEventListener('click',function(e){e.stopPropagation();openMacro(m)});marks.appendChild(b);m.mk=b;m.chip=b.querySelector('.chip');});
+  mkMarker(m,'macro',m.items.length,m.name,function(o){if(o.k==='la')flyTo(fit('la'));else flyTo(fitBox(bbox(o.items,4)));});});
 GROUPS.forEach(function(g){g.items=SHEETS.filter(function(s){return s.grp===g.k});g.p=mean(g.items);
-  var b=document.createElement('button');b.className='mk grp';b.setAttribute('aria-label',g.items.length+' places in '+g.name);
-  b.innerHTML='<span class="dot"></span><span class="chip glass"><span class="no">'+g.items.length+'</span>'+g.name+'</span>';
-  b.addEventListener('click',function(e){e.stopPropagation();openGroup(g)});marks.appendChild(b);g.mk=b;g.chip=b.querySelector('.chip');
+  mkMarker(g,'group',g.items.length,g.name,function(o){flyTo(fitBox(bbox(o.items,2.2)));});
   var h=document.createElement('li');h.className='gh';h.textContent=g.name;list.appendChild(h);
-  g.items.forEach(addItem);});
-function addItem(s){
-  var b=document.createElement('button');b.className='mk';b.setAttribute('aria-label','Explore '+s.name);
-  b.innerHTML='<span class="dot"></span><span class="chip glass"><span class="no">'+s.id+'</span>'+s.name+'</span>';
-  b.addEventListener('click',function(e){e.stopPropagation();openCard(s)});marks.appendChild(b);s.mk=b;s.chip=b.querySelector('.chip');
-  var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
-  li.querySelector('button').addEventListener('click',function(){if(s.rect){go('sgv');setTimeout(function(){openCard(s)},view.anim?900:0)}else{var far=['sf','sd','oc','scv'].indexOf(s.grp)>=0;if(view.level==='sgv'&&!far)go('la');if(far&&view.level!=='ca')go('ca');openCard(s)}});list.appendChild(li);
-}
-// views
+  g.items.forEach(function(s){var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
+    li.querySelector('button').addEventListener('click',function(){focusPark(s)});list.appendChild(li);});});
+// ---------- view: free zoom & pan, smooth
 var W=0,H=0,mobile=false;
-function region(l){
-  if(l==='sgv'){var c=[[230,330],[1730,330],[230,1420],[1730,1420]].map(function(q){return kp2p(q[0],q[1])});return {pts:c,rot:-G.rot};}
-  var b=G.views[l];var pts=[[b[0][0],b[0][1]],[b[1][0],b[0][1]],[b[0][0],b[1][1]],[b[1][0],b[1][1]]];
-  return {pts:pts,rot:l==='la'?-G.rot:0};
-}
-function fit(l){
-  var R=region(l),a=R.rot*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
-  var xs=[],ys=[],cx=0,cy=0;R.pts.forEach(function(p){cx+=p[0]/4;cy+=p[1]/4});
-  R.pts.forEach(function(p){var dx=p[0]-cx,dy=p[1]-cy;xs.push(dx*ca-dy*sa);ys.push(dx*sa+dy*ca)});
-  var bw=Math.max.apply(0,xs)-Math.min.apply(0,xs),bh=Math.max.apply(0,ys)-Math.min.apply(0,ys);
-  var s,sx,sy;
-  // open stage = the band above Grace's head, right of the panel
-  var hr=$('hero').getBoundingClientRect(),headTop=hr.top+hr.height*.05;
-  var top=mobile?($('panel').getBoundingClientRect().bottom+44):44,bot=Math.max(top+120,headTop-(mobile?20:30));
-  var L=mobile?12:404,Rr=W-(mobile?12:40);
-  var pad=l==='sgv'?1:.92;
-  s=Math.min((Rr-L)/bw,(bot-top)/bh)*pad;sx=(L+Rr)/2;sy=(top+bot)/2;
-  if(!mobile){var mid=W*.5;sx=Math.max(sx-((Rr-L)-bw*s)/2,Math.min(sx,mid));} // pull toward screen centre when there is slack
-  return {cx:cx,cy:cy,s:s,rot:R.rot,sx:sx,sy:sy};
-}
-var view={cur:null,from:null,to:null,t:1,anim:false,level:'sgv',pan:[0,0]};
-var LEVELS={sgv:'San Gabriel Valley',la:'Los Angeles',ca:'California',us:'United States'};
-function go(l){ if(view.level===l&&!view.anim&&view.pan[0]===0&&view.pan[1]===0)return;
-  view.level=l;document.body.dataset.l=l;view.from=JSON.parse(JSON.stringify(view.cur));view.to=fit(l);view.t=0;view.anim=true;view.t0=performance.now();
-  view.from.sx+=view.pan[0];view.from.sy+=view.pan[1];view.pan=[0,0];
-  document.querySelectorAll('#scale button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.l===l))});
-  $('lv').textContent=LEVELS[l];closeCard();}
-document.querySelectorAll('#scale button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.l)})});
-function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-function lerp(a,b,t){return a+(b-a)*t}
+function stage(){var hr=$('hero').getBoundingClientRect(),headTop=hr.top+hr.height*.05;
+  var top=mobile?($('panel').getBoundingClientRect().bottom+40):40,bot=Math.max(top+120,headTop-(mobile?16:26));
+  var L=mobile?10:404,R=W-(mobile?10:40);return {L:L,R:R,top:top,bot:bot};}
+function fitBox(b){var st=stage(),bw=b[1][0]-b[0][0],bh=b[1][1]-b[0][1];
+  var sc=Math.min((st.R-st.L)/bw,(st.bot-st.top)/bh)*.92,cx=(b[0][0]+b[1][0])/2,cy=(b[0][1]+b[1][1])/2;
+  var sx=(st.L+st.R)/2;if(!mobile)sx=Math.max(sx-((st.R-st.L)-bw*sc)/2,Math.min(sx,W*.5));
+  return {x0:cx-sx/sc,y0:cy-(st.top+st.bot)/2/sc,s:sc};}
+function fit(l){var b=G.views[l];return fitBox(b);}
+var KPB=[kp2p(230,330),kp2p(1730,1420)];
+var cur=null,tgt=null,mode='',lastMode='';
+function clampS(v){var lo=fit('us').s*.75,hi=fit('la').s*14;return Math.max(lo,Math.min(hi,v));}
+function flyTo(v){tgt={x0:v.x0,y0:v.y0,s:clampS(v.s)};closeCard();}
+function zoomAt(px,py,f){var ns=clampS(tgt.s*f);var wx=px/tgt.s+tgt.x0,wy=py/tgt.s+tgt.y0;tgt={x0:wx-px/ns,y0:wy-py/ns,s:ns};}
+function focusPark(sh){var v=fitBox(bbox([sh],1.2));if(sh.rect){var kb=[[KPB[0][0],KPB[0][1]],[KPB[1][0],KPB[1][1]]];v=fitBox([[Math.min(kb[0][0],kb[1][0]),Math.min(kb[0][1],kb[1][1])],[Math.max(kb[0][0],kb[1][0]),Math.max(kb[0][1],kb[1][1])]]);}
+  if(tgt.s<v.s*.5||!onScreen(sh))tgt={x0:v.x0,y0:v.y0,s:clampS(v.s)};openCard(sh);}
+function onScreen(o){var x=(o.p[0]-tgt.x0)*tgt.s,y=(o.p[1]-tgt.y0)*tgt.s,st=stage();return x>st.L&&x<st.R&&y>st.top&&y<st.bot;}
+document.querySelectorAll('#scale button').forEach(function(b){b.addEventListener('click',function(){flyTo(fit(b.dataset.l))})});
+$('zin').onclick=function(){var st=stage();zoomAt((st.L+st.R)/2,(st.top+st.bot)/2,1.6)};
+$('zout').onclick=function(){var st=stage();zoomAt((st.L+st.R)/2,(st.top+st.bot)/2,1/1.6)};
+$('home').addEventListener('click',function(e){e.preventDefault();closeCard();$('panel').scrollTop=0;flyTo(fit('la'));});
+var LEVELS={la:'Los Angeles area',ca:'California',us:'United States'};
 function apply(v){
-  var s=v.s,sx=v.sx+view.pan[0],sy=v.sy+view.pan[1];
-  $('cam').setAttribute('transform','translate('+sx+' '+sy+') rotate('+v.rot+') scale('+s+') translate('+(-v.cx)+' '+(-v.cy)+')');
-  var sg=fit('sgv').s;
-  var kpOn=Math.max(0,Math.min(1,(Math.log(s/sg)+2.2)/1.2));
+  var s=v.s;
+  $('cam').setAttribute('transform','scale('+s+') translate('+(-v.x0)+' '+(-v.y0)+')');
+  var laS=fit('la').s,caS=fit('ca').s,usS=fit('us').s;
+  var kS=fitBox([[Math.min(KPB[0][0],KPB[1][0]),Math.min(KPB[0][1],KPB[1][1])],[Math.max(KPB[0][0],KPB[1][0]),Math.max(KPB[0][1],KPB[1][1])]]).s;
+  var kpOn=Math.max(0,Math.min(1,(Math.log(s/kS)+1.2)/.8));
   $('kp').setAttribute('opacity',kpOn.toFixed(3));
-  var caS=fit('ca').s, laS=fit('la').s;
   $('g-counties').setAttribute('opacity',Math.max(0,Math.min(1,(Math.log(s/caS)+.4)/.6)).toFixed(3));
   $('g-states').setAttribute('opacity',Math.max(.3,Math.min(1,1-(Math.log(s/caS)+.5)*.9)).toFixed(3));
   $('g-la').setAttribute('opacity',Math.max(0,Math.min(1,(Math.log(s/caS)+.6)/.8)).toFixed(3));
-  var a=v.rot*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
-  var dotOn=kpOn<.6;
-  function scr(P){var dx=(P[0]-v.cx)*s,dy=(P[1]-v.cy)*s;return [sx+dx*ca-dy*sa,sy+dx*sa+dy*ca];}
-  var far=s<fit('la').s*0.6;
-  SHEETS.forEach(function(sh){var q=scr(sh.p),x=q[0],y=q[1];
-    if(!dotOn&&sh.rect){var k=sh.id==='01'?kp2p(1724,421):kp2p(350,1400);q=scr(k);x=q[0];y=q[1];}
-    if(dotOn||!sh.rect){x=-9999;} // at trail scale only the key-plan sheets; zoomed out, groups take over
-    sh.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';sh.mk.classList.toggle('flip',x>W-(mobile?200:260));
-    sh.x=x;sh.y=y;});
-  var us=s<fit('ca').s*0.6;
-  // greedy label placement: each chip picks the side that collides least with dots, other chips, the panel and the cat
-  var occ=[],pr=$('panel').getBoundingClientRect(),hr=$('hero').getBoundingClientRect();
-  if(!mobile)occ.push([0,0,pr.right+8,pr.bottom+8]);occ.push([hr.left+hr.width*.25,hr.top+hr.height*.08,hr.right-hr.width*.25,H]);
-  var vis=[];GROUPS.forEach(function(g){var q=scr(g.p);g.sx=(dotOn&&!far)?q[0]:-9999;g.sy=q[1];if(g.sx>-9000)vis.push(g);});
-  MACROS.forEach(function(m,i){var q=scr(m.p);m.sx=(far&&(!us||i===0))?q[0]:-9999;m.sy=q[1];if(m.sx>-9000)vis.push(m);
-    m.chip.innerHTML=us?'<span class="no">'+SHEETS.length+'</span>Places to explore · California':'<span class="no">'+m.items.length+'</span>'+m.name;m.us=us;});
-  GROUPS.forEach(function(g){g.chip.innerHTML='<span class="no">'+g.items.length+'</span>'+(mobile&&g.short?g.short:g.name);});
-  vis.forEach(function(o){occ.push([o.sx-12,o.sy-12,o.sx+12,o.sy+12]);});
-  function ov(r){var a=0;occ.forEach(function(q){var w=Math.min(r[2],q[2])-Math.max(r[0],q[0]),h=Math.min(r[3],q[3])-Math.max(r[1],q[1]);if(w>0&&h>0)a+=w*h;});
-    if(r[0]<4||r[2]>W-4||r[1]<4)a+=1e6;return a;}
-  vis.sort(function(a,b){return a.sx-b.sx});
-  vis.forEach(function(o){var cw=o.chip.offsetWidth||180,ch=o.chip.offsetHeight||32,x=o.sx,y=o.sy;
-    var C={right:[x+14,y-ch/2,x+16+cw,y+ch/2],flip:[x-16-cw,y-ch/2,x-14,y+ch/2],up:[x-cw/2,y-54,x+cw/2,y-54+ch],down:[x-cw/2,y+16,x+cw/2,y+16+ch]};
-    var best='right',bv=1e12;[o.pos,'right','flip','up','down'].forEach(function(k){var v=ov(C[k]);if(v<bv-1){bv=v;best=k;}});
-    occ.push(C[best]);o.mk.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';['up','down','flip'].forEach(function(c){o.mk.classList.toggle(c,best===c)});});
-  GROUPS.concat(MACROS).forEach(function(o){if(o.sx<-9000)o.mk.style.transform='translate(-9999px,-9999px)';});
-  $('north').style.transform='rotate('+v.rot+'deg)';
+  mode=s<Math.sqrt(usS*caS)?'us':s<Math.sqrt(caS*laS)*.9?'ca':s<laS*2.0?'region':'park';
+  document.body.dataset.l=mode==='us'?'us':mode==='ca'?'ca':'la';
+  if(mode!==lastMode){lastMode=mode;var l=mode==='us'?'us':mode==='ca'?'ca':'la';document.querySelectorAll('#scale button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.l===l))});}
+  function scr(P){return [(P[0]-v.x0)*s,(P[1]-v.y0)*s];}
+  var st=stage(),vis=[];
+  function show(o,on,num,label){var q=scr(o.p);o.sx=q[0];o.sy=q[1];
+    var inside=on&&q[0]>st.L-6&&q[0]<st.R+6&&q[1]>st.top-6&&q[1]<st.bot+6;
+    o.mk.style.transform=inside?'translate('+q[0].toFixed(1)+'px,'+q[1].toFixed(1)+'px)':'translate(-9999px,-9999px)';
+    if(label!=null){o.lab.querySelector('.no').textContent=num;o.lab.querySelector('.tx').textContent=label;}
+    if(inside)vis.push(o);else o.lab.style.transform='translate(-9999px,-9999px)';}
+  MACROS.forEach(function(m,i){show(m,mode==='us'?i===0:mode==='ca',mode==='us'?SHEETS.length:m.items.length,mode==='us'?'Places to explore · California':m.name);});
+  GROUPS.forEach(function(g){show(g,mode==='region',g.items.length,mobile&&g.short?g.short:g.name);});
+  SHEETS.forEach(function(sh){show(sh,mode==='park',null,null);});
+  // legend: nearest region at park/region level
+  var lv=LEVELS[mode]||'';if(mode==='region'||mode==='park'){var cxs=(st.L+st.R)/2,cys=(st.top+st.bot)/2,best=null,bd=1e9;GROUPS.forEach(function(g){var q=scr(g.p),d=Math.hypot(q[0]-cxs,q[1]-cys);if(d<bd){bd=d;best=g}});lv=mode==='park'&&best?best.name:'Los Angeles area';}
+  $('lv').textContent=lv;$('cnt').textContent=(mode==='park'?vis.length+' of '+SHEETS.length:SHEETS.length)+' places';
+  layoutLabels(vis,st);
   if(cardFor)placeCard();
 }
-function resize(){W=innerWidth;H=innerHeight;mobile=W<=820;$('map').setAttribute('viewBox','0 0 '+W+' '+H);
-  var f=fit(view.level);if(!view.cur||!view.anim)view.cur=f;else view.to=f;apply(view.cur);}
+// labels sit in tidy columns beside the dots, joined by dashed orthogonal leaders
+function layoutLabels(vis,st){
+  var pr=$('panel').getBoundingClientRect(),minL=mobile?8:pr.right+14,maxR=W-(mobile?8:24);
+  var gap=6,lines=[];
+  if(!vis.length){LS.innerHTML='';return;}
+  var xs=vis.map(function(o){return o.sx}),cx=(Math.min.apply(0,xs)+Math.max.apply(0,xs))/2;
+  vis.forEach(function(o){o.w=o.lab.offsetWidth||160;o.h=o.lab.offsetHeight||30;});
+  var left=[],right=[];
+  vis.forEach(function(o){(o.sx<cx&&vis.length>1?left:right).push(o);});
+  var maxX=Math.max.apply(0,vis.map(function(o){return o.sx})),minX=Math.min.apply(0,vis.map(function(o){return o.sx}));
+  var lw=Math.max(0,Math.max.apply(0,left.map(function(o){return o.w}).concat([0]))),rw=Math.max.apply(0,right.map(function(o){return o.w}).concat([0]));
+  var colL=minX-36-lw,colR=maxX+36,allW=Math.max.apply(0,vis.map(function(o){return o.w}));
+  if(colL<minL||colR+rw>maxR){ // not room for two columns: one column on the roomier side
+    var freeL=minX-36-minL,freeR=maxR-(maxX+36);
+    if(freeR>=allW||freeR>=freeL){right=vis.slice();left=[];rw=allW;colR=Math.min(maxX+36,maxR-rw);}
+    else{left=vis.slice();right=[];lw=allW;colL=Math.max(minL,minX-36-lw);}}
+  // order each column so leaders never cross: near-level dots further out get the upper slots
+  function stack(arr,isL){arr.sort(function(a,b){return a.sy-b.sy});
+    // dots at about the same height: the one nearest the labels takes the upper slot, so leaders nest instead of crossing
+    var out=[],i0=0;while(i0<arr.length){var g=[arr[i0]],j=i0+1;while(j<arr.length&&arr[j].sy-arr[i0].sy<34){g.push(arr[j]);j++;}
+      g.sort(function(a,b){return isL?a.sx-b.sx:b.sx-a.sx});out=out.concat(g);i0=j;}
+    for(var q=0;q<out.length;q++)arr[q]=out[q];var top=st.top-10,bot=st.bot+40;
+    arr.forEach(function(o){o.ly=o.sy-o.h/2;});
+    for(var it=0;it<6;it++){for(var i=1;i<arr.length;i++){var p=arr[i-1],q=arr[i];if(q.ly<p.ly+p.h+gap)q.ly=p.ly+p.h+gap;}
+      if(arr.length){var last=arr[arr.length-1];if(last.ly+last.h>bot){var sh=last.ly+last.h-bot;arr.forEach(function(o){o.ly-=sh})}}
+      for(var j=arr.length-2;j>=0;j--){var a=arr[j],b=arr[j+1];if(a.ly+a.h+gap>b.ly)a.ly=b.ly-a.h-gap;}
+      if(arr.length&&arr[0].ly<top){var d=top-arr[0].ly;arr.forEach(function(o){o.ly+=d})}}}
+  stack(left,true);stack(right,false);
+  left.forEach(function(o){o.lx=colL+(lw-o.w);});right.forEach(function(o){o.lx=colR;});
+  // swap neighbouring slots while it removes leader crossings
+  function cross(arr,isL){var n=0;arr.forEach(function(a){var ya=a.ly+a.h/2,ea=isL?a.lx+a.w:a.lx;arr.forEach(function(b){if(a===b)return;var yb=b.ly+b.h/2;
+      var inX=isL?(b.sx<a.sx&&b.sx>ea):(b.sx>a.sx&&b.sx<ea);if(inX&&ya>Math.min(b.sy,yb)&&ya<Math.max(b.sy,yb))n+=3;if(inX&&Math.abs(ya-b.sy)<13)n+=1;});});return n;}
+  [[left,true],[right,false]].forEach(function(c){var arr=c[0];for(var pass=0;pass<12;pass++){var any=false;
+    for(var i=0;i<arr.length-1;i++){var before=cross(arr,c[1]);var t=arr[i].ly;arr[i].ly=arr[i+1].ly+(arr[i+1].h-arr[i].h);arr[i+1].ly=t;
+      if(cross(arr,c[1])<before){var tmp=arr[i];arr[i]=arr[i+1];arr[i+1]=tmp;any=true;}else{var t2=arr[i+1].ly;arr[i+1].ly=arr[i].ly-(arr[i+1].h-arr[i].h);arr[i].ly=t2;}}
+    if(!any)break;}});
+  var d='';
+  left.concat(right).forEach(function(o){var yc=o.ly+o.h/2,isL=left.indexOf(o)>=0,ex=isL?o.lx+o.w:o.lx;
+    o.lab.style.transform='translate('+o.lx.toFixed(1)+'px,'+o.ly.toFixed(1)+'px)';
+    // leader: from the label edge run horizontally to the dot's x, then vertically down/up to the dot
+    if(Math.abs(yc-o.sy)<3)d+='M'+ex.toFixed(1)+' '+yc.toFixed(1)+'H'+(o.sx+(isL?-10:10)).toFixed(1);
+    else d+='M'+ex.toFixed(1)+' '+yc.toFixed(1)+'H'+o.sx.toFixed(1)+'V'+(o.sy+(yc<o.sy?-10:10)).toFixed(1);});
+  LS.setAttribute('viewBox','0 0 '+W+' '+H);LS.innerHTML='<path d="'+d+'"/>';
+}
+function resize(){var keep=cur&&tgt;W=innerWidth;H=innerHeight;mobile=W<=820;$('map').setAttribute('viewBox','0 0 '+W+' '+H);
+  if(!keep){cur=fit('ca');tgt=fit('la');}apply(cur);}
 addEventListener('resize',resize);
-// pan by drag, step zoom by wheel
-var drag=null;
-$('map').addEventListener('pointerdown',function(e){drag={x:e.clientX,y:e.clientY,p:view.pan.slice()};$('map').classList.add('drag');$('map').setPointerCapture(e.pointerId)});
-$('map').addEventListener('pointermove',function(e){if(!drag)return;view.pan=[drag.p[0]+e.clientX-drag.x,drag.p[1]+e.clientY-drag.y];apply(view.cur)});
-function endDrag(e){if(!drag)return;var moved=Math.hypot(e.clientX-drag.x,e.clientY-drag.y);drag=null;$('map').classList.remove('drag');if(moved<4)closeCard();}
-$('map').addEventListener('pointerup',endDrag);$('map').addEventListener('pointercancel',endDrag);
-var order=['us','ca','la','sgv'],wheelT=0;
-$('map').addEventListener('wheel',function(e){e.preventDefault();var now=performance.now();if(now-wheelT<700)return;wheelT=now;
-  var i=order.indexOf(view.level);i=Math.max(0,Math.min(3,i+(e.deltaY<0?1:-1)));go(order[i]);},{passive:false});
-function loop(now){
-  if(view.anim){view.t=Math.min(1,(now-view.t0)/1500);var k=ease(view.t),f=view.from,t=view.to;
-    view.cur={cx:lerp(f.cx,t.cx,k),cy:lerp(f.cy,t.cy,k),s:Math.exp(lerp(Math.log(f.s),Math.log(t.s),k)),rot:lerp(f.rot,t.rot,k),sx:lerp(f.sx,t.sx,k),sy:lerp(f.sy,t.sy,k)};
-    // keep the path centered while zooming: interpolate the center in screen space
-    var zf=Math.exp(lerp(0,Math.log(t.s/f.s),k));
-    apply(view.cur);if(view.t>=1)view.anim=false;}
+// pointer: drag to pan, two fingers to pinch, wheel/trackpad to zoom about the cursor
+var ptrs=new Map(),pinch=null,dragMoved=0;
+$('map').addEventListener('pointerdown',function(e){$('map').setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});dragMoved=0;$('map').classList.add('drag');
+  if(ptrs.size===2){var a=[...ptrs.values()];pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};}});
+$('map').addEventListener('pointermove',function(e){if(!ptrs.has(e.pointerId))return;var p=ptrs.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;
+  if(ptrs.size===1){tgt.x0-=dx/tgt.s;tgt.y0-=dy/tgt.s;cur.x0=tgt.x0;cur.y0=tgt.y0;cur.s=tgt.s;dragMoved+=Math.abs(dx)+Math.abs(dy);}
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===2&&pinch){var a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinch.d>0){zoomAt((a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2,d/pinch.d);}pinch.d=d;dragMoved+=10;}});
+function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;if(!ptrs.size){$('map').classList.remove('drag');if(dragMoved<4)closeCard();}}
+$('map').addEventListener('pointerup',endPtr);$('map').addEventListener('pointercancel',endPtr);
+$('map').addEventListener('wheel',function(e){e.preventDefault();$('hint').style.opacity=0;var k=e.ctrlKey?0.012:0.0016;var dy=e.deltaMode===1?e.deltaY*30:e.deltaY;zoomAt(e.clientX,e.clientY,Math.exp(-dy*k));},{passive:false});
+$('map').addEventListener('dblclick',function(e){zoomAt(e.clientX,e.clientY,1.8)});
+function loop(){
+  var k=0.14,ls=Math.log(cur.s),lt=Math.log(tgt.s),ns=Math.exp(ls+(lt-ls)*k);
+  // ease the view: interpolate the screen-centre world point so zooming stays anchored
+  var st=stage(),cxs=(st.L+st.R)/2,cys=(st.top+st.bot)/2;
+  var wc=[cxs/cur.s+cur.x0,cys/cur.s+cur.y0],wt=[cxs/tgt.s+tgt.x0,cys/tgt.s+tgt.y0];
+  var nw=[wc[0]+(wt[0]-wc[0])*k,wc[1]+(wt[1]-wc[1])*k];
+  if(Math.abs(lt-ls)<1e-4&&Math.abs(wt[0]-wc[0])*tgt.s<.3&&Math.abs(wt[1]-wc[1])*tgt.s<.3){if(cur.s!==tgt.s||cur.x0!==tgt.x0){cur={x0:tgt.x0,y0:tgt.y0,s:tgt.s};apply(cur);}}
+  else{cur={x0:nw[0]-cxs/ns,y0:nw[1]-cys/ns,s:ns};apply(cur);}
   requestAnimationFrame(loop);}
 // card
 var card=$('card'),cardFor=null;
-function openMacro(m){if(m.us){go('ca');return;}if(m.k==='la'){go('la');return;}openGroup(m);}
-function openGroup(g){if(g.k==='sgv'&&view.level!=='sgv'){go('sgv');return;}
-  cardFor=g;var it=g.items.map(function(s){return '<li class="pl"><a href="'+s.href+'"><b>'+s.name+'</b><span>'+s.where+'</span></a><button data-id="'+s.id+'" aria-label="Details for '+s.name+'">›</button></li>'}).join('');
-  card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">'+g.items.length+' places</span><h3>'+g.name+'</h3><ul class="pls">'+it+'</ul>';
-  card.querySelector('.x').onclick=closeCard;card.querySelectorAll('[data-id]').forEach(function(b){b.onclick=function(){openCard(SHEETS.find(function(s){return s.id===b.dataset.id}))}});
-  card.classList.add('on');placeCard();}
 function openCard(s){
   cardFor=s;var tr=s.trails.map(function(t){return '<li><span class="t" style="background:'+TC[t[0]]+'">'+t[0]+'</span>'+t[1]+'<span class="mi">'+t[2]+'</span></li>'}).join('');
   card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">'+s.trails.length+' trails</span><h3>'+s.name+'</h3><div class="where">'+s.where+' · high point '+s.high+'</div>'+(s.status?'<div class="st">'+(s.status==='closed'?'Closed for now':s.status==='partly closed'?'Partly closed':'Permit required')+' · details on the page</div>':'')+'<ul>'+tr+'</ul><a class="go" href="'+s.href+'">Explore this trail <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#fff" stroke-width="1.6"/></svg></a>';
@@ -364,10 +399,8 @@ addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
     balls.forEach(function(b){b.setAttribute('transform','translate('+cur.x.toFixed(2)+' '+cur.y.toFixed(2)+')')});
     pupils.forEach(function(p){p.setAttribute('r',dil.toFixed(2))});requestAnimationFrame(tick);})(performance.now());
 })();
-window.__gt={view:view,fit:fit,open:function(i){openCard(SHEETS[i])}};
+window.__gt={get cur(){return cur},get mode(){return mode},fit:fit,open:function(i){openCard(SHEETS[i])}};
 resize();
-// intro: start from California and settle into the valley
-view.cur=fit('ca');view.level='ca';apply(view.cur);setTimeout(function(){go('sgv')},600);
 requestAnimationFrame(loop);
 })();
 </script>
