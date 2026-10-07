@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Grace&rsquo;s Trail</title>
-<meta name="description" content="Grace&rsquo;s Trail: hikes drawn as interactive axonometric maps, starting in the San Gabriel Valley.">
+<meta name="description" content="Grace&rsquo;s Trail: hikes drawn as interactive axonometric maps, from the San Gabriel Valley to national parks across the United States.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -17,9 +17,17 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);overflow:hidden}
 a{color:inherit}
-.glass{background:linear-gradient(160deg,rgba(255,255,255,.78),rgba(255,255,255,.46));border:1px solid rgba(255,255,255,.92);
-  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 -1px 0 rgba(29,43,38,.05) inset,0 18px 46px rgba(29,43,38,.14);
-  -webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7)}
+.glass{--mx:22%;--my:0%;background:
+    radial-gradient(130% 90% at var(--mx) var(--my),rgba(255,255,255,.78),rgba(255,255,255,0) 52%),
+    linear-gradient(150deg,rgba(255,255,255,.6),rgba(238,247,242,.32) 52%,rgba(214,236,246,.42));
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(255,255,255,.5),inset 0 -16px 30px -20px rgba(96,160,148,.38),inset 10px 0 24px -22px rgba(150,200,232,.5),0 1px 2px rgba(29,43,38,.06),0 24px 54px -14px rgba(29,43,38,.24);
+  -webkit-backdrop-filter:blur(22px) saturate(1.9) brightness(1.05);backdrop-filter:blur(22px) saturate(1.9) brightness(1.05)}
+.glass:not(#home)::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;pointer-events:none;
+  background:conic-gradient(from 200deg at var(--mx) var(--my),rgba(255,255,255,.98),rgba(160,214,198,.55),rgba(255,255,255,.15),rgba(150,196,232,.6),rgba(255,255,255,.98));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.glass:not(#home)::after{content:"";position:absolute;left:8%;right:8%;top:1px;height:38%;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0));opacity:.55}
+.lab.glass::after{display:none}
 #map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #map.drag{cursor:grabbing}
 .vns{vector-effect:non-scaling-stroke}
@@ -59,7 +67,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 #home>*{position:relative}
 .word{font-family:var(--display);font-stretch:125%;font-weight:260;font-size:44px;line-height:.9;letter-spacing:-.03em;margin:0}
 .sub{margin:8px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#panel{margin-top:18px;border-radius:18px;padding:16px 14px 10px;overflow:auto;min-height:0}
+#panel{position:relative;margin-top:18px;border-radius:18px;padding:16px 14px 10px;overflow:auto;min-height:0}
 .lede{margin:0 6px 10px;font-size:14.5px;line-height:1.55;color:#2F3F39}
 #panel h2{margin:14px 6px 8px;font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;color:var(--ink)}
 #scale{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.8)}
@@ -78,8 +86,9 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 #legend b{color:var(--ink);font-weight:500}
 #north{position:fixed;right:34px;bottom:34px;z-index:5;width:28px;height:44px;transition:transform 1.2s cubic-bezier(.6,0,.2,1)}
 /* card */
-#card{position:fixed;z-index:8;width:330px;border-radius:16px;padding:16px 16px 14px;left:0;top:0;opacity:0;pointer-events:none;transition:opacity .35s ease}
+#card{position:fixed;z-index:8;width:360px;max-height:calc(100vh - 140px);overflow:auto;border-radius:16px;padding:16px 16px 14px;left:0;top:0;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #card.on{opacity:1;pointer-events:auto}
+#card.glass{background:radial-gradient(130% 90% at var(--mx) var(--my),rgba(255,255,255,.9),rgba(255,255,255,0) 55%),linear-gradient(150deg,rgba(255,255,255,.95),rgba(244,250,247,.92) 55%,rgba(232,244,250,.93))}
 #card .x{position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--muted);border-radius:18px}
 #card .x:hover{background:rgba(29,43,38,.06)}
 #card h3{margin:8px 0 2px;font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;letter-spacing:-.01em}
@@ -96,14 +105,14 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   header{left:12px;top:12px;right:12px;width:auto}.word{font-size:30px}.sub{display:none}
   #panel{margin-top:10px;padding:6px;border-radius:16px}.lede,#index,#panel h2{display:none}
   #scale{background:none;border:0;padding:0;grid-template-columns:repeat(3,1fr)}#scale button{font-size:9.5px;letter-spacing:.02em;padding:0 4px;white-space:normal;line-height:1.1}
-  #legend{display:none}#north{display:none}#card{width:min(330px,calc(100vw - 24px))}
+  #legend{display:none}#north{display:none}#card{width:min(360px,calc(100vw - 24px))}#zoomctl{display:none}
 }
 @media (prefers-reduced-motion:reduce){.dot::after{animation:none}}
 </style>
 </head>
 <body data-l="sgv">
 <svg id="map" role="img" aria-label="Map of Grace&rsquo;s Trail hikes"><g id="cam">
-  <path id="g-nation" class="vns" fill="#E3EEE8" stroke="none"></path>
+  <path id="g-nation" class="vns" fill="#E3EEE8" stroke="none"></path><path id="g-ins" class="vns" fill="#E3EEE8" stroke="#5E8C7E" stroke-width="1.2"></path><path id="g-insf" class="vns" fill="none" stroke="#9FBDB2" stroke-width="1" stroke-dasharray="4 4"></path>
   <path id="g-ca" class="vns" fill="#D6E9DF" stroke="none"></path>
   <path id="g-la" class="vns" fill="#C8E1D4" stroke="#7FA899" stroke-width="1"></path>
   <path id="g-counties" class="vns" fill="none" stroke="#A9C7BB" stroke-width=".8"></path>
@@ -141,7 +150,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   <p class="sub">Hikes, drawn as maps</p></a>
   <aside id="panel" class="glass">
     <p class="lede">Grace&rsquo;s Trail is a growing atlas of hikes, each one drawn as a 3D map from real elevation data: the climbs, the creek crossings, the overlooks, and the numbered stops worth pausing at, with the animals and flowers you might meet along the way.</p>
-    <p class="lede">It started in the San Gabriel Valley and now runs from the Malibu coast to Mount Baldy, with a few favorites in San Francisco and San Diego. Grace is already looking up at where to go next. Pick a region, pick a trail, and go explore.</p>
+    <p class="lede">It started in the San Gabriel Valley and now reaches across the country: the Malibu coast and Mount Baldy, Zion and the Grand Canyon, Glacier and the Tetons, the Smokies, Acadia, even Kaua&#699;i and Alaska. Grace is already looking up at where to go next. Zoom the map, pick a trail, and go explore.</p>
     <h2><span>Explore by region</span></h2>
     <div id="scale" role="group" aria-label="Map region">
       <button data-l="la" aria-pressed="true">Los Angeles</button>
@@ -151,11 +160,11 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
     <nav id="index" aria-label="Trails">
       <h2><span>Trails to explore</span><span>No.</span></h2>
       <ul id="list"></ul>
-      <div class="soon">Next: more of California.</div>
+      <div class="soon">Next: more trails across the country.</div>
     </nav>
   </aside>
 </header>
-<div id="legend"><b id="lv">Los Angeles area</b><br><span id="cnt">25 places</span> to explore · more on the way</div>
+<div id="legend"><b id="lv">Los Angeles area</b><br><span id="cnt">55 places</span> to explore · more on the way</div>
 <svg id="north" viewBox="0 0 28 44" aria-hidden="true"><path d="M14 40V4M14 4 8 16M14 4l6 12" fill="none" stroke="#1D2B26" stroke-width="1.5"/><text x="14" y="44" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#1D2B26" dy="0">N</text></svg>
 <div id="zoomctl" class="glass"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div>
 <div id="card" class="glass" role="dialog" aria-live="polite"></div>
@@ -215,17 +224,50 @@ var SHEETS=[
  {id:'24',name:'Potato Chip Rock & Mount Woodson',where:'Lake Poway and Mount Woodson, between Poway and Ramona',href:'potato-chip-rock/',ll:[164.3046, 321.2885],grp:'sd',status:'',
   trails:[['A','Lake Poway Loop','2.7 mi'],['B','Mount Woodson Road from Highway 67','3.75 mi round trip'],['C','Mount Woodson Trail from Lake Poway','7.5 mi round trip']],high:'2,880 ft'},
  {id:'25',name:'Cedar Creek Falls',where:'San Diego River gorge',href:'cedar-creek-falls/',ll:[168.1544, 322.3644],grp:'sd',status:'permit required',
-  trails:[['A','Gorge Viewpoint','1.8 mi round trip'],['B','Cedar Creek Falls from Julian','5.2 mi round trip'],['C','Cedar Creek Falls from Ramona','6 mi round trip']],high:'1,960 ft'}];
+  trails:[['A','Gorge Viewpoint','1.8 mi round trip'],['B','Cedar Creek Falls from Julian','5.2 mi round trip'],['C','Cedar Creek Falls from Ramona','6 mi round trip']],high:'1,960 ft'},
+ {"id":"26","name":"Mist Trail & Half Dome","where":"Yosemite Valley · California","href":"yosemite-mist-trail/","ll":[147.6232,225.7835],"grp":"yos","reg":"ca","st":"CA","status":"permit required","trails":[["A","Mist Trail to Vernal Fall","2.4 mi round trip"],["B","Vernal and Nevada Falls Loop","6.1 mi loop"],["C","Half Dome","15.4 mi round trip"]],"high":"8,800 ft"},
+ {"id":"27","name":"Skyline Trail, Mount Rainier","where":"Mount Rainier National Park · Washington","href":"rainier-skyline-trail/","ll":[162.3122,53.8091],"grp":"pnw","reg":"pnw","st":"WA","status":"","trails":[["A","Skyline Trail to Myrtle Falls","1 mi round trip"],["B","Nisqually Vista Trail","1.2 mi loop"],["C","Skyline Trail Loop","5.5 mi loop"]],"high":"about 7,000 ft"},
+ {"id":"28","name":"Multnomah Falls","where":"Columbia River Gorge · Oregon","href":"multnomah-falls/","ll":[151.4792,74.1658],"grp":"pnw","reg":"pnw","st":"OR","status":"","trails":[["A","Benson Bridge","0.4 mi round trip"],["B","Top of Multnomah Falls","2.4 mi round trip"],["C","Multnomah–Wahkeena Loop","4.9 mi loop"]],"high":"1,560 ft"},
+ {"id":"29","name":"Hall of Mosses · Hoh Rain Forest","where":"Olympic National Park · Washington","href":"olympic-hoh-rain-forest/","ll":[140.9746,26.8461],"grp":"pnw","reg":"pnw","st":"WA","status":"","trails":[["A","Hall of Mosses Trail","0.8 mi loop"],["B","Spruce Nature Trail","1.2 mi loop"],["C","Hoh River Trail to Five Mile Island","10 mi round trip"]],"high":"800 ft"},
+ {"id":"30","name":"Angels Landing","where":"Zion National Park · Utah","href":"zion-angels-landing/","ll":[240.4665,255.0127],"grp":"sw","reg":"sw","st":"UT","status":"permit required","trails":[["A","Emerald Pools","3 mi loop"],["B","Angels Landing","5.4 mi round trip"],["C","West Rim Trail to Cabin Spring","9.4 mi round trip"]],"high":"6,736 ft"},
+ {"id":"31","name":"The Narrows","where":"Zion National Park · Utah","href":"zion-narrows/","ll":[240.5978,254.5297],"grp":"sw","reg":"sw","st":"UT","status":"","trails":[["A","Riverside Walk","2.2 mi round trip"],["B","The Narrows to Wall Street","6 mi round trip"],["C","The Narrows to Big Spring","9.4 mi round trip"]],"high":"4,710 ft"},
+ {"id":"32","name":"Delicate Arch","where":"Arches National Park · Utah","href":"arches-delicate-arch/","ll":[294.259,235.5037],"grp":"sw","reg":"sw","st":"UT","status":"","trails":[["A","Upper Delicate Arch Viewpoint","0.5 mi round trip"],["B","The Windows and Turret Arch","1 mi round trip"],["C","Delicate Arch Trail","3 mi round trip"]],"high":"5,340 ft"},
+ {"id":"33","name":"Navajo Loop & Queen's Garden","where":"Bryce Canyon · Utah","href":"bryce-navajo-loop/","ll":[253.004,250.2554],"grp":"sw","reg":"sw","st":"UT","status":"partly closed","trails":[["A","Navajo Loop","1.3 mi loop"],["B","Queen's Garden & Navajo Loop","2.9 mi loop"],["C","Peekaboo Loop from Bryce Point","5.5 mi loop"]],"high":"8,300 ft"},
+ {"id":"34","name":"Bright Angel Trail","where":"Grand Canyon · Arizona","href":"grand-canyon-bright-angel/","ll":[248.3367,279.393],"grp":"sw","reg":"sw","st":"AZ","status":"","trails":[["A","Rim Trail: Mather Point to the Village","2.5 mi one way"],["B","South Kaibab to Skeleton Point","6 mi round trip"],["C","Bright Angel Trail to Plateau Point","12 mi round trip"]],"high":"7,206 ft"},
+ {"id":"35","name":"Cathedral Rock","where":"Sedona · Arizona","href":"sedona-cathedral-rock/","ll":[249.7383,303.182],"grp":"sw","reg":"sw","st":"AZ","status":"","trails":[["A","Cathedral Rock Trail","1.1 mi round trip"],["B","Templeton Trail","3.8 mi one way"],["C","Courthouse Butte Loop","3.9 mi loop"]],"high":"4,760 ft"},
+ {"id":"36","name":"Camelback Mountain","where":"Phoenix · Arizona","href":"camelback-mountain/","ll":[242.8604,326.9062],"grp":"sw","reg":"sw","st":"AZ","status":"","trails":[["A","Bobby’s Rock Trail","1.1 mi round trip"],["B","Echo Canyon Trail","2.3 mi round trip"],["C","Cholla Trail","3 mi round trip"]],"high":"2,704 ft"},
+ {"id":"37","name":"Highline Trail & Logan Pass","where":"Glacier National Park · Montana","href":"glacier-highline/","ll":[269.0877,42.3238],"grp":"rk","reg":"rk","st":"MT","status":"","trails":[["A","Hidden Lake Overlook","2.7 mi round trip"],["B","Highline Trail to Haystack Pass","7.2 mi round trip"],["C","Highline Trail to The Loop","11.8 mi one way"]],"high":"7,280 ft"},
+ {"id":"38","name":"Cascade Canyon & Jenny Lake","where":"Grand Teton National Park · Wyoming","href":"teton-cascade-canyon/","ll":[291.6274,139.6677],"grp":"rk","reg":"rk","st":"WY","status":"","trails":[["A","Hidden Falls & Inspiration Point","1.8 mi round trip"],["B","Jenny Lake Loop","7.1 mi loop"],["C","Cascade Canyon to the Forks","9.4 mi round trip"]],"high":"7,840 ft"},
+ {"id":"39","name":"Grand Prismatic & Fairy Falls","where":"Yellowstone · Wyoming","href":"yellowstone-grand-prismatic/","ll":[292.4356,125.3091],"grp":"rk","reg":"rk","st":"WY","status":"","trails":[["A","Midway Geyser Basin","0.8 mi loop"],["B","Grand Prismatic Overlook","1.6 mi round trip"],["C","Fairy Falls & Imperial Geyser","6.7 mi round trip"]],"high":"7,400 ft"},
+ {"id":"40","name":"Emerald Lake","where":"Rocky Mountain National Park · Colorado","href":"rmnp-emerald-lake/","ll":[352.747,212.7384],"grp":"rk","reg":"rk","st":"CO","status":"timed entry","trails":[["A","Bear Lake Loop","0.7 mi loop"],["B","Nymph, Dream and Emerald Lakes","3.6 mi round trip"],["C","Alberta Falls and Mills Lake","5.6 mi round trip"]],"high":"10,110 ft"},
+ {"id":"41","name":"Manitou Incline","where":"Colorado Springs · Colorado","href":"manitou-incline/","ll":[360.1989,241.0282],"grp":"rk","reg":"rk","st":"CO","status":"","trails":[["A","Red Mountain Trail","2.6 mi round trip"],["B","Manitou Incline + Barr Trail","4 mi loop"],["C","Barr Trail to Barr Camp","13 mi round trip"]],"high":"10,200 ft"},
+ {"id":"42","name":"Hanging Lake","where":"Glenwood Canyon · Colorado","href":"hanging-lake/","ll":[329.4738,223.8855],"grp":"rk","reg":"rk","st":"CO","status":"permit required","trails":[["A","Hanging Lake and Spouting Rock","3.3 mi round trip"],["B","Bair Ranch to Hanging Lake on the canyon path","6.4 mi round trip"],["C","Grizzly Creek to Hanging Lake on the canyon path","10.1 mi round trip"]],"high":"7,350 ft"},
+ {"id":"43","name":"Exit Glacier & Harding Icefield Trail","where":"Kenai Fjords National Park · Alaska","href":"exit-glacier-harding-icefield/","ll":[172.4505,453.6283],"grp":"ak","reg":"ak","st":"AK","status":"","trails":[["A","Glacier View Loop","1 mi loop"],["B","Glacier Overlook Trail","1.8 mi round trip"],["C","Harding Icefield Trail","7.8 mi round trip"]],"high":"3,527 ft"},
+ {"id":"44","name":"Diamond Head","where":"Honolulu · Hawaiʻi","href":"diamond-head/","ll":[299.4046,451.7963],"grp":"hi","reg":"hi","st":"HI","status":"permit required","trails":[["A","Diamond Head Summit Trail","1.6 mi round trip"],["B","Kaimana Beach to Diamond Head Lookout","2.8 mi round trip"],["C","Diamond Head Loop","4.6 mi loop"]],"high":"761 ft"},
+ {"id":"45","name":"Kalalau Trail to Hanakāpīʻai","where":"Kauaʻi · Hawaiʻi","href":"kalalau-hanakapiai/","ll":[268.438,433.8649],"grp":"hi","reg":"hi","st":"HI","status":"closed","trails":[["A","Kalalau Trail to the Kēʻē Beach view","1 mi round trip"],["B","Kalalau Trail to Hanakāpīʻai Beach","4 mi round trip"],["C","Hanakāpīʻai Falls","8 mi round trip"]],"high":"about 750 ft"},
+ {"id":"46","name":"Enchanted Rock","where":"Texas Hill Country · Texas","href":"enchanted-rock/","ll":[443.411,403.6802],"grp":"tx","reg":"tx","st":"TX","status":"","trails":[["A","Summit Trail","1.6 mi round trip"],["B","Echo Canyon & Turkey Pass Loop","2.5 mi loop"],["C","Loop Trail","4.6 mi loop"]],"high":"1,825 ft"},
+ {"id":"47","name":"Starved Rock & French Canyon","where":"LaSalle County · Illinois","href":"starved-rock/","ll":[586.0729,197.0465],"grp":"mw","reg":"mw","st":"IL","status":"partly closed","trails":[["A","Starved Rock & Eagle Cliff","1.8 mi round trip"],["B","French & Wildcat Canyons","2.4 mi loop"],["C","St. Louis Canyon","3 mi round trip"]],"high":"about 610 ft"},
+ {"id":"48","name":"Old Man's Cave","where":"Hocking Hills State Park · Ohio","href":"hocking-hills-old-mans-cave/","ll":[680.3147,222.5839],"grp":"mw","reg":"mw","st":"OH","status":"","trails":[["A","Old Man’s Cave Gorge","1 mi loop"],["B","Grandma Gatewood Trail to Cedar Falls","3 mi one way"],["C","Grandma Gatewood Trail to Ash Cave","6 mi one way"]],"high":"1,080 ft"},
+ {"id":"49","name":"Old Rag Mountain","where":"Shenandoah National Park · Virginia","href":"old-rag/","ll":[743.3061,228.6723],"grp":"se","reg":"se","st":"VA","status":"permit required","trails":[["A","Saddle Trail from Berry Hollow","5.4 mi round trip"],["B","Robertson Mountain","7.8 mi round trip"],["C","Old Rag Circuit","9.4 mi loop"]],"high":"3,291 ft"},
+ {"id":"50","name":"Alum Cave to Mount Le Conte","where":"Great Smoky Mountains National Park · Tennessee","href":"smokies-alum-cave/","ll":[676.8908,295.4844],"grp":"se","reg":"se","st":"TN","status":"","trails":[["A","Chimney Tops Overlook","3.5 mi round trip"],["B","Alum Cave Bluffs","4.6 mi round trip"],["C","Mount Le Conte via Alum Cave","10 mi round trip"]],"high":"6,593 ft"},
+ {"id":"51","name":"Anhinga Trail","where":"Everglades National Park · Florida","href":"everglades-anhinga/","ll":[750.0547,478.2834],"grp":"se","reg":"se","st":"FL","status":"","trails":[["A","Gumbo Limbo Trail","0.4 mi loop"],["B","Anhinga Trail","0.8 mi round trip"],["C","Old Ingraham Highway to Ernest Coe campsite","7 mi round trip"]],"high":"about 3 ft"},
+ {"id":"52","name":"The Beehive & Ocean Path","where":"Acadia National Park · Maine","href":"acadia-beehive/","ll":[853.892,90.2941],"grp":"ne","reg":"ne","st":"ME","status":"","trails":[["A","Beehive Loop","1.4 mi loop"],["B","Gorham Mountain Loop","3.5 mi loop"],["C","Ocean Path","4.4 mi round trip"]],"high":"525 ft"},
+ {"id":"53","name":"Franconia Ridge","where":"White Mountains · New Hampshire","href":"franconia-ridge/","ll":[809.9433,106.3118],"grp":"ne","reg":"ne","st":"NH","status":"","trails":[["A","Lonesome Lake Loop","3.2 mi round trip"],["B","Old Bridle Path to Greenleaf Hut","5.8 mi round trip"],["C","Franconia Ridge Loop","8.9 mi loop"]],"high":"5,260 ft"},
+ {"id":"54","name":"Breakneck Ridge","where":"Hudson Highlands · New York","href":"breakneck-ridge/","ll":[791.8224,163.0742],"grp":"ne","reg":"ne","st":"NY","status":"partly closed","trails":[["A","Breakneck Ridge Loop","3.25 mi loop"],["B","Mount Beacon Fire Tower","4.4 mi round trip"],["C","Bull Hill Full Loop","5.5 mi loop"]],"high":"1,610 ft"},
+ {"id":"55","name":"Watkins Glen Gorge Trail","where":"Finger Lakes · New York","href":"watkins-glen/","ll":[749.0337,154.5224],"grp":"ne","reg":"ne","st":"NY","status":"","trails":[["A","Gorge Trail and Lover’s Lane","0.8 mi loop"],["B","Gorge Trail to Mile Point Bridge, North Rim return","2 mi loop"],["C","Full Gorge Trail and North Rim loop","3 mi loop"]],"high":"990 ft"}];
 var GROUPS=[{k:'sgv',short:'SGV',name:'San Gabriel Valley',m:'la',pos:'up'},{k:'la',short:'LA & Glendale',name:'Los Angeles & Glendale',m:'la',pos:'down'},{k:'mal',short:'Malibu',name:'Malibu & Santa Monica Mtns',m:'la',pos:'flip'},
  {k:'mtn',short:'High country',name:'San Gabriel high country',m:'la',pos:'right'},{k:'scv',short:'Santa Clarita',name:'Santa Clarita',m:'la',pos:'right'},{k:'oc',short:'OC',name:'Orange County',m:'la',pos:'right'},
- {k:'sf',name:'San Francisco Bay Area',m:'sf',pos:'right'},{k:'sd',name:'San Diego',m:'sd',pos:'right'}];
-var MACROS=[{k:'la',name:'Los Angeles area',pos:'right'},{k:'sf',name:'San Francisco Bay Area',pos:'right'},{k:'sd',name:'San Diego',pos:'right'}];
+ {k:'sf',name:'San Francisco Bay Area',m:'sf',pos:'right'},{k:'sd',name:'San Diego',m:'sd',pos:'right'},{k:'yos',name:'Yosemite',m:'yos',pos:'right'}];
+var MACROS=[{k:'la',name:'Los Angeles area',pos:'right'},{k:'sf',name:'San Francisco Bay Area',pos:'right'},{k:'sd',name:'San Diego',pos:'right'},{k:'yos',name:'Yosemite',pos:'right'}];
+var USREG=[{k:'ca',name:'California'},{k:'pnw',name:'Pacific Northwest',sh:'Pacific NW'},{k:'sw',name:'Southwest'},{k:'rk',name:'Rockies'},{k:'ak',name:'Alaska'},{k:'hi',name:'Hawai\u02bbi'},{k:'tx',name:'Texas'},{k:'mw',name:'Midwest'},{k:'se',name:'Southeast'},{k:'ne',name:'Northeast'}];
+var STN={UT:'Utah',AZ:'Arizona',CA:'California',WA:'Washington',MT:'Montana',WY:'Wyoming',CO:'Colorado',OR:'Oregon',HI:'Hawai\u02bbi',AK:'Alaska',VA:'Virginia',ME:'Maine',TN:'Tennessee',NH:'New Hampshire',NY:'New York',TX:'Texas',IL:'Illinois',OH:'Ohio',FL:'Florida'};
+SHEETS.forEach(function(s){if(!s.reg)s.reg='ca';});
 var TRAILS={"01":{"A":"M946,992 949,986 950,979 942,975 935,969 938,962 945,952 947,945 948,938 942,929 940,922 942,915 939,909 946,902 954,896 959,888 964,880 968,863 973,849 990,842 993,829 995,821 992,806 1000,788 1004,769 1002,747 1001,733 1005,709 1000,680 1006,674 1005,664 1003,653","B":"M938,1111 933,1122 919,1121 903,1114 910,1114 918,1117 927,1119 931,1113 928,1106 924,1100 921,1092 920,1082 918,1088 917,1094 916,1087 917,1078 912,1072 904,1066 898,1058 901,1052 901,1042 901,1033 898,1024 894,1015 888,1011 884,1005 878,999 878,989 875,982 877,976 879,970 884,966 886,960 889,954 894,948 903,938 910,943 913,949 915,955 917,957","C":"M1359,962 1356,956 1352,949 1356,940 1364,932 1372,931 1380,928 1385,925 1392,922 1402,916 1416,911 1421,906 1425,900 1429,894 1435,889 1441,885 1449,888 1455,884 1461,884 1468,867 1473,862 1480,860 1486,861 1495,864 1504,864 1513,863 1519,866 1528,857 1528,849 1521,836 1513,827 1505,821 1494,817 1490,810 1494,804 1499,800 1498,794 1503,787 1506,779 1510,772 1512,765 1517,761 1524,754 1531,753 1537,751 1538,744 1548,743 1555,741 1555,734 1558,729 1562,723 1568,720 1571,714 1572,708 1568,702 1570,695 1574,690 1578,686 1585,685 1590,681 1591,673 1595,668 1599,663 1602,653 1604,644 1606,634 1606,624 1605,612 1603,606 1607,610 1606,604 1611,601 1617,594 1618,588 1621,583 1624,575 1621,569 1623,563 1629,560 1632,554 1630,548 1636,544 1631,540 1628,532 1630,526 1632,519 1624,506 1621,500 1627,494 1634,492 1631,480 1641,482 1648,480 1652,475 1643,476 1646,470 1643,463 1649,463 1655,465 1657,458 1659,452 1664,450 1668,445 1676,443 1684,441 1683,434 1686,429 1691,423 1692,416 1693,408 1693,398 1703,394 1709,398 1716,407 1717,414 1721,420 1724,421 M1693,398 1682,391 1678,381 1672,370 1668,360 1670,342 1673,332"},"02":{"A":"M350,1400 347,1395 339,1384 333,1375 332,1366 333,1357 332,1348 314,1318 312,1312 311,1302 312,1296 314,1288 318,1282 315,1273 314,1266 313,1255 312,1245 305,1242 296,1247 289,1260 283,1267 273,1266 266,1263 258,1260 249,1260 248,1267 247,1275 239,1277 232,1274 237,1278 244,1281 243,1288 242,1294 245,1300 251,1306 254,1314 248,1322 239,1324 229,1329 227,1337 224,1344 235,1348 241,1354 234,1351 238,1358 231,1362 230,1368 234,1375 239,1379 243,1385 250,1390 257,1394 263,1393 276,1395 285,1394 299,1395 311,1396 319,1398 328,1399 338,1398 347,1395 350,1400","B":"M239,1277 235,1272 238,1266 240,1259 247,1255 253,1253 260,1254 266,1258 270,1251 271,1244 275,1237 279,1232 283,1226 282,1219 280,1212 279,1206 277,1199 277,1193 278,1186 283,1182 286,1174 282,1167 277,1161 284,1159 292,1162 299,1158 297,1150 295,1144 297,1138 304,1139 311,1142 316,1138 319,1131 326,1128 333,1127 341,1121 348,1116 355,1110 361,1106 368,1103 379,1104 379,1111 385,1110 381,1115 388,1115 386,1123 395,1122 391,1130 395,1135 403,1137 417,1139 430,1135 438,1136 441,1131 446,1125 448,1117 450,1111 456,1111 460,1107 467,1104 473,1102 479,1099 486,1098 491,1093 497,1090 505,1083 512,1076 518,1076 523,1083 530,1085 532,1078 536,1072 541,1066 547,1065 550,1057 556,1054 562,1057 570,1064 577,1058 579,1051 582,1046 590,1047 598,1043 603,1046 611,1048 620,1050 628,1050 634,1048 640,1050 641,1057 636,1061 631,1064 622,1068 614,1069 609,1072 606,1078 604,1084 598,1089 592,1095 585,1101 583,1108 582,1115 588,1122 596,1124 601,1130 605,1134 613,1134 618,1128 623,1135 622,1142 619,1150 622,1156 628,1158 635,1159 640,1164 647,1163 652,1168 659,1171 666,1170 673,1166 677,1171 683,1176 690,1179 698,1181 705,1182 711,1179 718,1176 727,1179 730,1187 736,1194 741,1197 747,1190 746,1182 741,1177 744,1171 755,1177 762,1184 763,1191 764,1199 764,1207 768,1215 775,1218","C":"M491,1093 496,1087 499,1080 501,1074 510,1067 521,1064 526,1060 532,1050 538,1046 543,1041 550,1038 558,1032 564,1030 571,1023 574,1015 588,1005 602,991 607,983 615,974 626,958 638,946 647,938 649,932 648,923 654,915 657,909 660,901 668,893 675,890 680,880 687,883 694,889 698,885 704,878 710,873 716,874 724,877 728,882 734,886 738,892 739,898 739,907 743,916 751,918 758,914 753,909 749,904 753,898 759,895 764,904 773,909 777,915 785,922 793,930 797,937 804,938 809,940 820,941 826,945 815,932 810,924 802,908 814,910 821,919 828,924 836,928 841,934 845,938 853,945 856,952 850,960 851,968 845,977 847,986 851,994 854,1001 854,1009 858,1016 860,1022 869,1024 870,1032 864,1036 860,1032 860,1040 862,1047 866,1052 871,1044 877,1039 883,1041 885,1048 889,1041 889,1052 883,1052 876,1054 878,1060 880,1068 884,1075 883,1067 892,1068 897,1072 902,1077 900,1085 903,1093 911,1095 912,1095"}};
 function $(id){return document.getElementById(id)}
 function el(t,a,p){var e=document.createElementNS(S,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
 $('g-nation').setAttribute('d',G.nation);$('g-nation2').setAttribute('d',G.nation);$('g-states').setAttribute('d',G.states);
-$('g-ca').setAttribute('d',G.ca);$('g-counties').setAttribute('d',G.counties);$('g-la').setAttribute('d',G.la);
-G.views.la=[[139.6,288.6],[161.2,309.2]]; // frame the LA-area parks rather than the whole county
+$('g-ins').setAttribute('d',G.ak+G.hi);$('g-insf').setAttribute('d','M28 378H252V500M252 430H356V500');$('g-ca').setAttribute('d',G.ca);$('g-counties').setAttribute('d',G.counties);$('g-la').setAttribute('d',G.la);
+G.views.us=[[26,6],[872,502]];G.views.la=[[139.6,288.6],[161.2,309.2]]; // frame the LA-area parks rather than the whole county
 var M=G.kp; $('kp').setAttribute('transform','matrix('+M.join(' ')+')');
 function kp2p(u,v){return [M[0]*u+M[2]*v+M[4], M[1]*u+M[3]*v+M[5]]}
 SHEETS.forEach(function(s){var r=s.rect;if(!r){s.p=s.ll;return;}
@@ -254,22 +296,30 @@ GROUPS.forEach(function(g){g.items=SHEETS.filter(function(s){return s.grp===g.k}
   var h=document.createElement('li');h.className='gh';h.textContent=g.name;list.appendChild(h);
   g.items.forEach(function(s){var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
     li.querySelector('button').addEventListener('click',function(){focusPark(s)});list.appendChild(li);});});
+USREG.forEach(function(r){r.items=SHEETS.filter(function(s){return s.reg===r.k});r.p=mean(r.items);
+  mkMarker(r,'macro',r.items.length,r.name,function(o){if(o.k==='ca')flyTo(fit('ca'));else if(o.items.length===1)focusPark(o.items[0]);else flyTo(fitBox(bbox(o.items,6)));});
+  if(r.k==='ca')return;
+  var h=document.createElement('li');h.className='gh';h.textContent=r.name;list.appendChild(h);
+  r.items.forEach(function(s){var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
+    li.querySelector('button').addEventListener('click',function(){focusPark(s)});list.appendChild(li);});});
+var NAT=SHEETS.filter(function(s){return s.reg!=='ca'}),POOL=[];
+for(var pi=0;pi<14;pi++){var po={p:[0,0],items:[]};mkMarker(po,'group',0,'',function(o){flyTo(fitBox(bbox(o.items,.5)));});POOL.push(po);}
 // ---------- view: free zoom & pan, smooth
 var W=0,H=0,mobile=false;
 function stage(){var hr=$('hero').getBoundingClientRect(),headTop=hr.top+hr.height*.05;
-  var top=mobile?($('panel').getBoundingClientRect().bottom+40):40,bot=Math.max(top+120,headTop-(mobile?16:26));
+  var top=mobile?($('panel').getBoundingClientRect().bottom+40):70,bot=Math.max(top+120,headTop-(mobile?16:26));
   var L=mobile?10:404,R=W-(mobile?10:40);return {L:L,R:R,top:top,bot:bot};}
-function fitBox(b){var st=stage(),bw=b[1][0]-b[0][0],bh=b[1][1]-b[0][1];
+function fitBox(b,centre){var st=stage();if(mobile&&centre)st.R-=118;var bw=b[1][0]-b[0][0],bh=b[1][1]-b[0][1];
   var sc=Math.min((st.R-st.L)/bw,(st.bot-st.top)/bh)*.92,cx=(b[0][0]+b[1][0])/2,cy=(b[0][1]+b[1][1])/2;
-  var sx=(st.L+st.R)/2;if(!mobile)sx=Math.max(sx-((st.R-st.L)-bw*sc)/2,Math.min(sx,W*.5));
+  var sx=(st.L+st.R)/2;if(!mobile&&!centre)sx=Math.max(sx-((st.R-st.L)-bw*sc)/2,Math.min(sx,W*.5));
   return {x0:cx-sx/sc,y0:cy-(st.top+st.bot)/2/sc,s:sc};}
-function fit(l){var b=G.views[l];return fitBox(b);}
+function fit(l){var b=G.views[l];return fitBox(b,l==='us');}
 var KPB=[kp2p(230,330),kp2p(1730,1420)];
 var cur=null,tgt=null,mode='',lastMode='';
 function clampS(v){var lo=fit('us').s*.75,hi=fit('la').s*14;return Math.max(lo,Math.min(hi,v));}
 function flyTo(v){tgt={x0:v.x0,y0:v.y0,s:clampS(v.s)};closeCard();}
 function zoomAt(px,py,f){var ns=clampS(tgt.s*f);var wx=px/tgt.s+tgt.x0,wy=py/tgt.s+tgt.y0;tgt={x0:wx-px/ns,y0:wy-py/ns,s:ns};}
-function focusPark(sh){var v=fitBox(bbox([sh],1.2));if(sh.rect){var kb=[[KPB[0][0],KPB[0][1]],[KPB[1][0],KPB[1][1]]];v=fitBox([[Math.min(kb[0][0],kb[1][0]),Math.min(kb[0][1],kb[1][1])],[Math.max(kb[0][0],kb[1][0]),Math.max(kb[0][1],kb[1][1])]]);}
+function focusPark(sh){var v=fitBox(bbox([sh],sh.reg==='ca'?1.2:9));if(sh.rect){var kb=[[KPB[0][0],KPB[0][1]],[KPB[1][0],KPB[1][1]]];v=fitBox([[Math.min(kb[0][0],kb[1][0]),Math.min(kb[0][1],kb[1][1])],[Math.max(kb[0][0],kb[1][0]),Math.max(kb[0][1],kb[1][1])]]);}
   if(tgt.s<v.s*.5||!onScreen(sh))tgt={x0:v.x0,y0:v.y0,s:clampS(v.s)};openCard(sh);}
 function onScreen(o){var x=(o.p[0]-tgt.x0)*tgt.s,y=(o.p[1]-tgt.y0)*tgt.s,st=stage();return x>st.L&&x<st.R&&y>st.top&&y<st.bot;}
 document.querySelectorAll('#scale button').forEach(function(b){b.addEventListener('click',function(){flyTo(fit(b.dataset.l))})});
@@ -297,11 +347,22 @@ function apply(v){
     o.mk.style.transform=inside?'translate('+q[0].toFixed(1)+'px,'+q[1].toFixed(1)+'px)':'translate(-9999px,-9999px)';
     if(label!=null){o.lab.querySelector('.no').textContent=num;o.lab.querySelector('.tx').textContent=label;}
     if(inside)vis.push(o);else o.lab.style.transform='translate(-9999px,-9999px)';}
-  MACROS.forEach(function(m,i){show(m,mode==='us'?i===0:mode==='ca',mode==='us'?SHEETS.length:m.items.length,mode==='us'?'Places to explore · California':m.name);});
+  USREG.forEach(function(r){show(r,mode==='us',r.items.length,mobile&&r.sh?r.sh:r.name);});
+  MACROS.forEach(function(m){show(m,mode==='ca',m.items.length,m.name);});
   GROUPS.forEach(function(g){show(g,mode==='region',g.items.length,mobile&&g.short?g.short:g.name);});
-  SHEETS.forEach(function(sh){show(sh,mode==='park',null,null);});
+  SHEETS.forEach(function(sh){if(sh.reg==='ca')show(sh,mode==='park',null,null);});
+  // parks outside California: one dot each, merged into a cluster when they would overlap on screen
+  var cl=[];if(mode!=='us')NAT.forEach(function(sh){var q=scr(sh.p),c=null;for(var i=0;i<cl.length;i++){if(mode==='ca'?cl[i].items[0].reg===sh.reg:Math.hypot(cl[i].x-q[0],cl[i].y-q[1])<40){c=cl[i];break;}}
+    if(c){c.items.push(sh);}else cl.push({x:q[0],y:q[1],items:[sh]});});
+  var used=0;NAT.forEach(function(sh){sh._c=null});
+  cl.forEach(function(c){if(c.items.length===1){c.items[0]._c=1;return;}var po=POOL[used++];if(!po)return;po.items=c.items;po.p=mean(c.items);
+    var sts=c.items.map(function(x){return x.st}),same=sts.every(function(x){return x===sts[0]});
+    var lab=mode==='ca'?USREG.filter(function(r){return r.k===c.items[0].reg})[0].name:c.items.length===2?c.items[0].name.split(/ [&·,] /)[0]+' + '+c.items[1].name.split(/ [&·,] /)[0]:(same?STN[sts[0]]:USREG.filter(function(r){return r.k===c.items[0].reg})[0].name);
+    show(po,true,c.items.length,lab);});
+  for(var u=used;u<POOL.length;u++)show(POOL[u],false,0,'');
+  NAT.forEach(function(sh){show(sh,mode!=='us'&&sh._c===1,null,null);});
   // legend: nearest region at park/region level
-  var lv=LEVELS[mode]||'';if(mode==='region'||mode==='park'){var cxs=(st.L+st.R)/2,cys=(st.top+st.bot)/2,best=null,bd=1e9;GROUPS.forEach(function(g){var q=scr(g.p),d=Math.hypot(q[0]-cxs,q[1]-cys);if(d<bd){bd=d;best=g}});lv=mode==='park'&&best?best.name:'Los Angeles area';}
+  var lv=LEVELS[mode]||'';if(mode==='region'||mode==='park'){var cxs=(st.L+st.R)/2,cys=(st.top+st.bot)/2,best=null,bd=1e9;GROUPS.concat(USREG.filter(function(r){return r.k!=='ca'})).forEach(function(g){var q=scr(g.p),d=Math.hypot(q[0]-cxs,q[1]-cys);if(d<bd){bd=d;best=g}});lv=best?(mode==='park'||best.m===undefined?best.name:'Los Angeles area'):'';}
   $('lv').textContent=lv;$('cnt').textContent=(mode==='park'?vis.length+' of '+SHEETS.length:SHEETS.length)+' places';
   layoutLabels(vis,st);
   if(cardFor)placeCard();
@@ -318,7 +379,7 @@ function layoutLabels(vis,st){
   var maxX=Math.max.apply(0,vis.map(function(o){return o.sx})),minX=Math.min.apply(0,vis.map(function(o){return o.sx}));
   var lw=Math.max(0,Math.max.apply(0,left.map(function(o){return o.w}).concat([0]))),rw=Math.max.apply(0,right.map(function(o){return o.w}).concat([0]));
   var colL=minX-36-lw,colR=maxX+36,allW=Math.max.apply(0,vis.map(function(o){return o.w}));
-  if(colL<minL||colR+rw>maxR){ // not room for two columns: one column on the roomier side
+  if(mobile||colL<minL||colR+rw>maxR){ // not room for two columns: one column on the roomier side
     var freeL=minX-36-minL,freeR=maxR-(maxX+36);
     if(freeR>=allW||freeR>=freeL){right=vis.slice();left=[];rw=allW;colR=Math.min(maxX+36,maxR-rw);}
     else{left=vis.slice();right=[];lw=allW;colL=Math.max(minL,minX-36-lw);}}
@@ -363,7 +424,7 @@ $('map').addEventListener('pointermove',function(e){if(!ptrs.has(e.pointerId))re
   if(ptrs.size===2&&pinch){var a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinch.d>0){zoomAt((a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2,d/pinch.d);}pinch.d=d;dragMoved+=10;}});
 function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;if(!ptrs.size){$('map').classList.remove('drag');if(dragMoved<4)closeCard();}}
 $('map').addEventListener('pointerup',endPtr);$('map').addEventListener('pointercancel',endPtr);
-$('map').addEventListener('wheel',function(e){e.preventDefault();$('hint').style.opacity=0;var k=e.ctrlKey?0.012:0.0016;var dy=e.deltaMode===1?e.deltaY*30:e.deltaY;zoomAt(e.clientX,e.clientY,Math.exp(-dy*k));},{passive:false});
+addEventListener('wheel',function(e){if(e.target.closest&&e.target.closest('header,#card'))return;e.preventDefault();$('hint').style.opacity=0;var k=e.ctrlKey?0.012:0.0016;var dy=e.deltaMode===1?e.deltaY*30:e.deltaY;zoomAt(e.clientX,e.clientY,Math.exp(-dy*k));},{passive:false});
 $('map').addEventListener('dblclick',function(e){zoomAt(e.clientX,e.clientY,1.8)});
 function loop(){
   var k=0.14,ls=Math.log(cur.s),lt=Math.log(tgt.s),ns=Math.exp(ls+(lt-ls)*k);
@@ -378,12 +439,16 @@ function loop(){
 var card=$('card'),cardFor=null;
 function openCard(s){
   cardFor=s;var tr=s.trails.map(function(t){return '<li><span class="t" style="background:'+TC[t[0]]+'">'+t[0]+'</span>'+t[1]+'<span class="mi">'+t[2]+'</span></li>'}).join('');
-  card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">'+s.trails.length+' trails</span><h3>'+s.name+'</h3><div class="where">'+s.where+' · high point '+s.high+'</div>'+(s.status?'<div class="st">'+(s.status==='closed'?'Closed for now':s.status==='partly closed'?'Partly closed':'Permit required')+' · details on the page</div>':'')+'<ul>'+tr+'</ul><a class="go" href="'+s.href+'">Explore this trail <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#fff" stroke-width="1.6"/></svg></a>';
+  card.innerHTML='<button class="x" aria-label="Close">×</button><span class="no">'+s.trails.length+' trails</span><h3>'+s.name+'</h3><div class="where">'+s.where+' · high point '+s.high+'</div>'+(s.status?'<div class="st">'+(s.status==='closed'?'Closed for now':s.status==='partly closed'?'Partly closed':s.status==='timed entry'?'Timed entry':'Permit required')+' · details on the page</div>':'')+'<ul>'+tr+'</ul><a class="go" href="'+s.href+'">Explore this trail <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#fff" stroke-width="1.6"/></svg></a>';
   card.querySelector('.x').onclick=closeCard;card.classList.add('on');placeCard();}
 function closeCard(){cardFor=null;card.classList.remove('on')}
 function placeCard(){var s=cardFor;if(!s)return;var cw=card.offsetWidth,ch=card.offsetHeight;
-  var x,y;if(mobile){x=(W-cw)/2;y=Math.max(12,$('hero').getBoundingClientRect().top-ch+40);}else{x=W-cw-32;y=96;}card.style.transform='translate('+x+'px,'+y+'px)';}
+  var x,y;if(mobile){x=(W-cw)/2;y=H-ch-12;}else{x=32;y=$('home').getBoundingClientRect().bottom+18;}card.style.transform='translate('+x+'px,'+y+'px)';}
 addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
+// liquid glass: the highlight follows the pointer
+(function(){var els=[].slice.call(document.querySelectorAll('#home,#panel,#zoomctl,#card'));
+  addEventListener('pointermove',function(e){els.forEach(function(g){var r=g.getBoundingClientRect();if(!r.width)return;
+    g.style.setProperty('--mx',Math.max(-20,Math.min(120,(e.clientX-r.left)/r.width*100)).toFixed(1)+'%');g.style.setProperty('--my',Math.max(-30,Math.min(130,(e.clientY-r.top)/r.height*100)).toFixed(1)+'%');});},{passive:true});})();
 // kitten eyes
 (function(){
   var svg=document.querySelector('#kit svg'),balls=[].slice.call(document.querySelectorAll('#kit .ball')),pupils=[].slice.call(document.querySelectorAll('#kit .pupil'));
