@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bryce Canyon: Navajo Loop & Queen’s Garden · Grace&rsquo;s Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-screen viewer. Model fills the screen on an organic island base; left panel holds the view switch and content; callouts in two columns either side; liquid-glass cards float over the model. Single light "illustration board" theme, chosen deliberately. */
+:root{
+  color-scheme:light;
+  --paper:#EEF4F1; --sheet:#FFFFFF; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9;
+  --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --panel:372px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.dragging{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#labels{position:absolute;inset:0;pointer-events:none}
+
+/* badges */
+.bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
+.bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.ic{padding:0;width:22px;border-color:var(--rule)}
+.bd.ic svg{width:14px;height:14px}
+.kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
+.kn .tx{background:color-mix(in srgb,var(--paper) 86%,transparent);padding:2px 6px;border-radius:4px}
+.kn.f .tx{font-style:italic;color:var(--muted)}
+.kn.left{flex-direction:row-reverse}
+.kn.dot .tx{display:none}
+.kn.on .tx{font-weight:600;color:var(--ink)}
+.kn.on .bd{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+
+/* liquid glass */
+.glass{background:linear-gradient(140deg,rgba(255,255,255,.62),rgba(255,255,255,.26));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 10px 30px rgba(29,43,38,.16),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);border-radius:16px}
+#card{position:absolute;left:0;top:0;width:250px;padding:12px 14px 13px;z-index:3;pointer-events:auto;transform-origin:50% 100%;transition:opacity .25s}
+#card .row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#card h4{margin:0 0 3px;font-family:var(--display);font-stretch:108%;font-weight:500;font-size:17px;line-height:1.15}
+#card p{margin:0;font-size:12.5px;line-height:1.45;color:#33443E}
+#card .meta{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+#card{transition:opacity .25s,width .3s}
+#card.big{width:340px}
+#card .gal{display:none;margin-top:10px}
+#card.big .gal{display:block}
+#card .gal .main{width:100%;height:200px;object-fit:cover;border-radius:10px;display:block;background:#E3EFEA}
+#card .cr{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+#card .cr a,.detail .cap a{color:inherit}
+#card .thumbs{display:flex;gap:5px;margin-top:6px;overflow-x:auto}
+#card .th{border:0;padding:0;background:none;cursor:pointer;border-radius:6px;outline:2px solid transparent;flex:none}
+#card .th.on{outline-color:var(--ink)}
+#card .th img{width:52px;height:38px;object-fit:cover;border-radius:6px;display:block}
+#card .none{font-size:12px;color:var(--muted)}
+#card .more{margin-top:7px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;cursor:pointer}
+#card.big .more{display:none}
+#card{cursor:pointer}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);padding:4px}
+#card::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+
+/* panel */
+.panel{position:absolute;left:0;top:0;bottom:0;width:var(--panel);display:flex;flex-direction:column;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-right:1px solid var(--rule);z-index:2}
+.head{padding:18px 22px 12px;display:flex;flex-direction:column;gap:4px}
+.head h1{font-family:var(--display);font-stretch:116%;font-weight:300;font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:-.01em}
+.switch{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:6px 22px 12px;border-bottom:1px solid var(--rule)}
+.switch button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 8px 8px;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.switch button:hover{border-color:var(--ink)}
+.switch button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.switch .sl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.switch .sn{font-size:12.5px;font-weight:600;line-height:1.15}
+.switch .bd{min-width:18px;height:18px;font-size:10px}
+.body{flex:1;overflow-y:auto;padding:16px 22px 28px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin}
+.body h2{font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.body h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 6px}
+.body p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin:0}
+.stat{padding:7px 9px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat dd{margin:1px 0 0;font-family:var(--display);font-stretch:106%;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.list>li{border-bottom:1px solid var(--rule)}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:1px 10px;align-items:center;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer}
+.item:hover .nm,.list>li.on .nm{text-decoration:underline;text-underline-offset:3px}
+.item>.bd,.item>.ico{grid-row:1/3;justify-self:start}
+.item .nm{font-weight:600}
+.item .nm .mono{font-weight:400;font-size:10.5px;color:var(--muted);margin-left:6px}
+.item .lt{font-style:italic;color:var(--muted);font-weight:400}
+.item .ds{grid-column:2;font-size:13px;color:var(--muted)}
+.item .bm{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:right;grid-row:1/3;grid-column:3}
+.item .now{color:var(--tA);font-weight:500}
+.item .chev{grid-row:1/3;grid-column:3;font-family:var(--mono);color:var(--muted);transition:transform .25s}
+.list>li.open .chev{transform:rotate(90deg)}
+.detail{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;margin:0 0 10px;padding:10px;overflow:hidden}
+.detail img{width:118px;height:92px;object-fit:cover;border-radius:10px;background:linear-gradient(180deg,#F7FBF9,#E3EFEA);display:block}
+.detail p{font-size:12.5px;line-height:1.45;color:#33443E}
+.detail .cap{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+.ico{width:18px;height:18px;flex:none}
+.tcard{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
+.tcard:hover .tn{text-decoration:underline;text-underline-offset:3px}
+.tcard .tn{font-weight:600}
+.tcard .tm{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tcard svg{grid-row:1/3;grid-column:3}
+.cards{border-top:1px solid var(--rule)}
+.prof svg{display:block;width:100%;height:96px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:9px}
+.links{display:grid;gap:4px;font-size:13px}
+.links a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--rule)}
+
+/* controls */
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:flex-end;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.grp{display:flex;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.grp button{border:0;background:none;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;min-width:32px;display:flex;align-items:center;gap:6px}
+.grp button+button{border-left:1px solid var(--rule)}
+.grp button:hover{background:var(--paper)}
+.grp button .sq{width:8px;height:8px;border-radius:2px;background:var(--ink)}
+.grp button[aria-pressed="false"]{color:var(--muted)}
+.grp button[aria-pressed="false"] .sq{background:transparent;outline:1px solid var(--muted)}
+.hint{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);z-index:2;pointer-events:none}
+
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;overflow:visible}
+  #stage{position:relative;height:58svh;min-height:340px}
+  .panel{position:relative;width:auto;bottom:auto;border-right:0;border-top:1px solid var(--rule);backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+  .switch{position:sticky;top:0;background:var(--paper);z-index:3}
+  .body{overflow:visible;padding:16px 16px 40px}
+  .head,.switch{padding-inline:16px}
+  .ctrls{bottom:auto;top:calc(58svh - 46px);right:10px}
+  .hint{display:none}
+  #card{width:210px}
+}
+@media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+.homechip{position:relative;overflow:hidden;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-bottom:6px;padding:8px 14px 8px 10px;border-radius:18px;text-decoration:none;color:var(--ink);
+  background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);
+  -webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.homechip::after{content:"";position:absolute;top:-50%;left:-30%;width:30%;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));transform:rotate(18deg) translateX(-150%);transition:transform .8s ease}
+.homechip:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 16px 32px rgba(29,43,38,.16)}.homechip:hover::after{transform:rotate(18deg) translateX(600%)}
+.hc-arrow{font-size:14px}.hc-name{font-family:var(--display,inherit);font-stretch:118%;font-weight:400;font-size:16px;letter-spacing:-.01em}
+.hc-sub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-left:9px;border-left:1px solid rgba(29,43,38,.15)}
+</style>
+
+<div class="app" id="app">
+  <div id="stage" aria-label="Interactive model of the Bryce Amphitheater, Bryce Canyon National Park">
+    <canvas id="gl"></canvas>
+    <svg id="lead" aria-hidden="true"></svg>
+    <div id="labels"></div>
+    <div id="card" class="glass" hidden role="dialog" aria-live="polite"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="head">
+      <a class="homechip" href="../" aria-label="Back to Grace&rsquo;s Trail home"><span class="hc-arrow">←</span><span class="hc-name">Grace&rsquo;s Trail</span><span class="hc-sub">All trails</span></a>
+      <h1>Navajo Loop &amp; Queen&rsquo;s Garden</h1>
+    </div>
+    <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
+    <div class="body" id="pbody" aria-live="polite"></div>
+  </aside>
+  <div class="hint">Drag to turn · scroll to zoom · click anything, tap the card for photos</div>
+  <div class="ctrls">
+    <div class="grp" role="group" aria-label="Layers">
+      <button id="tgTopo" aria-pressed="true"><span class="sq"></span>Topo</button>
+      <button id="tgTrees" aria-pressed="true"><span class="sq"></span>Trees</button>
+      <button id="tgAnimals" aria-pressed="true"><span class="sq"></span>Wildlife</button>
+      <button id="tgFlowers" aria-pressed="true"><span class="sq"></span>Flowers</button>
+      <button id="tgBase" aria-pressed="true"><span class="sq"></span>Base</button>
+    </div>
+    <div class="grp" role="group" aria-label="View">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" aria-label="Reset view">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NOW_MONTH=new Date().getMonth()+1;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
+  band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};Object.assign(PAL,{"ground": "#F1DCC2", "groundN": "#E8CDB0", "rock": "#E2A27A", "rockDeep": "#CF8A62", "ridge": "#F3E2CA", "oak": "#6F8A55", "shrub": "#A9A878", "riparian": "#D9EAD3"});
+
+/* ================= data ================= */
+const CANYONS=[];
+const TRAILS=[{"id":"A","name":"Navajo Loop","short":"Navajo Loop","official":1.3,"unit":"loop","route":"Loop","time":"1–2 hr","level":"Moderate","color":"--tA","desc":"From Sunset Point the loop drops 550 feet into the amphitheater down one side and climbs back up the other: the narrow slot of Wall Street on the west, Two Bridges and Thor’s Hammer on the east. Wall Street is closed now, so hike the Two Bridges side down and back.","anchors":[[26,-35,7982,0.0],[-1,91,7975,0.028],[38,5,7972,0.05],[60,-78,7972,0.07],[-35,-100,7968,0.089],[13,-125,7945,0.108],[-47,-182,7953,0.127],[-43,-210,7931,0.153],[31,-196,7914,0.173],[22,-222,7916,0.192],[7,-256,7916,0.212],[3,-292,7913,0.233],[39,-302,7909,0.252],[71,-298,7910,0.26],[108,-323,7911,0.271],[78,-334,7905,0.291],[76,-370,7898,0.311],[43,-506,7839,0.343],[-3,-612,7811,0.365],[-44,-712,7736,0.387],[-60,-803,7687,0.406],[-50,-887,7661,0.425],[-13,-949,7635,0.445],[83,-1013,7620,0.467],[150,-1094,7598,0.487],[173,-1194,7586,0.507],[248,-1291,7566,0.531],[358,-1406,7561,0.561],[433,-1484,7556,0.582],[489,-1591,7533,0.605],[528,-1697,7520,0.626],[599,-1768,7516,0.645],[707,-1817,7508,0.668],[818,-1829,7506,0.689],[943,-1797,7496,0.715],[1055,-1734,7495,0.739],[1151,-1645,7489,0.764],[1175,-1642,7481,0.77],[1164,-1593,7485,0.784],[1111,-1488,7498,0.807],[1067,-1392,7513,0.827],[1002,-1287,7525,0.85],[949,-1203,7544,0.869],[897,-1113,7555,0.889],[841,-994,7577,0.915],[799,-902,7596,0.935],[741,-800,7596,0.957],[692,-731,7633,0.977],[657,-619,7680,0.999],[651,-605,7683,1.0],[671,-703,7677,1.021],[582,-602,7713,1.049],[538,-514,7744,1.068],[502,-407,7761,1.091],[451,-393,7759,1.113],[444,-317,7782,1.134],[425,-293,7786,1.153],[381,-277,7817,1.174],[330,-298,7840,1.193],[300,-284,7850,1.221],[304,-203,7836,1.242],[251,-120,7852,1.261],[201,-74,7867,1.27],[182,-49,7873,1.28],[139,43,7882,1.299],[138,146,7894,1.32],[104,212,7925,1.339],[76,131,7940,1.359],[64,7,7952,1.383],[63,-34,7970,1.408],[9,76,7972,1.431],[7,28,7978,1.451],[26,-35,7982,1.467]]},
+ {"id":"B","name":"Queen’s Garden & Navajo Loop","short":"Queen’s/Navajo","official":2.9,"unit":"loop","route":"Loop","time":"2–3 hr","level":"Moderate","color":"--tB","desc":"The park’s most popular hike. Down Queen’s Garden Trail from Sunrise Point, along the canyon floor to the Navajo Loop, up to Sunset Point, then back along the Rim Trail. About 625 feet of gain; the park suggests going clockwise, climbing out on Navajo.","anchors":[[900,2009,8008,0.0],[905,2077,7998,0.02],[967,2020,7992,0.04],[1023,1949,7971,0.059],[1081,1944,7942,0.08],[1197,1923,7926,0.102],[1223,1865,7910,0.125],[1314,1900,7895,0.149],[1329,1824,7873,0.17],[1415,1734,7854,0.193],[1509,1732,7835,0.212],[1593,1790,7824,0.232],[1708,1778,7817,0.256],[1716,1684,7811,0.278],[1824,1648,7789,0.3],[1915,1568,7769,0.325],[2005,1585,7766,0.344],[1972,1512,7766,0.364],[1992,1515,7759,0.385],[2059,1526,7746,0.405],[2000,1443,7730,0.42],[2000,1443,7730,0.424],[1973,1325,7719,0.448],[1986,1237,7712,0.468],[2055,1163,7698,0.489],[2101,1059,7697,0.512],[2090,980,7679,0.531],[2059,976,7661,0.552],[2035,1035,7669,0.572],[1931,1073,7652,0.595],[1874,1138,7628,0.616],[1839,1151,7598,0.637],[1775,1113,7614,0.659],[1734,1022,7622,0.678],[1727,913,7624,0.699],[1664,836,7604,0.718],[1674,840,7608,0.72],[1593,925,7596,0.74],[1574,1029,7597,0.76],[1525,1089,7599,0.78],[1465,1096,7603,0.802],[1460,991,7608,0.823],[1444,992,7606,0.83],[1407,917,7584,0.846],[1380,815,7572,0.867],[1358,674,7569,0.894],[1433,590,7558,0.917],[1491,517,7548,0.936],[1550,429,7534,0.956],[1641,392,7526,0.975],[1764,427,7511,1.0],[1855,387,7494,1.022],[1857,280,7477,1.048],[1896,171,7468,1.07],[1874,69,7464,1.09],[1875,-29,7458,1.109],[1966,-90,7446,1.131],[2050,-158,7437,1.152],[2193,-203,7432,1.181],[2230,-381,7426,1.216],[2258,-517,7422,1.242],[2242,-654,7416,1.269],[2243,-764,7416,1.29],[2194,-918,7418,1.321],[2119,-1044,7423,1.349],[2030,-1074,7431,1.368],[1968,-1153,7438,1.388],[1776,-1296,7443,1.433],[1676,-1372,7448,1.457],[1604,-1452,7456,1.479],[1503,-1504,7457,1.5],[1395,-1485,7461,1.521],[1328,-1488,7464,1.542],[1217,-1526,7466,1.566],[1186,-1613,7476,1.586],[1175,-1642,7478,1.59],[1141,-1565,7486,1.609],[1102,-1471,7500,1.629],[1062,-1377,7517,1.648],[1002,-1287,7525,1.668],[949,-1203,7544,1.688],[897,-1113,7555,1.708],[841,-994,7577,1.733],[799,-902,7596,1.753],[741,-800,7596,1.775],[692,-731,7633,1.795],[657,-619,7680,1.818],[651,-605,7683,1.82],[671,-703,7677,1.84],[582,-602,7713,1.867],[538,-514,7744,1.886],[502,-407,7761,1.91],[451,-393,7759,1.931],[444,-317,7782,1.952],[425,-293,7786,1.972],[381,-277,7817,1.992],[330,-298,7840,2.011],[300,-284,7850,2.039],[304,-203,7836,2.06],[251,-120,7852,2.079],[201,-74,7867,2.09],[182,-49,7873,2.098],[139,43,7882,2.117],[138,146,7894,2.138],[104,212,7925,2.157],[76,131,7940,2.177],[64,7,7952,2.201],[63,-34,7970,2.226],[9,76,7972,2.249],[7,28,7978,2.269],[12,-23,7984,2.288],[26,-35,7984,2.29],[-27,100,7981,2.314],[-3,204,7971,2.334],[-22,303,7970,2.354],[-54,400,7970,2.373],[-81,507,7970,2.394],[-108,603,7970,2.413],[-108,775,7968,2.446],[-83,934,7966,2.477],[-14,1031,7965,2.499],[150,1189,7970,2.54],[150,1189,7970,2.543],[220,1333,7972,2.573],[302,1485,7970,2.606],[368,1580,7967,2.628],[442,1655,7966,2.648],[551,1733,7969,2.673],[640,1884,7976,2.706],[736,1963,7983,2.73],[842,2039,7994,2.755],[878,2033,8004,2.775],[900,2009,8008,2.783]]},
+ {"id":"C","name":"Peekaboo Loop from Bryce Point","short":"Peekaboo","official":5.5,"unit":"loop","route":"Loop","time":"3–4 hr","level":"Strenuous","color":"--tC","desc":"A connector drops more than 1,000 feet from Bryce Point to the Peekaboo Loop, which winds up and down through dense hoodoos, past the Wall of Windows and The Cathedral. About 1,555 feet of elevation change. Shared with horse and mule rides; hike it clockwise.","anchors":[[2504,-6160,8248,0.0],[2487,-6276,8271,0.022],[2469,-6376,8311,0.043],[2478,-6473,8321,0.062],[2544,-6575,8319,0.085],[2618,-6642,8313,0.104],[2736,-6670,8302,0.13],[2796,-6725,8295,0.149],[2854,-6806,8288,0.168],[2894,-6899,8274,0.189],[2905,-7047,8256,0.217],[2981,-6980,8241,0.236],[3019,-6860,8226,0.261],[3079,-6813,8209,0.283],[3130,-6802,8188,0.302],[3147,-6878,8175,0.321],[3166,-6832,8159,0.341],[3188,-6856,8149,0.36],[3211,-6832,8133,0.384],[3292,-6887,8118,0.404],[3480,-6880,8095,0.44],[3590,-6894,8085,0.461],[3688,-6864,8077,0.48],[3796,-6822,8064,0.503],[3693,-6804,8038,0.536],[3574,-6798,8025,0.559],[3495,-6740,8000,0.579],[3409,-6686,7993,0.598],[3382,-6542,7969,0.626],[3330,-6458,7960,0.646],[3291,-6367,7960,0.667],[3260,-6278,7952,0.687],[3133,-6292,7935,0.712],[3049,-6216,7919,0.736],[2947,-6190,7918,0.757],[2816,-6240,7914,0.784],[2771,-6156,7901,0.804],[2675,-6134,7949,0.823],[2603,-6044,7992,0.846],[2564,-5948,7996,0.866],[2513,-5859,7993,0.885],[2470,-5762,7966,0.906],[2406,-5733,7938,0.928],[2356,-5833,7917,0.951],[2275,-5879,7858,0.97],[2241,-5890,7806,0.989],[2289,-5809,7812,1.009],[2330,-5699,7806,1.032],[2287,-5612,7787,1.052],[2320,-5536,7776,1.071],[2384,-5495,7769,1.09],[2453,-5425,7768,1.11],[2411,-5419,7744,1.133],[2298,-5423,7723,1.158],[2219,-5494,7723,1.18],[2118,-5512,7695,1.202],[2078,-5513,7689,1.21],[2095,-5557,7709,1.222],[2108,-5650,7682,1.242],[2004,-5676,7665,1.263],[2006,-5595,7664,1.283],[1933,-5520,7653,1.303],[1830,-5528,7638,1.324],[1755,-5491,7622,1.347],[1687,-5513,7625,1.367],[1588,-5572,7640,1.391],[1481,-5606,7660,1.414],[1365,-5621,7674,1.437],[1257,-5647,7699,1.459],[1180,-5669,7716,1.481],[1190,-5602,7715,1.5],[1189,-5590,7714,1.502],[1122,-5510,7728,1.523],[1058,-5489,7751,1.544],[1057,-5409,7751,1.567],[980,-5349,7759,1.588],[1047,-5234,7737,1.618],[1000,-5175,7731,1.639],[998,-5098,7727,1.659],[980,-5034,7717,1.681],[1036,-5012,7709,1.701],[1136,-4990,7679,1.722],[1242,-4994,7654,1.742],[1343,-4980,7641,1.762],[1331,-4880,7665,1.784],[1290,-4762,7698,1.808],[1272,-4672,7731,1.828],[1179,-4658,7759,1.85],[1163,-4606,7775,1.869],[1164,-4579,7786,1.891],[1255,-4506,7746,1.916],[1303,-4405,7719,1.938],[1399,-4382,7702,1.962],[1362,-4342,7683,1.987],[1283,-4306,7674,2.006],[1247,-4231,7676,2.029],[1207,-4160,7690,2.05],[1149,-4171,7716,2.072],[1126,-4065,7724,2.097],[1183,-4004,7736,2.118],[1078,-3999,7741,2.139],[1024,-3877,7748,2.166],[1045,-3771,7756,2.19],[1045,-3677,7763,2.21],[1055,-3564,7783,2.233],[1076,-3429,7790,2.261],[1064,-3332,7768,2.284],[1070,-3290,7735,2.307],[1044,-3268,7709,2.33],[1044,-3159,7699,2.351],[1074,-3049,7685,2.376],[1092,-2985,7680,2.397],[1075,-2879,7688,2.42],[1196,-2832,7694,2.446],[1196,-2832,7694,2.45],[1161,-2710,7694,2.475],[1119,-2583,7675,2.501],[1130,-2460,7656,2.525],[1199,-2370,7635,2.549],[1290,-2313,7613,2.57],[1154,-2317,7593,2.596],[1224,-2270,7574,2.621],[1347,-2226,7564,2.646],[1426,-2362,7554,2.677],[1476,-2346,7535,2.698],[1599,-2197,7515,2.734],[1672,-2079,7491,2.761],[1871,-1904,7470,2.811],[1999,-1871,7462,2.836],[2098,-1858,7447,2.855],[2189,-1899,7441,2.874],[2244,-1783,7414,2.902],[2166,-1708,7398,2.929],[2033,-1703,7396,2.954],[1871,-1683,7398,2.985],[1788,-1690,7412,3.0],[1712,-1715,7413,3.016],[1583,-1758,7414,3.042],[1712,-1715,7413,3.076],[1832,-1683,7404,3.1],[2003,-1701,7397,3.132],[2133,-1704,7396,3.157],[2260,-1743,7406,3.182],[2242,-1861,7420,3.205],[2270,-1961,7449,3.227],[2222,-2086,7467,3.252],[2187,-2055,7490,3.274],[2156,-2134,7530,3.301],[2101,-2257,7539,3.326],[1957,-2462,7548,3.374],[1915,-2555,7555,3.393],[1994,-2517,7590,3.413],[1962,-2682,7602,3.445],[1992,-2685,7636,3.467],[2066,-2767,7649,3.503],[2169,-2758,7662,3.525],[2218,-2878,7672,3.55],[2283,-2898,7675,3.56],[2257,-2921,7678,3.57],[2266,-3084,7671,3.603],[2189,-3094,7665,3.628],[2119,-3035,7674,3.647],[2065,-2953,7683,3.669],[1999,-3066,7675,3.699],[1978,-3194,7661,3.723],[1964,-3212,7650,3.73],[1926,-3142,7642,3.744],[1864,-3081,7624,3.765],[1876,-3192,7615,3.786],[1855,-3218,7597,3.807],[1882,-3316,7582,3.833],[1912,-3419,7571,3.855],[1945,-3522,7557,3.878],[2046,-3588,7527,3.903],[2128,-3666,7516,3.925],[2258,-3665,7517,3.951],[2269,-3751,7519,3.971],[2190,-3834,7514,3.993],[2242,-3928,7502,4.014],[2386,-3991,7480,4.045],[2426,-4091,7474,4.068],[2440,-4222,7475,4.096],[2474,-4322,7481,4.116],[2412,-4409,7489,4.136],[2360,-4482,7504,4.155],[2284,-4601,7514,4.182],[2204,-4634,7523,4.203],[2229,-4754,7535,4.227],[2169,-4837,7548,4.247],[2117,-4957,7558,4.272],[2060,-5053,7569,4.293],[2011,-5152,7582,4.316],[1979,-5251,7593,4.337],[1905,-5322,7611,4.357],[1979,-5382,7628,4.378],[2021,-5423,7647,4.403],[2066,-5443,7663,4.424],[2141,-5473,7680,4.447],[2074,-5535,7707,4.467],[2127,-5622,7696,4.486],[2022,-5661,7668,4.51],[2014,-5616,7665,4.529],[1951,-5544,7658,4.549],[1895,-5516,7655,4.57],[1977,-5566,7662,4.59],[1996,-5644,7663,4.61],[2069,-5653,7675,4.631],[2095,-5557,7709,4.66],[2118,-5512,7695,4.679],[2208,-5499,7718,4.699],[2282,-5426,7721,4.72],[2375,-5438,7724,4.739],[2466,-5391,7763,4.76],[2404,-5459,7763,4.783],[2326,-5500,7771,4.802],[2296,-5584,7780,4.822],[2333,-5680,7803,4.845],[2297,-5794,7809,4.869],[2245,-5880,7806,4.89],[2272,-5887,7850,4.91],[2353,-5838,7914,4.929],[2393,-5739,7927,4.95],[2467,-5752,7963,4.973],[2502,-5845,7990,4.992],[2564,-5948,7996,5.015],[2603,-6044,7992,5.035],[2661,-6133,7967,5.056],[2765,-6152,7904,5.076],[2808,-6239,7913,5.095],[2914,-6215,7914,5.116],[3010,-6203,7920,5.137],[3096,-6267,7918,5.16],[3193,-6303,7938,5.181],[3283,-6292,7954,5.2],[3284,-6391,7959,5.219],[3348,-6464,7960,5.239],[3394,-6597,7973,5.265],[3481,-6733,7994,5.299],[3559,-6792,8015,5.319],[3661,-6795,8032,5.339],[3779,-6803,8041,5.362],[3764,-6845,8068,5.386],[3610,-6890,8078,5.416],[3480,-6880,8095,5.441],[3352,-6881,8107,5.466],[3231,-6861,8126,5.49],[3193,-6811,8144,5.513],[3176,-6872,8156,5.533],[3144,-6837,8169,5.552],[3127,-6809,8187,5.578],[3085,-6815,8208,5.597],[3019,-6860,8226,5.62],[2981,-6980,8241,5.645],[2905,-7047,8256,5.664],[2903,-6939,8262,5.685],[2879,-6839,8281,5.705],[2809,-6745,8294,5.728],[2759,-6669,8299,5.747],[2658,-6684,8310,5.766],[2581,-6614,8315,5.786],[2503,-6515,8321,5.81],[2483,-6421,8312,5.83],[2470,-6323,8313,5.849],[2495,-6197,8259,5.874],[2504,-6160,8248,5.881]]}];
+const STOPS=[{"id":"1","trails":["A","B"],"x":26,"n":-35,"name":"Sunset Point","desc":"A rim viewpoint at about 8,000 ft over the Bryce Amphitheater. Both sides of the Navajo Loop start here, and the Rim Trail passes by. Shuttle stop, restrooms and water."},
+ {"id":"4","trails":["A","B"],"x":201,"n":-74,"name":"Thor's Hammer","desc":"The park's best-known hoodoo: a slender column capped by a block of harder rock. It stands just below Sunset Point, beside the Two Bridges side of the loop."},
+ {"id":"3","trails":["A","B"],"x":651,"n":-605,"name":"Two Bridges","desc":"The east side of the Navajo Loop, open year-round. It switchbacks past a fin of rock pierced by two small natural bridges."},
+ {"id":"2","trails":["A","B"],"x":1175,"n":-1642,"name":"Canyon floor junction","desc":"The bottom of the Navajo Loop, among ponderosa pines. The two sides of the loop meet here, and the connector from Queen’s Garden comes in nearby."},
+ {"id":"A1","trails":["A"],"x":71,"n":-298,"name":"Wall Street","desc":"The west side of the loop: tight switchbacks into a narrow slot between tall rock walls, with Douglas-firs growing up from the floor. Closed until further notice after recent rains (NPS, fall 2026), and every winter."},
+ {"id":"B1","trails":["B"],"x":900,"n":2009,"name":"Sunrise Point","desc":"The rim viewpoint at the north end of the amphitheater, about 8,000 ft, near the General Store and a shuttle stop. Queen’s Garden Trail starts here."},
+ {"id":"B2","trails":["B"],"x":2000,"n":1443,"name":"Bristlecone pines","desc":"Near the Horse Trail junction the trail looks out on a grove of Great Basin bristlecone pines. The oldest bristlecone in the park is estimated at 1,600 years."},
+ {"id":"B3","trails":["B"],"x":1674,"n":840,"name":"Rock tunnels","desc":"Low down, the trail passes through short tunnels cut through narrow fins of rock."},
+ {"id":"B4","trails":["B"],"x":1444,"n":992,"name":"Queen Victoria","desc":"At the bottom of the trail a short spur leads to the best view of a hoodoo said to resemble Queen Victoria, among the other formations of the “garden.”"},
+ {"id":"B5","trails":["B"],"x":150,"n":1189,"name":"Rim Trail","desc":"The return: about half a mile of level, paved rim path from Sunset Point back to Sunrise Point, looking down on the hoodoos."},
+ {"id":"C1","trails":["C"],"x":2504,"n":-6160,"name":"Bryce Point","desc":"A viewpoint at about 8,300 ft at the south end of the amphitheater, looking north over the whole bowl. The trail leaves from the parking area."},
+ {"id":"C2","trails":["C"],"x":2078,"n":-5513,"name":"Peekaboo Loop junction","desc":"After about a mile the connector reaches the loop. A horse corral, watering trough and pit toilets are close by. Hike the loop clockwise, as the park asks."},
+ {"id":"C3","trails":["C"],"x":1190,"n":-5602,"name":"Wall of Windows","desc":"The trail passes directly beneath this massive fin, worn through with large window-like openings. It is also visible from Bryce Point."},
+ {"id":"C4","trails":["C"],"x":1196,"n":-2832,"name":"The Cathedral","desc":"A tall formation of spires and buttresses that towers over the trail on the east."},
+ {"id":"C5","trails":["C"],"x":1788,"n":-1690,"name":"Navajo Loop link","desc":"At the north end of the loop a short trail leads to the bottom of the Navajo Loop. Hikers on the 6.4-mile Figure-8 cross here."},
+ {"id":"C6","trails":["C"],"x":2283,"n":-2898,"name":"Fairy Castle","desc":"Near the ridge crest on the east side of the loop, views open to the towers of Fairy Castle."},
+ {"id":"C7","trails":["C"],"x":1964,"n":-3212,"name":"Peekaboo tunnel","desc":"Near the end of the loop the trail passes through a short tunnel cut through a fin, then climbs back toward the connector."}];
+const ORDER={"A":["1","A1","2","3","4"],"B":["B1","B2","B3","B4","2","3","4","1","B5"],"C":["C1","C2","C3","C4","C5","C6","C7"]};
+const SPECIES={
+ brycebrush:{name:"Bryce Canyon paintbrush",latin:"Castilleja revealii",color:"#E0548C",shape:"spike",bloom:[6,7,8],sum:"A small pink-magenta paintbrush found only on the high plateaus of southern Utah, including the limestone slopes along the Bryce rim.",rule:(d,e,g,s)=>e>7700&&g<0.9},
+ wyobrush:{name:"Wyoming paintbrush",latin:"Castilleja linariifolia",color:"#D9362B",shape:"spike",bloom:[6,7,8,9],sum:"Utah's state flower: narrow, scarlet brush-tipped spikes among sagebrush and pines.",rule:(d,e,g,s)=>g<0.7},
+ markagunt:{name:"Markagunt penstemon",latin:"Penstemon leiophyllus",color:"#6A5BC8",shape:"tube",bloom:[6,7,8],sum:"Blue-purple tube flowers on leafy stems, a penstemon of the high southern Utah plateaus.",rule:(d,e,g,s)=>e>7500&&g<0.6},
+ flax:{name:"Blue flax",latin:"Linum lewisii",color:"#7FA6E0",shape:"cup",bloom:[5,6,7,8],sum:"Sky-blue, five-petaled flowers on wiry stems. Each flower lasts a day, and the petals drop by afternoon.",rule:(d,e,g,s)=>g<0.5&&s>-0.3},
+ gilia:{name:"Scarlet gilia",latin:"Ipomopsis aggregata",color:"#E2412B",shape:"tube",bloom:[6,7,8,9],sum:"Red trumpet flowers on tall stems, visited by hummingbirds. Grows in dry, open spots under the pines.",rule:(d,e,g,s)=>s>-0.1&&g<0.8},
+ wallflower:{name:"Western wallflower",latin:"Erysimum capitatum",color:"#F2B630",shape:"dome",bloom:[5,6,7],sum:"Rounded heads of four-petaled yellow flowers on a single stem, scattered on open slopes and along the rim.",rule:(d,e,g,s)=>g<0.9}
+};
+const FLORA={"A":["wyobrush","gilia","wallflower","flax"],"B":["brycebrush","markagunt","flax","wyobrush","wallflower"],"C":["gilia","wyobrush","brycebrush","markagunt","wallflower"]};
+const WILD={
+ deer:{name:"Mule deer",color:"#B98A5E",sum:"The large mammal you are most likely to see, browsing along the rim and in the meadows at dawn and dusk, and sometimes on the amphitheater floor."},
+ pronghorn:{name:"Pronghorn",color:"#C8945A",sum:"Tan-and-white pronghorn graze the open meadows on the plateau near the park road, not down among the hoodoos. Look for them on the drive to Bryce Point."},
+ squirrel:{name:"Utah prairie dog",color:"#9A9A96",sum:"A threatened species found only in southern Utah. Colonies live in the grassy meadows on the plateau, active from spring to fall; they are not in the amphitheater."},
+ chipmunk:{name:"Uinta chipmunk",color:"#B77A45",sum:"Quick, striped and bold around the rim viewpoints, where people feed them. Feeding wildlife is illegal in the park."},
+ lion:{name:"Mountain lion",color:"#C9A06A",sum:"Mountain lions live in the park but are almost never seen. Tawny with a long tail; they hunt mule deer, mostly at night."},
+ raven:{name:"Common raven",color:"#262626",sum:"Big black birds that ride the updrafts along the rim, often in pairs, and check the viewpoints for scraps."},
+ peregrine:{name:"Peregrine falcon",color:"#55606A",sum:"Peregrine falcons nest on the cliffs of the Pink Cliffs and hunt swallows and swifts over the amphitheater."},
+ bluebird:{name:"Western bluebird",color:"#3D78C4",sum:"A small blue thrush with a rusty breast, perching on snags at the edge of the ponderosa forest along the rim."},
+ woodpecker:{name:"Northern flicker",color:"#C8322C",sum:"A brown, spotted woodpecker with a flash of salmon-red under the wings, often feeding on the ground among the pines."}
+};
+
+const PHOTOS={"stop":{"1":[{"f":"../photos/pl_bryce_1_0.jpg","by":"Giuseppe Milo (www.pixael.com)","lic":"BY 2.0","src":"https://www.flickr.com/photos/87690240@N03/26474764066","t":"Sunrise in Sunset point - Bryce Canyon, United States - Landscape photography"},{"f":"../photos/pl_bryce_1_1.jpg","by":"andrew c mace","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/34155473@N07/4100048950","t":"Sunset Point, Bryce Canyon National Park"},{"f":"../photos/pl_bryce_1_2.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7750415310","t":"Sunset from Sunset Point - Bryce Canyon National Park"}],"4":[{"f":"../photos/pl_bryce_4_1.jpg","by":"scostello22","lic":"BY 2.0","src":"https://www.flickr.com/photos/23122882@N05/8377473106","t":"Thor's Hammer, Bryce Canyon National Park"},{"f":"../photos/pl_bryce_4_2.jpg","by":"daveynin","lic":"BY 2.0","src":"https://www.flickr.com/photos/44124370018@N01/6067795058","t":"Thor Hammer, Bryce Canyon National Park"}],"3":[{"f":"../photos/pl_bryce_3_1.jpg","by":"Nick / KC7CBF","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/22391804@N06/5196314895","t":"Two Bridges"},{"f":"../photos/pl_bryce_3_0.jpg","by":"Alex E. Proimos","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/34120957@N04/3447060658","t":"Two Bridges, Navajo Loop Trail, Bryce Canyon National Park"}],"A1":[{"f":"../photos/pl_bryce_a1_1.jpg","by":"andrew c mace","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/34155473@N07/4100047958","t":"Wall Street, Navajo Loop Trail, Bryce Canyon National Park"},{"f":"../photos/pl_bryce_a1_2.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7750413560","t":"Looking up Wall Street Section - Navajo Loop Trail - Bryce Canyon National Park"},{"f":"../photos/pl_bryce_a1_0.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7756229276","t":"Sunset on Wall Street - Navajo Trail Loop - from the Rim - Bryce Canyon National Park"}],"B1":[{"f":"../photos/pl_bryce_b1_1.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7626256582","t":"Sunrise from Sunrise Point - Bryce Canyon National Park"}],"B4":[{"f":"../photos/pl_bryce_b4_1.jpg","by":"andrew c mace","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/34155473@N07/4099290029","t":"Queen Victoria Hoodoo, Queens Garden, Bryce Canyon National Park"},{"f":"../photos/pl_bryce_b4_0.jpg","by":"Dave MacKenzie","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/13699325@N00/51955875560","t":"Queen Victoria hoodoo, Bryce Canyon National Park, UT"},{"f":"../photos/pl_bryce_b4_2.jpg","by":"James Marvin Phelps","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/66727626@N00/9623930399","t":"Queen Victoria"}],"B2":[{"f":"../photos/pl_bryce_b2_1.jpg","by":"Ted LaBar","lic":"BY 2.0","src":"https://www.flickr.com/photos/46154524@N04/52997282812","t":"Bristlecone Pine, Bryce Canyon"},{"f":"../photos/pl_bryce_b2_0.jpg","by":"Ed Coyle Photography","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/86984944@N00/6174185760","t":"Beneath a Bristlecone Pine - Bryce Canyon National Park"}],"C1":[{"f":"../photos/pl_bryce_c1_0.jpg","by":"Ken Lund","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/75683070@N00/2519289063","t":"Bryce Point, Bryce Canyon National Park"},{"f":"../photos/pl_bryce_c1_1.jpg","by":"Ken Lund","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/75683070@N00/2520123260","t":"Dawn, Bryce Point, Bryce Canyon National Park, Utah"},{"f":"../photos/pl_bryce_c1_2.jpg","by":"Ken Lund","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/75683070@N00/2519300927","t":"Bryce Point, Bryce Canyon National Park, Utah"}],"C3":[{"f":"../photos/pl_bryce_c3_0.jpg","by":"Ed Coyle Photography","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/86984944@N00/6174269682","t":"Wall of Windows - Bryce Canyon National Park"},{"f":"../photos/pl_bryce_c3_1.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7647232516","t":"Hoodoos and arches - Peekaboo Trail - Bryce Canyon National Park"},{"f":"../photos/pl_bryce_c3_2.jpg","by":"James Marvin Phelps","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/66727626@N00/331118020","t":"Wall of Windows and Hikers"}],"C7":[{"f":"../photos/pl_bryce_c7_0.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7641022082","t":"Tunnel - Peekaboo Trail - Bryce Canyon National Park"},{"f":"../photos/pl_bryce_c7_1.jpg","by":"Al_HikesAZ","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/7202153@N03/7653646194","t":"Peekaboo Trail - Bryce Canyon National Park"}]},"animal":{"deer":[{"f":"../photos/sp_deer_2.jpg","by":"LassenNPS","lic":"BY 2.0","src":"https://www.flickr.com/photos/61860846@N05/9401081133","t":"Pair of Mule Deer: Odocoileus hemionus californicus"}],"lion":[{"f":"../photos/sp_lion_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14209025856","t":"Mountain lion (Puma concolor) family group"}],"squirrel":[{"f":"../photos/sp_prairiedog_0.jpg","by":"James Marvin Phelps","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/66727626@N00/336751791","t":"Utah Prairie Dog"},{"f":"../photos/sp_prairiedog_1.jpg","by":"James Marvin Phelps","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/66727626@N00/337867686","t":"Utah Prairie Dog"},{"f":"../photos/sp_prairiedog_2.jpg","by":"James Marvin Phelps","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/66727626@N00/338494280","t":"Utah Prairie Dog"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}],"woodpecker":[{"f":"../photos/sp_flicker_0.jpg","by":"morroelsie","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/97902275@N05/27334980520","t":"Northern Flicker"},{"f":"../photos/sp_flicker_1.jpg","by":"jerrygabby1","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/56509109@N04/26742779021","t":"Northern Flicker Female"},{"f":"../photos/sp_flicker_2.jpg","by":"Kelly Colgan Azar","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/16473336@N06/11084101403","t":"Northern Flicker, m."}],"pronghorn":[{"f":"../photos/sp_pronghorn_1.jpg","by":"Linda, Fortuna future","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/53470892@N08/28945461768","t":"Pronghorn Antelope"}],"chipmunk":[{"f":"../photos/sp_chipmunk_1.jpg","by":"Tony Frates","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/54551481@N08/8069190552","t":"Uinta Chipmunk blends into boardwalk"},{"f":"../photos/sp_chipmunk_0.jpg","by":"Elizabeth Haslam","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/34209020@N02/7694904502","t":"Sleepy head Uinta chipmunk (Neotamias umbrinus)"}],"peregrine":[{"f":"../photos/sp_peregrine_0.jpg","by":"Jon David Nelson","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/65771669@N07/30098270026","t":"Peregrine Falcon"},{"f":"../photos/sp_peregrine_2.jpg","by":"FurLined","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/8752533@N04/3875330734","t":"Peregrine Falcon"}],"bluebird":[{"f":"../photos/sp_bluebird_1.jpg","by":"FotoGrazio","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/94075184@N00/48580018861","t":"Western Bluebird"},{"f":"../photos/sp_bluebird_2.jpg","by":"USFWS Headquarters","lic":"BY 2.0","src":"https://www.flickr.com/photos/50838842@N06/19676672280","t":"Western Bluebird, Juvenile, Arizona"}]},"flower":{"brycebrush":[{"f":"../photos/sp_brycebrush_0.jpg","by":"Tony Frates","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/54551481@N08/5460148022","t":"Castilleja revealii"},{"f":"../photos/sp_brycebrush_1.jpg","by":"Tony Frates","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/54551481@N08/52014140129","t":"Reveal's paintbrush"}],"wyobrush":[{"f":"../photos/sp_wyobrush_0.jpg","by":"Jim Morefield","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/127605180@N04/16534249393","t":"Wyoming paintbrush, Castilleja linariifolia"},{"f":"../photos/sp_wyobrush_2.jpg","by":"brewbooks","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/93452909@N00/5038222506","t":"Castilleja linariifolia"},{"f":"../photos/sp_wyobrush_1.jpg","by":"Jim Morefield","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/127605180@N04/17152797812","t":"Wyoming paintbrush, Castilleja linariifolia"}],"flax":[{"f":"../photos/sp_flax_0.jpg","by":"FarOutFlora","lic":"BY 2.0","src":"https://www.flickr.com/photos/46821817@N08/5259435245","t":"Linum lewisii “Blue Flax”"},{"f":"../photos/sp_flax_1.jpg","by":"skoch3","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/10167166@N04/4203632543","t":"Linum lewisii, blue flax flower, Albuquerque"}],"gilia":[{"f":"../photos/sp_gilia_1.jpg","by":"brewbooks","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/93452909@N00/182041426","t":"Ipomopsis aggregata - Scarlet gilia"},{"f":"../photos/sp_gilia_0.jpg","by":"brewbooks","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/93452909@N00/182041711","t":"Ipomopsis aggregata - scarlet gilia"}],"wallflower":[{"f":"../photos/sp_wallflower_0.jpg","by":"David A. Hofmann","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/23326361@N04/5657981044","t":"Erysimum capitatum Western Wallflower"},{"f":"../photos/sp_wallflower_1.jpg","by":"David A. Hofmann","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/23326361@N04/3028088628","t":"Erysimum capitatum Western Wallflower"}]}};
+/* ================= terrain ================= */
+const X0=-700,X1=4500,N0=-7400,N1=2600,STEP=50;
+const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
+function hash(i,j){let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return (a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v)*2-1;}
+function fbm(x,y){let s=0,a=.5,f=1;for(let o=0;o<4;o++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5;}return s;}
+function closest(pts,x,n){let bd=1e9,bf=0;for(let k=0;k<pts.length-1;k++){const a=pts[k],b=pts[k+1];const dx=b[0]-a[0],dn=b[1]-a[1];let t=((x-a[0])*dx+(n-a[1])*dn)/(dx*dx+dn*dn);t=t<0?0:t>1?1:t;const d=Math.hypot(x-(a[0]+dx*t),n-(a[1]+dn*t));if(d<bd){bd=d;bf=a[2]+(b[2]-a[2])*t;}}return {d:bd,f:bf};}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25;}
+function creekDist(x,n){let m=1e9;for(const c of CANYONS){const r=closest(c.pts,x,n);if(r.d<m)m=r.d;}return m;}
+function interpField(A,idx,cum){const known=[];A.forEach((a,i)=>{if(a[idx]!==null)known.push(i);});return A.map((a,i)=>{if(a[idx]!==null)return a[idx];const lo=known.filter(k=>k<i).pop(),hi=known.find(k=>k>i);const t=(cum[i]-cum[lo])/(cum[hi]-cum[lo]);return A[lo][idx]+(A[hi][idx]-A[lo][idx])*t;});}
+TRAILS.forEach(T=>{const A=T.anchors,cum=[0];for(let i=1;i<A.length;i++)cum.push(cum[i-1]+Math.hypot(A[i][0]-A[i-1][0],A[i][1]-A[i-1][1]));
+  const E=interpField(A,2,cum),M=interpField(A,3,cum),pts=[];
+  for(let i=0;i<A.length-1;i++){const L=cum[i+1]-cum[i],st=Math.max(1,Math.ceil(L/30));for(let s=0;s<st;s++){const t=s/st;pts.push({x:A[i][0]+(A[i+1][0]-A[i][0])*t,n:A[i][1]+(A[i+1][1]-A[i][1])*t,e:E[i]+(E[i+1]-E[i])*t,m:M[i]+(M[i+1]-M[i])*t});}}
+  const L=A.length-1;pts.push({x:A[L][0],n:A[L][1],e:E[L],m:M[L]});T.pts=pts;
+  let gain=0,hi=-1e9,lo=1e9;pts.forEach((p,i)=>{if(i&&p.e>pts[i-1].e)gain+=p.e-pts[i-1].e;hi=Math.max(hi,p.e);lo=Math.min(lo,p.e);});T.gain=gain;T.hi=hi;T.lo=lo;T.total=pts[pts.length-1].m;});
+const TR=Object.fromEntries(TRAILS.map(t=>[t.id,t]));
+const Hg=new Float32Array(NX*NN);
+const DEM_B64="vB+8H70fvx/DH8Qfxh/HH8kfzB/OH9Ef1B/YH9sf3x/hH+Uf6h/uH/If9h/7HwAgBCAHIAogEiAaICIgLCA6IEwgYSBgIFkgUiBLIEYgQiA+IDggMiAsICcgJCAiICIgJSAoICkgLCAzIDUgNCAyIDAgLyAtICsgKiArICwgLSAvIDIgNSA7IEAgQyBGIEkgTCBRIFIgUiBSIFEgTiBMIEogSCBIIEkgTCBOIE4gSyBEIDwgOSAcIPcf2h+7H5YfdR9RHzwfPh9AHy8fFR/uHtIewR+/H8Afwh/EH8YfyB/KH8wfzx/RH9Mf1h/ZH90f4h/kH+cf7B/xH/Uf+h//HwUgCiAPIBQgHCAkICggLiA9IFQgYSBiIF0gWCBRIEsgRSA+IDcgMiAsICkgJyAmICcgKyAwIDIgMiBBIEogRSBBID0gOSA1IDIgLyAuIC4gLyAxIDMgNiA9IEIgQyBEIEIgQCBCIEEgQCBDIEMgQyBDIEIgPiA9ID8gRiBIIEggRiBDID8gPyAqIP8f4B/BH50feB9aH1AfVx9PHzgfHx8CH+4exR/DH8MfxB/GH8gfyx/MH88f0R/TH9Yf2B/bH94f4x/oH+sf7x/0H/kf/R8DIAkgECAXICIgKyAwIDIgNSBSIGQgYyBjIF8gWiBVIE8gRyA/IDYgMiAtICsgKSApICogLyA2ID8gSSBcIF0gViBQIEogRSBBIDwgNiAyIDIgMiAzIDcgPCBCIEQgRSBDID0gNSA2IDUgNSA4IDcgOyA8IDogNyA0IDogQSBDIEQgQyBBID8gQCAyIAsg6h/HH6MffB9lH2sfcB9cHz8fJx8PH/seyh/IH8cfyB/JH8sfzR/PH9Ef0x/WH9gf2h/dH98f4x/oH+0f8h/4H/wfASAFIAsgFCAdIC4gOCA+IEUgTSBbIGMgZSBjIGEgXiBaIFIgSCA/IDggMiAuICsgKiAqICsgLyA4IEcgVSBiIGwgbiBoIFogUyBOIEkgQiA9IDsgOiA6ID8gRCBIIEkgRyBDIDwgNSAwIC8gMCAxIDEgOCA3IDIgMCAzIDogPiBAIEEgQCA/ID4gOyA2IBgg+R/VH6sfih+GH5Mfgx9pH0ofLR8SH/8ezh/MH8sfyx/MH80fzx/RH9Mf1R/YH9sf3R/fH+Ef5B/qH/Af9R/7HwEgBiAJIAsgFCAiIC8gOiBJIFogXyBjIGUgZCBjIGIgYCBcIFMgRyA/IDcgMiAtICsgKiArICwgMCA5IEogWCBlIHIggSCMIH4gaCBeIFcgTiBKIEYgRCBGIEkgTSBQIFAgTSBHID8gOCAwICwgKyArIC8gNSAxICsgLCAzIDggPCA+ID4gPSA8IDogOSA1ICcgBCDfH70fpB+cH5Ufex9iH00fLR8OH/Ye0R/PH84fzh/PH9Af0h/UH9Yf2B/aH90f4B/iH+Qf6B/uH/Mf+h//HwUgDCASIBMgGiAkICogMSBFIFwgZSBlIGQgZCBjIGEgXyBaIE8gRSA9IDcgMSAtICsgKiAqIC0gMiA9IEggWSBvIG8geyCLII0gfCBqIF4gWyBVIE8gTiBPIFQgVyBXIFcgVSBNIEIgNiAxICogJSAkICYgKiApICYgKCAtIDUgOiA8IDwgOiA6IDcgNCA1IC0gDCDtH9Qfux+fH38fXB9BHzUfIh//Huoe0h/RH9Af0R/RH9If1B/WH9gf2x/dH+Af4x/lH+gf7B/xH/cf/h8FIAogESAcICIgJyAqICogMCBGIF8gZCBkIGQgYiBgIF4gWiBUIEogQSA6IDUgMCAtICsgKSAoIC0gNiA/IDUgJCA5IFEgaiCBIIwggyB4IHQgbSBeIFUgWCBYIFogYiBiIGAgXCBVIEsgOyAyICggHyAZIBogHSAfIB4gICAnIC0gNSA6IDkgMiA0IDYgKiArIDEgGSD7H90fuR+UH3EfVR86Hxof+h7wHuwe1B/TH9If0x/TH9Uf1h/YH9of3B/eH+If5R/pH+wf8B/1H/sfAyAKIBMgHyAqIC8gMyA2IDIgOSBVIGEgZCBjIGIgXyBcIFkgVCBOIEYgPiA3IDMgMCAuIC0gKyAnICUgLyAoIAwg7R8DIB8gUSBzIIMgiSCFIIYggCBsIFsgYCBkIGYgbyBzIHEgZiBdIFQgPyAxICYgGSAOIBAgFiAVIBUgGCAaIBsgJiAzICkgHiArIC0gFCAbIC8gISAAIN0fth+RH3AfUB9LHzQfEh/+Hvke1R/UH9Qf1R/WH9cf2R/bH9wf3x/gH+If5h/rH+8f8x/5H/8fBiAQIB4gLSA5IEIgRiBIIEUgTSBhIGMgZCBjIGAgXCBYIFQgUCBKIEIgOyA0IDEgMCAwIDAgMiAvIBogAiDuH9wfxR/fH/kfMiBiIHQggyCLII4giSB4IGggaSBwIHggfyCEIIEgcCBlIFwgSiA4ICggGSAMIA0gFCANIAcgESARIPwf+h/1H+gf7B8BIAIg7x8GICogIyADIOEfuh+YH3cfTR88HzIfFx/xHuce1h/WH9Yf1x/YH9kf2h/cH98f4R/jH+Qf5x/sH/Ef9h/8HwIgCCATICUgNyBJIFYgWyBZIFcgVyBcIGUgZSBkIF8gWiBWIFIgTCBGIEAgOSA0IDIgMiAyIDQgNSA3IBog5h/LH70frh+8H+gfESBBIGsgciB6IIUgiCB+IHYgdiB7IIMgiSCIIIAgdSBqIGAgUCA8ICsgGyAMIAwgDiD8H+cf9R/wH9gfyB+7H68ftR/AH80fyB/bHxwgIyADIOUfxh+iH4QfYx9BHyEfBR/1HvEe1h/XH9gf2R/aH9sf3R/fH+Ef4x/mH+gf6x/uH/Qf+R/+HwQgCiAYICsgQiBXIGEgZSBkIGMgZCBiIGogaSBlIGAgWSBUIFAgSyBFID4gNiA0IDQgNCA1IDcgOCA2IAkg1h+sH5Qfjx+qH8kf7B8hIEcgUiBZIHEghiCCIH0gfiCDIIggiiCHIH8gdSBrIGEgUiA+ICwgGiALIPcf6R/YH8AfwB+7H7Afph+ZH48fkx+fH6YfrB+0H8wf1x/VH+Afzx+sH40faB9CHycfGh8hHw8f2B/ZH9of2x/cH90f3x/gH+If5R/pH+wf7h/yH/Yf+x8AIAUgDCAbIDEgTCBgIGUgaSBtIHIgdiB2IHIgbCBmIF8gWSBUIE8gSyBFID4gNyA2IDkgOSA5IDkgOSArIPMfwR+WH3IfdR+JH8Ef6R8FIA0gFCAuIG0ghCCEIH8ggyCIIIogiSCEIH0gdCBrIGAgUCA7ICogGCADIOYfyx+xH6Efmx+YH5Efih+AH3Ifdx+GH44fkh+XH5wfnx+iH7kfxB+jH3wfUB8zHxwfDR/wHuUe2R/aH9wf3R/fH+Af4h/jH+Qf5x/rH+4f8R/1H/kf/R8CIAcgCiAaIDEgSiBhIGcgbCB0IH4ggyCBIHcgbiBlIF0gWCBTIFAgTCBIIEQgQCBCIEAgPCA7IDogOCAQINEfox99H1IfQR9lH5kfyR/dH+kf9x82IHIghiCJIIMghiCLIIsgiCCBIHogcyBqIGIgUSA4ICQgFiANIPEfyR+mH4ofeR92H28fZx9mH1QfWB9mH24fch90H3cffR9wH4MfoB+eH2sfPh8eHw4f+R7zHtQe2x/cH94f4B/hH+If5B/mH+gf6x/uH/Ef9B/4H/sf/x8EIAkgECAcIC0gQCBVIF8gaiB3IIEghyCCIHcgayBgIFogViBTIFAgTiBNIEwgTCBLIEMgPCA8ID4gNSD2H6EffB9iHysfIR87H2gfoR/BH88fACBfIHkgjCCNIIwgjSCMIIsghiB+IHcgcCBqIGQgTyAwIBYgDCAUIAEgzx+nH4IfZB9RH0sfQx9CHzQfOR9FH0gfTB9NH04fVx9GH1Yffx+VH20fQh8fHwgfBx8LH+Ue3R/fH+Af4h/jH+Qf5x/qH+wf7h/xH/Qf9x/6H/4fASAFIAsgEiAdIC8gPiBOIFogaiB7IIMgiCCDIHggaSBdIFkgViBTIFAgTyBRIFYgWyBUIDkgLSAbIDUgMyDlH3YfTx83HwkfBR8pH04fdh+WH7Yf3x8pIFwgbCCFIJIgkyCOIIoggiB5IHEgbCBlIFkgNCAWIAMg9R8QIAkg0h+oH34fXB8/Hy4fIx8cHw8fEh8ZHyAfKR8uHygfJh8eHywfXh+CH20fQR8lHx8fHh8XH/ke3x/hH+Mf5R/nH+kf6x/uH/Af8h/1H/gf+h/9HwAgAyAGIAkgDyAbICsgNyBNIGIgbSB+IIkgiSCEIHsgbyBiIFsgWCBUIFEgTyBUIF4gYSBLIBUg7h/UH/IfGCDaH2UfJx8KH+se6B4LHzEfaR+WH7kf4R8HIBsgMCBdIH8gkCCOIIcgfCBwIGcgZSBeIDogDiD9H+kf2x/1H/kfzR+jH3QfUR8sHxQfBh/7Hu4e7R7yHvgeAx8SHwMfAB8GHxgfOx9zH2wfMh8SHxQfIh8fHwMf4B/iH+Uf6B/rH+0f7x/yH/Qf9h/5H/sf/h8AIAMgByAJIAwgECAbICcgMSBFIF4gbSB9IIggiiCHIIAgdiBqIGAgWiBWIFQgTSBJIFogQiAZIO8fyh+dH4ofph+hH0cfCx/mHsoewR7sHi8fdB+cH7EfwB/bH/EfAyArIFsggyCMIIMgciBhIEUgMiAsIBcg/h/pH9Afuh/UH+ofwB+ZH24fRx8cH/8e7R7dHs8ezB7PHtMe3x71Huge5R7zHgofIB9cH24fMx8LH/Ee/R4EH+8e4h/kH+cf6x/uH/Ef8x/2H/gf+x/9H/8fASAEIAcgCiAQIBYgGyAiICggLyBAIFkgbCB7IIYgiiCJIIYgeyBuIGMgXCBbIFwgVCA3ICkgEiDgH7ofqR+iH2UfKh8kHxUf5B7AHqUerR7eHiwfZR99H4sfmx+2H8gf4B/6HzcgeiCKIHkgXyA3IBggACD5H/gf8B/dH74fox+uH8wfqx9+H1ofOx8QH/Ee2x7HHrYesB61HrseyB7eHtMeyh7pHgMfGh9JH3EfNR8QH/Qe4B7RHsge4x/nH+sf7h/xH/Uf+B/6H/0fACABIAMgBCAIIAsgESAZICEgKSAsICogLiBBIFsgbSB+IIkgiiCJIIUgfCByIGggYiBgIGEgWCA0IAIg2x+qH3wfZh9ZH1UfIB8FH/geyB6cHoIekh7DHgAfMB9iH30fhR+PH6AfvB/iHyUgeyCEIGIgLyAJIPEfzh/CH80fyh/NH7gfiB+DH6Qfix9eHzkfJh8BH+Qezh60HqEemx6eHqMewx7ZHrcetR7mHvoeBR8VH10fTx8gHwgf9x7eHuke5x/qH+4f8h/1H/kf/B//HwIgBSAGIAggCCALIBIgGyAkICwgNCA5IDMgMyBIIGAgcCCAIIogiyCJIIEgeiByIGsgZSBjIGIgWCA4IPwfvB+DH1wfRB8jHxkf+x7kHtgeqh5+Hm0efB6pHtMeDx8+H10faB9vH34fmR/EHwUgfiBxIEUgEyDiH7cflx+JH5QfpB+4H6ofch9fH3Efax8+Hx8fDh/4Htgevx6nHpEehh6JHqIezB7HHpQeuh7bHuUe7h4QHz0fQR8oHxUfCB8AH/ke7B/vH/If9R/5H/0fASAEIAcgCSAMIA4gDSAOIBggJCAvIDggQiBHIEMgSCBYIGQgdSCDIIsgjCCIIH8gdyBrIGggZiBfIFsgTyA7IA0g1B+SH0gfHh8CH/Me1x7AHq0ehB5hHlsebx6cHsMe+B4eHy0fQB9KH1wfgx+2Hw0gfyBjIC4g6R/FH5cfch9hH2sfiB+fH5UfZB8/Hz0fSB8xHxAf9B7hHsYesh6bHoIeZR6PHtgezB6EHqce0x7MHs8e5x4HHxkfHx8cHxIfBx8EH/we8B/zH/Yf+h/9HwEgBSAKIA0gDyASIBQgFSAXICAgLCA6IE4gWSBXIFMgWCBiIHAgfCCFIIwgjiCOIIQgbSBiIEggSCA0IC8gMiAyIBIg+h+2H1EfFR/sHs4eth6cHoIeZR5OHk8eZh6OHrge3x4AHxEfHB8tH04feB+gH/4fdyBlIP4fuB+QH3EfWx9BH0AfZB+BH3wfRB8eHxwfJR8oHw8f6h7KHrgeoR6BHmoeSh5VHmgeZR6FHtIevh62Hs4e1h7pHvUeDB8KH/we+x7/Hv4e9B/3H/of/h8BIAQgCCAOIBIgFSAXIBogHSAgICcgLiBBIFsgYiBhIF0gYyBtIHsghSCLII8gkCCPIH8gXCAvIA0gCSD8H+If5h/vH9sfwx95HzsfCR/fHrUenB6DHmYeTR5AHkgeYR54HqceyR7hHvQeCB8iH0EfcB+RH9kfcyBTINwfiR9jH1IfPB8ZHxAfJB9LH1cfIh8CH/keCB8ZHwwf5h67HqUekx6BHl4eOh4oHjYebB7MHqMepx7QHsQezx7RHuceAh/8HvEe8R78Hv4e+B/7H/8fAiAGIAkgCyAQIBYgGiAdICEgJCAnICsgMiBHIF0gZSBoIGkgbiB2IIEgiSCPIJEgkyCKIHEgTiAUINEfux+dH44fgh9yH5IfdB9AHxkf8h7PHqwekB5vHk0eOB4sHjweUh5nHo4erR7BHt4e/x4dHzcfYR+KH7EfTyBHILcfdx9HHycfEB/1Hu0e9h4UHycfBR/qHtoe1h7xHv4e4x61Hp8ejB5rHlgeMx4eHjEeVB5yHo4ezR6wHroevh6+HuEe+B76HvEe6B7wHvUe/B8AIAMgBiAKIA8gEiAWIBsgHyAkICkgLSAwIDEgOCBSIGAgaCBvIHUgeSB8IIIgiSCQIJMggCBlIFggNyD/H6AfXB9EHz4fLx8vH1YfRB8kHwMf3x7BHqUehx5kHj8eKB4iHiseRB5eHnIehB6vHtEe9B4SHy4fTx9+H5kfDiA9IKsfch9JHwof6h7YHtIe3x7xHv4e6x7UHrseqx7MHvoe3x6xHqMejR5mHkceHR4VHh4eOB5qHqoezB6YHpsemh6+Hs4e7h74HuYe1R7XHtseACAEIAggCyAOIBQgGSAdICEgJSAqIDAgNyA8ID4gQiBYIGMgbCB2IH8ggyCEIIQgiSCQIJIgayA9IBsgASDcH28fNx8aHxIfBx8KHycfHh8HH/Me0h6zHpgeeh5XHjQeHR4YHiUeOh5KHlkedR6gHske6B4GHyMfPx9uH5Qf6B8QIKQfaB87H/oezx6+Hrcewx7SHtoezh61Hp0ejh6pHuYe8R61Hpsejx6DHnweLR4NHg0eNx5gHo8evx54Ho4ewR6yHs0e8B75HuMeyR7GHsYeBCAIIAwgESAWIBsgICAlICggKiAvIDggRSBOIFEgUiBZIGQgbyB6IIQgiCCJIIogjiCSIIYgVSAfIOQfvB+YH2ofMR8JH/Ue6R7oHgQf/h7eHtAevh6iHoweah5FHigeDx4JHhseKR4xHlEeax6JHrse2x72HhEfLB9UH44f2B/iH5ofWh8fH+oeuB6mHpgemx6uHrkerx6YHoUech6GHrse5R7THr4erx6kHmYeKR4QHv0dDh44HnMegB5vHo0enx6eHtke6R75HvUe1B7EHrIeCSANIBIgGCAeICIgKSAvIDEgMCA0IEYgViBeIGAgXiBcIGYgcyB9IIUgiyCMII4gkSCPIGYgMSD8H74fgR9gH0EfHh/9HtseyB7IHt4e3x7JHq0epx6ZHoYeYx44Hh0eBx4BHg4eFx4mHkMeWh5wHp8evh7THvQeGR9CH4Yf3R/aH3wfPR8EH9EenR6PHn0ebB51HoUehx57HmkeUh57HqIevR7YHsMepB6UHlYeLB4SHgAe+x0eHkYeYR6jHpMefx6kHtYe0R7eHuMe2B7QHrweDCATIBggICAnICsgMCA7IEAgQiBDIFIgYSBoIGsgayBpIG8geCCBIIcgiyCOII8gjCBuIEYgEiDRH6QffB89HxkfBB/rHs0esB6qHroeuR6yHpwekB6KHn4eWh42HhweBx7+HQYeBx4QHi0eSh5qHooelR6nHtIeCx9DH4gfyx+mH2UfMx/vHq0egR56HmUeSx5LHlYeYB5gHlUeQh5gHnoelB69HtcetR6XHpUeVR4XHgEe9x0JHksewh7FHmseix67HrYelR6wHscexR7cHtEeECAXIB4gJyAwIDogQCBJIFIgWiBZIFkgZiBzIHsgeiB4IHkgfSCDIIcgiSCIIIQgdSBQICIg/B/BH54fbB8sHwEf5h7NHrYenB6GHpMelh6NHoMech5pHmQeTh4uHhceBh77Hf4d/h0MHiYeRh5fHmoecB58HrAe/x5DH34fqh+FH1AfGh/XHpUeah5UHk0eMx4qHi8ePx4/HjUeKB41HlIeeB6cHs4e0B6cHp4elB4rHg4e+h0EHjQeOR4rHl8ehh6JHnMegR6gHp4e2B71HtoeFCAbICMgLCA6IE4gWSBdIGUgbiBuIGwgciB8IIYghCCAIH8gfiCAIIEgfyB5IG0gXyA9IAQg0R+uH5cfWR8aH/Me1h66HpoefB5mHnMefx5uHmYeTx5EHj0eNx4rHg4e/h32HfUd+R0GHigePR5HHk8eXh5wHpEe6B4nH1sfkB9rHyof7h6xHnweUx45Hi8eIx4QHhoeOB4tHiEeIR4fHkoegh6KHq8e0R6gHnUefR4+HhYe9h3dHfodBR4eHmEefR5VHjweYx51Hrge1h7lHtkeFyAfICggMCBEIF0gZyB4IIUggyCBIIIggSCCIIggiSCGIIIgfiB8IHogdSBsIFggKCAFINofnx+BH2IfTx8XH+cexx6qHogeZB5PHlYeYh5QHkYeMR4nHiIeHB4WHgge9h3oHekd9h0OHjAeLB4wHkgeWB5lHn8ewh4DHz0fbB9EHw4fxx6SHmcePx4nHhgeDx4AHhMeWx46HhkeIx4jHl8ebh5vHpketx6mHmkeNh4pHiMeAx7YHcwd6x0oHl0eUR4aHiUeXB6NHqUepx7BHtMeGiAjICwgOCBNIGEgbyCAIIwgkCCNIIsgiyCKIIsgiiCIIIIgfCB4IHMgbCBfIDsgAyDJH5kfaB9THzcfHx8FH+Uewx6hHoEeYB5EHj8eUB5BHiceHR4IHg0eCR7+Hfwd7R3gHeEd+R0SHh4eDB4dHi8eRB5fHm4ekB7cHh8fRh8hH+ceqR6CHlMeMB4eHgge/R31HRUeUR4iHhEeLx4eHjgeNh5XHoseox6rHpkeQB4lHioeEx7oHcwd0x0AHiseCh4QHjkecR50Ho4emx6rHskeHiAmIC4gOCBPIGEgcCCAIIogjiCPII8gjiCNIIsgiiCFIH8geSB0IG0gZCBIIBEg3R+hH20fPh80Hx8f/h7nHtEesh6ZHoIeYh4+HioeNh4yHh0eDx4DHgMeCB7/Hewd4R3ZHd4dBh4OHgEe/R0GHhkeNx5KHl4eeh63HgcfJB8DH8kekR5tHkUeKh4aHgoe9B3fHQYeNB4XHgUeHh4EHgIeLR5pHokelR6THqYebB5AHk4eHh7xHdEdyB3aHfQdEh5EHlweVR5qHoQekx6gHq8eISApIDIgPiBTIGEgbyB9IIcgjCCOII0gjSCNIIwgiCCDIHwgdiBvIGcgVyAtIPkfxR9xH0IfNB8iHwQf5h7KHrYeox6PHnoeYB5AHiceJh4mHhAeAh7/Hfkd/x0FHuod1x3WHdkd/x0HHvcd9R38HQgeGR40HlAeah6dHvUeCh/eHqkeiB5WHjceIh4RHg0eAR7VHdsdCB4OHv4dCB4CHgkeMR5hHmQedR5sHoEelx55HlseKx4MHuMdxB3HHe4d/x0HHikeQh5yHoIehR6HHpYeIyArIDQgQSBVIGMgbSB4IIEgiSCNII0gjSCMIIoghSB/IHggciBqIGEgQCAJINUfoB9bH0cfLh8EH+cezx6uHpwekR6CHmweVR45HiYeDx4IHgUe/R31He8d7R35Hegd2h3WHdYd/B0BHuQd6h32HQIeDx4tHkweah6iHtweFR/mHpYebR5PHjAeGh4DHvQd8B3ZHc0d5R0GHucd+R3/HR0eMx48HjAeXR5JHmYemR6bHoYeQR4dHu4dwh2xHcEdyB3hHRwePh5ZHmwedx50Hn0eJSAsIDIgPSBPIFwgaSB2IIAgiCCLIIsgiiCIIIQgfiB4IHIgbSBmIFcgKyD9H7wfhh9RH0QfKB/6HtweuR6cHooeex5uHloeQh4tHiAeDB4CHv8d+B3vHeQd3h3dHd0d2x3ZHdgd7x3eHdQd8x0THhceJh42HlEeah6aHtEeHR8FH4EeSx44HiceDR4FHucd1R3QHccdzB0FHuUd4h0DHhseJB4jHiEeMR4yHmsedh5fHoIeVx4oHvodxh2kHasdvR36HSseLh4nHkAeTh5nHn0eJyAsIDMgPSBMIF0gaSB2IIEgiSCKIIcggiB/IHogdCBuIGkgZiBjIE4gIyD6H8Efmh9WHzQfIx/+HuAewx6lHocech5hHkweMx4lHiAeIB4bHv8d9h3tHeId2B3THdEd2h3dHc8d1x3SHd0dDR4zHiIeIB4tHkQeVh53Hrwe4R4RH4MeQB4nHhceBx7/HeEd1x3KHb4dvx3gHeUd2B31HQceFh4IHvcdBR5AHmgeYB41Hj4ebh5VHhYe1B2kHaMdtR3RHd0d5B0JHjUeUx5tHoIeKSAsIDAgNiBJIF0gaSB3IIQgiiCKIIcgfiB3IG8gZyBhIF0gViBSIEMgHCD2H88fxx+GHzofKh8SH+we0R60HpMedx5hHkseMR4lHiceLh4tHhEe/B3zHekd3h3UHcodxh3JHbsdzx3uHQkeCh7/HQAeBh4mHjUeTR5gHmAeeB72HoweOh4fHgseAx4DHvUd5B3WHcAdrx3AHdgdvR3lHQse+x3jHeAdDh5HHlwePB4EHgYeMh5YHjse6h2mHZ4drh25Hcwd7R0aHkwebh5qHn0eLyAvIDEgNiBIIFogaCB4IIQgiyCMIIkgfCBvIGcgWiBHID0gOiAxIDEgHiAFIPIf3B+ZHzcfSR8kH/ge3B6/HpoefB5hHkwePB5CHkceNh4tHigeDx4BHvId6R3fHcwdtx2zHa8dzR33HfEd5x3mHfUdCh4pHiceMR4zHj4eXh6oHp0eNx4XHgkeCR4JHgkeCB4LHtkdpx2wHb4dsB3WHQge4x3UHeUdER4uHkQeKx7yHdAd6R0MHgQe2R2dHZEdnh21HcwdBh5ZHnMefx6HHokeOCA4IDwgRiBQIFogbCB8IIUgjCCOIIogdyBgIFQgQSArIBQgBCABIAUgFSAUIPkf6R+/H3kfZh8rH/4e3h67HpYedR5UHj0eNR5RHlkeOR4zHjEeLx4MHv8d+x3rHdgduh2qHaQdvB3XHdId1B3eHfwdCx4JHiceJh4bHiweTB6IHpQeIh4OHvwd+B3wHeMd3x3mHeUdyB2mHa4dqx3IHecd2B3WHeQd/B0RHi0eDh7kHbQdrx27HaodmB2HHYgdlR2wHdId+B0zHqYejh6cHqQeQSBKIFIgVyBeIG4geyCDIIggjiCRIJIgcCBAICEgFyARIPkf1x/UH94f+h/1H9MftB+iH3AfQB8bH/Aeyh6nHo0eZx4/HiseIB4dHjEeIR4gHi8eMh4mHhUeCx72HeEdwh2mHaUdsB21HcYd4B3vHQge9h36HR4eBR4KHikeVB52Hm4eIB4KHvod3x3UHdAdyx24HbYdsR2cHZIdoB26Hcwdxh3eHekd8R0CHhoe5h2wHaQdmR2WHZUdhh2CHYYdlh2wHcwd5R36HT4egB6gHq4eSCBaIGMgayB4IIUgiiCNIJAgkiCSIIYgUSAkIPYf7R/qH78foh+YH7Qf7B/qH78flx9rH0MfHB/6HuAevx6gHoQeXh49HigeFR4EHgkeCx77HQoeGB4aHhQeHh4XHgce0B2jHZodoh2qHbUdxh3UHegd1B3iHd8d6x0FHhMeMh5LHnEeOB4cHhIeDh4BHvcd6h3NHb0dvx2vHYcdjB2tHbodsR3AHcsd4x3rHfodzR2gHY4dhR2CHYQdgh2DHY0dnx22Hckd8R0vHlMeeR6ZHrAeTSBeIGwgeiCGII4gkiCUIJQgliB8IFwgKCD1H9gfxx/HH5cfbx9lH3cf1B/vH7gfiR9mHyUf/R7lHskesh6WHnceVR48HikeFx4JHv0d9h3kHeQd8B3xHfQdEx4iHiMe7x2ZHY0dlx2fHacdqh27HcwdvB3THd0d6B3rHfMdDR41HmseYx4wHikeKB4dHhgeCx72HeIdvh2oHYkdhR2XHZ0dnR2kHawdxh3DHbkdrB2YHYIdcB1qHW0deh2FHZIdoh2xHckd5x0lHmwejB6jHr0eTiBdIHEggyCNIJIgliCSIJIghyBcIBkg+R/iH7wfnR+KH2sfTR83Hy8fgx/tH7gfdx9BHxwf6R7HHrMenB6BHmAeSR4wHiQeDh4FHvod6R3cHc8d0B3SHdIdzx3oHesd8h2uHYgdjx2WHZ0dpB2rHakdwB3gHdcd0h3WHfkdEh4hHk4ecR5THkgeMx4jHggeBx4IHu0dtx2THYUdhB2HHYYdjR2QHZEdoR2gHZcdkx2KHXQdYR1hHWsdeB2JHZkdqR23Hcwd4B0NHlwegR6iHsMeTyBZIHIgiSCRIJYgjSByIF4gSiA5IAUg2R/IH7UfgB9hH0kfLR8ZHxQfKh+RH7UfZh8kH/0e3h6+Hpwefx5lHk4eQB4zHi8eKB4HHvYd7R3jHdwd0R3JHcIdsh21HbEdvx3QHZMdih2QHZQdmh2kHbEd1h3DHa8dzR3tHQ8eMR5QHlweXB5VHi4eCR7lHd0d2R3aHeIdyB2jHYYdgB17HXodfB18HX4diB2IHYIdex1wHWQdWx1gHWgddB2JHZcdrh3FHdkd6x0XHmIegR6LHp4eVCBXIHUgjCCTIJMgdCBGICQgGCASIO8fxR+lH4Qfah9AHyYfER8AHwUfEx88H8Afdx8aH+Uevx6qHowecR5SHj4eLx4sHiEeJh4lHgQe/x0NHgYeBR73HeEdwh2qHaYdpR23HbMdjR2LHYsdkh2dHbQdsh2mHcgd8R0PHhseKh4qHhweMB5RHiUe8h3ZHdAdwx2xHaodox2SHYQdfB11HW0dbx1pHWgdax1vHXMdbB1iHV4dWh1dHWIdah17HY8drh3MHegdAR43HlweaB55HooeYSBuIIEgkCCWIJMgbiBAIBIg6B/eH8QfmB+FH28fSh8lHwgf9x7fHuce/B4iH24fjx9PH/geuh6WHngeVx5KHjgeKB4gHhoeAR77HfgdAB4LHvgd2R3GHbUdsB2pHaIdnh2jHawdlR2KHYYdih2SHZsdpx2/Hegd+R3/HQIe+x33Hfcd/x0oHjgeAx7nHeAdzh3AHbEdmx2QHYQdeh10HWgdZB1iHV4dXh1iHWgdZR1cHVcdVh1YHVwdYx18HZMdqh3AHeYdIR5WHlMeWB5nHnIeeiCEIIwglSCWII0gbiBHIBgg4h+5H50feR9kH0kfLx8LH/Me1h7EHs0e5h4BHyofYR+FHw0fxx6ZHoMeYR5HHi8eKB4fHi4eEx76HeUd2B3UHc8dxR20HawdqB2mHZwdlh2THZIdix2HHYMdhB2IHYodnh3bHQge7B3bHeQd2R3gHdgd4R0GHiseEx7yHeAd2h3PHcUdsR2qHaAdkR2cHYsdWR1aHVgdVx1ZHVodVx1SHU4dUB1VHVsdZR2AHZUdpB26HeUdCR4jHjceSh5OHmAehSCNIJUgnCCaIIIgUyAsIA8g8B/GH54fZR9DHx4fCB/4HtwewR6tHrgezR7iHvQeGh9oH0Uf7x6nHokeah5CHjIeOh4pHhkeBh77HeId2R3aHdwd2B3SHc8dvR2pHaMdjx2KHYkdhx2BHX4dfh2AHYEdhh3QHdgdsR3VHd0dyB3JHbsd0B3pHQgeEx4PHvQd3B3zHeYd3h3cHdQdyR22HY8dXh1XHVIdTx1NHUkdQx0/HUUdSx1RHVgdYB1vHYodoB23HdAd3R3uHRMeGB46Hl4ekiCWIJ4gpiCqII8gYSArIAAgzR+oH4UfXB80Hw0f7x7eHsQeqh6aHqEetB7KHtge7B4OH1UfJR/RHoseZh5QHi0eIx4mHhkeAx7/HfEd7B3hHeQd7B3kHeQd2x3VHb0dkB2DHYEdfx17HXgddx15HX0dgB2iHaAdtR3QHd0dsx2sHbEdyh3eHf0dJh4kHv8dCh4OHg4eEB75HcsdsB20HX0dWR1UHU0dSR1FHUEdPB08HUMdSB1OHVUdWx1pHYYdmh2uHbQdvh3aHekdAx4zHlIenyCfIKMgrCCtIJcghCBNIBMgzB+XH3MfRx8eH/ke4x7LHqselh6EHoMemR6pHrQeyh7kHv4ePB8PH7cefh5RHikeHB4JHgceFx4iHhMeAh4CHgAeBB76Hfod5x3WHbcdvB2wHZQdfx11HW8dbx1yHXcdgB2FHZIdwh3HHd8dpB2qHcQd6x0EHgweER4fHhUeDR4RHgge6R29Haodrh22HYEdVR1NHUQdRB1AHTsdOB06HT4dQx1KHVMdWh1rHYgdmB2fHaUdth29HdsdBR4gHjYepiCmIJ8gliCIIG8geSBwIEEg7B+kH3MfRR8VH+8e1R66HqAejR55HnMegB6NHpYerB7JHuUeGx83H/seqh5yHjUeIh4pHi4eNx42HiUeER4GHg0eBh4HHvUd3R3SHdgd5R3SHaIdhB1yHWYdZx1uHXEddh17HY0dlx3eHcAdjh2rHcwd7B32He0d+h0KHhAeAR7rHdYdyh26HbcdrR23HY8dVh1JHTwdPh08HTcdNR01HTgdPh1HHVMdYB1zHY0dlB2NHZMdoR2wHdUd8B0AHgwerCCuIKMgbSBSIDcgNyBSIGIgGiC2H3QfQh8RH+4e0x61Hp0eix54HmkeZh5uHnoekx6vHsQe7R4wHzof8B6XHmIePx5KHlkeVh41HigeKh4dHi4eHx4BHuUd4h3jHfUd+h3PHcMdph19HWIdYx1nHWgdbR1sHWgdlB3YHZgdhB2fHbwd2B3GHdYd/R0FHgkeAh7nHdIdux2tHaMdnh2sHZIdXB1IHTwdNx02HTMdMR0xHTQdOx1DHUsdXx1rHXQddR1zHX8djR2oHbwdyh3cHeUdsyC5IK8gWCAqIBEg/h/7H/sf5R+wH3IfQx8ZH/Ue2B6/HqcelB5/HmkeUh5QHloedB6RHqYexB4GH0sfNR/eHpYecx5/HnYeVR5EHlEeLR45Hj8eCB75HQMe+h36HQYe9x3oHfkduB2WHW8dXh1fHWIdZR1iHWcdbR14HXodgR2WHbkdth2yHdId1R35HQYeBB4FHtwdtx2fHYodhx2AHWUdVh1GHTodNB0wHS4dLB0sHS8dNh07HT8dRh1NHVEdVR1bHWQdfR2THZ0drh2/HcMdrCCiIKIgWCAQIOwfyB+vH6Qfkx+DH18fLx8PH/ce2R7CHq0emx6FHm8eVh5JHkseWh5xHoYeoR7VHiIfYB9FH9Qe1B7AHqIech5YHk4eQR5THjIeBx79HSUeAx4IHgwe/h0EHvMd0h2xHaIdex1eHV4dXh1jHWYdXh1fHWgdhh2bHZ4dkx2lHa0dxB3+HQIe/x36Hdwdtx2gHYwdfx1rHV0dUh1DHTkdMh0sHSgdJh0mHSgdLB0wHTQdNh04HTodPR1FHVIdYR1vHYIdlB2gHaIdaiBQID4gPyAQIMsfph+DH20fYx9eH1UfNR8BH+oe1R7HHqcelR5+HmoeVB5HHkAeQh5SHmoegh6eHtAeJB89Hxcf8R7THrceox5wHmIeaB5oHlQeFh4UHkYeEx4iHhIeER4IHgAe8x3wHbsdih1hHVsdWx1fHWMdXR1cHWAddR2EHYMdjB2LHaodxR3THfAd9B3aHcwdtR2mHZYdhR1zHWAdUh1EHTkdLx0oHSMdHx0fHR8dIR0lHSgdKh0tHS8dMh04HT8dSx1aHWwdex2CHYMdOCAjIAMgAiD9H7Qfgh9gH0gfPR82HzofPB8MH9gewR7BHrIelh6AHmgeUR5DHjceKh43Hlseax59Hpkesx7GHrQenB6NHnsegR5vHmIeUh5iHmEeNB5VHmUeMB4+HjAeKx4XHg4eCR70Ha8dhB1wHWYdWh1YHVgdVh1WHVodYB1jHWwdhx2lHbgdth3MHeMd6B3bHdAdwB2zHaIdjx17HWcdVB1DHTgdLx0lHRwdGB0aHRUdGB0cHR4dHh0hHSQdKB0tHTMdOx1IHVgdYx1kHWQdHSDyH9cfzh++H4QfXR8+HywfHB8MHwYfMB8pH9weqx6eHpIeiB6AHmIeTR5AHjQeKR4rHkgeVR5rHocewx7pHpYeax5eHlAeSh5HHjceNR4/HkUeSh5RHkkeOx46HjIeMB4LHvQd3h2wHaUdkx2nHYYdXh1VHVMdUB1QHVIdVh1ZHWIddx2NHasdsh3AHdYd4R3kHdwdzR2+Ha0dlx2BHWodVB0/HTUdLB0jHRodEx0VHRMdEh0VHRYdFR0WHRodHR0hHScdMB05HUMdSh1RHVgdEyDTH8Mfrx+SH24fSB8jHw8f+h7lHtce2B7vHvAerh6WHn8eZB5jHl4eSh45Hi0eJh4nHjYeSx5ZHoMeqR6uHooeYx5JHjQeMR4yHiceJB4vHiseLR41HhweDx4WHhgeIx4nHuwdyR3IHdEdux2cHYEdZR1RHU0dSR1KHUodTB1RHVgdXx1/HbQdsB2uHcMd2R3jHeId1R3DHbAdmB2BHWodVh0/HTMdKh0iHRsdFB0QHQ8dDh0PHQ8dEB0QHRIdFB0XHRwdIh0rHTQdOR1CHUsdBCDSH6sflR99H1sfNh8TH/Ue2h7HHrkerx7AHvYexx6rHoYeWh5MHlYeRh4wHiceJR4oHjUeRB5WHn4enB6qHosebh5aHjYeJB4mHhweFh4cHhseGx4uHg8e/B0BHgEe/h0XHg4eCR71HdgdvR2sHbIdjx1bHUcdQh1EHUIdQh1FHUkdVx16HZgdkR2oHbkdxR3NHdcd2B3FHbUdnh2FHXQdYB1FHTQdKh0gHRkdEx0OHQsdCR0JHQodCh0KHQwdDR0QHRMdFx0dHSUdLh04HT8d1R+4H5Efcx9PHzwfIR8HH+kexh6yHqAekx6hHuEe3B6iHpYeax5FHjgeNR4pHiEeIh4rHjYeQx5SHnAemR6hHnEeWR5PHk0eQh4mHg4eBB4FHgUeAx4XHgke7R3kHeod5h3zHe8d5R3cHf8d+h3YHdMdsR1xHUwdOx0/HT0dOh06HT0dSB1bHWodfB2QHZwdqR2uHbodxh3FHb8drx2VHYAdax1QHTkdKx0dHRUdDx0KHQcdBR0EHQMdAx0EHQUdCB0KHQ0dEB0THRodJB0uHTcdvR+SH3kfWB8sHxYfCB/yHtcetR6fHokeex6FHqAewx6mHoMefB5dHjMeJh4iHhweHR4lHjceVh5tHokeqx6gHmoeWB47HiceJh40HiEeEx75HfEd8h0BHgEe5h3THdQdyh3YHdsdux2zHcEd6B3kHdUdtR2lHV4dOR01HTYdMx0zHTQdOR0+HUQdWx1tHYgdjB2LHZgdsh3CHcQdvB2mHY8ddx1cHUEdLx0aHRAdCx0HHQQdAR3/HP0c/Bz8HP4cAR0EHQcdCh0OHRMdGx0mHTEdlh94H1sfRh8gHwEf7x7ZHsEeqR6THn8ebx5tHnceoh61HnYeVR5iHl8eNR4aHhUeEh4bHjUeXx58HpAeuR65HnAeVB5BHjQeLR4UHggeDx70Hd4d2x3nHfEd5B3LHbEdrB3GHdYdrx2gHaEdrB3VHekdyx22HYcdUB0uHS4dLR0tHS0dMB0zHTcdPR1QHWcdbB13HYUdpB3AHcUdwB2yHZwdhB1mHUwdOB0kHRIdCR0FHQEd/Rz6HPcc9Rz0HPcc+hz9HAEdBR0KHQ8dFh0hHSwddR9cHz4fHh8OHwIf3x7BHrAenR6IHnQeWh5bHlQeeB6tHpIeXB44HjMeOh4kHg4eBB4YHjYeVR55HqEeth7NHn8eZx5sHmIePx4ZHgUe8x3nHdwdzx3SHd8d4h3KHa0dlx2cHZsdlB2NHYcdhR2JHa0dvh3WHagdZB01HSwdKh0oHScdJx0pHSsdMB06HUQdUB1kHXsdlx20HcQdwx25Hacdjx1yHVodSB00HRwdDR0FHf8c+Rz0HPMc7xztHPEc9Bz4HPwcAR0GHQsdEh0bHSYdYB9GHywfCx/3Hhcf7R7AHqAejB56HmMeTx5KHkceTR51Hp0edh5IHigeIx4cHgoeAB4NHiMeSB54HpUeqx7THp4eiR5sHkIeKh4eHgse/x3pHdcdzB29HcAdzB3BHaUdhx2AHXwdfx18HXYddh15HXwdhR2qHa4djR1JHS4dKh0kHSEdIR0hHRwdGx0iHSwdOx1THW0dhx2fHbIdwh3AHa8dmR2BHWwdVx1CHScdER0GHf0c9hzvHO4c7xzrHOwc7xzzHPgc/RwBHQcdDh0VHR4dVh8zHxAf8B7eHsgerh6mHpkekh50HlceQx4vHjQeLx5VHnMeeh5YHjgeHh4FHgAe+x0EHhoeNR5UHm4emx64HqIejR5yHk4eOB4oHiMeHx7/HeAdzh29Ha0drR2vHZwdkB2iHZUdjh2GHWUdZh1kHWgdbB1rHXkdnB1vHTkdLR0hHRkdGx0dHRgdER0QHRgdKh1BHVodcB2BHY4dqx2/Hbodqh2THX0dZR1MHTEdFB0FHfoc9RzvHOoc7BzpHOgc6xzvHPQc+Bz8HAIdCB0OHRUdTR8mH/8e3h7IHrgenB58HnIeeh6EHnQeSh4pHiceIx4+HkseVB5UHj8eIx4FHvgd+h0BHhQeLR5RHm4eiB6WHp8egx5uHlQeQB4yHjEeMB4THvEd3h3YHccdqx2kHbEdwB3LHe0dyx2mHYQdZR1aHVodWh1VHVUddh2CHUIdLx0gHRUdFB0WHRUdEB0MHQ0dGB0sHUMdVx1lHXQdiR2kHbsdux2kHYkdbR1SHTUdFh3/HPMc8BzsHOcc5hzlHOQc5xzrHO8c9Bz4HPwcAR0GHQ0dPB8XH/ce3R7DHqYejB5zHlceUB5aHn0eax4zHhceFB4kHigeNB4zHjIeGB4CHvUd+B0FHh0eKR5HHmsegx6fHp0efR5bHkYeNh4wHi4eLx4tHhgeER4dHg8e8x3YHegd6R37HfQdwx3GHbodkx1mHVodUx1NHUcdRR1GHTsdLx0hHRcdEh0RHREdDR0JHQcdCh0WHScdOR1HHVcdah2BHZwdrh2lHY0dbx1SHTUdFR31HOkc6RznHOMc4BzfHOAc4hzlHOkc7hzxHPUc+Rz/HAYdJR8LH/Ue2B7AHqcejB54Hl0eRx41HjQeRR46HhUeAh4JHg8eFh4dHiseDh70Heod8R0DHioeNh5SHnIelR6fHpwehB5bHj8eLB4lHiEeIB4lHioeLR4sHigeKh4pHiYeIx4nHvUd5h3RHbMdnR2YHY4dcx1YHT8dOB0yHTIdKx0hHRodFB0QHQ4dCx0IHQUdBh0KHRMdHh0sHTsdTB1iHXsdkR2cHYsdax1MHS8dER3zHOUc4xzhHN4c2xzZHNkc2hzdHOEc5hzqHO0c8Rz2HP4cFx/9HuUeyR6sHpcegR5pHloeRB4uHiIeIR4kHg4eAR77Hfsd/x0AHhEeEB7sHd4d9R0JHiMeNB5IHlMeeB7BHqIecB5QHjseKh4fHhQeCx4QHhYeGh4cHh4eIR4mHi4eMR4oHgke4x3WHc0dyh3NHbgdfR1WHUAdNh0xHS0dKB0hHRwdFh0RHQ0dCh0HHQUdAx0EHQkdDx0VHSEdMB1AHVUdaR15HXYdWx0+HScdCx3vHOUc4BzcHNkc1RzSHNAc0BzTHNgc3BzgHOQc6RztHPQcGh/+HuMeyR6tHpMeeh5fHlAeQR4xHiYeIx4jHhceBx78Hfod+B3zHfkd9x3WHeEd9h39HRceOx5aHocepR7AHrMefx5RHjweKR4cHg8eAh4CHgkeDR4OHg8eEx4VHhkeGR4UHgQe7B3kHeUd5B3WHb0dlR1dHT8dNx0yHS4dKB0gHRodFh0RHQwdCR0FHQMdAR0BHQEdBB0JHRAdGh0pHTYdRB1NHU0dQB0uHRsdAB3rHOMc3RzYHNUc0RzLHMgcyBzKHM8c0xzXHNwc4BzlHOscIx//HuQeyx6tHpUegx56HmIeTh5SHjQePB5GHjAeGR4FHgEe+x3uHdwd1h3VHe4dDB4SHjAeOB5IHmAecR6NHpkeqR5mHkEeNB4kHg8eBB77Hfgd+R34Hfkd/h0AHgQeBR7/HQEe+R3uHeUd3R3UHcUdtR19HVEdQh04HTMdKx0gHRYdEx0QHQwdCB0EHQId/xz+HPwc+xz5HPscBB0THSEdKh0wHTAdKB0bHQcd8xznHOAc2RzUHNEczhzIHMMcwxzEHMgcyxzPHNQc2BzeHOQcJB8EH+0e1h66HqMelx6HHmceVB5VHlQeZx5DHiMeJR4eHhMeBh78Hf0d7R3YHdMd4R36HRYeEx4YHiMeWB5hHmseqh5+HkYeMh4hHgke/x31HeYd4h3eHdsd5B3kHe0d6x3pHekd6B3jHeQd1x2+HbAdrx2dHXMdWR1PHTodLx0iHRodFR0QHQsdBx0DHQAd/Rz6HPgc9RzvHOsc7Rz4HAYdEh0ZHRodDx39HO8c6BzhHNkc0xzPHM0cyxzHHMIcwBzAHMIcxBzIHMwc0BzWHNwcKh8NH/ce4h7NHroeqB6UHm4eYB5dHnMeWh4xHj4ePR44HioeHB4PHg0e/B3aHc8d0B3lHfcd+R0DHiseQh40HkwekR6UHk0eLB4cHgYe/B31HeUd2B3QHckdyh2/HcodyR3SHdEd2R3THeId0R2hHYQdeR13HWodXR1kHUIdMB0iHRYdEh0PHQodBh0DHf8c+xz4HPUc8xzwHOsc4xzlHOwc9Bz8HPwc8hzpHOMc3RzWHNEczRzKHMkcxxzEHMAcvRy9HL4cwBzCHMUcyRzPHNUcPR8fHwkf9h7iHswetB6gHpQelh5/HlseSx5rHmweXB5THjYeJx4XHgke9h3aHcwdxh3SHdod7R0GHgge/R0EHjQedh6eHlgeNh4rHhgeCB4EHvsd5B3SHcEdsx2oHZ4dnx2qHakdqh2qHcAdpR17HWEdWB1THUsdQx05HTMdLh0iHRkdFB0OHQodBh0CHf4c+Rz1HPMc8BzuHOoc4xzhHOIc5RzoHOcc4xzeHNgc0RzLHMkcxhzEHMMcwhzAHLwcuhy5HLocuxy9HL8cwxzIHM4cUB82HysfFR/yHtQevR6qHqYeox5tHlAeeh6lHn8eWB4wHh0eER4LHgce9h3fHcsduh2/Hd4d7B3xHe0d5x38HSYeZR6GHlYePB4xHiIeEB4IHgMe6R3YHdYdyR2zHakdoB2YHYsdhR2BHYUdbh1aHVQdTR1DHTodNR0vHS4dKh0jHRwdFB0PHQsdBh0CHf0c+Bz0HPEc7RzpHOYc4RzdHN0c3BzdHNkc1BzRHM4cyhzEHMIcwRy/HL0cvBy6HLgcthy1HLUctxy4HLscvhzDHMgcah9NH0IfHB/7Ht4eyh68HqsepR6ZHnYeeB5tHk4eJR4VHgUe/x31HeUd3B3YHcYdtB2wHcgd3h3cHdcd2h35HSYeXx6GHlUeOh4oHh8eEB4DHvkd7x3sHe8d6B3bHdQdvx2xHZ0djh2IHXodXR1RHVYdUx1CHUAdOR00HTIdLR0nHR4dFh0RHQwdBx0DHf0c+BzyHO0c6xznHOIc3hzaHNcc1RzTHMwcxhzHHMccxBzAHL4cuxy5HLcctRy0HLIcsRywHLEcshy0HLYcuhy9HMEchB9hH0AfIB8GH+0e2B7BHqsenx5/Hl0eSx4zHiEeIh4SHgYeAB7xHeQd4R3ZHccdtB2sHbIdwB3HHdEd5R0DHigeVR6HHmQeQh4wHiMeGR4PHgQeAB4CHgYeAh74He0d5x3VHcYdux22HZQdYh1mHYsdhh1YHVkdTB0+HTkdNR0tHSQdHR0VHQ8dCh0FHf8c+BzyHOwc5xzjHN8c2xzWHNMc0RzOHMkcwxzBHMEcwBy9HLoctxyzHLEcrxyuHKwcrByrHKscrRyuHLAcsxy2HLocmB9yH1UfNx8VH/oe1x64Hp4eih5yHk8ePB4tHioePB4jHhYeCR7+Hfgd8h3iHcwdth2sHawdsB28Hdgd5x38HQYeLB5kHoIeWR5OHkEeKh4qHikeEx4HHgceCR4KHgQe8x3sHeIdxh2tHZEdch2YHb4dmB2BHZAdah1eHVgdPx0zHSwdJB0bHRIdDR0IHQId+xz0HO0c5xziHN0c2RzTHM4cyxzMHMgcwxy/HL0cuxy4HLUcsRyuHKocqRyoHKccpRylHKYcqBypHKocqxyuHLEcpB+AH2MfPB8VH/Ye3h7EHqkekR59HnMeeR59Hnwefx5lHjweIx4VHgweAB7nHc8dtB2rHakdrB24Hckd1B3iHfwdHR5SHoEegB53Hl8ePB4sHhweCh7/HfUd8h3yHfQd6R3XHbkdph2VHYEdjR28HdMdjh2XHbIdgR2KHWYdUR0+HTQdLR0lHRodEx0OHQgdAB32HO0c5xziHN0c1xzRHMocxRzIHMccwxy+HLscuBy1HLEcrRyoHKQcohyjHKMcnxyeHKEcoxykHKQcpBymHKkc3B+UH3EfSB8iHwIf6x7SHskewR6+Hqoeox6QHoAecB5gHlAeNR4wHhseAx7rHdIduB2sHagdqB2rHa4dyh3nHfkdDx4tHlEeeR5/Hk8eLB4YHgge/h3zHd4d2h3WHdEdxh22HaQdmh2MHYcdsh3jHbUdlh2qHccdsh2vHYgdaR1KHT8dOR01HS4dIx0ZHREdCB38HO8c5xziHN0c1xzRHMocxBzDHMQcwRy9HLgctRyyHK0cqRyjHJ0cnRyeHJ8cnByaHJwcnhyeHJ0cnRyeHKEc8B+gH2gfQR8eH/4e5R7LHsIevR6oHo4edh5XHjAeJB4YHg8eBh4GHgEe+B3nHdIduR2tHacdpR2kHagdwB3bHeYd9h3/HSQeWx6MHpoePx4WHgUe/R3wHeod4h3aHb4drR2jHaQdnB2aHa8d3x3ZHaYdwB3LHd0dxB2nHYAdXx1THUwdVR1VHUYdOB0tHSEdEx0FHfUc6hzkHN4c2BzRHMwcxhzBHL8cvRy6HLYcshyvHKscpxyiHJ0cmhyaHJocmRyXHJccmByYHJgclxyYHJocyR+LH1sfMR8OH/Ae0h60HpkehB5xHl4eRx46HikeER4BHvwd6R3eHd0d3B3ZHcgdtx2tHaYdoh2fHaEdqh3GHd4d7B39HRUeUB6QHm8eOh4YHiceEx7/HQQe8h3gHb8dqR2wHbMdqB21HeEd6R3HHawdzh3bHdgdwB2ZHYAdax1gHVIdgB2CHWEdVR1HHTodJx0QHf0c7RzmHOAc2hzUHM0cxxzBHL0cuhy3HLMcsBysHKkcphyjHJ8cmhyXHJYclByTHJIckhySHJEckByRHJIclR92H1MfLx8MH+se0R6wHpQedh5PHkEeNx4kHhseEx4KHgge9R3eHdUd1B3OHb0dsx2tHacdoB2bHZcdoh3JHdwd5x0BHhYeRx6BHnseQR4tHlkeIR4YHhEe+B3gHcQdvh3eHdkdwR29Hd8d5h3PHcAd2x3WHd4dyR21HY8dhh1vHWodpB2KHXMdeh1lHUodNx0aHQQd8RzoHOMc3RzXHM8cxxzBHL0cuRy2HLEcrhyqHKccpByhHJ0cmRyVHJMckRyPHI0cjRyMHIscihyJHIocdh9UHzgfGh8AH+Ue1h7tHrMefR5aHm0ebB5XHlAeNh4cHgge+R3nHdwd2R3VHcodwh21HaodoB2YHZAdjB2rHdcd4R34HQ0eLR5aHnEeQx5EHmseUB5FHh8e9x3kHd0d3h3qHekd0x3LHd4d4x3cHdUd3R3fHeQd0h20Ha4dnR18HYIdqh2FHX4diB11HWEdQx0iHQod+RzvHOkc4xzbHNIcyhzCHL0cuRy1HLAcqxynHKUcohyeHJoclxyTHJAcjRyLHIkchxyFHIQcgxyDHIIcYh8+HxIf+R7pHswetR6zHsMepx5xHnIeXB5BHjIeJx4VHgIe/R35HfQd8B3nHd4d0R27Ha0dnx2XHZAdhx2aHbYd1R3zHQMeGx5HHlYeSh5NHmUeYh4pHhce/B3xHf8dBh4BHvId2B3UHeId8h3jHd0d7x31HfId3R3IHdUdrB2NHa8dkB2QHawdqx2VHYAdSR0mHQ4dAR33HPAc6BzfHNcczhzFHL8cuxy2HK8cqByiHKEcnxybHJgclByRHI0cihyHHIQcghx/HH0cfBx9HHwcTB8XH/0e5B7MHrseph6OHnkemx6qHnseVB4/Hi0eIR4cHhMeEB4MHgseBx79Hegd1B26Hakdmh2THY0dhh2WHckd6B0FHg0eHx5DHlweUx5aHnAeRB4tHhUe/h35HQAeCB4FHvkd3h3eHfAdBR72He0dAR4BHgAe3x3bHd0dsh21HcQdwR3GHcIdtB2YHWIdRx0nHRAdBx3+HPYc7RzmHN4c1BzLHMUcvxy4HLAcpxyeHJwcnRyZHJUckRyOHIschxyEHIAcfRx6HHYcdhx2HHYcNB8DH+Ie0h7BHqsenR6KHm8eVR5yHo4efx6AHoIefx5xHkgeJR4eHhQeDR79HeQdzB22HaEdkR2MHYcdgB2IHasdyx3iHfMdDR4zHmUeaR5vHncePh4kHhIeAB78HfsdHR4jHgIe9B32HQAeDR4AHvsd/h3+HQEe3R3iHd8dxB3RHdwd2x3bHcwdqB2OHVsdQh0rHRgdDR0EHfwc9RzuHOUc2hzSHMocwhy6HLMcqRyhHJoclxyVHJEcjhyLHIgchByBHHwceBx3HHUccxxyHHIcIx/3HtgevB6mHpwehh5wHmAeSR4+Hk0eTB5mHm4eWh5vHnEePB4eHgweBh74HeAdwx2qHZYdiR2GHYEdfh2KHbId2B3eHeUd+x0RHm0elB5tHmgeOR4dHhUeCh4EHvwdFR5FHjgeIx4eHiAeIx4HHgkeKh4JHgEe9x38HeYd2R3cHeQd/x3rHbMdmR1xHVgdQR0wHSEdFB0KHQMd/Rz0HOkc4BzYHM8cxhy+HLYcrxylHJockxyRHI8cjByJHIUcghx/HHscdRx0HHQccxxwHG4cIB/0Htgeuh6fHoceax5QHmYeQh4hHhseIh44HkMeIx4bHiEeJx4SHv4d6x3hHdsdvh2iHYwdgx2AHX4dfB2GHacd1B3mHewd8x0HHk4elx5VHkweXh4/Hi4eJR4XHhceKR5KHk4eVh4yHiUeIx4aHjEeJB4RHgUeCR4NHgce8B0EHhIeAx7NHbMdrx2HHV4dSB02HSgdGh0SHQ4dCB39HPAc5hzfHNcczRzFHL8cvRy3HKYclRyRHI4cihyGHIIcgBx9HHsceBxzHHEccBxuHGwcHx/0HtkeuB6cHoIeVx5bHn4eXh4dHggeBR4bHjceHR4CHgQeCB4KHvgd4B3QHb0drh2bHYkdgR19HX0dfR2QHbcdxx3ZHeAd6h0EHikeRB41Hi4eXB5tHlweUh42Hi8eMh4mHiIeFB4KHgUeBh4KHgceAh7+Hfsd/x0GHhYeQh6NHiYe7R3bHa4dix19HWAdUB08HS4dJx0kHR8dFh0IHfkc8BzoHOAc2BzSHM8c0BzOHL0cnRyUHI4ciByDHH8cfRx7HHkcdhxzHG8cbRxrHGkcFx/xHtYesx6VHnseVh4+HiweMR4hHv8d8B33HQ0eFh7+Hewd6x3tHeYd1h3IHbcdoh2QHYcdfh14HXgdgx2eHa8drx27HdQd5B0AHh8eKx4SHgweGR47HjseLB42HiweEx4IHgse/h3wHeod8h34HfEd7h3oHd4d5h34HQEeKR5iHiQe5x3aHcgdiB2PHXgdWx1AHTYdPx1EHTsdKR0QHQQd/BzzHOoc5BzgHOEc6BzmHMYcoxyWHI8chhx/HHsceRx4HHYccxxwHG0cahxoHGYcCB/lHsQeqx6QHnoecB5bHkceLh4qHgYe6x3XHd0dAh4FHuAd0x3RHcgdvx26HbUdnx2LHYMdeh1zHW0ddx2FHZIdtB3XHegd/x0MHhkeFh78HfMd/h0eHhQeAR4bHh4e/x3yHfMd7x3dHdUd4R3lHdod3R3hHdYd3x3rHfcdCB4nHiEe7h3eHcsdmh2YHXsdXB1NHVcdgh14HVEdOB0cHRAdCR0CHfoc8hzuHPEc9BzsHMkcpxyWHI8chRx6HHUcdRx0HHMccBxuHGscaBxlHGMc8B7QHrcenB6AHnAeXB42HiceKB4hHg4e7B3VHcwdzR3XHdMdwB21Ha8dqx2lHZ8dlx2PHYMddx1vHWcdZx17HZQdsx3VHekd/R0MHhEeCh76HeAd4h0BHvwd9x0DHg8e/x3hHdkd3R3WHcId2B3fHcMdzh3UHcQd2x3gHeUd9R0QHiMe7x3gHeAd2h2RHY0dXh1oHZ0dqR1yHVUdQB0xHSYdHR0WHQsdBh0DHQEd+hzsHMwcrhyaHJEchhx7HHQccRxwHG8cbBxqHGgcZRxjHGEc2h64HqoerB6hHnIeRR45HjkeMx4tHhYe+R3lHdQdwR23HbUdsx2sHaMdnB2SHY0djB2KHX8dcR1pHWMdYh11HYodoB2+Hd8d9x0IHg0eBR4GHvAd1h3qHeYd4B37HQse/B3gHcoduR23Ha8dyx3kHb4drR21Hbgdxx3UHdgd6h0EHg8e+x3kHdsdxB2tHXYdYx2RHa4djh1yHWAdVx1KHT4dPB0wHSIdGh0VHREdAh3tHNIcuByiHJUcihyAHHgccRxuHGwcaRxnHGUcYhxgHF4czR6vHpgekh61Hqwemx6AHmweLR4xHiUeBh7zHe0dzh26HasdqB2mHZ8dlh2MHYUdgx1+HXYdax1kHV8dYB1vHYAdmR2+HeId7h0BHgweBB7iHdcdzh3hHdUd1B3xHQgeAR7mHdAdtR2oHaIdtR3fHccdmh2gHbAdsB3LHd8d9h0IHgseAR7mHdMdyR21HX0djB2qHa4dmR2LHYUdeB1lHVsdWx1KHTsdNx0rHRwdCh31HN4cwhysHJscjhyCHHgcchxtHGocZxxkHGIcXxxdHFscsB6jHpEedB5KHncenB6AHmYeTh4oHgkeBR4JHvMd3R3VHbIdrB2oHaIdkh2KHYMdfR12HXAdaR1hHV0dXh1nHXkdlB2vHcAd4B33HQge/x3cHbgdtx3HHbgdwR3jHQEeCx73HeAdwh2pHZMdnh25HbwdjR2MHaodyR3hHecd5R3xHQceBh70HeAd2h3UHckdwR3CHbsdsh2mHaYdhh14HX8dex1iHVYdTB01HR8dDB34HOMcyRy0HKIckhyCHHYccBxsHGgcZBxhHF4cXBxaHFgclB6EHnoeYB4/HkseZh5+HnIeRB4rHh0eGh4GHvEd7R3dHd0dyh3DHbsdmB2GHYEdfB1zHWkdZx1gHVodWR1dHWcdfB2WHa0d0B3yHQkeCR7pHcMdqh2tHaUdsB3UHfkdDB4AHugd0R2wHZEdhh2VHaAdix2GHa0dyB3OHc0d1B3mHf0dCB79Hekd5B3YHdcd3h3fHdodyx2+HbIdlx2NHZkdlB17HXIdWh05HRwdCh37HOcc0Ry7HKYclByCHHQcbxxqHGYcYRxeHFscWBxXHFUchB5rHlYeSh4tHiMeQB5fHmcegR5ZHjoeJx4OHgke/R3oHecd4h3fHdMdsR2VHYUdgR13HWYdXh1bHVcdVR1VHVkdaB2JHakd0h3xHQEeBR7tHdMdrx2LHZAdqR3NHesd+h0DHvUd4B3CHaEdhh14HX0ddh2DHZ0dph2kHbEd1R3hHe4d+B0AHv8d9B3qHegd5x3lHeUd4B3ZHckduB24Hbgdqh2bHYYdYh1BHSgdFB0CHfAc2By/HKcckxyCHHQcbhxoHGQcXxxbHFccVBxUHFMcZh5qHlUeLx4hHggeGB4xHlMeax5MHj0eKx4nHiMeCR4GHvsd7x3qHeIdzh2wHZ8dkR2JHXwdaR1cHVUdUB1MHU0dXB18HZsdvh3pHe8d8R3mHcMdnh2EHYkdnh22HdEd4B3oHe8d6h3SHagdjB1nHWEdYB1vHXwdgh2NHbAdxB3RHdsd3B30HQgeBh7/HfId6R3kHeEd5R3kHeId1x3WHc4dwh2xHZUdbB1KHTEdHR0HHfMc2hy/HKgclByBHHMcbRxnHGEcXBxYHFMcTxxPHFEcUR5HHlYeSh4LHgEe/B0AHigeLR4UHiEeLB4qHiweKh4sHhweCR4BHvMd2x3JHcAdsR2mHZAddB1hHVYdTR1FHUAdTR1iHZAdsB3FHckdzR3bHdUdkx18HYEdiR2bHbEduB3PHeQd8R3YHa0djB1vHVsdVh1bHWAdaR2FHZUdoh2vHbwd1h3uHQUeCB7+He8d5B3eHdwd4R3lHeYd5R3mHeAd1R28HZ4ddB1PHTYdIB0JHfEc2BzBHKoclRyBHHIcaxxlHF8cWhxVHFEcTBxMHE8cRh4hHh4eJR4MHgceAB7kHe0dCB78HQEeEB4ZHhAeEB4fHiMeKx4dHgUe8h3nHdQdzh3FHZsdeh1jHVgdTh1EHTwdOx1NHXcdnR2kHaUdqB2vHbYdnR18HWsdcR2IHZQdph3EHecd8B3mHbwdmR18HV8dTB1JHVAdXR1rHXsdih2kHcAd2x3zHQIe/x30HeId3B3XHdYd3R3iHeYd6R3pHekd2B2+HaAdeB1THTkdIh0KHfEc1xy/HKoclByAHHIcahxjHFwcVhxTHE8cSxxKHEscYB5YHiIeDx4GHvcd5B3gHdId0B3gHeUd+h0OHv8d8x0IHgEeBx4WHggeAB4GHu4d5B3aHaEdex1iHVgdTh1GHT8dOx07HVQdeR2GHYUdhx2PHZEdiR10HWIdYh1wHYEdmh22HdYd6B3sHdcduB2QHWUdTR08HUAdTB1bHXIdjx2uHcwd4R3tHfId9B3sHd4d1h3PHcwdzh3THd8d6R3pHeUd1R27HaAdgB1dHTwdIh0KHfAc1hy9HKkckxx9HHEcaBxfHFgcUxxPHEwcSRxHHEYcPR4nHikeLB4ZHgoe9h3bHb4dsh27Hcgd5B3tHd8d2x3+Hegd7h3/HfYd7B3lHd4d3B3QHaMddx1gHVYdTR1GHUIdPR04HTsdVB1iHWUdZR1nHWwdbh1lHVgdVR1eHXEdhx2aHa0dvB3cHeQdwh2ZHW8dUh07HTYdQB1THWkdgR2ZHbcd2R3iHeQd6B3mHeUd3h3MHb4duR2+HdId5h3qHecd2x3AHagdlx1yHT0dIB0KHfAc2By/HKgckBx4HG0cZBxcHFUcUBxMHEocRxxFHEMcHx7/HQgeLB4AHv8d7R3UHb4drh2pHa4dtB21Hbgduh3JHcsd2B3kHdod1R3CHbsdsR2gHYcdbR1dHVIdRx1CHUAdPB02HTMdOh1BHUUdRh1HHUsdUB1PHUodQB1DHVgdbB18HYwdox3LHekd0x2gHXgdWB0+HTIdOR1HHVodbx2IHakdxR3HHcwd0x3RHdod3R3LHbcdpR2nHbodzB3WHd0d3B3DHaodjR1kHTsdHx0KHfYc6BzNHK0cjhx2HGocYRxYHFIcTBxKHEccRRxCHEAcIB4HHv8d/B3tHdsd0R3FHbMdpx2lHaQdoh2kHaMdoR2cHZodsx3IHa8dsB2hHZsdjx1/HXAdYx1YHUwdQR08HTsdOB0yHS8dMR00HTYdNh03HTgdOx09HT0dOB04HUAdUh1mHXsdlR2xHbkdxx2pHXgdWR0/HSwdLx06HUsdZB2GHaMdqh2fHacdsB2xHbsdvx27Hasdjh2OHaAdqR2wHb8dwB2vHZodch1PHTcdHx0NHf4c8xzaHLgckxx2HGgcXRxVHE4cSxxIHEUcQhxAHD0cQx5FHkgeNh4mHvod3x3eHdkdzB2vHaEdlB2RHZUdjx2GHYIdiB2VHY0dhh2DHXodcB1mHWAdWR1QHUcdPx05HTcdMx0vHSwdKh0qHSsdLB0tHS4dLx0wHTEdMB0xHTYdPh1QHWUddx2CHYkdnB2gHXYdVR08HSQdGB0nHT4dXh18HY8dih2AHYQdih2PHZodsB2uHaAdex1rHYAdjB2ZHaYdpR2XHX0dXB1CHSsdFx0FHfcc6xzTHLQckhx1HGQcWBxQHEwcSRxGHEMcQBw9HDoccB57HnUecx5THhYeAB4BHvwd1h20HaAdjh2IHYodhh2AHXwdex18HXcdbh1pHWMdXR1ZHVQdTx1IHUQdPh05HTQdMB0tHSkdJR0iHSEdIh0iHSIdIx0kHSYdJx0oHSsdMB06HUkdVx1gHWgdch10HWIdTR01HR0dER0XHTMdVR1rHXMdbx1nHWgdbh1xHXkdlx2wHaEdYx1WHV4dZx1+HZEdix16HWEdSB0yHR0dCB30HN0cyhy4HKIchhxuHFwcURxMHEocRxxEHEIcPhw7HDgcgx5kHmMeOx4ZHv8d4h3JHb0drR2iHaEdnR2QHX4dfh1+HXsddx1zHWsdYh1cHVgdVx1SHUwdRB0/HTwdOx03HTMdMB0sHSYdIB0bHRgdGh0aHRYdGB0aHRwdHh0eHRwdGx0iHS4dNx1BHUkdTh1PHUsdPR0kHRMdDB0PHSUdPx1MHVEdTR1JHUodTR1RHVgdZB2BHYUdVx1AHUEdTh1rHXgdbB1bHUgdNR0iHQ4d+BzeHMAcqhyYHIYccxxeHFAcTBxKHEgcRRxCHD8cPRw5HDYcRB4hHikeGx75Hd4d1x3FHa8drx22HcEd0x3SHZ4dhR2BHX8deR1xHWodYh1dHVodVR1RHUkdQB08HTkdNx01HTMdMh0uHSgdHx0XHRQdEx0VHREdER0SHRQdFR0VHRIdDR0PHRYdHx0mHS0dLx0wHS8dIx0VHQsdBh0MHRgdIx0qHS4dLh0uHS4dLh0yHTodRR1PHVIdQR0sHSwdQR1aHV4dTh09HS8dIh0QHfsc5BzJHLMcnhyIHHIcXxxOHEocSRxHHEUcQxxBHD4cOxw4HDQcOh4bHgMeBx4RHhgeBB7NHcgd4R3vHfEdJh72HbcdnB2NHYgdgB12HWUdYh1lHWAdVx1SHUwdRx1MHUkdRR1CHT4dOR0zHSwdJB0ZHRQdER0RHQ8dDR0NHQ0dDR0MHQkdBR0CHf8cAR0FHQkdCx0NHQ4dDB0GHQAd/Bz8HAAdBx0MHQ8dER0THRQdER0VHRwdIx0rHTIdIx0THRYdLx1AHUAdMB0hHRUdCx39HOYczBy3HKUckxyAHG4cVxxLHEkcRxxGHEQcQhw/HDwcORw2HDMcaR4wHkYeVx5ZHjIe+B3fHfIdDR4DHgMeIh4GHuodtB2ZHYsdiR2KHYMdeB1oHV8dWR1VHVMdVh1wHX4dbh1jHVgdSx1AHTYdLB0iHRsdFh0RHQ4dDB0KHQkdBx0EHQEd/Rz5HPAc6RzoHOgc6BzpHOsc8Bz0HPYc9BzuHOwc7hzyHPUc+Bz5HPkc+Rz9HAMdCR0OHRMdER0LHQ4dGx0nHSYdEx0FHfkc8xzoHNMcuhymHJQchRx5HGscVxxNHEkcRxxFHEMcQRw+HDwcORw1HDEcXh5+Hpceeh5DHiEeGx4VHhoeIx4YHg4eBB7wHc0drB2hHZodnh2eHZgdfh1kHV0dWh1ZHVwdah2eHcYdkB15HXEdYR1RHUMdNR0qHSIdGx0UHQ8dDB0JHQcdAx3/HPsc+Bz1HO8c6RziHOAc3xzgHOQc5xzrHOwc7BzoHOUc5BzlHOYc5xznHOYc5hzqHO8c9Rz5HPwc/hz/HAQdDB0UHRodCR3tHOAc1hzPHMMcrRyXHIQceBxxHGYcVxxOHEocRxxFHEMcQBw+HDscOBw1HDEcdh6LHnIeQx4pHiYeOR4zHlQeVx5AHg4e8R3THbcduB24Hb0dwh3MHZ4deB1gHV8dXh1iHWsdeR2mHeQdvx2lHYkdeR1lHVUdRR0yHSkdHx0WHRAdDR0KHQcdAh38HPYc8xzyHO4c6hzkHOEc3xzfHOAc4RzjHOQc5BzhHN4c3RzbHNoc2RzXHNcc2BzaHN0c4hzmHOkc7BzvHPcc/hwFHRIdCR3lHNAcwBy4HKwcnxyKHHcccBxrHGIcVxxQHEscSBxFHEMcQRw+HDscOBw1HDEchB5rHmgeUh5MHkAeXx5iHn0eaR4iHvod3x3aHdYd5h3gHdYd3B3ZHZgdeR1qHWUdYx1vHXsdjh2zHfAd+x3oHagdmh2NHZcdhx1HHS8dIx0YHRIdER0OHQkdBB39HPIc7RzsHOsc6BzkHOAc3xzeHN4c3hzeHN0c3BzaHNgc1RzTHM0cyxzKHMocyRzJHM0c0hzVHNgc2RzdHOgc7hzzHPsc+BziHMkcuBynHJkcjBx7HHIcbRxnHF8cVxxQHEscSBxGHEQcQRw+HDscOBw1HDIcah56Hmkeax5/HlYehR6THoYeOh4BHv8d9B3/HQQeBx4AHu8d3B20HYsdeB1vHWgdbB19HY0dsR3XHf4dCB7sHcsd1B3PHdgdfx1IHTIdJx0dHRkdFx0QHQ4dDR0CHfUc7BzqHOgc5hzjHOEc3xzdHNwc2xzaHNgc1hzUHNIc0BzMHMccwxzBHMAcvxy/HMEcxBzGHMccxhzHHM8c1BzZHN4c4BzXHMQcrRyhHI0cfRxzHG8cahxkHF0cVhxPHEwcSxxIHEUcQhw/HDscORw1HDIcXB5OHlIemh6GHnceqB6jHlceHB4FHg4eEx4RHhYeER4FHukdyR2fHYIdeB1zHXIddx2HHbMd0x3vHQ0eAB7vHewdDB7xHagdXx08HS4dKB0iHRwdFB0SHRcdFR0KHf4c9BzsHOgc5RzjHOAc3xzdHNsc2hzXHNUc0hzPHM0czBzJHMQcwRy9HLocuRy4HLgcuhy6HLocuRy5HLwcvxzAHMIcxRzFHLQcnRySHH8ccxxwHGwcZxxiHF0cVxxSHFAcTRxKHEYcQxw/HDwcORw2HDQchh5yHpgeuR6EHqQerR5+Hj8eOR42Hi0eKh4uHhceBB72HdodrR2QHYEdex15HXkdgB2YHcUd9x3+HRUeKR4AHgge+h3LHW8dTx04HS4dKx0nHSEdGx0gHSMdHR0UHQgd9xzrHOkc5xzkHOEc3xzdHNsc2BzVHNIczhzKHMgcxxzFHMMcvhy6HLcctByyHLEcsByvHKscqRyqHKscqxysHKwcqxyoHKAclByDHHgccRxtHGkcZRxhHF0cWBxVHFIcThxKHEccQxxAHD0cOhw4HDUcsh6+Hswewx6lHs0erB55Hmsejh5gHiMeGh4YHgce9B3fHbsdkB2AHX8dfh1/HYIdih27HfQd5B36HRMeDx7wHd0dux2OHWcdTB05HTAdLh0uHTAdNB02HTQdLB0gHREdAR32HPEc7BzmHOIc3xzdHNoc1xzUHNEczRzHHMQcwhzCHMAcvBy4HLQcsRytHKocqRynHKEcnhydHJ0cnRycHJwcmhyXHJQciBx2HHMccBxsHGgcZRxhHF0cWRxWHFMcThxLHEgcRBxBHD4cPBw6HDcc9h75Hgcf6B7eHtoexR6QHl8eRh4VHgAe/h39Hf4d+R3AHZIdgB2CHYYdhB2IHZAdrh3WHeYd+h0DHgkeAh4HHt8doB13HV4dSh05HTIdNB02HT8dRx1LHUgdPR0tHRkdCx0CHfkc7xzoHOMc4BzdHNsc2BzUHNAczBzKHMYcwxzAHL0cuhy2HLIcrhypHKQcohyiHJ8cmhyYHJYclRyVHJMckRyNHIgcgBx5HHUccRxsHGgcZBxhHF0cWhxXHFMcUBxMHEkcRBxCHD8cPRw7HDkcyh7fHgMf8h7pHuEeqx55HmgePR4aHvwd3x3PHeMd7x2zHYsdhx2NHY8djR2SHZ8drx3sHf8d/h0KHgge8x3oHdkdnB11HVwdSB05HTgdPh1IHVQdWx1iHWAdUB05HSMdFx0NHQEd8RzpHOUc4RzfHNwc2RzVHNEczhzLHMkcxRzAHLwcuRy1HLEcrBynHJ8cnBybHJscmRyWHJUckxySHI8cixyGHIAcfBx5HHUccBxsHGgcZBxhHF0cWhxWHFMcUBxNHEkcRRxDHEEcPxw+HDwcch6RHsse1R7SHtkenh6AHmMeTh4rHg0eAR7bHbIdsR2iHY4dkR2XHZwdnR2kHbMdvx3mHf4dBh4IHgUe8x3LHa4djh1wHVsdRx0/HUUdUh1cHWsddh18HXQdYB1AHTEdKR0aHQ0dAB3xHOgc5BzhHN4c2xzXHNMczhzJHMccxBzAHLwcuBy0HLAcrBymHKAcnRybHJkcmByVHJQckhyPHIwciByCHHscdBxzHHEccBxsHGkcZhxiHF4cWhxVHE8cTRxLHEgcRRxEHEMcQhxBHEEcSx5kHoYerx6xHtMekB5VHiMeDh4FHgAe9x34Hcgdqx2fHZkdmx2kHbEdsh2sHdYd7x3yHQweEB4FHgMeBh7THagdfx1rHVodUB1MHVAdZB2KHYwdlB2sHYQdaB1PHUUdPR0tHSIdEh0CHfEc6RzlHOIc3hzaHNUczxzIHMMcwhy/HLwcuBy0HLAcqxynHKMcoByeHJscmByVHJMckRyPHIschxyCHHwcdxx2HHQcchxvHGscZxxjHF8cWxxWHFAcTRxMHEkcRhxGHEYcRRxFHEccOR4qHiQeVh5yHqgelB5eHjAeDB4AHvYd3x3aHb4drh2lHaAdox21Hdcd5B3VHfAdCx4DHhweGh4BHgMe3h2+HY0ddx1kHVodVh1XHV4dbx2lHbYduh3NHYsdax1jHWEdVR1GHTwdKx0WHQQd9RzrHOcc4xzfHNkc0hzKHMQcwRy+HLscuBy0HLAcrByoHKUcohyfHJwcmRyWHJQckhyPHIwciByDHH8cfBx6HHccdRxxHG0caRxlHGEcXRxYHFQcURxMHEgcSBxLHE0cTRxMHFIcbh5cHikeGh5AHnAeix5eHkQeIR4aHiIeFx7wHcQdtR2qHaMdpx3LHQUeFB7/HQoeER41HlIeFR7zHdcdyh2iHYYdcR1gHVkdXx1tHYEdjB2kHdwd4R3PHYQdhR2GHYIdcx1iHVEdQh0sHRYdBR31HO4c6RzkHN4c1hzOHMYcwRy+HLscuBy1HLEcrhyqHKYcoxyeHJscmhyYHJYckxyQHI0ciRyFHIIcfhx6HHYccxxzHHEcaxxnHGQcYBxcHFgcURxMHEwcURxWHFkcWxxeHGQcMR5WHm8eKh4EHiEeXx4zHiQeKx4nHiMeAx7XHcQdth2sHagdqh3WHQkeLh4fHhseKB5JHkEeDx75HeUd2R2iHYMdcB1iHWQdcR2HHaMdrh2wHdcd5R22HY8dnx2pHZ4dkR1/HWgdUx08HSEdDR0AHfcc7xzpHOMc2xzRHMkcwxzAHLwcuRy2HLMcrxysHKkcpRyhHJ8cnRyaHJgclRySHI8cixyIHIQcgBx8HHYcdRx1HHEcbRxpHGccZBxhHF4cWhxYHFgcXRxjHGgcaxxuHHYcBx4SHjceMB4IHvcdDh4LHgoeDh4QHv0d2B3IHbkdrx2uHcQduB3oHRIeLh5CHiweTB5PHhoe/B3qHckdqx2QHXsdcR1uHXMdfR2dHcMd2h3THeMd2h2wHbkdvR3GHbcdqB2YHYAdZx1KHSsdFB0IHf4c9xzwHOoc3xzVHMwcxhzCHL4cuhy3HLQcsRyuHKscqBylHKIcoByeHJscmByUHJIcjhyKHIccghx+HHsceBx0HHUcbxxrHGkcaBxnHGccZhxlHGccahxwHHccfByAHIccHB7uHfId9h35HfMd8x3tHeod3R3fHdgdyx3CHbEdrR3uHd8d0h3oHQseIx5PHlUeeB5HHgQe/B3iHdMdvh2VHX8deh17HYYdhh2yHeMd5R3mHfAd3R3KHdYd3R3fHdgdwR2pHY4ddB1ZHTgdHh0NHQQd/Rz2HO0c4hzXHM4cxxzCHL4cuxy5HLYctByxHK8crBypHKYcpByhHJ0cmhyYHJUckhyOHIkchRyBHH0cehx3HHQcbxxuHGwcbRxvHHEccRxwHHMceRx/HIccjhyRHJkcWR44HhseCR4GHvod+B3uHdkd0x3WHdQd3h3PHd0d9R37HdYd8R0GHgkeKR5MHm4efB5HHgweBh4FHuoduR2PHXwdgR2THbMdnh2vHdQd6h3/Hf8d6x3lHeod6h3nHdwdwh2pHY8dcx1YHTodIx0THQwdAx34HO8c5BzaHNAcxxzCHL8cvRy7HLkctxy1HLIcsBytHKocpxykHKAcnhycHJoclRyQHIwchxyDHH8cexx3HHMccBxvHHEccxx3HHscfRx+HIMcihyQHJkcohyqHLEcdB5ZHk4eTx4+HiYeIh4XHgge9x3/HeUd/R3lHfcdCB4FHuUdAB4kHhAeNR5SHn4eaR40HhoeCR4AHuAdpx2MHYIdjh3EHd4dwB2tHc8d7B3/HQceAR78He0d5h3gHcYdqx2UHX8dZB1PHTgdMh0lHRcdCR37HO4c5RzcHNIcyhzEHMEcvxy9HLwcuxy5HLYcsxywHK0cqhynHKQcohygHJwclhyTHI8cihyFHIAcfBx3HHQcchx0HHkcfhyDHIccihyNHJMcnByiHK0cuBzHHM4cex6MHogecx5IHlAeSx4zHgEeCh4cHv0dBB77HfsdCx4GHvIdAx5DHiYePh5kHoUeVB4RHvsd6B3eHcIdnh2RHaAdqB3aHeYd0B20HdUd8x0EHg4eCR75HeUd1B3BHbIdlh2FHXQdZR1XHU8dRx04HSQdEB0CHfEc5xzeHNUczRzHHMMcwRzBHMEcvxy9HLoctxy0HLAcrRyqHKccpByhHJwcmByWHJIcjRyHHIIcfBx2HHQcdxx/HIYcixyQHJQcmByhHKgcsBy4HMUc0RzeHO8cqB6wHpQeZR5aHl8eXh4lHvsdIx4cHgQeHx4CHgseJB4SHvodCR5THj0ePR5tHoIePx4EHu4d1h2yHacdoh3BHc0duh3gHfYd4B3NHfAdFh4cHg8eAh7qHdgdwR2tHZ4djR2XHa8dlB1yHWodYB1LHTYdHh0IHfQc6RzgHNgc0BzKHMUcxRzGHMUcwxzAHL0cuhy3HLMcsBytHKocphyiHJ4cnRyaHJQcjxyKHIQcfhx4HHocghyLHJQcmRyfHKUcqhy6HMscyRzUHOAc7Rz/HBAdyR6QHnYejB6RHn4eUR4VHhYeMB4NHgYeMR4cHiMeQh4oHg0eGx5QHmEeWh6PHn0eOR4IHgIe6B25HcQdyh32Hd0d0x3kHf8d+x3WHfIdLB4lHgce+x3lHdkdxx2xHa8dph3OHcgdph2SHX8dbx1XHT0dIx0HHe0c5hzgHNoc0xzOHMocyRzKHMkcxhzEHMEcvhy6HLccsxywHK0cqRylHKMcoBybHJYckRyMHIgchByEHIYcjRyWHKEcrBy8HLscuhzGHOQc6xz2HAEdDh0nHUcdgh5xHqkevR7aHrIeSR4gHh4eKR4SHh0eUh5DHkgeYh5BHjIeLh5THo4enR62HnceOx4WHgYe7h3hHeod6B0KHuYd3B3rHf0dCR7rHfodFx4eHgge/h3yHeUd2B3KHdIdvx3PHcodsh2tHaIdkh1nHUMdKB0KHe4c5xzhHNwc1xzSHM8czRzNHMwcyhzHHMUcwRy9HLkctxy0HLAcrByoHKUcoRycHJcckhyPHIwcixyLHJEclxyfHKsctxzXHOUczxzYHOoc/xwSHSMdLR03HXUdfx6XHtYe1h7iHp0eVR4vHiIeKR43Hjgecx5qHlQefx5oHlgeTh5hHq8e1h6vHmUeMx4qHgkeCB4FHgQe/B0NHvId6B30HQEeHx4LHhEeJB4mHhceCB78HfAd5h3kHeMd4h3lHdgdyh2+Hb4dsB13HVEdMB0QHfkc6xzkHN8c2hzWHNMc0RzPHM4czRzKHMgcwxy/HL0cuxy4HLQcsByrHKccohydHJkclRySHJAckBySHJkcoxytHLYcvxzXHO0c6RzuHPUcEB0rHVgdbx1vHXAdrx7WHtIe9B6dHmMeZx5MHkkeTR5hHlYefB6bHmAeoB6dHpwedh5mHsce1x6YHmAeXB40HigeIh4mHhweKB4rHgce+x0RHiAeNB4tHjgeOR4xHh0eCh4EHvwd8x30Hfkd+h3zHeUd1x2+HZ0dgh1kHUgdLB0SHfsc7BzmHOEc3RzZHNYc0xzSHNEczxzNHMocxRzCHMIcwRy9HLgcsxyuHKkcpByfHJoclxyVHJMckxyWHKEcrxy7HMcc0RzcHOYc8Bz/HAkdHh1OHX8dix2QHZYdyB7wHuYe0x69Ho4esB7KHpgehh6JHnIeex7MHm0esx7LHsoemB6WHsoezR6bHoseXx46HkYeLx4zHjkeWh5LHiUeFR46HjweNh4wHiMeHh4dHgoeBR4JHgMe/x3/HQgeCR74HeEdzB2xHYsdcx1XHTodJR0PHfwc7RznHOIc3hzbHNgc1hzVHNQc0xzSHM8cyxzKHMocxxzBHLsctxyyHK0cpxygHJscmhyYHJYclxycHKwcvxzSHOQc7hzzHP0cFh0bHR0dLh1aHYwdlB2eHbgd7x72Hu8e6h7QHroevx6+HrAeyR7OHpMebB7SHpAeyB7PHs4etB6sHtYezx6zHoMeSB5THl8eTx5QHlUeeR5YHjUeNR5SHi0eFx4PHv8d+h31HfMd9R0FHgUeAx7/Hfod+R3zHeAdzB22HZQdkB1rHT8dJB0NHfwc7hznHOMc3xzdHNoc2RzYHNgc2BzYHNgc2BzWHNMczRzDHL8cuxy3HLIcqxykHJ4cnxybHJgcnByqHLoczxzsHP0cBh0KHRsdUx1gHVAdUx1yHYkdmh2yHbUd9x7yHvUe6x7DHtIe4h7FHsYezh7AHowehh7THrwezh7RHtMeyB7AHtMeyB6fHmkeSh53Hn0eex53Hn4eiR58HmQebB5XHhUe+h31Heod5x3gHdkd3x32Hfkd7R3nHdsd2h3mHeUd3x3GHaAdhh1lHUgdKR0QHf0c7hznHOQc4RzeHNwc2xzbHNwc3hzhHOMc5RzkHOAc2RzOHMYcwRy9HLgcsRyrHKYcoxycHJocpBy4HMgc2hz0HBcdRB0xHTkddR2YHYkdex2OHZkdnR2mHaEd+h72HvMe1R7ZHuwe7R7KHsweyh7LHqweyh7PHtEe1B7aHuAe0B7LHtEeyB6kHlIeXB6cHpgerB6uHpYefB5zHm0ehB5aHg0e5h3gHdkd0B3THcMdvx3hHeod2h3HHcMduh3HHcYdyB3BHagdih1vHU8dLB0RHf4c7hzoHOUc4xzgHN4c3RzdHN8c4xznHOwc8hzyHO4c5RzhHNsc0BzFHL8cuRyyHKwcphygHKEcrBy8HM8c4hz4HB8dax19HXodfx2NHZMdix2XHZ4dnR2cHZUd/B7yHu0e6B73Hvge3x7JHs4e1h7QHsMezh7XHtoe3R7jHvEe3B7OHtYevB5pHkweix6zHqkelh5+HmIeNh4pHhseQB5QHige7x3UHccdth28HdMdqB3EHdgdyx2sHZ0dkh2cHZYdnh2nHZkdkB10HU8dKx0RHQId8BzrHOkc5RzhHN8c3hzfHOIc5xzyHP0cBB0FHQId/hz6HPQc5xzZHMocvxy3HLEcqxyoHKocsxzBHNMc6hwDHR4dTB2LHZMdkB2LHZwdnx2iHZ4dlx2QHZEd+R7yHvMe8R73HvMe2h7IHt0e6x7QHscezR7tHuoe5R7oHvEe7x7aHsEemx5gHnoeth6iHn8eVh4+HiseFx4IHvgdER4WHiMeKx7sHcMdrh2mHa0dlx2lHbIdth2lHYYdeR1zHWwddR16HW4dah1VHUAdIx0RHQMd9xzwHOsc5xzjHOEc4BziHOgc+hwMHRQdHB0gHR4dHh0ZHQsdAh3sHNYcxhy9HLYcshywHLIcuRzGHNwc8hwLHSQdRx1zHYgdkx2XHacdtB2wHZ8dih15HXkdAx/3HvUe9B73HvQe8x7uHvMe5x7OHsYe1x74Hu0e6R7pHg4fBh/SHqgejB60Hs8eqh6JHk0ePB4oHi8eFh7yHfod9x3dHegdBx7oHcgduh2xHYsdhh2OHY4dkx2VHYAdYx1aHU0dTR1UHUUdOh0wHSYdGB0MHQEd+RzzHOwc6BzmHOMc4xznHPwcFx0oHTQdOB1EHUQdQh01HS4dIB39HOUc0xzEHLwcthy2HLccvRzJHOIc/BwcHUgdYR10HYUdkx2pHbYduB2xHZsdfR1fHVEdIh8NHwIf+R4CH/ce9B71HvUe7B7UHsce6B4OH+8e7R7zHhwf/R69HpgehB6fHs4ehR5RHi8eHR4QHgce9x3iHegd8x3BHbod2R3XHbIdrx2xHYsdfR15HXIdbh1rHWkdWB1IHTodNR03HSsdGx0UHREdDB0FHf4c+BzwHOsc6xzrHOcc6BzzHA8dLx1LHVIdWh2CHXEdYx1fHWsdQR0UHfkc4hzPHMAcuhy5HLwcwxzQHOIc/xwqHVwdcB18HY4dnh2xHbkdsh2hHY4ddR1gHUYdRR83HxgfFh8eHwEf+B78Hvse/R7wHuYe7x4dH/Ye8B4aHw0f4h6zHpQeeh5RHjkekx6DHjceDR78HfUd6h3WHcYduB2oHaEdqh2iHY8djx2PHYYdcB1pHWEdWh1THUwdQx0+HTYdLx0pHR0dER0LHQodBx0DHf8c+RzzHPIc9BzyHO8c+hwMHRkdPR1wHXoddR2DHYsdjh11HVgdPx0kHQgd7hzYHMYcuxy6HL4cyBzVHOMc/BwlHU8dbB1/HZAdnB2vHbkdsB2cHY0dhx2HHU8dSh9IH0EfPh88HyYfIR8lHxsfFx8THwwfDx8lHxcfHh8bH+4ewh6eHoceax5HHiEe/B05HiUeIx4yHkAeHB7zHegd6B3MHbYdmB2JHYEdeB1yHWwdZB1dHVcdTB1DHTsdNx00HTAdKR0iHRgdEx0QHQodBx0EHQEd/hz7HPoc+xz7HAMdEB0pHTgdOR1mHZYdkB2QHZcdlB17HV0dSh0wHRUd+RziHMwcvBy8HL8cyhzaHOcc+xwVHU4dZR1sHYUdjB2pHbodtR2tHaAdlh2CHUAdTB9JH0gfSB9HH0cfSB9HH0gfRR9AHz8fPR83Hy0fJh8HH90euR6VHnoeVR4uHg0eAR7/HfAd8R0EHjceNR4BHgse/B3rHdUdsx2aHYodcR1iHV4dXB1WHU8dRB08HTcdMx0vHSwdJx0gHRsdFx0UHQwdCR0HHQYdBB0CHQIdBB0HHQwdHR1HHXEdXB1+HZYdrR20Ha0dmB2LHW4dVR06HR0dBB3wHN4cvxy+HMQc0BzfHO4cAx0ZHTMdTB13HY8dlR2nHbYduh25HacdjR1sHVEdTR9KH0gfRx9HH0UfRB9EH0QfRB9FH0cfSB9BHzAfIR/zHs8erh6IHnQeZx5NHiMeAB4EHu0d1x3SHdMd6R3eHcUduh2tHaAdlx2UHY4dch1jHVsdVh1RHUsdRR1AHTkdMB0sHSodJh0hHRkdFB0SHQ8dDB0MHQwdDB0JHQodEB0SHRsdLB1IHYsdhB2KHaEdsB23HaQdkx2DHXEdWB08HSAdCx0aHf0cwBzBHMsc2BzmHPMcAh0QHSgdSh1nHYwdjx2VHawdth24HacdjB1zHWwdTB9JH0YfRR9FH0QfQh9CH0IfQR9BH0MfQx87HysfFR/nHsYesR6MHmAeQx4tHh8eBR4DHv0d8x3VHbQdrx2uHZ4djB2EHYQdhR2EHX0dcB1jHVodVR1QHUodQx0+HTUdMB0qHSwdKx0lHRsdGB0XHREdDh0RHRUdFB0QHRMdHB0lHTIdRh1kHYsdnB2XHacdph2aHYoddR1mHVQdRx0yHRodBh3xHNQcvhzFHNIc3xztHPkcBh0UHTQdah2DHYcdih2UHakdth25HbEdmB2HHYkdSh9HH0QfQh9CH0EfQB8/Hz8fPh8+Hz0fOh8yHyUfGB/vHs0exx6PHmceRh4vHjYeKB4iHi4eJx7rHdUdwx2pHakdpx2aHYwdiR2CHXQdaR1fHVkdVx1UHU8dRx0/HTkdMx0+HUMdNR0rHSIdHh0ZHRIdEx0bHSMdJB0hHSUdLh06HU0dWx1xHZIdrx23HasdmB1/HWcdTh1AHSsdGB0RHQcd9hzhHMEcwhzMHNoc6BzzHAAdCx0eHUAdeh2THZAdlh2bHagdsR22HbEdpB2XHZEdRh9FH0MfQR9AHz8fPx8+Hz0fPB86HzcfMh8sHyQfHR/yHssesx6NHmweUh5WHn8eLx4oHhEe/B0CHg8e7x3NHdEd1R3CHbkdmh2EHXcdbx1sHWQdXR1cHVgdTx1ZHWcdWB2KHW8dMR0sHSYdIR0aHRodJR0tHTQdNx0zHTgdSB1QHWIdfR2DHZgduh2zHaEdjh1rHVAdPB0eHRQdBh39HPUc6hzWHMkcxxzSHOEc8RwAHQ0dFR0eHTsdYh11HYcdkh2YHaUdrR2zHaodmh2WHZMdRB9DH0IfQB8/Hz4fPR88HzofOR82HzIfLh8oHyMfHh/3HtYeuh6eHnweZh5uHlIeJx4qHhUeJB4yHkseBB7oHeQd2x2/HZ4dhB2DHYkdhx2NHXsdeh14HXAddR2IHaIdnB2zHWIdLR0rHSgdJh0nHScdPx1MHUkdXh1IHUUdZR1zHW0dix2fHbAduR2lHYwdcB1WHTodHh0NHf8c9RzvHOoc5RzdHNoc1hzYHOQc9BwMHSodNx0zHTYdTB1hHXwdjR2ZHaEdoR2fHZ0dix2GHYgdQh9BH0AfPx8+Hz0fOx86HzgfNh8zHy8fKh8mHyEfHR/8Htoeuh6UHm4eSx5CHkgeUx5iHh0eEx4xHiIe/x3rHdsd0B2sHYsdgR2CHY8dnB2cHZEdjx2lHaIdqh22HaEdhx1xHUodNB0sHSwdLx00HTUdVR11HVUdfB1rHWAdZR2MHYgdmB2zHbcdqx2aHXodVx08HSMdEB0BHfIc6hzpHOoc7BzwHPAc6RziHOQc8RwMHTYdVh1aHU8dUx1xHYsdlR2bHZ0dlh2QHZEddh1qHXIdQR9AHz8fPh89HzsfOh84HzYfMx8wHywfKR8kHyAfEx/oHsoesB6IHl4ePR4uHigeIB42HgAe9R39HfId2x3XHcgdtB2hHYQdhB2THaQduB2zHasdoh2xHa4dkB1wHVgdVR1JHTsdNR0zHTMdOh1DHU8dYx2IHW4dgx2VHYMdcR2KHaAdsB23HakdlB2MHW8dTR0wHRYdCB35HO0c7hz4HAMdDR0NHQcd/RzwHOgc8xwDHRgdRh1rHWodaB14HZEdnB2hHZ8dlR2DHW8dZR1RHV4dQB8/Hz0fPB87HzofOB82HzQfMR8uHysfKB8jHx8fAx/aHrcemR52HlgePh4qHhMeBh79HeUd5R3hHdYdvh24HbQdpB2PHYcdlx2wHcEdxh27Ha4drR2pHXcdYB1hHWAdWB1JHUMdQB05HTcdQh1VHWYdfh2NHYkdhB2qHZ0diB2aHa4dux2zHZsdgh1tHVgdQB0nHRIdAx31HPMcBB0UHRodWx02HR4dFR0LHfgc9RwBHRUdNx1fHWodfB2EHY4doR2tHaYdmR2GHWsdWB1BHTodPx89HzwfOx85HzgfNh80HzIfLx8sHykfJh8iHxwf+x7RHqseix5gHkAeLx4dHgweCx4KHvEd2B3DHb0dtB2xHawdnh2VHZUdtR3MHd0d0R2zHa4dpR1qHWIdZx1pHWwdZB1THUsdQx07HUMdTR1jHYQdjR2UHZYdkB2oHa0dox2sHbkduh2uHZUdex1ZHT0dMB0eHQ4dAh36HAUdJx04HT8dRx1BHTUdLh0oHRYdCR0FHQ8dIx1DHWkdgR2OHZUdpB2zHawdmx2THYYdax1WHUAdPh88HzsfOR84HzYfNB8yHzAfLR8rHygfJR8iHxkf5h68HpsedR5QHjIeIh4THgIe+B32Hewd0R27HbYdvB23Ha4dtR25HbwdzR3iHd8dyR2sHZQdgB1oHWodbB1uHW0dZB1YHU4dQx1HHWodgB1jHXsdkB2eHacdph2xHbodth24HbsdrR2dHYkdch1LHTQdJh0ZHQwdAh3+HBwdQh1WHV0dXx1eHU8dRR1FHT8dHh0UHQsdFh0/HWQdcB2GHZEdpR21HawdnR2LHYYdcx1pHWAdPB87HzkfOB82HzUfMx8xHy4fLB8pHyYfIx8gHw4f3R62HpcedB5NHjQeHx4HHvcd6h3gHdodxh23Hb4d0h26Hbwdyh3QHdUd3x3cHcMdsx2hHY0dfR1zHXUddh1uHWcdYR1aHVMdVh1VHXsdux2dHXAdhB2XHbQdth26HdAdzR28HbAdmh2MHXUdXR1EHTcdJx0WHQ0dBB37HCwdWR1uHXQdex10HWMdbx1gHVsdRB0lHRAdFx07HV8dbR2CHZAdpx21Hawdmh2IHXUdbB1kHVEdOx85HzgfNh81HzMfMR8vHy0fKh8oHyUfIh8fHwUf0x6sHoseaR5JHjceGx4BHukd3x3dHeAd1x3GHd0d2B3KHdId3B3dHeAd4R3NHasdlh2OHYkdhR2FHYYdfB1sHWUdZx1jHV0dZx1wHYAdlh2rHY0diR2SHaodxh3dHeAd0B21HaQdkh2GHXQdWh0/HVkdQx0rHRkdDx0KHRgdLB1QHXkdex2CHX4dgx2DHXIdVx08HSIdHh0qHV8dcB2EHZkdrR20Hagdmh2JHWcdVx1NHUEdOh84HzYfNR80HzIfMB8uHysfKh8nHyQfIR8eHwEf1B6rHogeXR47HiIeCR76Hekd7B32HfYd3R3zHeYdzx3XHd4d4x3hHdsdzx28HaUdkh2JHYgdiR2SHZQdiB1zHWYdeB1xHWAdZR2AHZcdmx2jHasdoB2bHaYduB3bHeYd0B27HbMdoh2KHXAdVR1OHXEdWx1DHTAdHx0QHQ4dHR04HWQdgR2THZ4dlR2EHXUdZB1GHT0dQh0mHUcdXB1/HZ0dsB2vHaIdmB2NHWwdSx08HSQdOB83HzUfNB8yHzAfLh8sHyofKB8nHyQfIR8eH/4e0B6kHoYeXB42HhYeAh77HfUdAx4WHgAe/B3/HeEd1h3hHeod6R3gHdcdwB2sHZcdjB2THYwdjh2gHaMdjh13HXEdmh2KHVsdax2HHaIdtR2wHbodtx27Hb4dtB3BHeMd2x3PHcEdph1+HWMdZh1rHXcdbR1ZHUgdPx0qHSEdHB01HVcdcx2QHbMdrR2RHYkdch1OHVUdXh08HTIdTh18HZwdqR2mHZwdkB13HWQdTx1KHTwdNh81HzQfMh8xHy8fLR8rHykfKB8mHyQfIh8fH/seyx6kHoUeWB43HhweEB4MHgIeFx4vHgAeAR75Hesd5x3tHfMd6R3fHdUdvh2oHYwdjx2jHY8djR2wHa0djR16HYIdsB2PHV8deB2jHa4duB22HbYdwx3FHc0dzR3PHeEd5R3NHbcdoB14HW4dhB2AHYcdeR1pHVkdTx1jHUAdIR01HVUdcR2SHbQdtx2hHYwdah1VHWUdax1VHT8dTR1uHY4dnx2gHZcdix1yHWAdYh1fHUsdNR80HzIfMR8wHy4fLB8qHykfJx8mHyUfIx8eH/sezh6kHoUeXB5AHjAeJR4cHhkePR4+HgoeCh75HfMd9h34HfId5B3VHcUdsB2dHY8drh29HZkdhx2uHa0djB2CHY4dqx2JHXMdhh2qHbIdxh3HHcUd2h3VHd8d4B3XHeAd2R3FHa8dkR2JHYsdkx2OHZIdiR17HXEddR1nHTIdIx1BHW0dfR2NHbMdvR2iHYQdZh1jHX8dex1cHU0dZB1pHXsdlx2aHZsdlR2BHW8dYB1cHUIdNB8yHzEfMB8uHywfKx8pHygfJh8lHyQfIx8eH/ge0x6sHpIebB5bHkYeMR4vHjQeTB5CHiYeHh4HHv4d+R3tHeId1x3DHa0dpx2mHbMdyh3GHakdkR2fHZgdhx2SHaUdsR2bHYEdkx2tHa0dwR3UHdgd2x3iHeod7R3mHeAdzB27HasdmB2fHZ4dph2eHaIdnh2HHX4ddh1THTEdJB1CHXgdjR2cHbodsh2aHYQdex2IHYkdYR1aHWkdch14HX4djB2WHaAdnR2KHXEdXh1FHRMdMh8xHzAfLh8sHysfKR8oHycfJh8lHyQfJB8bH/0e2h68HqAehR5wHlkeSx5MHk8eTB5CHjkeLR4VHgQe9B3nHdgdyx22HawdqB20Hcwd2x3MHa8dmR2dHZQdiB2cHbEdwB2sHYcdlh21HbIdwh3YHeId5R3tHfId9x3uHdwdyB2zHasdqh2sHawdrh2oHa0dpR2QHXodbR1WHTwdLh1JHXcdjx2qHbsdrR2aHYsdkx2hHYEdVR1mHXYdfB2FHYodjB2WHaEdnR2GHWkdVh07HRYdMR8wHy8fLR8sHysfKR8mHyUfJB8jHyEfIh8aHwMf7h7XHq4elh6AHm0eYx5mHmgeXx5UHkEeLh4THvwd7h3pHd0dyx23Ha8drB2+Hdkd5B3MHa8dnh2fHZUdjB2kHbwd0R27HZUdmR20HbUdyh3dHeod+B35Hfkd+B3kHdEdxB24HbMdtx25HbwdvR20Ha4doR2OHXgdah1XHUcdOx1MHXMdkB2wHb4dsh2dHZQdnR2XHXUdXh2MHZAdiR2VHZMdjR2UHZ4dmh1+HVkdOx0kHScdMR8vHy4fLB8qHykfJx8lHyMfIR8fHx0fHB8bHxUf/x7iHswerR6LHoMefx6EHpYeeB5XHjkeJh4QHvId8x33HeIdxh28Hbgdrh3RHewd4h3EHakdnh2vHaAdlh2rHcsd3h2/HZkdlx2/HbQdxx3mHf0dAh7uHesd+B3rHd0d0h3JHb4duB2+Hcwdvx21Hakdlx2GHXMdXx1SHVMdUR1gHXIdhh2kHb4dux2pHacdpR2SHXwdbR2FHZEdmx2xHZwdkx2fHZsdgx1xHU4dOh1NHVYdMR8uHy0fKx8pHyYfJR8jHyIfIB8fHx4fHB8aHxkfEB/8HuIewh6rHpgemh68HqMebh5OHjMeHB4DHhEeFx7pHdYd0R3RHbodsx3aHe8d3R3AHawdqB2+HacdnB2zHdkd4B24HaAdpx3FHdMd3h3tHQAe8h3lHecd5h3rHe0d5R3SHcAdsx2zHbwdsx2oHaMdlx1+HW0dXB1eHWcdVR1pHY8dkx2hHbYduh2xHbQdrB2gHYcddh2CHY0dnR27HbAdoh2yHZ0dfh1kHUodPh1PHWMdMR8tHysfKx8oHyUfIh8hHyAfIB8fHx4fHB8aHxgfFx8LH/Ee4R7XHswexx6xHokeah5GHjQeIx4WHg4e+h3rHe0d4x3HHcMdyx3rHe8d1B28Hawduh3FHaYdpB24Hd0d6R3GHacdpR27HeYd/R0XHgce7R3fHd0d2x3dHd0d2h3RHcodvh2wHbEdrR2dHYwdgR11HWYdYh10HYgdcx1pHYIdoh2wHbodvx27HbwdtB2jHYsdfh2JHZcdpB2uHcIdtB2lHZcdeR1lHVQdRR1gHVYdNB8vHywfKx8oHyQfIR8eHx0fHR8eHx0fGx8ZHxkfFx8XHxQf/h75Hukezx6rHooedR5THj4eJR4NHv4d8h0FHvUd3R3ZHdcd5R3xHeYdyR22Hbgd4h3LHacduR3CHdwd8R3QHa8dqh3HHeUdER5EHgAe7h3gHdkd0B3LHcsdzB3FHb4dwB23HbUdqx2cHYUddR1rHWMdbR2KHZIdix2JHYYdlB2qHbodxB3HHcIdtR2pHZwdih2MHZ0dqR2xHc0dvR2eHY4deh1jHVEdYB1pHVUdOR8zHy4fKx8nHyMfHx8dHxwfHB8cHxwfGx8aHxkfGR8YHxgfIR8cH/kezR6lHowedx5RHjUeGR4XHgceDR4eHvAd4h3lHegd8x3qHdQdwx3BHckd/R3WHaodwB3WHeAd8h3ZHbwdrh3WHfIdSh4iHvkd8h3nHd8d1B3IHbodvR2/HbMdqh2uHbAdph2RHX0deR1zHW8dcx2PHaAdnB2YHZkdmR2eHbQdyx3NHb0dsx2lHZgdjx2YHaUdsB27Hcgduh2gHYoddh1iHWIddR10HVQdPh83HzAfLB8nHyIfHh8cHxofGx8bHxsfGh8aHxofHB8hHygfMR8iH/Eezx6pHo0eaB5NHjgeNh4eHh0eKx4PHvAd6x38HQMe9R3hHc4dzB3RHdcd7h3WHbwdwx3gHfwdCB7gHbcduR3+HTYeKB4CHvQd6x3gHd4d1B3QHcYdth2yHakdox2eHZwdlh2HHXodiB2KHYIddx2OHZ8doR2hHagdqx2nHa4dzR3QHbYdrR2lHaIdmx2fHasdtB3AHdAdux2hHZAdfx1uHXkdgh1wHVIdQR86HzMfLR8oHyMfHh8bHxkfGR8aHxofGh8aHxsfHB8gHycfMh8iH/Ee0R6yHpQedx5bHkoePB4qHkAeIh4NHv0d/R0MHv4d6B3ZHeMd4x3dHfAd8x3XHcQdxh3lHRweFx7gHbsd2x0tHjgeFB4AHvMd6h3mHekd0R3EHcIdtx2sHagdqB2eHZMdjR2CHX8dlB2dHZkdgx2HHZcdoB2hHa8dtB2/HcAd1x3MHbEdrx2sHaodpx2jHbUdwB3CHdUdwB2mHZcdhh12HZAdhx12HV0dQh88HzUfLx8qHyMfHh8bHxkfGB8ZHxkfGB8ZHxofHB8fHyQfKh8gH/0e2x69HqEejx55HlceSR5IHjgeLB4bHgYeGB4SHvQd6x3qHfEd8B3rHQ4eBB7fHc8d1R3gHQ4eKB7rHdId7B1DHi8eER4BHvUd8x3yHewd1R3DHbQdsh2zHbIdsR2lHZgdlB2HHZUdoR2nHaQdjR2UHaAdoR2iHacdsh20HcUd0x3LHb8dvh25Hbgdsh2xHa4duh3HHdId1h23HaAdhB2bHbAdhB10HWAdPh86HzYfMR8pHyEfHR8aHxgfFx8YHxgfFx8XHxkfGh8dHx8fIx8hHxAf5x7NHrEeoh6MHnceah5jHkceNx4eHh8eHR4CHvYd9R3zHfkd/B0BHhkeDh7tHdwd7x3tHREeIh76He0d8h06HjoeGx4DHv8dAR7zHecd3B3MHbYdvB3FHcAduB2qHaYdpB2QHZ4drB2zHaodmB2bHaUdqR2wHa8drh2vHbgdzx3YHcYdxB3OHc8dxB3BHbsdvB3AHbkdyB3RHbYdnx2qHacdjR13HWQdOR81HzIfLh8iHx0fHR8bHxgfFx8XHxYfFR8WHxcfGB8bHx0fHx8fHx0fAR/hHs8euB6eHo0eiB5zHloePx4yHjEeHx4XHgUe9R31HQ4eER4dHhseFB4EHuodBx79HQseIh4WHgQe9x1BHjceHx4THg0eBh76He8d3R3LHb4dzh3WHdAdwB2yHbcdsB2hHaMdth22Ha8dox2fHaMdrx25HbsdtB20HcId1h3VHb8dvB3AHcIduh29HcAduh20Ha4dsx2/HcQdvB23HZ8dhx12HXMdNB8vHywfJR8dHxsfGx8aHxgfFh8VHxQfFB8UHxYfFx8ZHxsfHR8eHx8fGB/6HuQezx67HqcelB6DHnAeWB5IHjoeKB4THgceBh7+HRweQx5KHj8eMR4SHv0dAR4FHgceJh40HhkeCB49HkQeNB4mHhoeCx76Heod2B3IHccd1x3qHeMd0h3FHccduR2kHa0dvx3DHbUdrB2rHagdrx2+Hckdux2/Hckdzx3MHbsdsR2xHbEdrh2zHbYdsx2zHaEdph23Hccdyx2+HaodkB2EHX8dLx8rHyYfIR8cHxofGR8YHxYfFR8THxIfEh8THxUfFh8XHxkfGx8cHx0fHx8ZHwAf5h7ZHscerR6cHosefh5gHjweIR4SHhoeKB4KHjEeiB5ZHmIeSB4hHiYeCh4YHhYeJR4zHhkeER5DHlYeTh44HhkeAB7tHd4d2B3VHdcd4h35HQEe6R3dHdAdtx2tHbgdyh3KHcEduB21HbAdsR22HcYdyR3KHccdvR3DHb8drh2gHaMdox2mHagdoh2mHZ0dox26HcUdxh28HbMdsB2mHaIdKh8mHyIfHh8cHxofFx8WHxUfEx8SHxEfEB8SHxMfFR8VHxcfGR8bHxwfHR8eHxwfBx/1Ht8ezh66HqsejB5gHj8eMB4lHjceSx4rHlketR6QHnIeYh5NHkweNh4fHi0eOh5DHi0eNR5RHlkeVx5DHhgeBB7yHd8d5x3oHeMd7h0LHhce9h3hHckduh23Hb8dzR3MHcodxx2+Hb0dwR3GHcYdxR3EHb4dsh2zHbgdqx2fHZwdnB2fHZ8dmx2ZHZgdqB20HbMduB2uHaodrx2xHa8dJR8iHx4fHB8aHxgfFx8VHxQfEh8QHxAfDx8QHxEfEh8THxUfGB8aHxsfHR8eHx4fIB8WH/we5x7JHqMehB5lHlEeQR5CHmMeYR5aHnUe4R62HoUeax5lHmoeYx5NHlUeVx5iHlceVB5WHk4eTR5EHikeEB71Hegd9B39Hfod/B0QHhAe9B3eHcYdwh3HHcsdzx3NHcodyB3FHcYdxx3FHbUdsx2zHbEdqB2nHbQdrR2iHZgdkB2THZQdkB2MHZAdoR2jHaUdsx2kHZ8dqx20HbUdIR8eHxwfGh8ZHxcfFR8UHxIfEB8PHw4fDR8NHw4fDx8RHxMfFR8XHxofHB8dHx4fHx8gHxMf7R7KHrQehR58HmoeWh5xHoUehx6HHpge3h69Ho4efR6GHoMeeR5vHnoedh56HnAeZB5RHkEeQR5CHjceHR4DHg4eEx4HHgUeEh4eHgse7x3bHcsdzB3UHdEdzB3GHb8dvR27Hbcdux26HbIdrh2rHacdox2eHaUdqh2kHZcdix2LHYkdhR2GHZEdmx2YHZodoh2YHZIdmh2pHacdHR8cHxofGR8XHxYfFB8SHxAfDx8NHwwfCx8MHwwfDR8OHxAfEh8VHxcfGh8cHx0fHx8fHxgf/B7gHrwelx6jHoQeiR6GHqUexR6tHqge2R6/HqYepB6mHqUeoR6UHo4eiR57HmgeVR5KHkAeOh43HkEeKx4RHh4eKR4kHhseHx4XHvwd5x3dHdod4x3dHc0dwB24HbMdsh2zHbEduB21HaodpR2lHZ8dnR2ZHZ0dpB2iHZUdiR2FHX4deB2GHZIdlR2NHY8dkR2KHYkdlR2hHZQdGx8ZHxgfFh8VHxMfER8QHw8fDh8MHwofCh8KHwofCx8MHw4fEB8SHxUfGB8aHxwfHR8eHx8fEx/rHtMevB67HqkeqB60Hscezh6tHtMe5R7RHsEeqh6cHpUemx6iHqAejx51HmYeWR5SHkMeMR4uHiweLh41Hj0ePR4zHi8eLB4VHv4d/x0AHggeFx7/Hc0dux2wHaodpx2nHa8duB20Hacdnx2iHaEdkh2NHZMdoR2hHZ4dkR2JHX0ddB1/HZAdkh2JHYodiB2FHYcdjR2MHYodGx8YHxYfFB8RHxAfDh8NHw0fDR8LHwkfCB8IHwgfCR8KHwsfDR8QHxMfFh8YHxofHB8eHyAfGh//Huce2x7XHsUe0R7MHuQe1h69HtIe3x7SHr4eqR6cHoseex6CHosegh5vHmEeWR5WHj8eLx4hHh4eJR4yHjgeMB4lHiUeJB4gHhYeGx4OHgke/x3sHdQdvR2xHaQdnx2iHa0dtx2wHaYdnh2bHZwdjh2JHZwdlx2cHaQdnx2SHYAdaR19HZEdkR2AHXwdfR15HYEdhh2GHYgdIB8cHxgfEx8PHwwfCx8LHwwfDR8MHwkfCB8HHwcfBx8IHwkfCx8OHxIfFR8XHxkfGx8dHyAfIR8fHwkf+x7wHt8e6B7fHvQe6R7cHtke3x7THsEetR6qHpUeex5uHnQebR5hHlkeTR5EHkEeMx4bHhQeFx4bHhseFx4PHg4eCx4OHgce8B3oHe0d3B3MHc0dxR25HasdnR2cHaYduB2rHaEdmB2SHZIdix2GHZwdjR2QHZ0dlB2KHXkdYx14HYgdiB13HXMdbh1yHX4dex2AHYIdJx8fHxkfEx8OHwsfCB8JHwsfDB8MHwofCB8GHwYfBh8HHwgfCh8NHxEfFB8WHxgfGh8cHyEfKB8wHysfJx8ZHwcfBR8LHxMfAR/3HvQe7R7bHskeuh6tHpgefh5rHmQeaB5dHkceQx46HjIeKB4YHgweCx4NHgceBR4AHvwd9x38HQYe4R3bHeId4B3PHb0dux26HbAdpB2bHaMdrh2jHZkdjh2LHYkdhh16HYkdhR2IHZIdix17HXUdXh1nHXkdfx12HWMdWx1kHW8ddB19HXsdKh8iHxsfFB8NHwofCB8IHwofCx8LHwofCB8GHwUfBR8GHwgfCh8NHxAfEx8VHxcfGh8cHyEfKB8uHzQfPR9BHzcfMx8kHxMf/R7tHuUe1h7EHrYeph6ZHpAefh5rHlweWh5THkQeNx4vHiUeGh4MHgIe/h0AHvsd9h3xHe4d6x3vHe8d3B3OHdEd2B3VHb0dsx22HbIdoR2VHZQdoB2dHZAdhh17HXIdeB1wHXUdeR11HX4deR1uHXAdYx1PHVcddR1+HWMdTh1QHVodZx1uHW8dLB8iHxsfFB8NHwgfBx8HHwkfCh8KHwkfCB8GHwQfBR8GHwkfDB8OHxAfEx8VHxcfGh8cHyEfJx8sHzAfOR9FH0kfQx8hHwof7B7UHsEetx6lHpwekh6FHoEeex5pHlMeSx5DHjgeMB4kHhseDh4FHv0d+x3yHe4d6h3kHd8d4R3hHeAd2x3JHcMdvx3EHcIdtR20Hbkdrh2WHYgdjB2JHYIddR1pHWIdYR1fHV4dYR1cHV0dXh1XHVsdXh1QHUsdYB1rHVcdTR1THVodXB1fHWMdKR8gHxkfEx8NHwkfBh8GHwgfCR8IHwgfBx8FHwQfBh8IHwofDh8QHxIfEx8VHxcfGh8cHyAfJh8rHy4fMx8+H0IfNR8WHwYf6x7SHrUeoh6QHoYegB53Hm8ebB5lHlIeQB46Hi0eJx4fHhYeDR4HHgkeCx4BHu8d5x3eHdgd1x3VHdMd0B3KHbodtB21HbYdth2iHaMdpx2jHZIdgx14HXIdbB1sHWYdYB1YHVEdTx1MHUodSR1HHUYdRh1EHT8dSR1GHUkdVh1lHW8dax1tHXsdJR8dHxgfER8NHwkfBh8EHwcfCB8HHwUfBR8DHwQfBh8JHwwfDx8THxQfFh8XHxkfGx8dHyEfJh8rHy8fNB85HzofKR8QH/Ue1h7DHrAenR6UHooeeh5xHmYeWx5QHkYePR42HjMeLx4sHikeJB4aHhkeFx4LHv4d9h3rHd0d0B3LHccdxR3AHbodth2wHakdph2hHZQdjx2SHY4dfR11HXIdfh19HXYdcB1lHVgdTx1PHU0dSR1FHUIdPB03HTcdOx0+HVIdZx18HYMdfx2BHX8dHx8bHxUfDx8LHwgfBR8DHwQfBR8EHwMfAx8CHwMfBx8JHwwfDx8WHxofGx8bHxsfHR8gHyMfJh8pHy4fMh80HzYfJR8MH/Ae0B7EHroesR6tHpoehR53HmweWR5RHkoeQB48HkEeQR47Hj8eOx4vHjAeKR4dHgge+x3wHeQd3B3NHcUdvR23HbMdsx2rHaIdnh2XHZAdjB2GHX8deh15HYMdkR2KHYUdgB1xHWcdYx1lHWMdYh1dHVgdUR1BHTQdMx1CHVcdax2BHYYdhR2BHXwdGx8YHxQfDh8JHwYfBB8DHwMfAR8CHwAfAB8AHwIfBh8JHwsfDh8WHx0fHh8eHx8fIB8gHyEfIh8jHycfLB8vHzQfKB8RH/0e6R7jHtce1B7CHqQekR5+Hm4eaR5vHl8eVh5THlEeWB5QHlUeTR5DHkMePB4qHhgeCB4AHvYd4B3UHcodwh23HbAdqx2kHZ8dnB2bHZ0dkR2JHYUdiR2MHZgdmx2LHY8dih12HXgdeB16HXwdfR13HW8dZh1QHTkdMh1KHWAddh2BHYEdgB1+HXcdGh8WHxIfDR8JHwYfBB8CHwAf/x7+Hv4e/R7+HgAfBB8GHwkfCx8SHxwfHh8fHx8fHR8dHxwfHB8dHyAfJx8tHzQfIx8QHwAf9x72Hvce6R7IHrIelh5/Hnwelx6THnUeax5oHmYeaR5lHmgeWx5PHkseQh46Hi4eHh4VHhke6h3YHcwdyh3CHbcdrh2vHa4dpx2pHaQdmR2YHZcdjh2ZHaAdnB2LHZsdkR16HYYdjB2OHZAdhB10HWsdYR1THT8dKh1HHWIdcx13HXsdfx17HXIdGh8VHxEfDh8KHwYfAx8BH/8e/R78Hvwe/B78Hv0eAR8DHwYfCB8NHxUfGx8cHxsfGh8ZHxkfGh8bHx0fIx8rHzQfHx8BH+Qe2x7aHtse3R7NHrUenR6OHocelx6ZHowefx54Hnsefh54HmweYh5RHkEePB4zHiweJR4XHgYe7B3eHdsd3h3OHb8dvB3EHb4dtB2zHaEdnR2lHaMdmx2fHaYdoB2aHaEdlh2MHZYdmR2RHYcdeB1zHWcdVh1IHTkdJR07HVMdXh1wHX0deh11HWwdGB8THxAfDR8KHwYfAh//Hv0e+x76Hvoe+h75Hvoe/R4AHwMfBR8JHw4fEx8WHxYfFx8WHxcfGB8aHxwfIB8nHy4fHR/7Htoevx64HrUeuh63HrYepx6VHoQeeh59Hocefh54HokeiB52HlseSB5CHjEeHx4VHhEeDh4GHgEeAB4GHvsd9B3ZHcwdzx3XHckduh2vHawdqR20HbUdqh2lHbQdrB2gHaMdnx2dHaIdoR2UHYwdhB19HW8dVx1HHTYdIx0pHUUdWx11HXsddR1vHWEdEx8PHw0fCx8KHwYfAh/9Hvse+R75Hvge+B73Hvce+R78Hv8eAh8HHwkfCx8QHxIfEx8THxUfFh8ZHxsfHR8hHyAfEx/9Ht4ewh6wHqEenx6dHpkemB6OHnkeah5lHmwecR5rHnMech5iHkoeMh4pHiAeEh4EHv0d9R3yHe4d7h30Hfkd8B34He4d4h3aHcgduh21HbgduB23HbQdrh20Hbgdth2sHaYdpB2jHaEdmh2UHY4dhx17HW0dXh1UHUAdJx0hHUcdWR1tHXUdbh1rHVkdDB8LHwkfCB8IHwQfAB/8Hvge9x73Hvce9x71HvUe9x76Hvwe/x4DHwYfCh8NHw8fEB8QHxIfFR8XHxkfGx8eHx0fCB/oHtQewB6vHpceiR6AHn0efx6DHnweZR5VHlUeXh5bHmAeZR5NHjQeJh4dHhAeBB75HfEd6h3lHd8d2h3ZHdwd4h3oHe0d7R3YHcYdwx3AHbwdsx2qHaAdoR2rHbMdqh2kHZ0dnR2fHaAdkR2LHYcdgh16HXcdbx1dHUAdKh0cHTgdTR1iHW0dZh1cHUsdBx8GHwYfBB8DHwEf/R75HvYe9R71HvUe9R70HvQe9R73Hvke/R4DHwcfCx8MHw0fDR8OHxAfEx8WHxgfGh8bHxgfAh/kHswetR6fHpIegR52Hmseah5sHnEeXR5JHkEeUR5MHkoeUx5FHi4eHh4PHgQe+h3vHecd4R3ZHdEdzh3LHcwdzB3PHdgd4h3aHcsd0B3KHbodrx2hHZodnh2mHaQdlR2eHYodjR2WHZwdlB2LHXsdeR15HX0deB1cHTsdIB0WHS8dRB1ZHWIdWx1GHTIdBR8DHwIfAR8AH/4e+x74HvUe8x7zHvMe8x7zHvMe9B71Hvce+x4CHwcfCR8JHwofCh8MHw4fEh8WHxgfGh8WHxIfDB/qHtQewR6uHp8ejR6AHnQeYx5THlQeTx5CHjkeQR4/HjYePh43HigeHB4KHvsd8B3nHd0d1h3MHcgdxh3GHcQdxR3GHc8d3R3gHeMd4B3THb8dtB2hHY4dnB2gHZsdiR2OHYMdhB2SHZYdlB2LHXsddh1vHW4dbB1XHTsdHx0OHR4dNR1KHUwdQx0wHSUdAh8BH/8e/R78Hvse+h74HvUe8x7yHvIe8h7xHvIe8x70HvYe+h7/HgQfBh8GHwcfCB8KHw4fEh8VHxgfGR8bHxwfER/+HuEezh69Hqsenx6aHoMecR5eHk4ePx42Hi0eKx4pHiEeHx4gHhkeDR4CHvgd6x3fHdQdyx3GHcMdwR3BHcAdwB3DHccd0B3ZHdYdyx3BHbQdrh2gHYwdjx2QHYodfx1+HXYddB2EHY8dkh2RHYgdfx1wHWIdXh1QHUEdLx0THQUdHh0oHSwdIR0jHTQd";
+{const bin=atob(DEM_B64),u8=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);const i16=new Int16Array(u8.buffer);for(let k=0;k<NX*NN;k++)Hg[k]=i16[k];}
+function H(x,n){const fi=(x-X0)/STEP,fj=(n-N0)/STEP;const i=Math.max(0,Math.min(NX-2,Math.floor(fi))),j=Math.max(0,Math.min(NN-2,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));const a=Hg[j*NX+i],b=Hg[j*NX+i+1],c=Hg[(j+1)*NX+i],d=Hg[(j+1)*NX+i+1];return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v;}
+function correct(){const R=320,CELL=400,buckets=new Map(),samples=[];
+  TRAILS.forEach(T=>T.pts.forEach((p,i)=>{if(i%2===0)samples.push({x:p.x,n:p.n,dl:p.e-H(p.x,p.n)});}));
+  samples.forEach(s=>{const k=Math.floor(s.x/CELL)+","+Math.floor(s.n/CELL);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(s);});
+  const out=new Float32Array(Hg);
+  for(let j=0;j<NN;j++)for(let i=0;i<NX;i++){const x=X0+i*STEP,n=N0+j*STEP,bx=Math.floor(x/CELL),bn=Math.floor(n/CELL);let sw=0,sd=0;
+    for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=buckets.get((bx+a)+","+(bn+b));if(!arr)continue;for(const s of arr){const d2=(s.x-x)**2+(s.n-n)**2;if(d2>4*R*R)continue;const w=Math.exp(-d2/(R*R));sw+=w;sd+=w*s.dl;}}
+    if(sw>0)out[j*NX+i]+=sd/sw*Math.min(1,sw*1.4);}
+  Hg.set(out);}
+correct();
+function distToTrail(T,x,n){let b=1e9;for(let i=0;i<T.pts.length;i+=3){const p=T.pts[i];const d=Math.hypot(p.x-x,p.n-n);if(d<b)b=d;}return b;}
+const NEAR=1150;
+function nearTrails(x,n){return TRAILS.filter(T=>distToTrail(T,x,n)<NEAR).map(T=>T.id);}
+
+/* ================= scene setup ================= */
+const canvas=$("#gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-2000,2000);
+const dirL=new THREE.DirectionalLight(0xffffff,0.5);scene.add(new THREE.AmbientLight(0xffffff,0.58),dirL,dirL.target);
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const col=h=>new THREE.Color(h);
+const LAM={};const lam=c=>LAM[c]||(LAM[c]=new THREE.MeshLambertMaterial({color:c}));
+const PHO={};const pho=c=>PHO[c]||(PHO[c]=new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0,specular:0x000000}));
+const HULL=new THREE.MeshBasicMaterial({color:PAL.outline,side:THREE.BackSide});
+function ribbon(points,width,mat,lift){
+  const pos=[],uv=[],idx=[];let len=0;
+  for(let i=0;i<points.length;i++){const p=points[i],a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)];
+    if(i)len+=points[i].distanceTo(points[i-1]);
+    let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;const px=-tz*width/2,pz=tx*width/2;
+    pos.push(p.x+px,p.y+lift,p.z+pz,p.x-px,p.y+lift,p.z-pz);uv.push(0,len/3,1,len/3);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}}
+  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
+  return new THREE.Mesh(g,typeof mat==="string"?new THREE.MeshBasicMaterial({color:mat,side:THREE.DoubleSide}):mat);
+}
+function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new THREE.Mesh(geo,phong?pho(color):lam(color));m.position.set(x,y,z);m.scale.set(sx,sy==null?sx:sy,sz==null?sx:sz);parent.add(m);
+  if(hull){const h=new THREE.Mesh(geo,HULL);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(hull);parent.add(h);m.userData.hull=h;}return m;}
+function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
+
+/* tile & organic boundary */
+const C={x0:-500,x1:4300,n0:-7200,n1:2400,ve:1.6};
+const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
+function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
+const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+const mask=(x,n)=>{const t=sm(Math.min((1-Math.abs((x-cx)/(w/2)))*w/2,(1-Math.abs((n-cn)/(d/2)))*d/2)/(0.2*Math.min(w,d)));return t*t*(1.6-0.6*t);};
+const cells=96,nx=Math.round(cells*w/Math.max(w,d)),nn=Math.round(cells*d/Math.max(w,d)),dx=w/nx,dn=d/nn;
+let base=1e9;for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;if(qOf(x,n)<0.9)base=Math.min(base,H(x,n));}base-=10;
+const R1=nx+1,hv=new Float32Array((nx+1)*(nn+1));
+for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;hv[j*R1+i]=base+(H(x,n)-base)*mask(x,n);}
+const diag=new Uint8Array(nx*nn);for(let k=0;k<diag.length;k++)diag[k]=hash(k*7+11,1519)>.5?1:0;
+function surf(x,n){const fi=(x-C.x0)/dx,fj=(n-C.n0)/dn;const i=Math.max(0,Math.min(nx-1,Math.floor(fi))),j=Math.max(0,Math.min(nn-1,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));
+  const a=hv[j*R1+i],b=hv[j*R1+i+1],c=hv[(j+1)*R1+i],e=hv[(j+1)*R1+i+1];
+  if(diag[j*nx+i])return u>=v?a+(b-a)*u+(e-b)*v:a+(c-a)*v+(e-c)*u;
+  return u+v<=1?a+(b-a)*u+(c-a)*v:e+(c-e)*(1-u)+(b-e)*(1-v);}
+const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
+const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
+const world=new THREE.Group();scene.add(world);
+const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
+const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
+let MAXY=0;
+
+// terrain + contours
+(function(){
+  const pos=[],cols=[],r=rng(97),tris=[];
+  function tri(A,B,Q){
+    
+    const ux=B[0]-A[0],uy=B[2]-A[2],uz=B[1]-A[1],vx=Q[0]-A[0],vy=Q[2]-A[2],vz=Q[1]-A[1];
+    let Nx=uy*vz-uz*vy,Ny=uz*vx-ux*vz,Nz=ux*vy-uy*vx;if(Ny<0){Nx=-Nx;Ny=-Ny;Nz=-Nz;}
+    const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
+    const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
+    let c;
+    if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
+    else if(me>8170&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
+    const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
+    const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
+    W3.forEach(p=>{pos.push(p.x,p.y,p.z);cols.push(c.r,c.g,c.b);MAXY=Math.max(MAXY,p.y);});
+    tris.push([A,B,Q]);
+  }
+  for(let j=0;j<nn;j++)for(let i=0;i<nx;i++){const P=(ii,jj)=>[C.x0+ii*dx,C.n0+jj*dn,hv[jj*R1+ii]];const a=P(i,j),b=P(i+1,j),c=P(i,j+1),e=P(i+1,j+1);
+    if(diag[j*nx+i]){tri(a,b,e);tri(a,e,c);}else{tri(a,b,c);tri(b,e,c);}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));tg.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));tg.computeVertexNormals();
+  topoGroup.add(new THREE.Mesh(tg,new THREE.MeshLambertMaterial({vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+  topoGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(tg,26),new THREE.LineBasicMaterial({color:PAL.terrLine,transparent:true,opacity:.16})));
+  // contour lines every 100 ft, heavier every 500 ft
+  const minor=[],major=[];
+  tris.forEach(T=>{const hs=T.map(v=>v[2]);const lo=Math.min(...hs),hi=Math.max(...hs);if(hi-lo<1)return;
+    for(let L=Math.ceil((lo-base+1)/100)*100+base;L<hi;L+=100){if(L-base<40)continue;const pts=[];
+      for(let k=0;k<3;k++){const P=T[k],Q=T[(k+1)%3];if((P[2]-L)*(Q[2]-L)<0){const t=(L-P[2])/(Q[2]-P[2]);pts.push(Wv(P[0]+(Q[0]-P[0])*t,P[1]+(Q[1]-P[1])*t,L).add(new THREE.Vector3(0,0.06,0)));}}
+      if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
+  const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
+  topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
+  // base: one thin sheet of liquid glass
+  const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
+  const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
+})();
+
+// creeks with flowing texture
+function stripeTex(bg,stroke,w0,h0,n,seed,len){const c=document.createElement("canvas");c.width=w0;c.height=h0;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,w0,h0);const r=rng(seed);x.fillStyle=stroke;
+  for(let i=0;i<n;i++){const px=r()*w0,py=r()*h0,l=len*(0.5+r()),wd=1.5+r()*2.5;x.globalAlpha=0.55+r()*0.45;x.beginPath();x.ellipse(px,py,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py+h0,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py-h0,wd,l,0,0,Math.PI*2);x.fill();}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const creekTex=stripeTex(PAL.water,"#FFFFFF",32,128,10,5,9);
+const creekMat=new THREE.MeshBasicMaterial({map:creekTex,side:THREE.DoubleSide});
+CANYONS.forEach(cy=>{const pts=[];let done=false;
+  for(let k=0;k<cy.pts.length-1&&!done;k++){const a=cy.pts[k],b=cy.pts[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),st=Math.ceil(L/(dx/3));
+    for(let s=0;s<st;s++){const t=s/st,x=a[0]+(b[0]-a[0])*t,n=a[1]+(b[1]-a[1])*t;if(qOf(x,n)>0.95){if(pts.length>1){done=true;break;}continue;}pts.push(G(x,n));}}
+  if(pts.length<2)return;const wd=cy.minor?0.5:0.85;world.add(ribbon(pts,wd+0.4,PAL.waterEdge,0.2));world.add(ribbon(pts,wd,creekMat,0.26));});
+
+// trails
+const trailPts=[],trailMesh={};
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
+  const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
+  world.add(bright,dim);trailMesh[T.id]={bright,dim};});
+TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
+  const pts=T.world.filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
+  g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
+  const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55})));
+  const foot=pts.map(p=>new THREE.Vector3(p.x,0.02,p.z));g.add(ribbon(foot,0.5,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35,side:THREE.DoubleSide}),0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.4,0)))),pts.length*2,0.32,6,false),new THREE.MeshLambertMaterial({color:c})));
+  trail3D.add(g);T.g3=g;});
+const TG=new Map(),tgk=(x,z)=>Math.floor(x/1.6)+","+Math.floor(z/1.6);trailPts.forEach(p=>{const k=tgk(p.x,p.z);(TG.get(k)||TG.set(k,[]).get(k)).push(p);});
+const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=TG.get((i+a)+","+(j+b));if(!arr)continue;for(const p of arr){const ddx=p.x-v.x,ddz=p.z-v.z;if(ddx*ddx+ddz*ddz<2.2)return true;}}return false;};
+
+// trees
+(function(){
+  const types={
+    oak:{geo:new THREE.IcosahedronGeometry(0.8,1),color:PAL.oak,y:1.3,trunk:true},
+    syc:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.sycamore,y:1.2,trunk:true},
+    gold:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.gold,y:1.2,trunk:true},
+    conifer:{geo:new THREE.ConeGeometry(0.6,2.4,7).translate(0,1.45,0),color:PAL.conifer,y:0,trunk:false},
+    shrub:{geo:new THREE.IcosahedronGeometry(0.4,0).scale(1,0.7,1),color:PAL.shrub,y:0.22,trunk:false}};
+  const inst={};Object.keys(types).forEach(k=>inst[k]=[]);
+  const tr=rng(907);
+  for(let t=0;t<16000;t++){
+    const x=C.x0+tr()*w,n=C.n0+tr()*d,q=qOf(x,n);if(q>0.93)continue;
+    const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
+    const cd=creekDist(x,n);if(cd*S<0.8)continue;
+    const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
+    if(mk<0.25){type=null;}
+    else if(g>0.62)type=null;
+    else if(e>7930){type=tr()<.88?"conifer":"shrub";p=0.4+cl*.25;}
+    else if(g<0.2){type=tr()<.7?"conifer":"shrub";p=0.1+cl*.1;}
+    else{type=tr()<.4?"conifer":"shrub";p=0.02;}
+    if(!type||tr()>p||inst[type].length>(type==="conifer"?1100:420))continue;
+    const v=Wv(x,n,e);if(nearTrail(v))continue;
+    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+  }
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
+  Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
+    const mesh=new THREE.InstancedMesh(T.geo,pho(T.color),list.length),hull=new THREE.InstancedMesh(T.geo,HULL,list.length);
+    list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y+T.y*it.s,it.v.z);sc.setScalar(it.s);m4.compose(pv,q,sc);mesh.setMatrixAt(i,m4);sc.setScalar(it.s*1.12);m4.compose(pv,q,sc);hull.setMatrixAt(i,m4);if(T.trunk)trunks.push({v:it.v,s:it.s,h:T.y});});
+    treeGroup.add(hull,mesh);});
+  const tm=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.08,0.11,1,5).translate(0,0.5,0),lam(PAL.trunk),trunks.length);q.identity();
+  trunks.forEach((t,i)=>{pv.set(t.v.x,t.v.y,t.v.z);sc.set(t.s,t.h*t.s,t.s);m4.compose(pv,q,sc);tm.setMatrixAt(i,m4);});treeGroup.add(tm);
+})();
+
+// boulders
+(function(){const r=rng(41),g=new THREE.IcosahedronGeometry(0.35,0),list=[];
+  CANYONS.forEach(cy=>{for(let k=0;k<cy.pts.length-1;k++){const a=cy.pts[k],b=cy.pts[k+1];for(let s=0;s<6;s++){const t=r(),x=a[0]+(b[0]-a[0])*t+(r()-.5)*160,n=a[1]+(b[1]-a[1])*t+(r()-.5)*160;if(qOf(x,n)>0.85)continue;list.push(G(x,n,0.15));}}});
+  const m=new THREE.InstancedMesh(g,pho(PAL.stone),list.length),h=new THREE.InstancedMesh(g,HULL,list.length),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  list.forEach((v,i)=>{const s=0.7+r()*0.8;q.setFromEuler(new THREE.Euler(r()*3,r()*3,r()*3));sc.set(s,s*.7,s);m4.compose(v,q,sc);m.setMatrixAt(i,m4);sc.multiplyScalar(1.12);m4.compose(v,q,sc);h.setMatrixAt(i,m4);});treeGroup.add(h,m);})();
+
+/* ================= flowers ================= */
+const FGEO={stem:new THREE.CylinderGeometry(0.03,0.03,1,4).translate(0,0.5,0),
+  tube:new THREE.ConeGeometry(0.09,0.34,5).translate(0,0.17,0),cup:new THREE.ConeGeometry(0.2,0.22,6).rotateX(Math.PI).translate(0,0.11,0),
+  dome:new THREE.SphereGeometry(0.2,6,4).scale(1,0.6,1),spike:new THREE.ConeGeometry(0.1,0.55,5).translate(0,0.28,0),
+  berry:new THREE.IcosahedronGeometry(0.075,0),bush:new THREE.IcosahedronGeometry(0.38,0).scale(1,.8,1),frond:new THREE.ConeGeometry(0.07,0.9,3).translate(0,0.45,0),
+  yuccaLeaf:new THREE.ConeGeometry(0.06,0.55,3).translate(0,0.27,0),pad:new THREE.SphereGeometry(0.2,7,5).scale(1,1.25,0.32)};
+function plant(k,sink,r){const sp=SPECIES[k],c=sp.color,G2="#5F8A3E",add=sink;
+  const M=(x,y,z,s,rx=0,rz=0)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,0,rz)),new THREE.Vector3(s,s,s));
+  const Ms=(x,y,z,sx,sy)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(sx,sy,sx));
+  if(sp.shape==="tube"){for(let i=0;i<5;i++){const a=r()*6.28,rr=r()*0.25,x=Math.cos(a)*rr,z=Math.sin(a)*rr,h=0.35+r()*.25;add("stem",G2,Ms(x,0,z,1,h));add("tube",c,M(x,h,z,1,(r()-.5)*.6,(r()-.5)*.6));}}
+  else if(sp.shape==="cup"){add("bush",G2,Ms(0,0.25,0,0.9,0.8));for(let i=0;i<5;i++){const a=i/5*6.28+r(),x=Math.cos(a)*.28,z=Math.sin(a)*.28;add("cup",c,M(x,0.5+r()*.15,z,1));}}
+  else if(sp.shape==="dome"){add("bush",G2,Ms(0,0.2,0,0.8,0.6));for(let i=0;i<4;i++){const a=i/4*6.28+r(),x=Math.cos(a)*.22,z=Math.sin(a)*.22;add("dome",c,M(x,0.45,z,0.9+r()*.3));}}
+  else if(sp.shape==="spike"){add("bush",G2,Ms(0,0.2,0,0.7,0.6));for(let i=0;i<4;i++){const a=r()*6.28,x=Math.cos(a)*.18,z=Math.sin(a)*.18,h=0.5+r()*.3;add("stem",G2,Ms(x,0,z,1,h));add("spike",c,M(x,h,z,1));}}
+  else if(sp.shape==="yucca"){for(let i=0;i<8;i++){const a=i/8*6.28;add("yuccaLeaf","#7E9B5C",M(0,0,0,1,Math.cos(a)*.9,Math.sin(a)*.9));}add("stem","#8FA36A",Ms(0,0,0,1.4,1.6));add("spike",c,M(0,1.6,0,1.6));}
+  else if(sp.shape==="berry"){add("bush","#4F7A3A",Ms(0,0.32,0,1.15,1));for(let i=0;i<7;i++){const a=r()*6.28,b=r()*1.2,x=Math.cos(a)*.38*Math.cos(b-.6),z=Math.sin(a)*.38*Math.cos(b-.6);add("berry",c,M(x,0.32+Math.sin(b)*.3,z,1));}}
+  else if(sp.shape==="pad"){const PADS=[[0,0.24,0,1,0,0],[0.2,0.5,0.02,0.85,0,-0.5],[-0.2,0.48,0,0.85,0,0.5],[0.05,0.75,0.05,0.7,0,-0.2],[0.3,0.24,0.15,0.8,0.5,-0.3]];PADS.forEach(([x,y,z,s,ry,rz])=>{add("pad","#7FA552",new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(0,ry+r()*0.6,rz)),new THREE.Vector3(s,s,s)));});[[0.05,0.98,0.05],[0.32,0.73,0.02],[-0.3,0.72,0]].forEach(([x,y,z])=>add("berry",c,M(x,y,z,1.4)));}
+  else if(sp.shape==="fern"){for(let i=0;i<7;i++){const a=i/7*6.28+r()*.3;add("frond",c,M(0,0,0,1,Math.cos(a)*.95,Math.sin(a)*.95));}}
+}
+const flowerGroups={},clusters=[];
+(function(){
+  const r=rng(53),FS=1.8;
+  TRAILS.forEach(T=>{const buckets={};
+    FLORA[T.id].forEach(k=>{const sp=SPECIES[k];let got=0,tries=0;const want=T.id==="C"?4:3;
+      while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
+        if(qOf(x,n)>0.85)continue;
+        const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
+        plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
+        clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
+    const grp=new THREE.Group();Object.values(buckets).forEach(b=>{const m=new THREE.InstancedMesh(FGEO[b.g],pho(b.c),b.list.length);b.list.forEach((mm,i)=>m.setMatrixAt(i,mm));grp.add(m);});
+    world.add(grp);flowerGroups[T.id]=grp;});
+})();
+
+/* ================= landmarks + waterfall ================= */
+const anim={};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,8),ico=new THREE.IcosahedronGeometry(1,0);
+  const roof=new THREE.CylinderGeometry(0.75,0.75,1,3).rotateZ(Math.PI/2).rotateX(Math.PI/2).rotateY(Math.PI/2);
+  function house(x,n,s,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry;world.add(g);
+    part(g,box,PAL.wall,0,0.6*s,0,1.8*s,1.2*s,1.2*s,1.06);const r=part(g,roof,PAL.roof,0,1.55*s,0,1.25*s,0.95*s,1.2*s,1.06);rot(r,0,Math.PI/2,0);
+    part(g,box,"#6B4F3A",0,0.35*s,0.61*s,0.35*s,0.7*s,0.05,0);}
+  function gate(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);
+    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}
+  function bench(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n,0.05));g.rotation.y=ry||0;world.add(g);part(g,box,"#9C7653",0,0.42,0,1.3,0.1,0.42,1.08);part(g,box,"#9C7653",0,0.75,-0.2,1.3,0.45,0.08,1.08);part(g,box,"#6B4F3A",-0.55,0.2,0,0.1,0.4,0.36,0);part(g,box,"#6B4F3A",0.55,0.2,0,0.1,0.4,0.36,0);}
+  function palm(x,n,h,i){const b=G(x,n);const g=new THREE.Group();g.position.copy(b);g.rotation.y=(i||0)*1.3;world.add(g);
+    const tk=part(g,cyl,"#9A7B5B",0,h/2,0,0.11,h,0.11);rot(tk,0,0,((i||0)%2?0.06:-0.05));
+    for(let f=0;f<7;f++){const a=f/7*Math.PI*2;const fr=part(g,new THREE.ConeGeometry(0.16,1.5,4).translate(0,0.75,0),f%2?"#5E8F3E":"#6FA04A",0,h,0,1,1,1,1.1);rot(fr,Math.cos(a)*1.25,0,Math.sin(a)*1.25);}
+    part(g,new THREE.SphereGeometry(1,6,4),"#8C6B4A",0,h-0.05,0,0.22,0.18,0.22,1.1);}
+  function slab(x,n,sx,sz,c,ry){const p=G(x,n);const m=part(world,box,c||"#D9D4C8",p.x,p.y+0.1,p.z,sx,0.2,sz,1.06);rot(m,0,ry||0,0);return m;}
+  function tower(x,n,h,c){const p=G(x,n);part(world,cyl,c||"#E9E1D2",p.x,p.y+h/2,p.z,0.35,h,0.35,1.06);part(world,new THREE.ConeGeometry(0.6,0.8,8),"#B5523B",p.x,p.y+h+0.4,p.z,1,1,1,1.06);}
+  function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
+    [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
+  function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
+  gate(-94,25,0.3);gate(820,2069,1.0);gate(2404,-6220,-0.4);
+  bench(-34,-65,1.4);bench(2544,-6110,0.2);
+  // ---- hoodoos: tapered orange columns with pale bands and dark caprock, scattered over the steep breaks below the rim
+  {const r=rng(1234),list=[];const up=new THREE.Vector3(0,1,0);
+   for(let t=0;t<26000&&list.length<1100;t++){const x=C.x0+r()*w,n=C.n0+r()*d;if(qOf(x,n)>0.9)continue;
+     const e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn);
+     if(e<7380||e>8230||g<0.16||mask(x,n)<0.5)continue;
+     const v=G(x,n);if(nearTrail(v))continue;const cl=fbm(x/700+3,n/700+1);if(r()>0.45+cl*0.9+(g-0.16)*1.2)continue;
+     list.push({v,h:1.0+r()*1.6+(g>0.35?0.5:0),rad:0.17+r()*0.15,ry:r()*6.28,c:r()});}
+   const shaft=new THREE.CylinderGeometry(0.75,1,1,7).translate(0,0.5,0),band=new THREE.CylinderGeometry(0.82,0.82,0.14,7),cap=new THREE.CylinderGeometry(1.05,0.95,0.2,7);
+   const cols=["#E8946A","#E2845A","#EDB08C","#DA7650","#F0C6A8","#E59C74"];
+   const ms=new THREE.InstancedMesh(shaft,new THREE.MeshLambertMaterial({color:"#FFFFFF",emissive:"#5E2E16"}),list.length),mb=new THREE.InstancedMesh(band,pho("#F6E6D2"),list.length),mc=new THREE.InstancedMesh(cap,pho("#E2A27A"),list.length),mh=new THREE.InstancedMesh(shaft,HULL,list.length);
+   const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),cc=new THREE.Color();
+   list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y-0.15,it.v.z);sc.set(it.rad,it.h+0.15,it.rad);m4.compose(pv,q,sc);ms.setMatrixAt(i,m4);
+     sc.set(it.rad*1.12,it.h+0.2,it.rad*1.12);m4.compose(pv,q,sc);mh.setMatrixAt(i,m4);ms.setColorAt(i,cc.set(cols[Math.floor(it.c*cols.length)]));
+     pv.set(it.v.x,it.v.y+it.h*0.62,it.v.z);sc.set(it.rad,1,it.rad);m4.compose(pv,q,sc);mb.setMatrixAt(i,m4);
+     pv.set(it.v.x,it.v.y+it.h+0.02,it.v.z);sc.set(it.rad,1,it.rad);m4.compose(pv,q,sc);mc.setMatrixAt(i,m4);});
+   world.add(ms,mb,mc);}
+  // ---- named hoodoos, a little larger than the rest
+  function hoodoo(x,n,h,r,capw){const p=G(x,n);part(world,new THREE.CylinderGeometry(0.72,1,1,8),"#E07E4C",p.x,p.y+h/2-0.1,p.z,r,h,r,1.08);
+    part(world,new THREE.CylinderGeometry(1,1,1,8),"#F6E6D2",p.x,p.y+h*0.66,p.z,r*0.82,0.16,r*0.82,0);
+    part(world,box,"#A87A52",p.x,p.y+h+0.12,p.z,capw,0.3,capw*0.8,1.08);}
+  hoodoo(241,-4,3.4,0.2,0.62);   // Thor's Hammer
+  hoodoo(1253,1184,2.8,0.32,0.5);          // Queen Victoria
+  // Wall of Windows: a long fin with openings
+  {const p=G(1310,-5432);const g=new THREE.Group();g.position.set(p.x,p.y,p.z);g.rotation.y=0.5;world.add(g);
+   part(g,box,"#D9774A",0,1.6,0,4.2,3.2,0.45,1.06);part(g,box,"#F6E6D2",0,2.3,0,4.25,0.18,0.47,0);
+   [[-1.2,1.9,0.7,1.0],[0.1,2.0,0.9,1.2],[1.3,1.7,0.55,0.8]].forEach(([x,y,wd,ht])=>part(g,box,"#5A3324",x,y,0,wd,ht,0.5,0));}
+  // The Cathedral: a cluster of tall spires
+  {const p=G(1377,-2805);[[0,0,3.6,0.38],[0.55,0.2,2.9,0.3],[-0.5,0.25,3.0,0.32],[0.2,-0.5,2.4,0.28]].forEach(([dx2,dz,h,r2])=>{
+    part(world,new THREE.CylinderGeometry(0.55,1,1,7),"#E58A55",p.x+dx2,p.y+h/2-0.1,p.z+dz,r2,h,r2,1.08);part(world,new THREE.ConeGeometry(1,1,7),"#B9895F",p.x+dx2,p.y+h+0.15,p.z+dz,r2*0.7,0.4,r2*0.7,0);});}
+
+  anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
+})();
+
+/* ================= animals ================= */
+const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
+function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
+const BUILD={
+ pronghorn(){const g=new THREE.Group(),c="#C8945A",lt="#F6EFE2";part(g,SPH,c,0,1.3,0,0.75,0.4,0.33);part(g,SPH,lt,0,1.15,0,0.65,0.22,0.3,0);part(g,SPH,lt,-0.7,1.3,0,0.14,0.22,0.24,0);
+   const neck=new THREE.Group();neck.position.set(0.55,1.45,0);g.add(neck);part(neck,CYL,c,0.15,0.32,0,0.11,0.65,0.11);part(neck,SPH,c,0.3,0.7,0,0.28,0.18,0.16);part(neck,SPH,"#111",0.56,0.66,0,0.05,0.05,0.05,0);
+   [1,-1].forEach(sd=>part(neck,CONE,"#1A1A1A",0.2,0.98,0.08*sd,0.035,0.3,0.035,0));
+   legs4(g,c,[[0.45,0.16],[0.45,-0.16],[-0.45,0.16],[-0.45,-0.16]],1.05,1.05,0.06);g.userData.neck=neck;return g;},
+ chipmunk(){const g=new THREE.Group(),c="#B77A45",lt="#F1E6D6",dk="#3A2A1E";const b=part(g,SPH,c,0,0.35,0,0.26,0.3,0.22);rot(b,0,0,-0.3);part(g,SPH,dk,-0.05,0.4,0.18,0.18,0.24,0.04,0);part(g,SPH,dk,-0.05,0.4,-0.18,0.18,0.24,0.04,0);part(g,SPH,lt,0.1,0.32,0,0.13,0.2,0.15,0);
+   part(g,SPH,c,0.18,0.68,0,0.17,0.15,0.15);part(g,SPH,"#111",0.32,0.71,0.06,0.03,0.03,0.03,0);
+   const tail=new THREE.Group();tail.position.set(-0.22,0.25,0);g.add(tail);[[-0.1,0.12,0.12],[-0.16,0.36,0.13],[-0.08,0.58,0.11]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
+   part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
+   legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6";part(g,SPH,c,0,1.35,0,0.85,0.45,0.38);part(g,SPH,lt,-0.8,1.4,0,0.18,0.22,0.22);
+   const neck=new THREE.Group();neck.position.set(0.6,1.5,0);g.add(neck);
+   part(neck,CYL,c,0.18,0.35,0,0.13,0.7,0.13);part(neck,SPH,c,0.35,0.75,0,0.32,0.22,0.2);part(neck,SPH,"#2a2a2a",0.66,0.72,0,0.06,0.06,0.06,0);
+   part(neck,SPH,c,0.15,1.0,0.25,0.2,0.09,0.06);part(neck,SPH,c,0.15,1.0,-0.25,0.2,0.09,0.06);
+   part(neck,CYL,"#8A6A4F",0.25,1.15,0.12,0.03,0.4,0.03,0);part(neck,CYL,"#8A6A4F",0.25,1.15,-0.12,0.03,0.4,0.03,0);
+   legs4(g,c,[[0.5,0.2],[0.5,-0.2],[-0.5,0.2],[-0.5,-0.2]],1.1,1.1,0.08);g.userData.neck=neck;return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C";part(g,SPH,c,0,0.7,0,0.55,0.7,0.45);part(g,SPH,c,0.15,1.45,0,0.38);part(g,SPH,"#F3E7D6",0.45,1.38,0,0.16,0.13,0.18);
+   part(g,CONE,c,0.1,1.85,0.2,0.1,0.25,0.1);part(g,CONE,c,0.1,1.85,-0.2,0.1,0.25,0.1);part(g,SPH,"#111",0.45,1.55,0.14,0.05,0.05,0.05,0);part(g,SPH,"#111",0.45,1.55,-0.14,0.05,0.05,0.05,0);
+   const tail=new THREE.Group();tail.position.set(-0.45,0.35,0);g.add(tail);part(tail,SPH,c,-0.18,0,0,0.22,0.1,0.1);g.userData.tail=tail;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF";part(g,SPH,c,0,1.05,0,0.85,0.38,0.32);part(g,SPH,lt,0.45,0.98,0,0.3,0.25,0.25);
+   part(g,SPH,c,0.85,1.38,0,0.3,0.26,0.24);const sn=part(g,CONE,c,1.18,1.32,0,0.13,0.4,0.13);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.38,1.32,0,0.05,0.05,0.05,0);
+   part(g,CONE,c,0.8,1.68,0.13,0.08,0.26,0.08);part(g,CONE,c,0.8,1.68,-0.13,0.08,0.26,0.08);
+   const tail=new THREE.Group();tail.position.set(-0.8,1.05,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.2,0,0.42,0.16,0.16);rot(t1,0,0,0.5);part(tail,SPH,"#3a3a3a",-0.72,-0.4,0,0.12,0.1,0.1,0);g.userData.tail=tail;
+   legs4(g,c,[[0.5,0.15],[0.5,-0.15],[-0.5,0.15],[-0.5,-0.15]],0.9,0.9,0.07);return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";part(g,SPH,c,0,0.5,0,1.3,0.42,0.5);part(g,SPH,lt,0.3,0.38,0,0.7,0.2,0.38);
+   part(g,SPH,c,1.25,0.82,0,0.38,0.34,0.34);part(g,SPH,lt,1.55,0.74,0,0.16,0.13,0.18);part(g,SPH,"#111",1.68,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,c,1.18,1.16,0.2,0.1);part(g,SPH,c,1.18,1.16,-0.2,0.1);part(g,SPH,"#111",1.5,0.92,0.13,0.04,0.04,0.04,0);part(g,SPH,"#111",1.5,0.92,-0.13,0.04,0.04,0.04,0);
+   const a=part(g,CYL,c,1.2,0.2,0.28,0.1,0.8,0.1);rot(a,0,0,Math.PI/2);const b=part(g,CYL,c,1.2,0.2,-0.28,0.1,0.8,0.1);rot(b,0,0,Math.PI/2);
+   const tail=new THREE.Group();tail.position.set(-1.25,0.45,0);g.add(tail);[[-0.3,-0.1,0.1],[-0.6,-0.15,0.3],[-0.85,-0.05,0.55]].forEach(([x,y,z],i)=>part(tail,SPH,i===2?"#4a3626":c,x,y,z,0.14));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";part(g,SPH,c,0,0.6,0,0.6,0.45,0.42);part(g,SPH,c,0.62,0.82,0,0.32,0.28,0.3);
+   part(g,SPH,dk,0.78,0.86,0,0.16,0.08,0.3,0);part(g,SPH,lt,0.9,0.76,0,0.13,0.1,0.13);part(g,SPH,"#111",1.02,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,lt,0.55,1.08,0.18,0.09);part(g,SPH,lt,0.55,1.08,-0.18,0.09);
+   const tail=new THREE.Group();tail.position.set(-0.55,0.7,0);g.add(tail);for(let i=0;i<5;i++)part(tail,SPH,i%2?dk:"#B9B5AE",-0.12-i*0.16,0.1+i*0.07,0,0.14,0.14,0.14,i===0?1.1:0);g.userData.tail=tail;
+   legs4(g,dk,[[0.35,0.22],[0.35,-0.22],[-0.35,0.22],[-0.35,-0.22]],0.42,0.42,0.08);return g;},
+ squirrel(){const g=new THREE.Group(),c="#9A9A96",lt="#F1EFEA";const b=part(g,SPH,c,0,0.42,0,0.3,0.36,0.25);rot(b,0,0,-0.3);part(g,SPH,lt,0.12,0.38,0,0.16,0.24,0.18,0);
+   part(g,SPH,c,0.2,0.8,0,0.2,0.18,0.17);part(g,SPH,"#111",0.37,0.83,0.07,0.035,0.035,0.035,0);part(g,CONE,c,0.15,1.0,0.08,0.05,0.12,0.05);part(g,CONE,c,0.15,1.0,-0.08,0.05,0.12,0.05);
+   const tail=new THREE.Group();tail.position.set(-0.25,0.3,0);g.add(tail);[[-0.12,0.15,0.2],[-0.18,0.45,0.22],[-0.08,0.75,0.2],[0.05,0.92,0.15]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A";part(g,SPH,c,0,0.32,0,0.32,0.26,0.24);part(g,SPH,"#B98A5E",0.05,0.24,0,0.26,0.16,0.2,0);part(g,SPH,c,0.25,0.56,0,0.15);part(g,SPH,"#111",0.33,0.53,0,0.1,0.07,0.12,0);
+   part(g,SPH,"#FFFFFF",0.36,0.6,0.08,0.03,0.03,0.03,0);const tk=part(g,CONE,"#111",0.33,0.82,0,0.05,0.16,0.05,0);rot(tk,0,0,-0.6);return g;},
+ snake(){const g=new THREE.Group(),segs=[];for(let i=0;i<16;i++){segs.push(part(g,SPH,i%3===0?"#6E5638":"#C2A36E",0,0.12,0,0.16-i*0.004,0.12,0.16-i*0.004,1.12));}
+   part(segs[0],SPH,"#111",0.5,0.5,0.45,0.25,0.25,0.25,0);g.userData.segs=segs;return g;},
+ bird(c,belly,cap){const g=new THREE.Group();part(g,SPH,c,0,0,0,0.35,0.16,0.16);if(belly)part(g,SPH,belly,0.05,-0.07,0,0.26,0.1,0.12,0);part(g,SPH,cap||c,0.32,0.05,0,0.14);
+   const bk=part(g,CONE,"#E3A44A",0.48,0.04,0,0.05,0.12,0.05,0);rot(bk,0,0,-Math.PI/2);
+   const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute([0.18,0,0,-0.2,0,0,-0.05,0,1.1],3));wg.computeVertexNormals();
+   const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
+   const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
+};
+const BIRDC={peregrine:["#55606A", "#ECE8E0", "#2A2A2A"],bluebird:["#3D78C4", "#D98A4E", null],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={pronghorn:1.4,chipmunk:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const animalGroup=new THREE.Group();world.add(animalGroup);
+const animals=[];
+const ANIMALS=[
+ {k:"deer",path:[2662,-681,2575,-1096],per:26},
+ {k:"deer",path:[1026,-2985,1518,-1979],per:28,ph:0.4},
+ {k:"pronghorn",path:[[-420,1700],[-450,1100]],per:30},
+ {k:"squirrel",at:[-250,2300],hop:true},
+ {k:"squirrel",at:[-470,1950],hop:true},
+ {k:"chipmunk",at:[2719,-6846],hop:true},
+ {k:"chipmunk",at:[1452,1900],hop:true},
+ {k:"lion",path:[1482,-5248,1721,-5341],per:32}
+];
+ANIMALS.forEach((a,idx)=>{
+  const s=a.s||SCALE[a.k];const items=[];
+  const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
+  const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
+  const holder=new THREE.Group();animalGroup.add(holder);
+  if(a.flock){for(let i=0;i<a.flock;i++){const o=make();holder.add(o);items.push({o,dx:(i-1)*90,dn:(i%2)*70});}}
+  else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
+  let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
+  items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
+  animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
+});
+// birds
+const birds=[];
+[["raven",-44,32,-30,8],["peregrine",44,26,26,7],["bluebird",-36,35,40,7],["woodpecker",34,30,-44,6],["raven",0,38,-50,10],["peregrine",-10,28,50,6],["bluebird",50,34,-10,9]].forEach((b,i)=>{
+  const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
+// clouds with varied shapes
+const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
+  const SHAPES={puff:[[0,0,0,2.6],[2.6,-.4,.4,2.0],[-2.5,-.6,-.2,1.9],[1,1.4,-.3,1.8],[4.4,-.9,.2,1.3]],
+    long:[[-4.5,0,0,1.3],[-2.6,.3,.2,1.7],[-.6,.5,0,2.0],[1.5,.3,-.2,1.8],[3.5,0,.1,1.5],[5.2,-.2,0,1.1]],
+    tower:[[0,0,0,2.2],[0.6,2.2,.2,1.8],[-.3,3.9,0,1.4],[1.9,.4,-.2,1.5],[-1.9,.2,.1,1.5]],
+    wisp:[[0,0,0,1.2],[1.5,.2,0,0.9],[-1.3,-.1,0,0.8]]};
+  [["puff",-46,30,-34,1.6],["long",64,32,-34,1.2],["tower",-60,34,6,1.1],["wisp",36,36,-46,1.6],["long",-8,38,-56,1.0],["wisp",58,30,-6,1.4],["puff",-22,40,-62,1.1]].forEach(([sh,x,y,z,s0],k)=>{const cl=new THREE.Group();
+    SHAPES[sh].forEach(([a,b,c,s])=>{const m=new THREE.Mesh(cg,lam(PAL.cloud));m.position.set(a,b,c);m.scale.set(s,s*(sh==="long"||sh==="wisp"?0.7:1),s);const h=new THREE.Mesh(cg,hm);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(1.05);cl.add(h,m);});
+    cl.position.set(x,y,z);cl.scale.setScalar(s0);scene.add(cl);clouds.push({obj:cl,hx:x,hz:z,hy:y,ph:k*1.9});});})();
+
+/* ================= camera & views ================= */
+const VIEW=100;
+const cur={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()},goal={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()};
+let view="all",hoverKey=null,animalsOn=true,flowersOn=true,topoOn=true,treesOn=true,baseOn=true;
+const dirOf=(az,el)=>new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az));
+const stage=$("#stage");
+const isPhone=()=>innerWidth<=860;
+function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
+const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
+function viewPoints(v){
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
+const VIEWAZ={"all":1.25,"A":1.4,"B":1.3,"C":1.15};
+function fitFor(v,az,el){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
+  const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
+  const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
+  const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*2.4);
+  const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
+  return {zoom,target};}
+function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
+
+/* ================= icons ================= */
+function fIcon(sh,c){const s={tube:`<path d="M6 11V4" stroke="#5F8A3E"/><path d="M4.5 4.5 6 1l1.5 3.5z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  cup:`<circle cx="6" cy="8" r="3.4" fill="#5F8A3E"/><path d="M3.5 4h5L6 7z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  dome:`<circle cx="6" cy="8.5" r="3" fill="#5F8A3E"/><ellipse cx="6" cy="5" rx="3.6" ry="2.2" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  spike:`<path d="M6 11V6" stroke="#5F8A3E"/><path d="M4.6 7 6 1l1.4 6z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  yucca:`<path d="M2 11l4-3 4 3M6 8V3" stroke="#7E9B5C"/><path d="M5 4 6 .5 7 4z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  berry:`<circle cx="6" cy="6.5" r="4.2" fill="#4F7A3A"/><circle cx="4.5" cy="5" r="1" fill="${c}"/><circle cx="7.5" cy="6.5" r="1" fill="${c}"/><circle cx="5.5" cy="8.2" r="1" fill="${c}"/>`,
+  fern:`<path d="M6 11 2 3M6 11 6 1M6 11 10 3" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`,
+  pad:`<ellipse cx="6" cy="8.3" rx="2.6" ry="3" fill="#7FA552"/><ellipse cx="3.6" cy="4.6" rx="1.8" ry="2.2" fill="#7FA552"/><ellipse cx="8.4" cy="4.4" rx="1.8" ry="2.2" fill="#7FA552"/><circle cx="3.6" cy="2.4" r="1.1" fill="${c}"/><circle cx="8.4" cy="2.2" r="1.1" fill="${c}"/>`}[sh];
+  return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true">${s}</svg>`;}
+function paw(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="8" rx="2.6" ry="2.2" fill="${c}"/><circle cx="2.6" cy="5" r="1.1" fill="${c}"/><circle cx="4.6" cy="3" r="1.1" fill="${c}"/><circle cx="7.4" cy="3" r="1.1" fill="${c}"/><circle cx="9.4" cy="5" r="1.1" fill="${c}"/></svg>`;}
+function wing(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6c2-2 3.5-2 5 0 1.5-2 3-2 5 0-1.5.4-3 1.6-5 3C4 7.6 2.5 6.4 1 6z" fill="${c}"/></svg>`;}
+const isBird=k=>!!BIRDC[k];
+const wIcon=k=>isBird(k)?wing(WILD[k].color):paw(WILD[k].color);
+function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;return t?`<span class="bd t" style="--c:var(${TR[t].color})">${id}</span>`:`<span class="bd">${id}</span>`;}
+
+/* ================= callouts ================= */
+const LABELS=[];const labelsBox=$("#labels");
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+  el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
+  el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
+STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+TRAILS.forEach(T=>{
+  const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
+  Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
+    addLabel({key:"w-"+T.id+"-"+a.k,kind:"animal",badge:`<span class="bd ic">${wIcon(a.k)}</span>`,text:a.label||WILD[a.k].name,views:[T.id],pos:item.pos,item});});
+  const bestF={};clusters.filter(c=>c.trail===T.id).forEach(c=>{if(!bestF[c.k]||c.dist<bestF[c.k].dist)bestF[c.k]=c;});
+  Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
+    addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
+});
+function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
+const tmpV=new THREE.Vector3();
+function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
+function layoutLabels(){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins(),ink="#1D2B26";
+  const act=LABELS.filter(o=>{const on=labelOn(o);o.el.hidden=!on;return on;});
+  const P=act.map(o=>{const p=project(o.pos());return {o,x:p.x,y:p.y};});
+  if(isPhone()){P.forEach(p=>{p.o.el.classList.add("dot");p.o.el.classList.remove("left","right");p.o.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`;});$("#lead").innerHTML="";return;}
+  const cxm=(m.l+(W-m.r))/2;let Lf=P.filter(p=>p.x<cxm),Rt=P.filter(p=>p.x>=cxm);
+  while(Lf.length>Rt.length+1){Lf.sort((a,b)=>b.x-a.x);Rt.push(Lf.shift());}
+  while(Rt.length>Lf.length+1){Rt.sort((a,b)=>a.x-b.x);Lf.push(Rt.shift());}
+  const gap=act.length>18?26:30,top=m.t+8,bot=Hh-m.b-8;
+  const spread=arr=>{arr.sort((a,b)=>a.y-b.y);const ys=arr.map(p=>Math.max(top,Math.min(bot,p.y)));for(let i=1;i<ys.length;i++)ys[i]=Math.max(ys[i],ys[i-1]+gap);
+    const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
+    arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
+  spread(Lf);spread(Rt);
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
+  $("#lead").innerHTML=svg;
+}
+
+/* ================= glass card ================= */
+const card=$("#card");let cardItem=null;
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const r10=n=>fmt(Math.round(n/10)*10);
+function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
+function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
+function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
+function openCard(item){cardItem=item;let h="";
+  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+    h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
+  else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
+  else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
+  const ph=photosFor(item);
+  const gal=ph.length?`<div class="gal"><img class="main" src="${ph[0].f}" alt="${ph[0].t||""}"><div class="cr">${credit(ph[0])}</div>${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button class="th${i?"":" on"}" data-i="${i}"><img src="${p.f}" alt=""></button>`).join("")}</div>`:""}</div>`
+    :`<div class="gal"><p class="none">No open-license traveler photos of this exact spot yet.</p></div>`;
+  card.classList.remove("big");
+  card.innerHTML=`<button class="x" aria-label="Close">×</button>`+h+gal+`<div class="more">${ph.length?`Tap for ${ph.length} photo${ph.length>1?"s":""}`:"Tap for photos"}</div>`;card.hidden=false;
+  card.querySelector(".x").onclick=e=>{e.stopPropagation();closeCard();};
+  card.querySelectorAll(".th").forEach(b=>b.onclick=e=>{e.stopPropagation();const p=ph[+b.dataset.i];card.querySelector(".main").src=p.f;card.querySelector(".cr").innerHTML=credit(p);card.querySelectorAll(".th").forEach(t=>t.classList.toggle("on",t===b));});
+  card.onclick=e=>{if(e.target.closest("a,.th,.x"))return;card.classList.toggle("big");positionCard();};
+  positionCard();}
+function closeCard(){cardItem=null;card.hidden=true;}
+function positionCard(){if(!cardItem)return;const p=project(cardItem.pos());const W=stage.clientWidth;const cw=card.offsetWidth,ch=card.offsetHeight;
+  let x=Math.max(cw/2+8,Math.min(W-cw/2-8,p.x)),y=p.y-14;if(y-ch<8)y=ch+8;card.style.transform=`translate(${x-cw/2}px,${y-ch}px)`;}
+
+/* ================= portraits (rendered from the same models) ================= */
+let pr=null;const PCACHE={};
+function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
+  if(!pr){pr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});pr.setPixelRatio(2);pr.setSize(236,184);}
+  const sc=new THREE.Scene();sc.add(new THREE.AmbientLight(0xffffff,0.62));const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-3,5,4);sc.add(dl);
+  const g=new THREE.Group();sc.add(g);
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.35,40),[lam(PAL.band),lam(PAL.ground),lam(PAL.ground)]);disc.position.y=-0.18;g.add(disc);
+  const ring=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,30),new THREE.LineBasicMaterial({color:PAL.slabLine}));ring.position.copy(disc.position);g.add(ring);
+  let subj;
+  if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
+    else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,elk:1.66,moose:1.73,bison:1.66,bighorn:1.43,goat:1.39,marmot:1.16,pika:0.95,chipmunk:1.04,grizzly:1.19,alligator:1.39,turtle:1.04,turkey:1.22,javelina:1.39,armadillo:1.09,heron:1.3,egret:1.3,nene:1.09,fox:1.49,pronghorn:1.49,otter:1.22,beaver:1.22}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+  else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
+  g.add(subj);
+  const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+  const c2=new THREE.OrthographicCamera(-1,1,1,-1,-100,100);const az=0.9,el=0.42;c2.position.copy(ctr).add(new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az)).multiplyScalar(20));c2.lookAt(ctr);
+  const hw=Math.max(size.x*0.62,size.z*0.62,size.y*0.75,1.2),a=236/184;c2.left=-hw*a;c2.right=hw*a;c2.top=hw;c2.bottom=-hw;c2.updateProjectionMatrix();
+  pr.render(sc,c2);const url=pr.domElement.toDataURL("image/png");PCACHE[key]=url;return url;}
+
+/* ================= panel ================= */
+function spark(T,w0,h0){const pts=T.pts.filter((p,i)=>i%3===0);const dd=pts.map((p,i)=>`${i?"L":"M"}${(p.m/T.total*w0).toFixed(1)},${(h0-2-(p.e-T.lo)/(T.hi-T.lo||1)*(h0-4)).toFixed(1)}`).join("");return `<svg width="${w0}" height="${h0}" viewBox="0 0 ${w0} ${h0}" aria-hidden="true"><path d="${dd}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/></svg>`;}
+function profileSVG(T){const w0=320,h0=96,m={l:38,r:8,t:24,b:16};const step=T.hi-T.lo>1000?500:T.hi-T.lo>450?200:100,lo=Math.floor((T.lo-20)/step)*step,hi=Math.ceil((T.hi+40)/step)*step;
+  const X=v=>m.l+v/T.total*(w0-m.l-m.r),Y=e=>m.t+(1-(e-lo)/(hi-lo))*(h0-m.t-m.b);let g="";
+  for(let e=lo;e<=hi;e+=step)g+=`<line x1="${m.l}" x2="${w0-m.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--rule)"/><text x="${m.l-5}" y="${Y(e)+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${fmt(e)}</text>`;
+  const line=T.pts.map((p,i)=>`${i?"L":"M"}${X(p.m).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  g+=`<path d="${line}L${X(T.total)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="var(${T.color})" fill-opacity=".14"/><path d="${line}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/>`;
+  g+=`<text x="${m.l}" y="${h0-3}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">0 mi</text><text x="${w0-m.r}" y="${h0-3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${T.official} mi</text>`;
+  ORDER[T.id].forEach(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);if(!mm)return;const x=X(mm.m),y=Y(mm.e),t=s.trails.length===1?s.trails[0]:null,fill=t?`var(${TR[t].color})`:"#fff",tc=t?"#fff":"var(--ink)",wd=id.length>1?18:14;
+    g+=`<line x1="${x}" x2="${x}" y1="${y}" y2="${y-8}" stroke="var(--ink)" stroke-width=".7"/><rect x="${x-wd/2}" y="${y-21}" width="${wd}" height="13" rx="6.5" fill="${fill}" stroke="${t?fill:"var(--ink)"}"/><text x="${x}" y="${y-11.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="${tc}">${id}</text>`;});
+  return `<svg viewBox="0 0 ${w0} ${h0}" aria-label="Elevation profile">${g}</svg>`;}
+function speciesHere(){const ws=new Set(),fs=new Set();
+  animals.forEach(a=>{if(view==="all"||a.trails.includes(view))ws.add(a.k);});if(view==="all")["hawk","jay","raven","woodpecker"].forEach(k=>ws.add(k));else["hawk","jay"].forEach(k=>ws.add(k));
+  clusters.forEach(c=>{if(view==="all"||c.trail===view)fs.add(c.k);});return {ws:[...Object.keys(WILD)].filter(k=>ws.has(k)),fs:[...Object.keys(SPECIES)].filter(k=>fs.has(k))};}
+function wildList(ks){return `<ul class="list" data-kind="animal">${ks.map(k=>`<li data-k="${k}"><button class="item">${wIcon(k)}<span class="nm">${WILD[k].name}</span><span class="chev">›</span></button></li>`).join("")}</ul>`;}
+function floraList(ks){return `<ul class="list" data-kind="flower">${ks.map(k=>{const sp=SPECIES[k],[st,now]=floraStatus(sp);return `<li data-k="${k}"><button class="item">${fIcon(sp.shape,sp.color)}<span class="nm">${sp.name} <span class="lt">${sp.latin}</span></span><span class="bm${now?" now":""}">${st}</span></button></li>`;}).join("")}</ul>`;}
+function renderPanel(){let h="";const {ws,fs}=speciesHere();
+  if(view==="all"){
+    h=`<div><div class="eyebrow">All trails</div><h2>Down among the hoodoos</h2></div>
+    <p>The Bryce Amphitheater is a bowl in the Pink Cliffs at the edge of the Paunsaugunt Plateau, packed with thousands of hoodoos, spires of soft limestone eroded by frost and rain. All three trails drop from the rim, at about 8,000 to 8,300 ft, to the floor 500 to 1,000 feet below. A is the short Navajo Loop from Sunset Point, B adds Queen’s Garden for the park’s classic loop, and C is the longer Peekaboo Loop from Bryce Point. Pick a trail to focus the model; click anything on it for a quick note.</p>
+    <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
+    <div><h3>How the numbers work</h3><p class="note">Plain numbers mark spots both Navajo Loop hikes pass, like Sunset Point and Thor’s Hammer. Lettered stops belong to one trail: C3 is the third stop on Trail C.</p></div>
+    <div><h3>Wildlife in the park</h3>${wildList(ws)}</div>
+    <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
+    <p class="note"><b>Current conditions.</b> As of late September 2026 the park reports Wall Street closed until further notice after heavy rains; other trails are open but muddy. Wall Street also closes every winter, while the Two Bridges side stays open. Summer afternoon thunderstorms bring lightning on the rim and flash floods below it. Trails start at about 8,000 ft, so climbing back out is harder than it looks. Bryce Canyon National Park, Utah Highway 63, open 24 hours. Entrance fee $35 per vehicle for 7 days, card only; non-US residents 16 and over pay an extra $100 in 2026. The free shuttle runs April to mid-October. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
+  } else {const T=TR[view];
+    h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
+    <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+    <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
+    <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
+    <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
+    <div><h3>Flowers along the way</h3>${floraList(fs)}</div>
+    <div><h3>Read more</h3><div class="links">${({A:`<a href="https://www.nps.gov/places/000/navajo-loop-trailhead.htm" target="_blank" rel="noopener">Navajo Loop trailhead · NPS</a>`,B:`<a href="https://home.nps.gov/thingstodo/queen-s-navajo-combination-loop.htm" target="_blank" rel="noopener">Queen’s/Navajo Combination Loop · NPS</a><a href="https://www.nps.gov/places/000/queens-garden-trailhead.htm" target="_blank" rel="noopener">Queen’s Garden trailhead · NPS</a>`,C:`<a href="https://www.nps.gov/places/000/peekaboo-loop-hat-shop-and-under-the-rim-trail-trailhead.htm" target="_blank" rel="noopener">Peekaboo Loop trailhead · NPS</a><a href="https://hikingwalking.com/index.php/destinations/ut/ut_sc/bryce/peekaboo/peekaboo_detail" target="_blank" rel="noopener">Peek-a-boo Loop details · Hiking Walking</a>`})[T.id]||""}</div></div>`;}
+  $("#pbody").innerHTML=h;$("#pbody").scrollTop=0;
+  document.querySelectorAll("#pbody [data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+  document.querySelectorAll('#pbody .list[data-kind="stop"] li').forEach(li=>{const id=li.dataset.id;li.querySelector("button").addEventListener("click",()=>openCard({kind:"stop",id,pos:()=>STOP[id].v}));
+    li.addEventListener("pointerenter",()=>setHover("s-"+id));li.addEventListener("pointerleave",()=>setHover(null));});
+  document.querySelectorAll('#pbody .list[data-kind="animal"] li, #pbody .list[data-kind="flower"] li').forEach(li=>{const kind=li.parentElement.dataset.kind,k=li.dataset.k;
+    li.querySelector("button").addEventListener("click",()=>toggleDetail(li,kind,k));});
+}
+function toggleDetail(li,kind,k){const open=li.classList.contains("open");li.parentElement.parentElement.parentElement.querySelectorAll("li.open").forEach(o=>{o.classList.remove("open");const d=o.querySelector(".detail");if(d)d.remove();});
+  if(open){closeCard();return;}
+  li.classList.add("open");const isA=kind==="animal";const info=isA?WILD[k]:SPECIES[k];
+  const d=document.createElement("div");d.className="detail glass";
+  const ph=(isA?PHOTOS.animal[k]:PHOTOS.flower[k])||[];
+  d.innerHTML=`<div>${ph.length?`<img alt="${info.name}" src="${ph[0].f}"><div class="cap">${credit(ph[0])}</div>`:`<img alt="${info.name}, drawn in the model's style" src="${portrait(kind,k)}"><div class="cap">Model drawing</div>`}</div><div><p>${info.sum}</p>${isA?"":`<p style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i>${info.latin}</i> · ${floraStatus(info)[0]}</p>`}</div>`;
+  li.appendChild(d);
+  // also point to it on the model
+  if(isA){if(isBird(k)){const b=birds.find(b=>b.k===k);if(b)openCard({kind:"animal",k,a:null,pos:()=>b.obj.position});}
+    else{const a=animals.find(a=>a.k===k&&(view==="all"||a.trails.includes(view)));if(a&&animalsOn)openCard({kind:"animal",k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))});}}
+  else{const c=clusters.filter(c=>c.k===k&&(view==="all"||c.trail===view)).sort((a,b)=>a.dist-b.dist)[0];if(c&&flowersOn)openCard({kind:"flower",k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))});}}
+$("#switch").innerHTML=`<button data-v="all" aria-pressed="true"><span class="sl">Overview</span><span class="sn">All trails</span></button>`+TRAILS.map(T=>`<button data-v="${T.id}" aria-pressed="false"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="sn">${T.short}</span></button>`).join("");
+document.querySelectorAll("#switch button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.v)));
+function applyVisibility(){
+  animals.forEach(a=>{a.holder.visible=animalsOn&&(view==="all"||a.trails.includes(view));});
+  birds.forEach(b=>b.obj.visible=animalsOn);
+  Object.entries(flowerGroups).forEach(([t,g])=>g.visible=flowersOn&&(view==="all"||view===t));
+  topoGroup.visible=topoOn;treeGroup.visible=treesOn;baseGroup.visible=baseOn;trail3D.visible=!topoOn;TRAILS.forEach(T=>{T.g3.visible=view==="all"||view===T.id;});
+  if(cardItem&&((cardItem.kind==="animal"&&!animalsOn)||(cardItem.kind==="flower"&&!flowersOn)))closeCard();}
+function select(v){view=v;document.querySelectorAll("#switch button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  TRAILS.forEach(T=>{const on=v==="all"||v===T.id;trailMesh[T.id].bright.visible=on;trailMesh[T.id].dim.visible=!on;});
+  goal.az=VIEWAZ[v];goal.el=v==="all"?0.58:0.66;LABELS.forEach(o=>o.ly=null);closeCard();fitGoal();applyVisibility();renderPanel();setHover(null);
+  try{history.replaceState(null,"",v==="all"?location.pathname+location.search:"#trail-"+v);}catch(e){}}
+
+/* ================= interaction ================= */
+const ptrs=new Map();let pinch0=0,zoom0=1,down=null;
+function pickAt(px,py){let best=null,bd=26;
+  const test=(item,v)=>{const p=project(v);const dd=Math.hypot(p.x-px,p.y-py);if(dd<bd){bd=dd;best=item;}};
+  STOPS.forEach(s=>{if(view==="all"||s.trails.includes(view))test({kind:"stop",id:s.id,pos:()=>s.v},s.v);});
+  if(animalsOn){animals.forEach(a=>{if(!a.holder.visible)return;const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};test(item,a.pos().clone().add(new THREE.Vector3(0,0.8,0)));});
+    birds.forEach(b=>test({kind:"animal",k:b.k,a:null,pos:()=>b.obj.position},b.obj.position));}
+  if(flowersOn)clusters.forEach(c=>{if(view!=="all"&&c.trail!==view)return;test({kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))},c.v.clone().add(new THREE.Vector3(0,0.6,0)));});
+  return best;}
+stage.addEventListener("pointerdown",e=>{if(e.target.closest("#card,.kn"))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now()};stage.setPointerCapture(e.pointerId);stage.classList.add("dragging");
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);zoom0=goal.zoom;}});
+stage.addEventListener("pointermove",e=>{const p=ptrs.get(e.pointerId);
+  if(!p){const r=stage.getBoundingClientRect();stage.classList.toggle("pick",!!pickAt(e.clientX-r.left,e.clientY-r.top));return;}
+  if(ptrs.size===2){p.x=e.clientX;p.y=e.clientY;const [a,b]=[...ptrs.values()];const dd=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)goal.zoom=Math.max(.5,Math.min(30,zoom0*dd/pinch0));return;}
+  const ddx=e.clientX-p.x,ddy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;goal.az-=ddx*0.006;goal.el=Math.max(0.3,Math.min(1.25,goal.el+ddy*0.004));});
+const endP=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!ptrs.size)stage.classList.remove("dragging");pinch0=0;
+  if(down&&e.type==="pointerup"&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&performance.now()-down.t<500){const r=stage.getBoundingClientRect();const it=pickAt(e.clientX-r.left,e.clientY-r.top);if(it)openCard(it);else closeCard();}down=null;};
+stage.addEventListener("pointerup",endP);stage.addEventListener("pointercancel",endP);
+stage.addEventListener("wheel",e=>{e.preventDefault();goal.zoom=Math.max(.5,Math.min(30,goal.zoom*Math.exp(-e.deltaY*0.0015)));},{passive:false});
+$("#zin").onclick=()=>goal.zoom=Math.min(30,goal.zoom*1.3);$("#zout").onclick=()=>goal.zoom=Math.max(.5,goal.zoom/1.3);
+$("#zfit").onclick=()=>{goal.az=VIEWAZ[view];goal.el=view==="all"?0.58:0.66;fitGoal();};
+const tog=(id,fn)=>$(id).addEventListener("click",e=>{const v=fn();e.currentTarget.setAttribute("aria-pressed",String(v));applyVisibility();});
+tog("#tgTopo",()=>topoOn=!topoOn);tog("#tgBase",()=>baseOn=!baseOn);tog("#tgTrees",()=>treesOn=!treesOn);tog("#tgAnimals",()=>animalsOn=!animalsOn);tog("#tgFlowers",()=>flowersOn=!flowersOn);
+addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey)return;const k={"0":"all","1":"A","2":"B","3":"C",Escape:"esc"}[e.key];if(!k)return;if(k==="esc"){if(cardItem){closeCard();return;}select("all");}else select(k);});
+function resize(){const W=stage.clientWidth,Hh=stage.clientHeight;if(!W||!Hh)return;renderer.setSize(W,Hh,false);const a=W/Hh;cam.left=-VIEW*a/2;cam.right=VIEW*a/2;cam.top=VIEW/2;cam.bottom=-VIEW/2;}
+new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
+
+/* ================= animation ================= */
+const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
+function animate(tt,dt){
+  animals.forEach(a=>{
+    if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
+      const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
+      if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
+        o.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(tt*3-i*0.6)*0.18);sg.userData.hull.position.copy(sg.position);});return;}
+      o.position.copy(G(x,n));const head=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y+=((head-o.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI)*0.08;
+      const spd=a.k==="raccoon"?7:a.k==="coyote"?6:5,sw=Math.sin(tt*spd+a.ph*20)*0.45;(o.userData.legs||[]).forEach((L,i)=>L.rotation.z=(i%2?sw:-sw)*(i<2?1:-1));
+      o.position.y+=Math.abs(Math.sin(tt*spd))*0.05*a.s;if(o.userData.tail)o.userData.tail.rotation.y=Math.sin(tt*3+a.ph)*0.3;}
+    else if(a.items[0].o.userData.neck&&!a.flock){const gz=(Math.sin(tt*0.6+a.ph*5)+1)/2;a.items[0].o.userData.neck.rotation.z=-gz*1.1;}
+    else if(a.items[0].o.userData.tail&&!a.hop&&!a.flock){a.items[0].o.userData.tail.rotation.y=Math.sin(tt*(a.k==="lion"?1.2:2.2)+a.ph)*0.6;}
+    else if(a.hop){const o=a.items[0].o,u=(tt*0.35+a.ph)%1,ang=u*Math.PI*2,rr=60;const x=a.x+Math.cos(ang)*rr,n=a.n+Math.sin(ang)*rr;o.position.copy(G(x,n,Math.abs(Math.sin(tt*6+a.ph*9))*0.35));o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;o.userData.tail.rotation.z=Math.sin(tt*6)*0.25;}
+    else if(a.flock){a.items.forEach((it,i)=>{const ang=tt*0.25+i*2.1+a.ph,x=a.x+it.dx+Math.cos(ang)*50,n=a.n+it.dn+Math.sin(ang)*50;it.o.position.copy(G(x,n,Math.abs(Math.sin(tt*5+i))*0.12));it.o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;});}
+  });
+  birds.forEach(b=>{const ang=tt*b.sp+b.ph;b.obj.position.set(b.cx+Math.cos(ang)*b.r,b.cy+Math.sin(tt*0.5+b.ph)*1.2,b.cz+Math.sin(ang)*b.r);
+    const s=Math.sign(b.sp),vx=-Math.sin(ang)*s,vz=Math.cos(ang)*s;b.obj.rotation.set(0,Math.atan2(-vz,vx),0);b.obj.rotateX(-0.28*s);
+    const flap=Math.max(0,Math.sin(tt*0.9+b.fl))**2;const fa=Math.sin(tt*9+b.fl)*0.7*flap+0.1;b.obj.userData.w[0].rotation.x=-fa;b.obj.userData.w[1].rotation.x=fa;});
+  cloudLift+=((view==="all"?12:48)-cloudLift)*Math.min(1,dt*1.5);
+  clouds.forEach(c=>{c.obj.position.x=c.hx+Math.sin(tt*0.06+c.ph)*8;c.obj.position.z=c.hz+Math.cos(tt*0.05+c.ph)*3;c.obj.position.y=c.hy+cloudLift+Math.sin(tt*0.3+c.ph)*0.4;});
+  creekTex.offset.y-=dt*0.35;
+  const W=anim.water;W.fallTex.offset.y+=dt*0.9;
+  W.rings.forEach((rg,i)=>{const u=(tt*0.5+i/3)%1;rg.scale.setScalar(0.5+u*1.6);rg.material.opacity=(1-u)*0.85;});
+  W.mist.forEach(m=>{const u=(tt*0.35+m.ph)%1;m.m.position.set(m.x+Math.sin(tt+m.ph*6)*0.15,0.2+u*1.6,0.9+u*0.4);m.m.scale.setScalar(0.6+u*1.2);m.m.material.opacity=(1-u)*0.7;});
+}
+let last=performance.now(),T0=last,lastRender=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+  const moving=Math.abs(goal.az-cur.az)>1e-3||Math.abs(goal.el-cur.el)>1e-3||Math.abs(goal.zoom-cur.zoom)/goal.zoom>1e-3||cur.target.distanceTo(goal.target)>1e-2||ptrs.size>0;
+  if(!moving&&t-lastRender<33)return;lastRender=t;
+  const dt=Math.min(0.05,(t-last)/1000);last=t;
+  const k=reduced?1:1-Math.exp(-dt*3.2);
+  cur.az+=(goal.az-cur.az)*k;cur.el+=(goal.el-cur.el)*k;cur.zoom+=(goal.zoom-cur.zoom)*k;cur.target.lerp(goal.target,k);
+  const fwd=dirOf(cur.az,cur.el);cam.position.copy(cur.target).addScaledVector(fwd,500);cam.up.set(0,1,0);cam.lookAt(cur.target);cam.zoom=cur.zoom;cam.updateProjectionMatrix();
+  const right=new THREE.Vector3().crossVectors(fwd.clone().negate(),UPV).normalize();
+  dirL.position.copy(cur.target).addScaledVector(right,-100).add(new THREE.Vector3(0,95,0)).addScaledVector(fwd,25);dirL.target.position.copy(cur.target);
+  if(!reduced)animate((t-T0)/1000,dt);
+  renderer.render(scene,cam);layoutLabels();positionCard();}
+resize();
+const h0=(location.hash||"").replace("#trail-","");
+select(TR[h0]?h0:"all");
+cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
+if(reduced)animate(6,0.016);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
+})();
+</script>
