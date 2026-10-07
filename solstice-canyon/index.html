@@ -144,6 +144,13 @@ button{font:inherit;color:inherit}
   #card{width:210px}
 }
 @media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+.homechip{position:relative;overflow:hidden;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-bottom:6px;padding:8px 14px 8px 10px;border-radius:18px;text-decoration:none;color:var(--ink);
+  background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);
+  -webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.homechip::after{content:"";position:absolute;top:-50%;left:-30%;width:30%;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));transform:rotate(18deg) translateX(-150%);transition:transform .8s ease}
+.homechip:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 16px 32px rgba(29,43,38,.16)}.homechip:hover::after{transform:rotate(18deg) translateX(600%)}
+.hc-arrow{font-size:14px}.hc-name{font-family:var(--display,inherit);font-stretch:118%;font-weight:400;font-size:16px;letter-spacing:-.01em}
+.hc-sub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-left:9px;border-left:1px solid rgba(29,43,38,.15)}
 </style>
 
 <div class="app" id="app">
@@ -155,7 +162,7 @@ button{font:inherit;color:inherit}
   </div>
   <aside class="panel" id="panel">
     <div class="head">
-      <a class="eyebrow" href="../" style="text-decoration:none;color:inherit">← Grace&rsquo;s Trail · Explore more trails</a>
+      <a class="homechip" href="../" aria-label="Back to Grace&rsquo;s Trail home"><span class="hc-arrow">←</span><span class="hc-name">Grace&rsquo;s Trail</span><span class="hc-sub">All trails</span></a>
       <h1>Solstice Canyon</h1>
     </div>
     <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
