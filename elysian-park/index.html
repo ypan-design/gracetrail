@@ -151,6 +151,22 @@ button{font:inherit;color:inherit}
 .homechip:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 16px 32px rgba(29,43,38,.16)}.homechip:hover::after{transform:rotate(18deg) translateX(600%)}
 .hc-arrow{font-size:14px}.hc-name{font-family:var(--display,inherit);font-stretch:118%;font-weight:400;font-size:16px;letter-spacing:-.01em}
 .hc-sub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-left:9px;border-left:1px solid rgba(29,43,38,.15)}
+
+
+
+
+/* site menu */
+.sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
+.sitemenu a{display:flex;align-items:center;min-height:38px;padding:0 11px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:background .25s,color .25s;position:relative}
+.sitemenu a.logo{gap:8px;padding:0 12px 0 10px;font-family:var(--display);font-stretch:118%;font-weight:420;font-size:18px;letter-spacing:-.015em;text-transform:none}
+.sitemenu .gt-dot{flex:none;width:9px;height:9px;border-radius:50%;background:#E39A21;box-shadow:0 0 0 3px rgba(227,154,33,.22)}
+.sitemenu a:hover{background:rgba(207,230,218,.7)}
+.sitemenu a:not(.logo)[aria-current="page"]{background:var(--ink);color:#fff}
+.sitemenu a:focus-visible{outline:3px solid #E39A21;outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){.sitemenu a{padding:0 9px;min-height:36px;font-size:9.5px;letter-spacing:.04em}.sitemenu a.logo{font-size:16px;padding:0 9px 0 8px;gap:6px}}
+
+.sitemenu.solo{position:relative;overflow:hidden;margin-bottom:8px;background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);-webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7)}
 </style>
 
 <div class="app" id="app">
@@ -162,7 +178,7 @@ button{font:inherit;color:inherit}
   </div>
   <aside class="panel" id="panel">
     <div class="head">
-      <a class="homechip" href="../" aria-label="Back to Grace&rsquo;s Trail home"><span class="hc-arrow">←</span><span class="hc-name">Grace&rsquo;s Trail</span><span class="hc-sub">All trails</span></a>
+      <nav class="sitemenu solo" aria-label="Site"><a href="../" class="logo" aria-current="page"><span class="gt-dot" aria-hidden="true"></span>Grace&rsquo;s Trail</a><a href="../about/">About me</a><a href="../contact/">Contact us</a></nav>
       <h1>Elysian Park</h1>
     </div>
     <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
