@@ -87,7 +87,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 #legend b{color:var(--ink);font-weight:500}
 #north{position:fixed;right:34px;bottom:34px;z-index:5;width:28px;height:44px;transition:transform 1.2s cubic-bezier(.6,0,.2,1)}
 /* card */
-#card{position:fixed;z-index:8;width:360px;max-height:calc(100vh - 140px);overflow:auto;border-radius:16px;padding:16px 16px 14px;left:0;top:0;opacity:0;pointer-events:none;transition:opacity .35s ease}
+#card{cursor:pointer;position:fixed;z-index:8;width:360px;max-height:calc(100vh - 140px);overflow:auto;border-radius:16px;padding:16px 16px 14px;left:0;top:0;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #card.on{opacity:1;pointer-events:auto}
 #card.glass{background:radial-gradient(130% 90% at var(--mx) var(--my),rgba(255,255,255,.9),rgba(255,255,255,0) 55%),linear-gradient(150deg,rgba(255,255,255,.95),rgba(244,250,247,.92) 55%,rgba(232,244,250,.93))}
 #card .x{position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--muted);border-radius:18px}
@@ -109,6 +109,9 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   #legend{display:none}#north{display:none}#card{width:min(360px,calc(100vw - 24px))}#zoomctl{display:none}
 }
 @media (prefers-reduced-motion:reduce){.dot::after{animation:none}}
+
+
+
 
 
 
@@ -167,7 +170,7 @@ input:focus,textarea:focus{border-color:var(--tB);box-shadow:0 0 0 4px rgba(227,
   <article class="sheet glass" aria-labelledby="t">
     <p class="eyebrow">About me</p>
     <h2 id="t">Hi, I&rsquo;m Grace.</h2>
-    <ul class="facts"><li>High school student</li><li>San Gabriel Valley</li><li>Hiker</li></ul>
+    <ul class="facts"><li>Arcadia High School</li><li>Hiker</li></ul>
     <p>I love hiking, animals and plants. I love the lizard frozen on a warm rock, the smell of sage after a little rain, and the moment a trail opens up to a view you didn&rsquo;t see coming.</p>
     <p>Before a hike I always wanted to know what it would really be like. How steep does it get? Where does the shade end? Is there water? Which flowers might be out, and who might be watching from the brush? So I started drawing each trail as a small 3D map, built from real elevation data, with the climbs, the creek crossings, the overlooks and the animals and plants you might meet along the way.</p>
     <p>I hope it helps you pick the right trail, pack the right things, and notice a little more once you&rsquo;re out there. If something looks wrong, or there&rsquo;s a trail you love that should be here, I&rsquo;d really like to hear from you.</p>
