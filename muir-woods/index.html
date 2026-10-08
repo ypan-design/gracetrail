@@ -397,6 +397,17 @@ CANYONS.forEach(cy=>{const pts=[];let done=false;
 // trails
 const trailPts=[],trailMesh={};
 
+
+/* elevated trail pipes */
+const PIPE={lift:0.95,r:0.2,edge:0.29};
+function pipeCurve(pts,lift){const P=[];for(let i=0;i<pts.length;i+=1){const p=pts[i];let y=p.y;for(let k=-2;k<=2;k++){const q=pts[Math.max(0,Math.min(pts.length-1,i+k))];y=Math.max(y,q.y);}P.push(new THREE.Vector3(p.x,y+lift,p.z));}
+  return new THREE.CatmullRomCurve3(P,false,"centripetal");}
+function pipe(pts,r,mat,lift,edgeR,edgeMat){const g=new THREE.Group(),cu=pipeCurve(pts,lift),n=Math.max(8,pts.length*3);
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(cu,n,r,10,false),mat));
+  if(edgeR)g.add(new THREE.Mesh(new THREE.TubeGeometry(cu,n,edgeR,10,false),edgeMat));
+  [0,1].forEach(e=>{const t=e?cu.getPoint(1):cu.getPoint(0);const s=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),mat);s.position.copy(t);g.add(s);});
+  return g;}
+const PIPE_EDGE=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.BackSide});
 /* metro lanes: shared stretches are drawn side by side */
 function METRO(){const lane=0.6,th=0.9,R=5;const grid=new Map(),key=(x,z)=>Math.floor(x/th)+","+Math.floor(z/th);
   TRAILS.forEach((T,ti)=>{const W=T.world,n=W.length;T._perp=W.map((p,i)=>{const a=W[Math.max(0,i-2)],b=W[Math.min(n-1,i+2)];let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;return [-tz/L,tx/L];});
@@ -411,8 +422,8 @@ function METRO(){const lane=0.6,th=0.9,R=5;const grid=new Map(),key=(x,z)=>Math.
     T.draw=W.map((p,i)=>{let sx=0,sz=0,c=0;for(let k=-R;k<=R;k++){const j=i+k;if(j>=0&&j<n){sx+=dx[j];sz+=dz[j];c++;}}return new THREE.Vector3(p.x+sx/c,p.y,p.z+sz/c);});});}
 TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;});METRO();TRAILS.forEach(T=>{const pts=T.draw;
   const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
-  const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
-  const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
+  const bright=new THREE.Group();bright.add(pipe(pts,PIPE.r,new THREE.MeshLambertMaterial({color:c,emissive:c,emissiveIntensity:0.18}),PIPE.lift,PIPE.edge,PIPE_EDGE),ribbon(pts,0.42,new THREE.MeshBasicMaterial({color:0x1D2B26,transparent:true,opacity:0.13,side:THREE.DoubleSide,depthWrite:false}),0.06));
+  const dim=new THREE.Group();dim.add(pipe(pts,0.11,new THREE.MeshLambertMaterial({color:0xF2ECE0}),PIPE.lift*0.8,0,null));dim.visible=false;
   world.add(bright,dim);trailMesh[T.id]={bright,dim};});
 TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
   const pts=(T.draw||T.world).filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
