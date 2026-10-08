@@ -117,6 +117,8 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 
 
 
+
+
 /* site menu */
 .sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
 .sitemenu a{display:flex;align-items:center;min-height:38px;padding:0 11px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:background .25s,color .25s;position:relative}
@@ -335,13 +337,16 @@ GROUPS.forEach(function(g){g.items=SHEETS.filter(function(s){return s.grp===g.k}
   g.items.forEach(function(s){var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
     li.querySelector('button').addEventListener('click',function(){focusPark(s)});list.appendChild(li);});});
 USREG.forEach(function(r){r.items=SHEETS.filter(function(s){return s.reg===r.k});r.p=mean(r.items);
-  mkMarker(r,'macro',r.items.length,r.name,function(o){if(o.k==='ca')flyTo(fit('ca'));else if(o.items.length===1)focusPark(o.items[0]);else flyTo(fitBox(bbox(o.items,6)));});
+  mkMarker(r,'macro',r.items.length,r.name,function(o){if(o.k==='ca')flyTo(fit('ca'));else if(o.items.length===1)focusPark(o.items[0]);else flyRegion(o.items,6);});
   if(r.k==='ca')return;
   var h=document.createElement('li');h.className='gh';h.textContent=r.name;list.appendChild(h);
   r.items.forEach(function(s){var li=document.createElement('li');li.innerHTML='<button><span class="no">'+s.id+'</span><span><span class="nm">'+s.name+'</span><br><span class="lo">'+s.where+'</span></span></button>';
     li.querySelector('button').addEventListener('click',function(){focusPark(s)});list.appendChild(li);});});
+var focusReg=null;
+function flyRegion(items,pad){var v=fitBox(bbox(items,pad)),need=Math.sqrt(fit('us').s*fit('ca').s)*1.08;
+  if(v.s<need){var st=stage(),scx=(st.L+st.R)/2,scy=(st.top+st.bot)/2,wx=v.x0+scx/v.s,wy=v.y0+scy/v.s;v={x0:wx-scx/need,y0:wy-scy/need,s:need};}flyTo(v);focusReg=items[0].reg;}
 var NAT=SHEETS.filter(function(s){return s.reg!=='ca'}),POOL=[];
-for(var pi=0;pi<14;pi++){var po={p:[0,0],items:[]};mkMarker(po,'group',0,'',function(o){flyTo(fitBox(bbox(o.items,.5)));});POOL.push(po);}
+for(var pi=0;pi<14;pi++){var po={p:[0,0],items:[]};mkMarker(po,'group',0,'',function(o){flyRegion(o.items,.5);});POOL.push(po);}
 // ---------- view: free zoom & pan, smooth
 var W=0,H=0,mobile=false;
 function stage(){var hr=$('hero').getBoundingClientRect(),headTop=hr.top+hr.height*.05;
@@ -360,10 +365,10 @@ function zoomAt(px,py,f){var ns=clampS(tgt.s*f);var wx=px/tgt.s+tgt.x0,wy=py/tgt
 function focusPark(sh){var v=fitBox(bbox([sh],sh.reg==='ca'?1.2:9));if(sh.rect){var kb=[[KPB[0][0],KPB[0][1]],[KPB[1][0],KPB[1][1]]];v=fitBox([[Math.min(kb[0][0],kb[1][0]),Math.min(kb[0][1],kb[1][1])],[Math.max(kb[0][0],kb[1][0]),Math.max(kb[0][1],kb[1][1])]]);}
   if(tgt.s<v.s*.5||!onScreen(sh))tgt={x0:v.x0,y0:v.y0,s:clampS(v.s)};openCard(sh);}
 function onScreen(o){var x=(o.p[0]-tgt.x0)*tgt.s,y=(o.p[1]-tgt.y0)*tgt.s,st=stage();return x>st.L&&x<st.R&&y>st.top&&y<st.bot;}
-document.querySelectorAll('#scale button').forEach(function(b){b.addEventListener('click',function(){flyTo(fit(b.dataset.l))})});
+document.querySelectorAll('#scale button').forEach(function(b){b.addEventListener('click',function(){focusReg=null;flyTo(fit(b.dataset.l))})});
 $('zin').onclick=function(){var st=stage();zoomAt((st.L+st.R)/2,(st.top+st.bot)/2,1.6)};
 $('zout').onclick=function(){var st=stage();zoomAt((st.L+st.R)/2,(st.top+st.bot)/2,1/1.6)};
-$('home').addEventListener('click',function(e){e.preventDefault();closeCard();$('panel').scrollTop=0;flyTo(fit('la'));});
+$('home').addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.classList.contains('logo'))return;e.preventDefault();closeCard();$('panel').scrollTop=0;flyTo(fit('la'));});
 var LEVELS={la:'Los Angeles area',ca:'California',us:'United States'};
 function apply(v){
   var s=v.s;
@@ -376,7 +381,7 @@ function apply(v){
   $('g-states').setAttribute('opacity',Math.max(.3,Math.min(1,1-(Math.log(s/caS)+.5)*.9)).toFixed(3));
   $('g-la').setAttribute('opacity',Math.max(0,Math.min(1,(Math.log(s/caS)+.6)/.8)).toFixed(3));
   mode=s<Math.sqrt(usS*caS)?'us':s<Math.sqrt(caS*laS)*.9?'ca':s<laS*2.0?'region':'park';
-  document.body.dataset.l=mode==='us'?'us':mode==='ca'?'ca':'la';
+  document.body.dataset.l=mode==='us'?'us':mode==='ca'?'ca':'la';if(tgt&&tgt.s<Math.sqrt(usS*caS))focusReg=null;
   if(mode!==lastMode){lastMode=mode;var l=mode==='us'?'us':mode==='ca'?'ca':'la';document.querySelectorAll('#scale button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.l===l))});}
   function scr(P){return [(P[0]-v.x0)*s,(P[1]-v.y0)*s];}
   var st=stage(),vis=[];
@@ -398,18 +403,18 @@ function apply(v){
   GROUPS.forEach(function(g){show(g,mode==='region',g.items.length,mobile&&g.short?g.short:g.name);});
   SHEETS.forEach(function(sh){if(sh.reg==='ca')show(sh,mode==='park'&&!fold[sh.grp],null,null);});
   // parks outside California: one dot each, merged into a cluster when they would overlap on screen
-  var cl=[];if(mode!=='us')NAT.forEach(function(sh){var q=scr(sh.p),c=null;for(var i=0;i<cl.length;i++){if(mode==='ca'?cl[i].items[0].reg===sh.reg:Math.hypot(cl[i].x-q[0],cl[i].y-q[1])<40){c=cl[i];break;}}
+  var cl=[];if(mode!=='us')NAT.forEach(function(sh){var q=scr(sh.p),c=null;for(var i=0;i<cl.length;i++){var ci=cl[i];if(mode==='ca'&&sh.reg!==focusReg?ci.items[0].reg===sh.reg:(Math.hypot(ci.x-q[0],ci.y-q[1])<40&&(mode!=='ca'||ci.items[0].reg===sh.reg))){c=ci;break;}}
     if(c){c.items.push(sh);}else cl.push({x:q[0],y:q[1],items:[sh]});});
   var used=0;NAT.forEach(function(sh){sh._c=null});
   cl.forEach(function(c){if(c.items.length===1){c.items[0]._c=1;return;}var po=POOL[used++];if(!po)return;po.items=c.items;po.p=mean(c.items);
     var sts=c.items.map(function(x){return x.st}),same=sts.every(function(x){return x===sts[0]});
-    var lab=mode==='ca'?USREG.filter(function(r){return r.k===c.items[0].reg})[0].name:c.items.length===2?c.items[0].name.split(/ [&·,] /)[0]+' + '+c.items[1].name.split(/ [&·,] /)[0]:(same?STN[sts[0]]:USREG.filter(function(r){return r.k===c.items[0].reg})[0].name);
+    var lab=mode==='ca'&&c.items[0].reg!==focusReg?USREG.filter(function(r){return r.k===c.items[0].reg})[0].name:c.items.length===2?c.items[0].name.split(/ [&·,] /)[0]+' + '+c.items[1].name.split(/ [&·,] /)[0]:(same?STN[sts[0]]:USREG.filter(function(r){return r.k===c.items[0].reg})[0].name);
     show(po,true,c.items.length,lab);});
   for(var u=used;u<POOL.length;u++)show(POOL[u],false,0,'');
   NAT.forEach(function(sh){show(sh,mode!=='us'&&sh._c===1,null,null);});
   // legend: nearest region at park/region level
   var lv=LEVELS[mode]||'';if(mode==='region'||mode==='park'){var cxs=(st.L+st.R)/2,cys=(st.top+st.bot)/2,best=null,bd=1e9;GROUPS.concat(USREG.filter(function(r){return r.k!=='ca'})).forEach(function(g){var q=scr(g.p),d=Math.hypot(q[0]-cxs,q[1]-cys);if(d<bd){bd=d;best=g}});lv=best?(mode==='park'||best.m===undefined?best.name:'Los Angeles area'):'';}
-  $('lv').textContent=lv;$('cnt').textContent=(mode==='park'?vis.length+' of '+SHEETS.length:SHEETS.length)+' places';
+  if(focusReg&&mode==='ca'){var fr=USREG.filter(function(r){return r.k===focusReg})[0];if(fr)lv=fr.name;}$('lv').textContent=lv;$('cnt').textContent=(mode==='park'?vis.length+' of '+SHEETS.length:SHEETS.length)+' places';
   layoutLabels(vis,st);
   if(cardFor)placeCard();
 }
