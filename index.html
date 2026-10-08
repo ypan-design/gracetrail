@@ -28,6 +28,7 @@ a{color:inherit}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .glass:not(#home)::after{content:"";position:absolute;left:8%;right:8%;top:1px;height:38%;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0));opacity:.55}
 .lab.glass::after{display:none}
+.glass:not(#home)>*:not(.x){position:relative;z-index:1}
 #map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #map.drag{cursor:grabbing}
 .vns{vector-effect:non-scaling-stroke}
@@ -108,6 +109,25 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   #legend{display:none}#north{display:none}#card{width:min(360px,calc(100vw - 24px))}#zoomctl{display:none}
 }
 @media (prefers-reduced-motion:reduce){.dot::after{animation:none}}
+
+
+
+
+
+
+
+
+/* site menu */
+.sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
+.sitemenu a{display:flex;align-items:center;min-height:38px;padding:0 11px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:background .25s,color .25s;position:relative}
+.sitemenu a.logo{gap:8px;padding:0 12px 0 10px;font-family:var(--display);font-stretch:118%;font-weight:420;font-size:18px;letter-spacing:-.015em;text-transform:none}
+.sitemenu .gt-dot{flex:none;width:9px;height:9px;border-radius:50%;background:#E39A21;box-shadow:0 0 0 3px rgba(227,154,33,.22)}
+.sitemenu a:hover{background:rgba(207,230,218,.7)}
+.sitemenu a:not(.logo)[aria-current="page"]{background:var(--ink);color:#fff}
+.sitemenu a:focus-visible{outline:3px solid #E39A21;outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){.sitemenu a{padding:0 9px;min-height:36px;font-size:9.5px;letter-spacing:.04em}.sitemenu a.logo{font-size:16px;padding:0 9px 0 8px;gap:6px}}
+#home.sitemenu{display:flex;padding:4px;border-radius:18px}
 </style>
 </head>
 <body data-l="sgv">
@@ -146,8 +166,8 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 </div>
 
 <header>
-  <a id="home" class="glass" href="./" aria-label="Grace&rsquo;s Trail home"><h1 class="word">Grace&rsquo;s<br>Trail</h1>
-  <p class="sub">Hikes, drawn as maps</p></a>
+  <h1 class="vh">Grace&rsquo;s Trail, hikes drawn as maps</h1>
+  <nav id="home" class="glass sitemenu" aria-label="Site"><a href="./" class="logo" aria-current="page"><span class="gt-dot" aria-hidden="true"></span>Grace&rsquo;s Trail</a><a href="about/">About me</a><a href="contact/">Contact us</a></nav>
   <aside id="panel" class="glass">
     <p class="lede">Grace&rsquo;s Trail is a growing atlas of hikes, each one drawn as a 3D map from real elevation data: the climbs, the creek crossings, the overlooks, and the numbered stops worth pausing at, with the animals and flowers you might meet along the way.</p>
     <p class="lede">It started in the San Gabriel Valley and now reaches across the country: the Malibu coast and Mount Baldy, Zion and the Grand Canyon, Glacier and the Tetons, the Smokies, Acadia, even Kaua&#699;i and Alaska. Grace is already looking up at where to go next. Zoom the map, pick a trail, and go explore.</p>
@@ -164,7 +184,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
     </nav>
   </aside>
 </header>
-<div id="legend"><b id="lv">Los Angeles area</b><br><span id="cnt">55 places</span> to explore · more on the way</div>
+<div id="legend"><b id="lv">Los Angeles area</b><br><span id="cnt">64 places</span> to explore · more on the way</div>
 <svg id="north" viewBox="0 0 28 44" aria-hidden="true"><path d="M14 40V4M14 4 8 16M14 4l6 12" fill="none" stroke="#1D2B26" stroke-width="1.5"/><text x="14" y="44" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#1D2B26" dy="0">N</text></svg>
 <div id="zoomctl" class="glass"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div>
 <div id="card" class="glass" role="dialog" aria-live="polite"></div>
@@ -225,6 +245,24 @@ var SHEETS=[
   trails:[['A','Lake Poway Loop','2.7 mi'],['B','Mount Woodson Road from Highway 67','3.75 mi round trip'],['C','Mount Woodson Trail from Lake Poway','7.5 mi round trip']],high:'2,880 ft'},
  {id:'25',name:'Cedar Creek Falls',where:'San Diego River gorge',href:'cedar-creek-falls/',ll:[168.1544, 322.3644],grp:'sd',status:'permit required',
   trails:[['A','Gorge Viewpoint','1.8 mi round trip'],['B','Cedar Creek Falls from Julian','5.2 mi round trip'],['C','Cedar Creek Falls from Ramona','6 mi round trip']],high:'1,960 ft'},
+ {id:'56',name:'Mount Wilson Trail',where:'Little Santa Anita Canyon · Sierra Madre',href:'sierra-madre-mount-wilson-trail/',ll:[153.6161,296.3795],grp:'sgv',
+  trails:[['A','Mount Wilson Trail to First Water','3 mi round trip'],['B','Mount Wilson Trail to Orchard Camp','7 mi round trip'],['C','Mount Wilson Trail to the summit','14 mi round trip']],high:'5,710 ft'},
+ {id:'57',name:'Millard Canyon & Sunset Ridge',where:'Angeles National Forest · Altadena',href:'altadena-millard-canyon/',ll:[152.2774,295.4204],grp:'sgv',
+  trails:[['A','Millard Falls','4.5 mi round trip'],['B','Dawn Mine via Sunset Ridge','6.4 mi round trip'],['C','Sunset Ridge to Cape of Good Hope','7.5 mi loop']],high:'3,500 ft'},
+ {id:'58',name:'Arroyo Seco & Gabrielino Trail',where:'Hahamongna and the upper Arroyo Seco · Pasadena',href:'pasadena-arroyo-seco/',ll:[151.9511,295.5073],grp:'sgv',
+  trails:[['A','Hahamongna Watershed Loop','3.3 mi loop'],['B','Gabrielino Trail to Gould Mesa','5.1 mi round trip'],['C','Gabrielino Trail to Oakwilde','10 mi round trip']],high:'1,930 ft'},
+ {id:'59',name:'Rose Bowl Loop & Lower Arroyo Seco',where:'Arroyo Seco · Pasadena',href:'pasadena-rose-bowl-lower-arroyo/',ll:[151.7948,296.2026],grp:'sgv',
+  trails:[['A','Rose Bowl Loop','3.3 mi loop'],['B','Lower Arroyo Seco Loop','2.8 mi loop'],['C','Lower Arroyo to the Rose Bowl','5.3 mi round trip']],high:'917 ft'},
+ {id:'60',name:'Winter Creek & Mount Zion',where:'Chantry Flat · Arcadia',href:'arcadia-winter-creek-mount-zion/',ll:[154.1274,295.9820],grp:'sgv',
+  trails:[['A','Winter Creek Loop','4.85 mi loop'],['B','Mount Zion Loop','9.3 mi loop'],['C','Mount Wilson via Winter Creek','13.5 mi round trip']],high:'5,710 ft'},
+ {id:'61',name:'Sawpit Canyon & Monrovia Peak',where:'Monrovia Canyon Park · Monrovia',href:'monrovia-sawpit-canyon/',ll:[154.5208,296.5055],grp:'sgv',
+  trails:[['A','Sawpit Dam and Overturff Junction','2.4 mi round trip'],['B','Sawpit Canyon Fire Road to White Saddle','10 mi round trip'],['C','Monrovia Peak via Clamshell','12 mi round trip']],high:'5,409 ft'},
+ {id:'62',name:'Los Liones Trail & Parker Mesa Overlook',where:'Topanga State Park · Pacific Palisades',href:'pacific-palisades-los-liones/',ll:[145.4575,296.7920],grp:'mal',
+  trails:[['A','Los Leones Trail','2.6 mi round trip'],['B','Paseo Miramar to Parker Mesa Overlook','5.7 mi round trip'],['C','Los Leones Trail to Parker Mesa Overlook','7.8 mi round trip']],high:'1,525 ft'},
+ {id:'63',name:'Will Rogers & Inspiration Point',where:'Will Rogers State Historic Park · Pacific Palisades',href:'pacific-palisades-will-rogers/',ll:[146.1947,296.8265],grp:'mal',status:'partly closed',
+  trails:[['A','Inspiration Point via Bone Canyon','1.5 mi round trip'],['B','Inspiration Point Loop (east side)','2 mi loop'],['C','Backbone Trail to Chicken Ridge Bridge','3.1 mi round trip']],high:'1,117 ft'},
+ {id:'64',name:'Santa Ynez Canyon',where:'Topanga State Park · Pacific Palisades',href:'pacific-palisades-santa-ynez/',ll:[145.4835,296.1995],grp:'mal',
+  trails:[['A','Santa Ynez Falls','2.4 mi round trip'],['B','Santa Ynez Trail to Trippet Ranch','5.1 mi round trip'],['C','Eagle Rock via Santa Ynez Canyon','7.4 mi round trip']],high:'1,957 ft'},
  {"id":"26","name":"Mist Trail & Half Dome","where":"Yosemite Valley · California","href":"yosemite-mist-trail/","ll":[147.6232,225.7835],"grp":"yos","reg":"ca","st":"CA","status":"permit required","trails":[["A","Mist Trail to Vernal Fall","2.4 mi round trip"],["B","Vernal and Nevada Falls Loop","6.1 mi loop"],["C","Half Dome","15.4 mi round trip"]],"high":"8,800 ft"},
  {"id":"27","name":"Skyline Trail, Mount Rainier","where":"Mount Rainier National Park · Washington","href":"rainier-skyline-trail/","ll":[162.3122,53.8091],"grp":"pnw","reg":"pnw","st":"WA","status":"","trails":[["A","Skyline Trail to Myrtle Falls","1 mi round trip"],["B","Nisqually Vista Trail","1.2 mi loop"],["C","Skyline Trail Loop","5.5 mi loop"]],"high":"about 7,000 ft"},
  {"id":"28","name":"Multnomah Falls","where":"Columbia River Gorge · Oregon","href":"multnomah-falls/","ll":[151.4792,74.1658],"grp":"pnw","reg":"pnw","st":"OR","status":"","trails":[["A","Benson Bridge","0.4 mi round trip"],["B","Top of Multnomah Falls","2.4 mi round trip"],["C","Multnomah–Wahkeena Loop","4.9 mi loop"]],"high":"1,560 ft"},
@@ -349,8 +387,16 @@ function apply(v){
     if(inside)vis.push(o);else o.lab.style.transform='translate(-9999px,-9999px)';}
   USREG.forEach(function(r){show(r,mode==='us',r.items.length,mobile&&r.sh?r.sh:r.name);});
   MACROS.forEach(function(m){show(m,mode==='ca',m.items.length,m.name);});
+  // close in: one dot per park, but when there are more labels than fit in the stage, the regions farthest from the
+  // centre fold back into a single region dot (keeps every label clear of the panel and the cat)
+  var fold={};if(mode==='park'){var on=SHEETS.filter(function(sh){if(sh.reg!=='ca')return false;var q=scr(sh.p);return q[0]>st.L-6&&q[0]<st.R+6&&q[1]>st.top-6&&q[1]<st.bot+6;});
+    var cap=Math.max(4,Math.floor((st.bot-st.top)/39)),tot=on.length,cxs0=(st.L+st.R)/2,cys0=(st.top+st.bot)/2;
+    var near=null,nd=1e9;GROUPS.forEach(function(g){var m=on.filter(function(sh){return sh.grp===g.k});if(!m.length)return;var mx=0,my=0;m.forEach(function(sh){var q=scr(sh.p);mx+=q[0];my+=q[1]});var d=Math.hypot(mx/m.length-cxs0,my/m.length-cys0)/Math.sqrt(m.length);if(d<nd){nd=d;near=g.k}});
+    while(tot>cap){var best=null,bd=-1;GROUPS.forEach(function(g){if(fold[g.k]||g.k===near)return;var m=on.filter(function(sh){return sh.grp===g.k});if(!m.length)return;
+        var mx=0,my=0;m.forEach(function(sh){var q=scr(sh.p);mx+=q[0];my+=q[1]});var d=Math.hypot(mx/m.length-cxs0,my/m.length-cys0);if(d>bd){bd=d;best={g:g,n:m.length}}});
+      if(!best)break;fold[best.g.k]=1;tot-=best.n;}}
   GROUPS.forEach(function(g){show(g,mode==='region',g.items.length,mobile&&g.short?g.short:g.name);});
-  SHEETS.forEach(function(sh){if(sh.reg==='ca')show(sh,mode==='park',null,null);});
+  SHEETS.forEach(function(sh){if(sh.reg==='ca')show(sh,mode==='park'&&!fold[sh.grp],null,null);});
   // parks outside California: one dot each, merged into a cluster when they would overlap on screen
   var cl=[];if(mode!=='us')NAT.forEach(function(sh){var q=scr(sh.p),c=null;for(var i=0;i<cl.length;i++){if(mode==='ca'?cl[i].items[0].reg===sh.reg:Math.hypot(cl[i].x-q[0],cl[i].y-q[1])<40){c=cl[i];break;}}
     if(c){c.items.push(sh);}else cl.push({x:q[0],y:q[1],items:[sh]});});
@@ -388,7 +434,7 @@ function layoutLabels(vis,st){
     // dots at about the same height: the one nearest the labels takes the upper slot, so leaders nest instead of crossing
     var out=[],i0=0;while(i0<arr.length){var g=[arr[i0]],j=i0+1;while(j<arr.length&&arr[j].sy-arr[i0].sy<34){g.push(arr[j]);j++;}
       g.sort(function(a,b){return isL?a.sx-b.sx:b.sx-a.sx});out=out.concat(g);i0=j;}
-    for(var q=0;q<out.length;q++)arr[q]=out[q];var top=st.top-10,bot=st.bot+40;
+    for(var q=0;q<out.length;q++)arr[q]=out[q];var top=st.top-(W-maxR<60&&!mobile?0:10),bot=st.bot+(mode==='park'?-6:40);
     arr.forEach(function(o){o.ly=o.sy-o.h/2;});
     for(var it=0;it<6;it++){for(var i=1;i<arr.length;i++){var p=arr[i-1],q=arr[i];if(q.ly<p.ly+p.h+gap)q.ly=p.ly+p.h+gap;}
       if(arr.length){var last=arr[arr.length-1];if(last.ly+last.h>bot){var sh=last.ly+last.h-bot;arr.forEach(function(o){o.ly-=sh})}}
