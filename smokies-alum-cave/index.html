@@ -400,7 +400,7 @@ const trailPts=[],trailMesh={};
 
 
 /* elevated trail pipes */
-const PIPE={lift:0.95,r:0.2,edge:0.29};
+const PIPE={lift:0.6,r:0.15,edge:0};
 function pipeCurve(pts,lift){const P=[];for(let i=0;i<pts.length;i+=1){const p=pts[i];let y=p.y;for(let k=-2;k<=2;k++){const q=pts[Math.max(0,Math.min(pts.length-1,i+k))];y=Math.max(y,q.y);}P.push(new THREE.Vector3(p.x,y+lift,p.z));}
   return new THREE.CatmullRomCurve3(P,false,"centripetal");}
 function pipe(pts,r,mat,lift,edgeR,edgeMat){const g=new THREE.Group(),cu=pipeCurve(pts,lift),n=Math.max(8,pts.length*3);
@@ -409,17 +409,26 @@ function pipe(pts,r,mat,lift,edgeR,edgeMat){const g=new THREE.Group(),cu=pipeCur
   [0,1].forEach(e=>{const t=e?cu.getPoint(1):cu.getPoint(0);const s=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),mat);s.position.copy(t);g.add(s);});
   return g;}
 const PIPE_EDGE=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.BackSide});
-/* metro lanes: shared stretches are drawn side by side */
-function METRO(){const lane=0.6,th=0.9,R=5;const grid=new Map(),key=(x,z)=>Math.floor(x/th)+","+Math.floor(z/th);
-  TRAILS.forEach((T,ti)=>{const W=T.world,n=W.length;T._perp=W.map((p,i)=>{const a=W[Math.max(0,i-2)],b=W[Math.min(n-1,i+2)];let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;return [-tz/L,tx/L];});
+/* metro lanes: shared stretches are drawn side by side (v2: smoothed, out-and-back drawn once) */
+function METRO(){const lane=0.46,th=0.8,R=4,SP=0.6;
+  TRAILS.forEach(T=>{const W=T.world;const cum=[0];for(let i=1;i<W.length;i++)cum.push(cum[i-1]+Math.hypot(W[i].x-W[i-1].x,W[i].z-W[i-1].z));
+    const L=cum[cum.length-1];let P=[];let j=0;for(let s=0;s<=L+1e-6;s+=SP){while(j<W.length-2&&cum[j+1]<s)j++;const t=Math.min(1,Math.max(0,(s-cum[j])/((cum[j+1]-cum[j])||1)));P.push(new THREE.Vector3().lerpVectors(W[j],W[j+1]||W[j],t));}
+    if(P.length<2)P=W.map(p=>p.clone());
+    for(let pass=0;pass<3;pass++){const Q=P.map(p=>p.clone());for(let i=1;i<P.length-1;i++){Q[i].x=(P[i-1].x+2*P[i].x+P[i+1].x)/4;Q[i].z=(P[i-1].z+2*P[i].z+P[i+1].z)/4;Q[i].y=Math.max(P[i].y,(P[i-1].y+P[i+1].y)/2);}P=Q;}
+    const n=P.length;if(n>8&&Math.hypot(P[0].x-P[n-1].x,P[0].z-P[n-1].z)<3){const half=n>>1;let hit=0,tot=0;
+      for(let i=0;i<half;i+=2){tot++;let m=1e9;for(let k=half;k<n;k+=2){const d=(P[i].x-P[k].x)**2+(P[i].z-P[k].z)**2;if(d<m)m=d;}if(m<1.44)hit++;}
+      if(tot&&hit/tot>0.75){let kk=0,md=-1;for(let i=0;i<n;i++){const d=(P[i].x-P[0].x)**2+(P[i].z-P[0].z)**2;if(d>md){md=d;kk=i;}}P=P.slice(0,kk+1);}}
+    T.base=P;});
+  const grid=new Map(),key=(x,z)=>Math.floor(x/th)+","+Math.floor(z/th);
+  TRAILS.forEach((T,ti)=>{const W=T.base,n=W.length;T._perp=W.map((p,i)=>{const a=W[Math.max(0,i-3)],b=W[Math.min(n-1,i+3)];let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;return [-tz/L,tx/L];});
     W.forEach((p,i)=>{const k=key(p.x,p.z);(grid.get(k)||grid.set(k,[]).get(k)).push([ti,i]);});});
-  TRAILS.forEach((T,ti)=>{const W=T.world,n=W.length,dx=new Float32Array(n),dz=new Float32Array(n);
+  TRAILS.forEach((T,ti)=>{const W=T.base,n=W.length,dx=new Float32Array(n),dz=new Float32Array(n);
     for(let i=0;i<n;i++){const p=W[i],gx=Math.floor(p.x/th),gz=Math.floor(p.z/th),near={};near[ti]=[i,0];
       for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=grid.get((gx+a)+","+(gz+b));if(!arr)continue;
-        for(const [t,j] of arr){if(t===ti)continue;const q=TRAILS[t].world[j],d=(q.x-p.x)**2+(q.z-p.z)**2;if(d<th*th&&(!near[t]||d<near[t][1]))near[t]=[j,d];}}
+        for(const [t,j] of arr){if(t===ti)continue;const q=TRAILS[t].base[j],d=(q.x-p.x)**2+(q.z-p.z)**2;if(d<th*th&&(!near[t]||d<near[t][1]))near[t]=[j,d];}}
       const g=Object.keys(near).map(Number).sort((a,b)=>a-b);if(g.length<2)continue;
-      const ref=g[0],rp=TRAILS[ref]._perp[near[ref][0]];let [px,pz]=T._perp[i];if(ref!==ti&&px*rp[0]+pz*rp[1]<0){px=-px;pz=-pz;}if(ref!==ti){px=rp[0];pz=rp[1];}
-      const o=(g.indexOf(ti)-(g.length-1)/2)*lane;dx[i]=px*o;dz[i]=pz*o;}
+      const ref=g[0],rp=ref===ti?T._perp[i]:TRAILS[ref]._perp[near[ref][0]];
+      const o=(g.indexOf(ti)-(g.length-1)/2)*lane;dx[i]=rp[0]*o;dz[i]=rp[1]*o;}
     T.draw=W.map((p,i)=>{let sx=0,sz=0,c=0;for(let k=-R;k<=R;k++){const j=i+k;if(j>=0&&j<n){sx+=dx[j];sz+=dz[j];c++;}}return new THREE.Vector3(p.x+sx/c,p.y,p.z+sz/c);});});}
 TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;});METRO();TRAILS.forEach(T=>{const pts=T.draw;
   const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
@@ -860,12 +869,13 @@ const ANIMALS=[
  {k:"chipmunk",at:[-5306,-610],hop:true},
  {k:"snake",path:[-8290,-2147,-8630,-1968],per:30}
 ];
+/* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
   const s=a.s||SCALE[a.k];const items=[];
   const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
   const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
   const holder=new THREE.Group();animalGroup.add(holder);
-  if(a.flock){for(let i=0;i<a.flock;i++){const o=make();holder.add(o);items.push({o,dx:(i-1)*90,dn:(i%2)*70});}}
+  if(a.flock){const sp=Math.min(700,Math.max(260,0.07*Math.max(C.x1-C.x0,C.n1-C.n0)));const nF=Math.min(a.flock,2);for(let i=0;i<nF;i++){let dx=0,dn=0;if(i){for(let t=0;t<12;t++){const ang=t*0.52+idx,cx=Math.cos(ang)*sp,cn=Math.sin(ang)*sp;if(H(x+cx,n+cn)>0.8&&qOf(x+cx,n+cn)<0.86){dx=cx;dn=cn;break;}}}const o=make();holder.add(o);items.push({o,dx,dn});}}
   else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
   let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
   items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
