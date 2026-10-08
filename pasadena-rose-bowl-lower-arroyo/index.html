@@ -400,13 +400,26 @@ CANYONS.forEach(cy=>{const pts=[];let done=false;
 
 // trails
 const trailPts=[],trailMesh={};
-TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;
+
+/* metro lanes: shared stretches are drawn side by side */
+function METRO(){const lane=0.6,th=0.9,R=5;const grid=new Map(),key=(x,z)=>Math.floor(x/th)+","+Math.floor(z/th);
+  TRAILS.forEach((T,ti)=>{const W=T.world,n=W.length;T._perp=W.map((p,i)=>{const a=W[Math.max(0,i-2)],b=W[Math.min(n-1,i+2)];let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;return [-tz/L,tx/L];});
+    W.forEach((p,i)=>{const k=key(p.x,p.z);(grid.get(k)||grid.set(k,[]).get(k)).push([ti,i]);});});
+  TRAILS.forEach((T,ti)=>{const W=T.world,n=W.length,dx=new Float32Array(n),dz=new Float32Array(n);
+    for(let i=0;i<n;i++){const p=W[i],gx=Math.floor(p.x/th),gz=Math.floor(p.z/th),near={};near[ti]=[i,0];
+      for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=grid.get((gx+a)+","+(gz+b));if(!arr)continue;
+        for(const [t,j] of arr){if(t===ti)continue;const q=TRAILS[t].world[j],d=(q.x-p.x)**2+(q.z-p.z)**2;if(d<th*th&&(!near[t]||d<near[t][1]))near[t]=[j,d];}}
+      const g=Object.keys(near).map(Number).sort((a,b)=>a-b);if(g.length<2)continue;
+      const ref=g[0],rp=TRAILS[ref]._perp[near[ref][0]];let [px,pz]=T._perp[i];if(ref!==ti&&px*rp[0]+pz*rp[1]<0){px=-px;pz=-pz;}if(ref!==ti){px=rp[0];pz=rp[1];}
+      const o=(g.indexOf(ti)-(g.length-1)/2)*lane;dx[i]=px*o;dz[i]=pz*o;}
+    T.draw=W.map((p,i)=>{let sx=0,sz=0,c=0;for(let k=-R;k<=R;k++){const j=i+k;if(j>=0&&j<n){sx+=dx[j];sz+=dz[j];c++;}}return new THREE.Vector3(p.x+sx/c,p.y,p.z+sz/c);});});}
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;});METRO();TRAILS.forEach(T=>{const pts=T.draw;
   const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
   const bright=new THREE.Group();bright.add(ribbon(pts,1.15,"#FFFFFF",0.32),ribbon(pts,0.62,c,0.38));
   const dim=new THREE.Group();dim.add(ribbon(pts,0.5,"#F6F1E6",0.33));dim.visible=false;
   world.add(bright,dim);trailMesh[T.id]={bright,dim};});
 TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
-  const pts=T.world.filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const pts=(T.draw||T.world).filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
   const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
   g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
   const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
