@@ -120,6 +120,8 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 
 
 
+
+
 /* site menu */
 .sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
 .sitemenu a{display:flex;align-items:center;min-height:38px;padding:0 11px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:background .25s,color .25s;position:relative}
@@ -223,7 +225,7 @@ function $(id){return document.getElementById(id)}
     pupils.forEach(function(p){p.setAttribute('r',dil.toFixed(2))});requestAnimationFrame(tick);})(performance.now());
 })();
 
-var ENDPOINT="__ENDPOINT__";
+var ENDPOINT="https://formsubmit.co/ajax/81e59c147a43b46bda7f3fb4d9ec1010";
 var f=$('f'),st=$('st'),go=$('go');
 f.addEventListener('submit',function(e){e.preventDefault();st.className='status';
   var nm=$('nm').value.trim(),em=$('em').value.trim(),msg=$('msg').value.trim();
