@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /outreach/
+
+Sitemap: https://gracestrail.com/sitemap.xml
