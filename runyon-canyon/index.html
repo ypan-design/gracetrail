@@ -3,15 +3,6 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Runyon Canyon Park · Grace&rsquo;s Trail</title>
-<meta name="description" content="Runyon Canyon Park, Hollywood Hills, above Franklin Ave at the top of Fuller Ave: the hike as an interactive 3D map with stops, wildlife and wildflowers.">
-<link rel="canonical" href="https://gracestrail.com/runyon-canyon/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Grace's Trail">
-<meta property="og:title" content="Runyon Canyon Park · Grace&#x27;s Trail">
-<meta property="og:description" content="Runyon Canyon Park, Hollywood Hills, above Franklin Ave at the top of Fuller Ave: the hike as an interactive 3D map with stops, wildlife and wildflowers.">
-<meta property="og:url" content="https://gracestrail.com/runyon-canyon/">
-<meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TouristAttraction", "name": "Runyon Canyon Park", "description": "Runyon Canyon Park, Hollywood Hills, above Franklin Ave at the top of Fuller Ave: the hike as an interactive 3D map with stops, wildlife and wildflowers.", "url": "https://gracestrail.com/runyon-canyon/", "touristType": "Hikers", "isPartOf": {"@type": "WebSite", "name": "Grace's Trail", "url": "https://gracestrail.com/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -46,6 +37,7 @@ button{font:inherit;color:inherit}
 /* badges */
 .bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
 .bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.lm{background:#E39A21;border-color:#B8760F;color:#fff;font-size:12px;padding:0}.kn.lmk .tx{font-weight:600}
 .bd.ic{padding:0;width:22px;border-color:var(--rule)}
 .bd.ic svg{width:14px;height:14px}
 .kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
@@ -166,6 +158,8 @@ button{font:inherit;color:inherit}
 
 
 @media (max-width:860px){.sitemenu.solo{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:30;margin:0;box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 12px 30px rgba(29,43,38,.18)}.hint{top:68px!important;left:14px;right:auto}}
+
+@media (max-width:860px){.sitemenu.solo{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:30;margin:0;box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 12px 30px rgba(29,43,38,.18)}.hint{top:68px!important;left:14px;right:auto}.switch{top:68px!important}}
 
 /* site menu */
 .sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
@@ -562,6 +556,82 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== landmarks: legendary ==== */
+const LMS=[];const LMPHOTOS={"hwsign": [{"f": "../photos/pl_griffith_c5_1.jpg", "by": "slworking2", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/18548283@N00/32086794074", "t": "Behind the Hollywood sign at sunset"}, {"f": "../photos/pl_griffith_c5_2.jpg", "by": "slworking2", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/18548283@N00/32964443285", "t": "Nice view from behind the Hollywood sign"}, {"f": "../photos/pl_griffith_c5_0.jpg", "by": "tomspixels", "lic": "BY-NC-ND 2.0", "src": "https://www.flickr.com/photos/34419549@N00/2190569915", "t": "Hollywood Sign In The Night"}], "observatory": [{"f": "../photos/pl_griffith_1_0.jpg", "by": "Mike Chen aka Full Time Taekwondo Dad", "lic": "BY-NC-ND 2.0", "src": "https://www.flickr.com/photos/76936665@N00/4355234773", "t": "Griffith Observatory"}, {"f": "../photos/pl_griffith_1_1.jpg", "by": "jurvetson", "lic": "BY 2.0", "src": "https://www.flickr.com/photos/44124348109@N01/25239502694", "t": "Griffith Observatory sunrise after a night with Moby & Sam Harris"}, {"f": "../photos/pl_griffith_1_2.jpg", "by": "Trey Ratcliff", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/95572727@N00/7426793522", "t": "The Griffith Observatory"}]};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,12);
+  const M=c=>new THREE.MeshLambertMaterial({color:c}),OUTL=new THREE.LineBasicMaterial({color:0x1D2B26,transparent:true,opacity:0.55});
+  function add(g,geo,c,x,y,z,sx,sy,sz){const m=new THREE.Mesh(geo,M(c));m.position.set(x,y,z);m.scale.set(sx,sy,sz);g.add(m);
+    const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo,30),OUTL);e.position.copy(m.position);e.scale.copy(m.scale);g.add(e);return m;}
+  const B={
+    sign(g,s,LL){const lf=(LL&&LL.inside&&LL.lift)||0;const cv=document.createElement("canvas");cv.width=1024;cv.height=160;const x=cv.getContext("2d");
+      x.fillStyle="#ffffff";x.strokeStyle="#1D2B26";x.lineWidth=9;x.lineJoin="round";x.font="900 150px Helvetica, Arial, sans-serif";x.textBaseline="middle";
+      const L="HOLLYWOOD".split(""),wd=1024/9;L.forEach((ch,i)=>{x.save();x.translate(wd*i+wd/2,86+((i*37)%5-2)*2);x.scale(0.82,1.08);x.textAlign="center";x.strokeText(ch,0,0);x.fillText(ch,0,0);x.restore();});
+      const tx=new THREE.CanvasTexture(cv);tx.anisotropy=4;
+      const w=7.2*s,h=1.25*s,pl=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tx,transparent:true,alphaTest:0.3,side:THREE.DoubleSide}));
+      pl.position.set(0,h*0.62,0);pl.rotation.x=-0.22;g.add(pl);
+      for(let i=0;i<9;i++)add(g,cyl,"#9AA19C",(i-4)*w/9,(h*0.6-lf)/2,-0.1*s,0.03*s,h*0.6+lf,0.03*s);},
+    observatory(g,s){add(g,box,"#F4F1EA",0,0.45*s,0,3.4*s,0.9*s,1.4*s);
+      const d=new THREE.SphereGeometry(1,16,8,0,Math.PI*2,0,Math.PI/2);add(g,d,"#AEB8BA",0,0.9*s,0,0.75*s,0.75*s,0.75*s);
+      [-1.25,1.25].forEach(dx=>{add(g,cyl,"#F4F1EA",dx*s,0.75*s,0,0.42*s,0.5*s,0.42*s);add(g,d,"#AEB8BA",dx*s,1.0*s,0,0.42*s,0.42*s,0.42*s);});},
+    stadium(g,s){const r=new THREE.LatheGeometry([new THREE.Vector2(1.6,0),new THREE.Vector2(2.6,0.9),new THREE.Vector2(2.75,0.95),new THREE.Vector2(2.75,0)],32);
+      const m=add(g,r,"#EDEAE2",0,0,0,s,s,s*0.8);m.material.side=THREE.DoubleSide;
+      add(g,cyl,"#7FB069",0,0.05*s,0,1.6*s,0.1*s,1.28*s);add(g,box,"#C9A27A",0.55*s,0.12*s,0.35*s,0.7*s,0.04*s,0.7*s);},
+    skyline(g,s){const H=[3.4,2.2,4.6,2.8,1.8,3.9,2.5,1.5,3.0];H.forEach((h,i)=>{const a=i*2.4,rr=(i%3)*0.55;
+      add(g,box,i%2?"#C9D3D6":"#B3C0C4",Math.cos(a)*rr*s,h*s/2,Math.sin(a)*rr*s,0.55*s,h*s,0.55*s);});},
+    ggbridge(g,s){const red="#C2412D",L=7*s;[-1,1].forEach(k=>{add(g,box,red,k*L*0.25,1.6*s,0,0.18*s,3.2*s,0.22*s);add(g,box,red,k*L*0.25,2.9*s,0,0.18*s,0.12*s,0.5*s);});
+      add(g,box,red,0,0.75*s,0,L,0.12*s,0.45*s);
+      const pts=[];for(let i=0;i<=40;i++){const t=i/40,x=(t-0.5)*L,X=Math.abs(x);let y;if(X<=L*0.25){const u=X/(L*0.25);y=0.9+2.15*u*u;}else{const u=(X-L*0.25)/(L*0.25);y=3.05-2.15*u;}pts.push(new THREE.Vector3(x,y*s,0));}
+      [-0.18,0.18].forEach(z=>{const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts.map(p=>p.clone().setZ(z*s))),new THREE.LineBasicMaterial({color:0x9E2F20}));g.add(ln);});},
+    peak(g,s){add(g,new THREE.ConeGeometry(1,1,7),"#E8EEF1",0,1.7*s,0,2.6*s,3.4*s,2.6*s);add(g,new THREE.ConeGeometry(1,1,7),"#9AA3A8",0,0.55*s,0,3.4*s,1.1*s,3.4*s);},
+    falls(g,s){add(g,box,"#B9B2A6",0,1.8*s,0,2.4*s,3.6*s,1.2*s);
+      const f=new THREE.Mesh(new THREE.PlaneGeometry(0.35*s,3.4*s),new THREE.MeshBasicMaterial({color:0xFFFFFF,transparent:true,opacity:0.92}));f.position.set(0.2*s,1.8*s,0.62*s);g.add(f);
+      add(g,cyl,"#DDEFF5",0.2*s,0.08*s,0.9*s,0.55*s,0.12*s,0.35*s);},
+    campus(g,s){[[0,0,1.6,0.7,1.0],[1.4,0.3,1.1,0.9,0.8],[-1.3,-0.4,1.2,0.5,0.9],[0.4,-1.2,1.0,1.2,0.7],[-0.5,1.1,0.9,0.6,0.7]].forEach(([x,z,w,h,d])=>add(g,box,"#E7E3DA",x*s,h*s/2,z*s,w*s,h*s,d*s));
+      add(g,cyl,"#F4F1EA",1.9*s,0.25*s,-1.0*s,0.45*s,0.5*s,0.45*s);add(g,new THREE.SphereGeometry(1,12,6,0,Math.PI*2,0,Math.PI/2),"#F4F1EA",1.9*s,0.5*s,-1.0*s,0.45*s,0.3*s,0.45*s);}
+  };
+  const bearing=(dx,dn)=>["north","northeast","east","southeast","south","southwest","west","northwest"][Math.round(((Math.atan2(dx,dn)*180/Math.PI)+360)%360/45)%8];
+  const LMDATA=[{"id": "hwsign", "name": "Hollywood Sign", "short": "Hollywood Sign", "desc": "Put up in 1923 as an ad for the Hollywoodland housing tract; the letters are 45 ft tall. It sits on Mount Lee, northeast of Runyon. From Clouds Rest and the upper East Trail it is in view across the hills.", "type": "sign", "x": 8469, "n": 10956, "s": 1.0, "lift": 0}, {"id": "observatory", "name": "Griffith Observatory", "short": "Observatory", "desc": "The white Art Deco observatory on Mount Hollywood, opened in 1935, east of Runyon in Griffith Park. Free to visit; its lawn looks over the whole basin.", "type": "observatory", "x": 14832, "n": 5253, "s": 1.0, "lift": 0}];
+  LMDATA.forEach(L=>{
+    const inside=L.x>C.x0&&L.x<C.x1&&L.n>C.n0&&L.n<C.n1;if(!inside)L.s*=1.8;let best=null;
+    TRAILS.forEach(T=>T.pts.forEach(p=>{const dd=Math.hypot(p.x-L.x,p.n-L.n);if(!best||dd<best.d)best={d:dd,x:p.x,n:p.n,t:T.id};}));
+    let ns=null;STOPS.forEach(s=>{const dd=Math.hypot(s.x-L.x,s.n-L.n);if(!ns||dd<ns.d)ns={d:dd,s};});
+    const mi=best?best.d/5280:0;L.mi=mi;L.dir=best?bearing(L.x-best.x,L.n-best.n):"";L.near=ns?ns.s:null;L.inside=inside;
+    const g=new THREE.Group();let pos;
+    if(inside){const p=G(L.x,L.n,L.lift||0);g.position.copy(p);if(L.type)world.add(g);pos=p.clone().add(new THREE.Vector3(0,L.type?2.6*L.s:1.4,0));}
+    else{const ux=L.x-cx,un=L.n-cn,len=Math.hypot(ux,un),hx=ux/len,hn=un/len;
+      const tE=Math.min(Math.abs((w/2)/(hx||1e-9)),Math.abs((d/2)/(hn||1e-9)));
+      const off=6/S,ex=cx+hx*tE,en=cn+hn*tE,ox=ex+hx*off,on=en+hn*off;
+      const P=Wv(ox,on,base);P.y=0.4;g.position.copy(P);g.rotation.y=0;world.add(g);
+      const A=Wv(cx+hx*tE*0.86,cn+hn*tE*0.86,base);A.y=0.25;const Bp=P.clone();Bp.y=0.25;
+      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),new THREE.LineDashedMaterial({color:0xC9773D,dashSize:0.7,gapSize:0.5}));ln.computeLineDistances();world.add(ln);
+      const ar=new THREE.Mesh(new THREE.ConeGeometry(0.45,1.1,3),new THREE.MeshBasicMaterial({color:0xC9773D}));ar.position.copy(Bp.clone().lerp(A,0.12));ar.position.y=0.3;
+      ar.rotation.order="YXZ";ar.rotation.y=Math.atan2(Bp.x-A.x,Bp.z-A.z);ar.rotation.x=Math.PI/2;world.add(ar);
+      const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2*L.s,3.2*L.s,0.18,40),new THREE.MeshBasicMaterial({color:0xF6EBDD,transparent:true,opacity:0.85}));disc.position.y=-0.12;g.add(disc);
+      const rim=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,40),new THREE.LineBasicMaterial({color:0xC9773D}));rim.position.y=-0.12;g.add(rim);
+      pos=P.clone().add(new THREE.Vector3(0,3.4*L.s,0));if(typeof LMFAR==="undefined")window.LMFAR=[];LMFAR.push(P.clone(),P.clone().add(new THREE.Vector3(0,4*L.s,0)));}
+    if(L.type&&B[L.type])B[L.type](g,L.s,L);
+    LMS.push({L,g,pos:()=>pos});
+  });
+})();
+/* ==== /landmarks ==== */
+
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
@@ -897,7 +967,7 @@ const isPhone=()=>innerWidth<=860;
 function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
 const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
-  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));if(typeof LMFAR!=="undefined")LMFAR.forEach(q=>p.push(q));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
 const VIEWAZ={"all":0.75,"A":0.9,"B":0.85,"C":0.75};
 function fitFor(v,az,el){
@@ -928,10 +998,14 @@ function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;r
 
 /* ================= callouts ================= */
 const LABELS=[];const labelsBox=$("#labels");
-function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"&&o.kind!=="landmark"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
   el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
   el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
 STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+PHOTOS.landmark=LMPHOTOS;LMS.forEach(m=>{if(m.L.type)m.g.rotation.y=VIEWAZ.all;});
+LMS.forEach(m=>{const L=m.L;const txt=L.inside?L.short:`${L.short} · ${L.mi<0.1?"":L.mi.toFixed(1)+" mi"}`.replace(/ · $/,"");
+  addLabel({key:"lm-"+L.id,kind:"landmark",badge:`<span class="bd lm">★</span>`,text:txt,views:["all",...TRAILS.map(t=>t.id)],pos:m.pos,item:{kind:"landmark",L,pos:m.pos}});
+  LABELS[LABELS.length-1].el.classList.add("lmk");});
 TRAILS.forEach(T=>{
   const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
   Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
@@ -940,7 +1014,7 @@ TRAILS.forEach(T=>{
   Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
     addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
 });
-function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function labelOn(o){if(o.kind==="landmark")return true;if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
 function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
 const tmpV=new THREE.Vector3();
 function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
@@ -957,7 +1031,7 @@ function layoutLabels(){
     const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
     arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
   spread(Lf);spread(Rt);
-  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>(o.kind==="stop"||o.kind==="landmark")?"":` stroke-dasharray="3 3"`;
   Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
     svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
   Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
@@ -972,10 +1046,11 @@ const fmt=n=>Math.round(n).toLocaleString("en-US");
 const r10=n=>fmt(Math.round(n/10)*10);
 function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
 function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
-function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function photosFor(item){if(item.kind==="landmark")return (PHOTOS.landmark||{})[item.L.id]||[];if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
 function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
 function openCard(item){cardItem=item;let h="";
-  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+  if(item.kind==="landmark"){const L=item.L;const where=L.inside?(L.near?`Near ${L.near.name} (${L.near.id})`:""):`About ${L.mi.toFixed(1)} mi ${L.dir} of ${L.near?L.near.name+" ("+L.near.id+")":"the trails"} · beyond this map`;h=`<div class="row"><span class="bd lm">★</span><span class="eyebrow">Landmark</span></div><h4>${L.name}</h4><p>${L.desc}</p>${where?`<div class="meta">${where}</div>`:""}`;}
+  else if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
     h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
   else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
   else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
