@@ -578,6 +578,8 @@ const anim={};
 
 
 
+
+
 /* ==== landmarks: legendary ==== */
 const LMS=[];const LMPHOTOS={"hwsign": [{"f": "../photos/pl_griffith_c5_1.jpg", "by": "slworking2", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/18548283@N00/32086794074", "t": "Behind the Hollywood sign at sunset"}, {"f": "../photos/pl_griffith_c5_2.jpg", "by": "slworking2", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/18548283@N00/32964443285", "t": "Nice view from behind the Hollywood sign"}, {"f": "../photos/pl_griffith_c5_0.jpg", "by": "tomspixels", "lic": "BY-NC-ND 2.0", "src": "https://www.flickr.com/photos/34419549@N00/2190569915", "t": "Hollywood Sign In The Night"}], "observatory": [{"f": "../photos/pl_griffith_1_0.jpg", "by": "Mike Chen aka Full Time Taekwondo Dad", "lic": "BY-NC-ND 2.0", "src": "https://www.flickr.com/photos/76936665@N00/4355234773", "t": "Griffith Observatory"}, {"f": "../photos/pl_griffith_1_1.jpg", "by": "jurvetson", "lic": "BY 2.0", "src": "https://www.flickr.com/photos/44124348109@N01/25239502694", "t": "Griffith Observatory sunrise after a night with Moby & Sam Harris"}, {"f": "../photos/pl_griffith_1_2.jpg", "by": "Trey Ratcliff", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/95572727@N00/7426793522", "t": "The Griffith Observatory"}]};
 (function(){
@@ -621,7 +623,7 @@ const LMS=[];const LMPHOTOS={"hwsign": [{"f": "../photos/pl_griffith_c5_1.jpg", 
       pl.position.set(p.x,p.y+ht*0.55,p.z);pl.rotation.x=-0.3;world.add(pl);
       [-0.3,0.3].forEach(o=>add(world,cyl,"#8E968F",p.x+o*wd,p.y+ht*0.3,p.z-0.12*ht,0.02,ht*0.75,0.02));});}
   const bearing=(dx,dn)=>["north","northeast","east","southeast","south","southwest","west","northwest"][Math.round(((Math.atan2(dx,dn)*180/Math.PI)+360)%360/45)%8];
-  const LMDATA=[{"id": "hwsign", "name": "Hollywood Sign", "short": "Hollywood Sign", "desc": "Put up in 1923 as an ad for the Hollywoodland housing tract; the letters are 45 ft tall. It sits on Mount Lee, northeast of Runyon. From Clouds Rest and the upper East Trail it is in view across the hills.", "type": "sign", "x": 8424, "n": 10956, "s": 1.0, "theta": 0}, {"id": "observatory", "name": "Griffith Observatory", "short": "Observatory", "desc": "The white Art Deco observatory on Mount Hollywood, opened in 1935, east of Runyon in Griffith Park. Free to visit; its lawn looks over the whole basin.", "type": "observatory", "x": 14832, "n": 5253, "s": 1.0, "theta": 0}];
+  const LMDATA=[{"id": "hwsign", "name": "Hollywood Sign", "short": "Hollywood Sign", "desc": "Put up in 1923 as an ad for the Hollywoodland housing tract; the letters are 45 ft tall. It sits on Mount Lee, northeast of Runyon. From Clouds Rest and the upper East Trail it is in view across the hills.", "type": "sign", "x": 8424, "n": 10956, "s": 1.0, "theta": 0, "elev": 1581}, {"id": "observatory", "name": "Griffith Observatory", "short": "Observatory", "desc": "The white Art Deco observatory on Mount Hollywood, opened in 1935, east of Runyon in Griffith Park. Free to visit; its lawn looks over the whole basin.", "type": "observatory", "x": 14832, "n": 5253, "s": 1.0, "theta": 0, "elev": 1137}];
   LMDATA.forEach(L=>{
     const inside=L.x>C.x0&&L.x<C.x1&&L.n>C.n0&&L.n<C.n1;if(!inside)L.s*=1.8;let best=null;
     TRAILS.forEach(T=>T.pts.forEach(p=>{const dd=Math.hypot(p.x-L.x,p.n-L.n);if(!best||dd<best.d)best={d:dd,x:p.x,n:p.n,t:T.id};}));
@@ -629,12 +631,21 @@ const LMS=[];const LMPHOTOS={"hwsign": [{"f": "../photos/pl_griffith_c5_1.jpg", 
     const mi=best?best.d/5280:0;L.mi=mi;L.dir=best?bearing(L.x-best.x,L.n-best.n):"";L.near=ns?ns.s:null;L.inside=inside;
     const g=new THREE.Group();let pos;
     if(inside){const p=G(L.x,L.n);g.position.copy(p);if(L.type)world.add(g);pos=p.clone().add(new THREE.Vector3(0,L.type==='sign'?45*S*VE*L.s*1.2:(L.type?2.6*L.s:1.4),0));}
-    else{const ux=L.x-cx,un=L.n-cn,len=Math.hypot(ux,un),hx=ux/len,hn=un/len;
-      const tE=Math.min(Math.abs((w/2)/(hx||1e-9)),Math.abs((d/2)/(hn||1e-9)));
-      const off=6/S,ex=cx+hx*tE,en=cn+hn*tE,ox=ex+hx*off,on=en+hn*off;
-      const P=Wv(ox,on,base);P.y=0.4;g.position.copy(P);g.rotation.y=0;world.add(g);
-      const A=Wv(cx+hx*tE*0.86,cn+hn*tE*0.86,base);A.y=0.25;const Bp=P.clone();Bp.y=0.25;
-      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),new THREE.LineDashedMaterial({color:0xC9773D,dashSize:0.7,gapSize:0.5}));ln.computeLineDistances();world.add(ln);
+    else{const ox0=best?best.x:cx,on0=best?best.n:cn;let ux=L.x-ox0,un=L.n-on0;const len=Math.hypot(ux,un)||1,hx=ux/len,hn=un/len;
+      // leave the tile where the line from the nearest trail point toward the landmark crosses the edge (true bearing from the trail)
+      const tX=hx>1e-9?(C.x1-ox0)/hx:hx<-1e-9?(C.x0-ox0)/hx:1e12,tN=hn>1e-9?(C.n1-on0)/hn:hn<-1e-9?(C.n0-on0)/hn:1e12;
+      const tE=Math.max(0,Math.min(tX,tN)),ex=ox0+hx*tE,en=on0+hn*tE,hiL=L.elev!=null&&(L.elev-base)*S*VE>1,off=(hiL?13:6)/S;let ox=ex+hx*off,on=en+hn*off;
+      if(typeof LMFARXY==="undefined")window.LMFARXY=[];
+      for(let k=0;k<6;k++){const hit=LMFARXY.find(q=>Math.hypot(q[0]-ox,q[1]-on)*S<8.5*Math.max(1,L.s/1.8));if(!hit)break;ox+=-hn*9/S;on+=hx*9/S;}
+      LMFARXY.push([ox,on]);
+      // stand at its real elevation (same vertical scale as the terrain), so a sign up on a ridge is not drawn at the foot of the map
+      const yE=(L.elev!=null)?Math.max(0.4,Math.min((L.elev-base)*S*VE,60)):0.4;
+      const P=Wv(ox,on,base);P.y=yE;g.position.copy(P);g.rotation.y=0;world.add(g);
+      const A=Wv(ex-hx*3/S,en-hn*3/S,base);A.y=0.25;const Bp=P.clone();Bp.y=0.25;
+      const DM=new THREE.LineDashedMaterial({color:0xC9773D,dashSize:0.7,gapSize:0.5});
+      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),DM);ln.computeLineDistances();world.add(ln);
+      if(yE>1){const st=new THREE.Line(new THREE.BufferGeometry().setFromPoints([Bp,P.clone().setY(yE-0.15)]),DM);st.computeLineDistances();world.add(st);
+        const ft=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,0.06,20),new THREE.MeshBasicMaterial({color:0xC9773D}));ft.position.copy(Bp);world.add(ft);}
       const ar=new THREE.Mesh(new THREE.ConeGeometry(0.45,1.1,3),new THREE.MeshBasicMaterial({color:0xC9773D}));ar.position.copy(Bp.clone().lerp(A,0.12));ar.position.y=0.3;
       ar.rotation.order="YXZ";ar.rotation.y=Math.atan2(Bp.x-A.x,Bp.z-A.z);ar.rotation.x=Math.PI/2;world.add(ar);
       const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2*L.s,3.2*L.s,0.18,40),new THREE.MeshBasicMaterial({color:0xF6EBDD,transparent:true,opacity:0.85}));disc.position.y=-0.12;g.add(disc);

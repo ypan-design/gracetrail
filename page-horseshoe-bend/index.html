@@ -592,6 +592,8 @@ function inLake(x,n){return riverP().some(P=>inPoly(P,x,n))||lakeP().some(P=>inP
 
 
 
+
+
 /* ==== landmarks: legendary ==== */
 const LMS=[];const LMPHOTOS={"gcdam": []};
 (function(){
@@ -643,12 +645,21 @@ const LMS=[];const LMPHOTOS={"gcdam": []};
     const mi=best?best.d/5280:0;L.mi=mi;L.dir=best?bearing(L.x-best.x,L.n-best.n):"";L.near=ns?ns.s:null;L.inside=inside;
     const g=new THREE.Group();let pos;
     if(inside){const p=G(L.x,L.n);g.position.copy(p);if(L.type)world.add(g);pos=p.clone().add(new THREE.Vector3(0,L.type==='sign'?45*S*VE*L.s*1.2:(L.type?2.6*L.s:1.4),0));}
-    else{const ux=L.x-cx,un=L.n-cn,len=Math.hypot(ux,un),hx=ux/len,hn=un/len;
-      const tE=Math.min(Math.abs((w/2)/(hx||1e-9)),Math.abs((d/2)/(hn||1e-9)));
-      const off=6/S,ex=cx+hx*tE,en=cn+hn*tE,ox=ex+hx*off,on=en+hn*off;
-      const P=Wv(ox,on,base);P.y=0.4;g.position.copy(P);g.rotation.y=0;world.add(g);
-      const A=Wv(cx+hx*tE*0.86,cn+hn*tE*0.86,base);A.y=0.25;const Bp=P.clone();Bp.y=0.25;
-      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),new THREE.LineDashedMaterial({color:0xC9773D,dashSize:0.7,gapSize:0.5}));ln.computeLineDistances();world.add(ln);
+    else{const ox0=best?best.x:cx,on0=best?best.n:cn;let ux=L.x-ox0,un=L.n-on0;const len=Math.hypot(ux,un)||1,hx=ux/len,hn=un/len;
+      // leave the tile where the line from the nearest trail point toward the landmark crosses the edge (true bearing from the trail)
+      const tX=hx>1e-9?(C.x1-ox0)/hx:hx<-1e-9?(C.x0-ox0)/hx:1e12,tN=hn>1e-9?(C.n1-on0)/hn:hn<-1e-9?(C.n0-on0)/hn:1e12;
+      const tE=Math.max(0,Math.min(tX,tN)),ex=ox0+hx*tE,en=on0+hn*tE,hiL=L.elev!=null&&(L.elev-base)*S*VE>1,off=(hiL?13:6)/S;let ox=ex+hx*off,on=en+hn*off;
+      if(typeof LMFARXY==="undefined")window.LMFARXY=[];
+      for(let k=0;k<6;k++){const hit=LMFARXY.find(q=>Math.hypot(q[0]-ox,q[1]-on)*S<8.5*Math.max(1,L.s/1.8));if(!hit)break;ox+=-hn*9/S;on+=hx*9/S;}
+      LMFARXY.push([ox,on]);
+      // stand at its real elevation (same vertical scale as the terrain), so a sign up on a ridge is not drawn at the foot of the map
+      const yE=(L.elev!=null)?Math.max(0.4,Math.min((L.elev-base)*S*VE,60)):0.4;
+      const P=Wv(ox,on,base);P.y=yE;g.position.copy(P);g.rotation.y=0;world.add(g);
+      const A=Wv(ex-hx*3/S,en-hn*3/S,base);A.y=0.25;const Bp=P.clone();Bp.y=0.25;
+      const DM=new THREE.LineDashedMaterial({color:0xC9773D,dashSize:0.7,gapSize:0.5});
+      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),DM);ln.computeLineDistances();world.add(ln);
+      if(yE>1){const st=new THREE.Line(new THREE.BufferGeometry().setFromPoints([Bp,P.clone().setY(yE-0.15)]),DM);st.computeLineDistances();world.add(st);
+        const ft=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,0.06,20),new THREE.MeshBasicMaterial({color:0xC9773D}));ft.position.copy(Bp);world.add(ft);}
       const ar=new THREE.Mesh(new THREE.ConeGeometry(0.45,1.1,3),new THREE.MeshBasicMaterial({color:0xC9773D}));ar.position.copy(Bp.clone().lerp(A,0.12));ar.position.y=0.3;
       ar.rotation.order="YXZ";ar.rotation.y=Math.atan2(Bp.x-A.x,Bp.z-A.z);ar.rotation.x=Math.PI/2;world.add(ar);
       const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2*L.s,3.2*L.s,0.18,40),new THREE.MeshBasicMaterial({color:0xF6EBDD,transparent:true,opacity:0.85}));disc.position.y=-0.12;g.add(disc);
