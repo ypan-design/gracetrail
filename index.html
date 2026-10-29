@@ -141,6 +141,30 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:860px){.sitemenu a{padding:0 9px;min-height:36px;font-size:9.5px;letter-spacing:.04em}.sitemenu a.logo{font-size:16px;padding:0 9px 0 8px;gap:6px}}
 #home.sitemenu{display:flex;padding:4px;border-radius:18px}
+/* ==== search ==== */
+#search{position:sticky;top:-16px;z-index:2;margin:-16px -14px 10px;padding:14px 14px 10px;border-radius:18px 18px 0 0;background:linear-gradient(rgba(246,250,248,.92),rgba(246,250,248,.78));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#search .box{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px 0 12px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 18px rgba(29,43,38,.08);transition:box-shadow .25s}
+#search .box:focus-within{box-shadow:0 0 0 2px rgba(46,107,80,.35),0 6px 18px rgba(29,43,38,.10)}
+#search svg{flex:none;width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8}
+#q{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:15px;color:var(--ink);padding:10px 0}
+#q::placeholder{color:var(--muted)}#q::-webkit-search-cancel-button{display:none}
+#qx{flex:none;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:4px 2px;visibility:hidden}
+#search.has #qx{visibility:visible}
+#sres{list-style:none;margin:8px 0 0;padding:0}
+#sres[hidden]{display:none}
+#sres .gh{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:10px 6px 4px}
+#sres button{width:100%;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px;border:0;border-top:1px solid var(--rule);background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;border-radius:8px}
+#sres button:hover,#sres button.on{background:rgba(207,230,218,.7)}
+#sres .no{flex:none}
+#sres .nm{font-weight:600;font-size:14.5px;line-height:1.2}#sres .lo{font-size:12px;color:var(--muted)}
+#sres .why{display:block;font-size:12px;color:#2E6B50;margin-top:1px}
+#sres mark{background:rgba(233,199,161,.55);color:inherit;border-radius:3px;padding:0 1px}
+#sres .none{padding:10px 6px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule)}
+#panel.searching .lede,#panel.searching>h2,#panel.searching #scale,#panel.searching #index{display:none}
+@media (max-width:820px){#search{position:relative;top:0;margin:0 0 6px;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #search .box{min-height:40px}#q{font-size:16px;padding:8px 0}#sres{max-height:42vh;overflow:auto;margin-top:6px}
+  #panel.searching #scale{display:none}}
+/* ==== /search ==== */
 </style>
 <style id="rgcss">.rgn{fill:#E9C7A1;stroke:#C9773D;stroke-width:1.4;stroke-linejoin:round;opacity:0;transition:opacity .35s ease,fill .35s ease;pointer-events:none}
 .rgn.on{opacity:.5}.rgn.hot{opacity:.75;fill:#EDBE8E}</style>
@@ -184,6 +208,7 @@ header{position:fixed;left:32px;top:26px;z-index:5;width:360px;max-height:calc(1
   <h1 class="vh">Grace&rsquo;s Trail, hikes drawn as maps</h1>
   <nav id="home" class="glass sitemenu" aria-label="Site"><a href="./" class="logo" aria-current="page"><span class="gt-dot" aria-hidden="true"></span>Grace&rsquo;s Trail</a><a href="about/">About me</a><a href="contact/">Contact us</a></nav>
   <aside id="panel" class="glass">
+    <div id="search" role="search"><div class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><input id="q" type="search" placeholder="Search a trail, park, city or state" autocomplete="off" spellcheck="false" aria-label="Search trails" aria-controls="sres"><button id="qx" type="button" aria-label="Clear search">&times;</button></div><ul id="sres" role="listbox" hidden></ul></div>
     <p class="lede">Grace&rsquo;s Trail is a growing atlas of hikes, each one drawn as a 3D map from real elevation data: the climbs, the creek crossings, the overlooks, and the numbered stops worth pausing at, with the animals and flowers you might meet along the way.</p>
     <p class="lede">It started in the San Gabriel Valley and now reaches across the country: the Malibu coast and Mount Baldy, Zion and the Grand Canyon, Glacier and the Tetons, the Smokies, Acadia, even Kaua&#699;i and Alaska. Grace is already looking up at where to go next. Zoom the map, pick a trail, and go explore.</p>
     <h2><span>Explore by region</span></h2>
@@ -553,6 +578,83 @@ addEventListener('keydown',function(e){if(e.key==='Escape')closeCard()});
 window.__gt={get cur(){return cur},get mode(){return mode},fit:fit,open:function(i){openCard(SHEETS[i])}};
 resize();
 requestAnimationFrame(loop);
+/* ==== search ==== */
+(function(){
+var POP={"arches-delicate-arch":38000,"zion-angels-landing":34000,"glacier-avalanche-lake":33000,"yosemite-mist-trail":33000,"sedona-devils-bridge":32000,"bryce-navajo-loop":26000,"diamond-head":26000,"griffith-park":24000,"runyon-canyon":24000,"sedona-cathedral-rock":21500,"rmnp-emerald-lake":20000,"camelback-mountain":18000,"rainier-skyline-trail":17000,"zion-narrows":17000,"page-horseshoe-bend":17000,"rattlesnake-ledge":16000,"smokies-clingmans-dome":16000,"multnomah-falls":16000,"eaton-canyon":15000,"potato-chip-rock":15000,"silver-falls-trail-of-ten-falls":15000,"zion-canyon-overlook":14000,"smokies-laurel-falls":14000,"cowles-mountain":13500,"glacier-highline":13000,"piestewa-peak":12500,"mission-peak":12000,"sedona-soldier-pass":12000,"yosemite-upper-falls":12000,"lands-end":12000,"stone-mountain":11500,"yellowstone-grand-prismatic":11000,"grand-canyon-bright-angel":11000,"breakneck-ridge":10500,"hanging-lake":10500,"old-rag":10500,"acadia-beehive":10500,"lake-22":10000,"manoa-falls":10000,"smokies-alum-cave":10000,"franconia-ridge":10000,"watkins-glen":10000,"teton-cascade-canyon":9000,"mount-baldy":9000,"temescal-canyon":9000,"torrey-pines":9000,"manitou-incline":9000,"muir-woods":9000,"hocking-hills-old-mans-cave":8500,"bridge-to-nowhere":8000,"sandstone-peak":8000,"sturtevant-falls":8000,"enchanted-rock":8000,"starved-rock":8000,"echo-mountain":6000,"olympic-hoh-rain-forest":6000,"malibu-creek":6000,"solstice-canyon":6000,"kalalau-hanakapiai":6000,"point-dume":5000,"tennessee-valley":5000},SX=null,CITIES=null,ACT=-1,LAST=[];
+var STN={"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"};
+var q=$('q'),res=$('sres'),pan=$('panel'),box=$('search');
+var nz=function(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\u02bb\u02bc\u2019'`]/g,'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9#]+/g,' ').trim();};
+var SYN={mt:'mount',mtn:'mountain',ft:'fort',pt:'point',lk:'lake',fls:'falls',trl:'trail',cyn:'canyon',np:'national park',sp:'state park',nf:'national forest',
+  hwy:'highway',smokies:'smoky',smokey:'smoky',hawaii:'hawaii',socal:'southern california',sf:'san francisco',sd:'san diego',nyc:'new york',la:'los angeles'};
+var STOP={the:1,a:1,to:1,of:1,and:1,trail:1,trails:1,hike:1,hikes:1,hiking:1,near:1,in:1,at:1,loop:1,walk:1,via:1};
+function toks(s){return nz(s).split(' ').filter(Boolean).map(function(t){return SYN[t]||t}).join(' ').split(' ').filter(Boolean);}
+function ed(a,b,mx){if(Math.abs(a.length-b.length)>mx)return mx+1;var p=[],i,j;for(j=0;j<=b.length;j++)p[j]=j;
+  for(i=1;i<=a.length;i++){var c=[i],lo=i;for(j=1;j<=b.length;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(c[j]<lo)lo=c[j];}if(lo>mx)return mx+1;p=c;}return p[b.length];}
+var LAM={'la':1,'sgv':1,'mal':1,'mtn':1,'scv':1,'oc':1};
+var RN={};(typeof USREG!=='undefined'?USREG:[]).forEach(function(r){RN[r.k]=r.name});
+var GN={};(typeof GROUPS!=='undefined'?GROUPS:[]).forEach(function(g){GN[g.k]=g.name});
+var DOCS=SHEETS.map(function(s){var k=s.href.replace(/\/$/,''),st=s.st||(s.reg==='ca'||!s.reg?'CA':'');
+  var extra=(LAM[s.grp]?'los angeles socal southern california ':'')+(st==='CA'&&!LAM[s.grp]&&s.grp!=='yos'&&s.grp!=='sf'?'southern california socal ':'')+(s.grp==='sf'?'bay area ':'');
+  return {s:s,k:k,pop:POP[k]||3000,F:[[toks(s.name),1],[toks((s.trails||[]).map(function(t){return t[1]}).join(' ')),.8],[toks(s.where+' '+(GN[s.grp]||'')),.55],
+    [toks(st+' '+(STN[st]||'')+' '+extra),.4],[toks(RN[s.reg]||''),.3]],nm:nz(s.name),tr:(s.trails||[]).map(function(t){return nz(t[1])}),wh:nz(s.where)};});
+function popB(p){return .6*Math.log(1+p/3000)/Math.log(1+38000/3000);}
+function addX(){if(!SX)return;DOCS.forEach(function(d){var x=SX[d.k];if(!x||d.x)return;d.x=1;d.ll=x.ll;d.F.push([toks((x.s||[]).join(' ')),.6],[toks((x.l||[]).join(' ')),.6]);d.stops=(x.s||[]).concat(x.l||[]);});}
+var FZ=false;
+function tokScore(t,F,last){var best=0,fz=false;for(var f=0;f<F.length;f++){var W=F[f][0],w=F[f][1];for(var i=0;i<W.length;i++){var u=W[i],v=0,z=false;
+  if(u===t)v=1;else if(u.indexOf(t)===0&&(t.length>=3||(last&&t.length>=2)))v=.8;else if(t.length>=4&&u.indexOf(t)>0)v=.5;
+  else if(t.length>=4&&ed(t,u,t.length>=7?2:1)<=(t.length>=7?2:1)){v=.45;z=true;}if(v*w>best){best=v*w;fz=z;}}}if(fz)FZ=true;return best;}
+function why(d,qn,T){var i,j;if(qn.length>2&&d.nm.indexOf(qn)>=0)return '';for(i=0;i<d.tr.length;i++)if(qn.length>2&&d.tr[i].indexOf(qn)>=0)return 'Trail: '+d.s.trails[i][1];
+  if(d.stops)for(j=0;j<d.stops.length;j++){var sn=nz(d.stops[j]);if(T.every(function(t){return sn.indexOf(t)>=0})&&d.nm.indexOf(qn)<0)return 'Stop: '+d.stops[j];}
+  return '';}
+function textHits(T,qn){var req=T.filter(function(t){return !STOP[t]});if(!req.length)req=T;var out=[];
+  DOCS.forEach(function(d){var sc=0,ok=true;FZ=false;for(var i=0;i<req.length;i++){var v=tokScore(req[i],d.F,i===req.length-1);if(!v){ok=false;break;}sc+=v;}var fz=FZ;
+    if(!ok)return;T.forEach(function(t){if(STOP[t])sc+=tokScore(t,d.F,false)*.3});
+    if(d.nm===qn)sc+=4;else if(d.nm.indexOf(qn)===0)sc+=2;else if(qn.length>2&&d.nm.indexOf(qn)>=0)sc+=1.5;
+    if(qn.length>2&&d.tr.some(function(t){return t.indexOf(qn)>=0}))sc+=1.2;
+    out.push({d:d,sc:sc/Math.max(1,req.length)*Math.min(req.length,3)+popB(d.pop),w:why(d,qn,req),fz:fz});});
+  // a near-spelling only counts when nothing is spelled the way it was typed (so "arcadia" never pulls in Acadia)
+  if(out.some(function(o){return !o.fz}))out=out.filter(function(o){return !o.fz});
+  return out.sort(function(a,b){return b.sc-a.sc}).slice(0,7);}
+function cityFor(T){if(!CITIES||!T.length)return null;var st=null,L=T.slice();
+  var t2=L.length>1?L[L.length-1]:'';var code=t2.toUpperCase();
+  if(t2&&STN[code])st=code;else{for(var c in STN){var n=toks(STN[c]);if(n.length<=L.length-1&&n.join(' ')===L.slice(L.length-n.length).join(' ')){st=c;L=L.slice(0,L.length-n.length+1);L.pop();break;}}}
+  if(st&&STN[code]&&L.length>1)L=L.slice(0,-1);var qn=L.join(' ');if(qn.length<3)return null;var ex=null,pre=null;
+  for(var i=0;i<CITIES.length;i++){var c=CITIES[i];if(st&&c[1]!==st)continue;var cn=c[5]||(c[5]=toks(c[0]).join(' '));
+    if(cn===qn){if(!ex||cw(c)>cw(ex))ex=c;}else if(!ex&&qn.length>=4&&cn.indexOf(qn)===0){if(!pre||cw(c)>cw(pre))pre=c;}}
+  return ex||pre;}
+// among places with the same name, the one with trails nearby wins (Pasadena, CA over Pasadena, TX)
+function cw(c){if(c[6]==null){var p=[c[2],c[3]],n=1e9;DOCS.forEach(function(d){if(d.ll){var m=mi(p,d.ll);if(m<n)n=m;}});c[6]=n;}return c[4]*(c[6]<60?1:c[6]<150?.2:.02);}
+function mi(a,b){var R=3958.8,r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x));}
+function nearHits(c,skip,lim){var p=[c[2],c[3]],o=[];DOCS.forEach(function(d){if(!d.ll||skip[d.k])return;var m=mi(p,d.ll);if(m>lim)return;o.push({d:d,m:m,sc:m*(1-.25*popB(d.pop)/.6)});});
+  return o.sort(function(a,b){return a.sc-b.sc}).slice(0,6);}
+function hl(text,T){var h=text.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]});
+  T.filter(function(t){return t.length>1&&!STOP[t]}).forEach(function(t){var re=new RegExp('(^|[^a-z0-9])('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i');h=h.replace(re,'$1<mark>$2</mark>');});return h;}
+function item(d,T,sub){var s=d.s,li=document.createElement('li');li.setAttribute('role','option');
+  li.innerHTML='<button type="button"><span class="no">'+s.id+'</span><span><span class="nm">'+hl(s.name,T)+'</span><br><span class="lo">'+hl(s.where,T)+'</span>'+(sub?'<span class="why">'+sub+'</span>':'')+'</span></button>';
+  li.querySelector('button').addEventListener('click',function(){focusPark(s)});return li;}
+function head(t){var h=document.createElement('li');h.className='gh';h.textContent=t;return h;}
+function render(){var raw=q.value,T=toks(raw),qn=T.join(' ');box.classList.toggle('has',!!raw);ACT=-1;res.innerHTML='';LAST=[];
+  if(!raw.trim()){if(document.activeElement!==q){res.hidden=true;pan.classList.remove('searching');return;}
+    res.appendChild(head('Most hiked on Grace\u2019s Trail'));DOCS.slice().sort(function(a,b){return b.pop-a.pop}).slice(0,6).forEach(function(d){res.appendChild(item(d,[],''));LAST.push(d);});
+    res.hidden=false;pan.classList.add('searching');pan.scrollTop=0;return;}
+  var hits=textHits(T,qn),c=cityFor(T),skip={};
+  if(hits.length){res.appendChild(head(hits.length===1?'Best match':'Best matches'));hits.forEach(function(h){skip[h.d.k]=1;res.appendChild(item(h.d,T,h.w));LAST.push(h.d);});}
+  if(c){var nh=nearHits(c,skip,hits.length?60:250);if(nh.length){res.appendChild(head('Closest to '+c[0]+', '+c[1]));nh.forEach(function(h){res.appendChild(item(h.d,[],Math.round(h.m)+' mi away'));LAST.push(h.d);});}}
+  if(!LAST.length){var n=document.createElement('li');n.className='none';n.textContent=(CITIES?'No trails match \u201c'+raw.trim()+'\u201d yet. Try a trail, park, city or state.':'Searching\u2026');res.appendChild(n);}
+  res.hidden=false;pan.classList.add('searching');pan.scrollTop=0;}
+function load(){if(SX)return;fetch('search/index.json').then(function(r){return r.json()}).then(function(j){SX=j;addX();render();}).catch(function(){SX={};});
+  fetch('search/cities.json').then(function(r){return r.json()}).then(function(j){CITIES=j;render();}).catch(function(){CITIES=[];});}
+function mv(k){var b=res.querySelectorAll('button');if(!b.length)return;ACT=(ACT+k+b.length)%b.length;b.forEach(function(x,i){x.classList.toggle('on',i===ACT)});b[ACT].scrollIntoView({block:'nearest'});}
+q.addEventListener('focus',function(){load();render();});
+q.addEventListener('input',render);
+q.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){e.preventDefault();mv(1);}else if(e.key==='ArrowUp'){e.preventDefault();mv(-1);}
+  else if(e.key==='Enter'){e.preventDefault();var b=res.querySelectorAll('button');(b[ACT>=0?ACT:0]||{click:function(){}}).click();}
+  else if(e.key==='Escape'){q.value='';render();q.blur();}});
+$('qx').addEventListener('click',function(){q.value='';render();q.focus();});
+q.addEventListener('blur',function(){setTimeout(function(){if(!q.value.trim()&&document.activeElement!==q){res.hidden=true;pan.classList.remove('searching');}},200);});
+document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q&&!/input|textarea/i.test((document.activeElement||{}).tagName||'')){e.preventDefault();q.focus();}});
+})();
+/* ==== /search ==== */
 })();
 </script>
 </body>
