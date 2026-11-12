@@ -1,0 +1,50 @@
+{
+ "name": "Newport Cliff Walk",
+ "folder": "newport-cliff-walk",
+ "city": "Newport",
+ "area": "Newport",
+ "region": "Northeast",
+ "state": "RI",
+ "lat": 41.48519,
+ "lon": -71.29758,
+ "where": "Newport, Rhode Island · Memorial Blvd to Bailey's Beach",
+ "high": "57 ft",
+ "blurb": "A 3.5-mile shoreline path between the Atlantic and the back lawns of Newport's Gilded Age mansions, paved in the north and rocky around Rough Point.",
+ "status": "Partly closed: the stretch between Narragansett Ave and Webster St (just south of the Forty Steps) has been closed since a 2022 collapse; a signed street detour goes around it, repairs are expected 2027–2029, and the rest of the walk is open sunrise to sunset.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Cliff Walk to the Forty Steps",
+   "mi": 0.7,
+   "unit": "one way",
+   "level": "Easy",
+   "gain_ft": 30
+  },
+  {
+   "id": "B",
+   "name": "Cliff Walk to Ruggles Avenue",
+   "mi": 1.5,
+   "unit": "one way",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "C",
+   "name": "The full Cliff Walk",
+   "mi": 3.5,
+   "unit": "one way",
+   "level": "Moderate",
+   "gain_ft": 130
+  }
+ ],
+ "sources": [
+  "https://www.newportri.gov/en-us/city-hall/departments/public-services/tree-parks-open-space/cliff-walk",
+  "https://www.newportri.gov/en-us/visiting-newport/cliff-walk-(2)/points-of-interest",
+  "https://www.cliffwalk.com/",
+  "https://discovernewport.org/things-to-do/cliff-walk",
+  "https://www.moon.com/?p=578400",
+  "https://turnto10.com/news/local/newport-cliff-walk-repairs-clear-major-hurdle-with-completion-eyed-for-2029-october-15-2026",
+  "https://wror.com/2025/06/26/portions-of-newports-cliff-walk-closed-for-trail-repairs/",
+  "https://www.inaturalist.org/observations?nelat=41.488&nelng=-71.293&swlat=41.456&swlng=-71.313"
+ ]
+}
