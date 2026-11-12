@@ -465,7 +465,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
     if(mk<0.25){type="conifer";p=0.05;}
-    else if(e>8000)type=null;
+    else if(e>7900)type=null;
     else if(g>0.8)type=null;
     else if(cd<200){type="conifer";p=0.32;}
     else if(e<5200){const r0=tr();type=r0<.5?"oak":r0<.85?"conifer":"shrub";p=0.22+cl*.2;}
