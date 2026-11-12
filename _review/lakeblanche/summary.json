@@ -1,0 +1,59 @@
+{
+ "name": "Lake Blanche",
+ "folder": "lake-blanche",
+ "city": "Salt Lake City",
+ "area": "Salt Lake City",
+ "state": "UT",
+ "region": "Southwest",
+ "lat": 40.63316,
+ "lon": -111.72322,
+ "where": "Mill B trailheads, Big Cottonwood Canyon, Uinta-Wasatch-Cache National Forest, Utah",
+ "high": "8,920 ft",
+ "blurb": "From the S-curve in Big Cottonwood Canyon: the Mill B Overlook, the Broads Fork meadow, and Lake Blanche under Sundial Peak.",
+ "status": "open, snow season: no dogs anywhere in Big Cottonwood Canyon (watershed); USFS lists the Mill B South lot as closed; snow, ice and avalanche terrain from November, traction law on the canyon road",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Mill B Overlook",
+   "mi": 2.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 900
+  },
+  {
+   "id": "B",
+   "name": "Broads Fork Trail to the meadow",
+   "mi": 4.8,
+   "unit": "round trip",
+   "level": "Hard",
+   "gain_ft": 2080
+  },
+  {
+   "id": "C",
+   "name": "Lake Blanche Trail",
+   "mi": 7.0,
+   "unit": "round trip",
+   "level": "Hard",
+   "gain_ft": 2700
+  }
+ ],
+ "sources": [
+  "https://www.fs.usda.gov/r04/uinta-wasatch-cache/recreation/trails/lake-blanche-trail-151",
+  "https://www.fs.usda.gov/r04/uinta-wasatch-cache/recreation/trails/broads-fork-trail-150",
+  "https://www.fs.usda.gov/r04/uinta-wasatch-cache/recreation/mill-b-trailhead-north-south",
+  "https://www.visitutah.com/things-to-do/outdoor-adventures/backpacking/wasatch-range/lake-blanche",
+  "https://climb-utah.com/WM/blanche.htm",
+  "https://roadtripryan.com/go/t/utah/wasatch/lake-blanche",
+  "https://www.roadtripryan.com/go/t/utah/wasatch/mill-b-overlook",
+  "https://www.theoutbound.com/utah/hiking/hike-broads-fork-basin-and-beaver-pond",
+  "https://www.hikingproject.com/trail/7010984",
+  "https://markshikesandtreks.blogspot.com/2012/07/broads-fork-meadows-twin-peaks.html",
+  "https://wasatchmag.com/make-the-great-escape-to-lake-blanche-for-a-panoramic-hike",
+  "https://www.dirtinmyshoes.com/hike-utah-lake-blanche/",
+  "https://cms.10adventures.com/hikes/salt-lake-city/lake-blanche-trail/",
+  "https://www.fs.usda.gov/wildflowers/regions/intermountain/AlbionBasin/index.shtml",
+  "https://cwc.utah.gov/environmental-dashboard/deforestation",
+  "https://cottonwoodcanyons.udot.utah.gov/traction-law/",
+  "https://townlift.com/2026/06/what-to-know-before-you-park-in-big-and-little-cottonwood-canyons-this-summer/"
+ ]
+}
