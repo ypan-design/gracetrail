@@ -1,0 +1,58 @@
+{
+ "name": "Devil's Lake Bluffs",
+ "folder": "devils-lake-wi",
+ "city": "Baraboo",
+ "area": "Baraboo",
+ "state": "WI",
+ "region": "Midwest",
+ "lat": 43.42752,
+ "lon": -89.731,
+ "where": "North Shore, Devil's Lake State Park, S5975 Park Road, Baraboo, Wisconsin",
+ "high": "1,490 ft",
+ "blurb": "Quartzite bluffs 500 feet over a glacial lake: a steep East Bluff loop to Balanced Rock and Devil's Doorway, a flat shoreline walk through the Tumbled Rocks, and the full loop over the West and East bluffs.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Balanced Rock & Devil's Doorway",
+   "mi": 1.1,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 450
+  },
+  {
+   "id": "B",
+   "name": "Tumbled Rocks Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 60
+  },
+  {
+   "id": "C",
+   "name": "West Bluff & East Bluff Loop",
+   "mi": 5.2,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1110
+  }
+ ],
+ "status": "open (6 am-11 pm); Wisconsin state park vehicle admission sticker required. North Shore parking lots under reconstruction Aug 2026-spring 2027 (limited North Shore parking; South Shore open); bluff stairs icy in winter.",
+ "sources": [
+  "https://dnr.wisconsin.gov/topic/parks/devilslake",
+  "https://dnr.wisconsin.gov/topic/parks/devilslake/recreation/hiking",
+  "https://dnr.wisconsin.gov/topic/parks/devilslake/conditions",
+  "https://dnr.wisconsin.gov/topic/statenaturalareas/EastBluff",
+  "https://en.wikipedia.org/wiki/Devil's_Lake_State_Park,_Wisconsin",
+  "https://www.devilslakeclimbingguides.com/devils-lake/hiking-trails",
+  "https://liveandlethike.com/2022/10/02/devils-lake-loop-devils-lake-state-park-wi/",
+  "https://redaroundtheworld.com/2023/05/06/balanced-rock-and-devils-doorway-loop-devils-lake-state-park/",
+  "https://www.theoutbound.com/wisconsin/hiking/devil-s-doorway-loop",
+  "https://wisconsin-explorer.blogspot.com/2015/03/hiking-devils-lake-west-bluff.html",
+  "https://www.mountainproject.com/area/107372152/prospect-point-pinnacle",
+  "https://www.mountainproject.com/area/105730098/the-cleo-amphitheater",
+  "https://wsobirds.org/haunts/haunts-sauk/1722-devil-s-lake-state-park-east-bluff",
+  "https://www.devilslakewisconsin.com/learning-center/rattlesnakes-at-devils-lake/",
+  "https://devilslakewisconsin.com/activities/wildlife-birdwatching/",
+  "https://devilslakewisconsin.com/2019/04/30/wildflowers-your-excuse-to-get-outside-right-now/"
+ ]
+}
