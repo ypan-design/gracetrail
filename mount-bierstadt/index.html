@@ -470,7 +470,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     else if(g>1.0)type=null;
     else if(cd<230){type=tr()<.5?"conifer":"shrub";p=0.25;}
     else{type=tr()<.6?"conifer":"shrub";p=0.12+cl*.15;}
-    if(type&&e>11500)type=(e<11750&&tr()<.35)?"shrub":null;
+    if(type&&e>11350)type=(e<11600&&tr()<.35)?"shrub":null;
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -561,7 +561,7 @@ const anim={};
 })();
 
 
-TRAILS.forEach(T=>{const g={A:200,B:1000,C:2850}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={A:200,B:1000,C:2850}[T.id];if(g)T.gain=g;if(T.id==="C")T.hi=14060;});
 mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};
 function lakeP(){return lakeP.c||(lakeP.c=[[[1665,-178],[1710,-229],[1782,-234],[1842,-203],[1893,-190],[1952,-215],[1984,-249],[2036,-268],[2063,-342],[2075,-387],[2077,-471],[2033,-486],[2020,-518],[1999,-519],[1987,-550],[1988,-634],[1970,-672],[1902,-701],[1902,-715],[1923,-720],[1911,-736],[1872,-736],[1854,-711],[1880,-721],[1871,-696],[1833,-676],[1815,-638],[1798,-620],[1776,-625],[1759,-619],[1747,-610],[1744,-562],[1767,-571],[1772,-550],[1755,-502],[1776,-500],[1773,-479],[1752,-474],[1759,-444],[1750,-417],[1729,-408],[1729,-383],[1704,-336],[1695,-321],[1672,-303],[1660,-273],[1636,-268],[1624,-242],[1595,-240],[1591,-199],[1603,-172],[1632,-163]],[[11711,-6868],[11707,-6793],[11807,-6733],[11868,-6740],[11942,-6731],[11999,-6742],[12047,-6774],[12103,-6814],[12174,-6866],[12205,-6888],[12248,-6923],[12270,-6963],[12279,-6992],[12269,-7011],[12274,-7044],[12279,-7074],[12302,-7111],[12300,-7165],[12291,-7196],[12272,-7213],[12253,-7238],[12227,-7236],[12207,-7220],[12196,-7196],[12179,-7182],[12160,-7186],[12132,-7182],[12105,-7164],[12080,-7165],[12060,-7158],[12039,-7155],[12018,-7158],[11998,-7136],[11984,-7115],[11965,-7091],[11942,-7070],[11920,-7051],[11892,-7039],[11863,-7044],[11837,-7035],[11809,-7016],[11787,-7003],[11757,-6977],[11742,-6951],[11721,-6920]]]);}
 function inLake(x,n){for(const P of lakeP()){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>n)!==(b[1]>n)&&x<(b[0]-a[0])*(n-a[1])/(b[1]-a[1])+a[0])c=!c;}if(c)return true;}return false;}
@@ -938,7 +938,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.9,"A":0.9,"B":0.9,"C":0.9};
+const VIEWAZ={"all":2.7,"A":2.8,"B":2.7,"C":2.7};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
