@@ -626,11 +626,16 @@ const LMS=[];const LMPHOTOS={"hwsign": [{"f": "../photos/pl_griffith_c5_1.jpg", 
   function letterTex(ch){const cv=document.createElement("canvas");cv.width=128;cv.height=192;const x=cv.getContext("2d");
     x.font="900 190px Helvetica, Arial, sans-serif";x.textAlign="center";x.textBaseline="middle";x.lineWidth=10;x.lineJoin="round";x.strokeStyle="#1D2B26";x.fillStyle="#fff";
     x.save();x.translate(64,100);x.scale(0.8,1);x.strokeText(ch,0,0);x.fillText(ch,0,0);x.restore();const t=new THREE.CanvasTexture(cv);t.anisotropy=4;return t;}
-  function signOnSlope(L){const ks=3.0,k=L.s,wd=30*S*ks*1.05,ht=45*S*VE*k;
+  function letterTex2(ch,fill,stroke){const cv=document.createElement("canvas");cv.width=128;cv.height=192;const x=cv.getContext("2d");
+    x.font="900 190px Helvetica, Arial, sans-serif";x.textAlign="center";x.textBaseline="middle";x.lineWidth=14;x.lineJoin="round";x.strokeStyle=stroke;x.fillStyle=fill;
+    x.save();x.translate(64,100);x.scale(0.8,1);x.strokeText(ch,0,0);x.fillText(ch,0,0);x.restore();const t=new THREE.CanvasTexture(cv);t.anisotropy=4;return t;}
+  function signOnSlope(L){/*sign3d*/const ks=3.0,k=L.s,wd=30*S*ks*1.15,ht=45*S*VE*k*0.8,dp=Math.max(0.3,wd*0.22),N=8,TF={},TS={};
     "HOLLYWOOD".split("").forEach((ch,i)=>{const lx=L.x+(i-4)*39*ks,ln=L.n;const p=G(lx,ln);
-      const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),new THREE.MeshBasicMaterial({map:letterTex(ch),transparent:true,alphaTest:0.3,side:THREE.DoubleSide}));
-      pl.position.set(p.x,p.y+ht*0.55,p.z);pl.rotation.x=-0.3;world.add(pl);
-      [-0.3,0.3].forEach(o=>add(world,cyl,"#8E968F",p.x+o*wd,p.y+ht*0.3,p.z-0.12*ht,0.02,ht*0.75,0.02));});}
+      TF[ch]=TF[ch]||letterTex(ch);TS[ch]=TS[ch]||letterTex2(ch,"#B9B6AD","#9C998F");
+      const g=new THREE.Group();g.position.set(p.x,p.y+ht*0.55,p.z);g.rotation.x=-0.3;world.add(g);
+      for(let j=N;j>=0;j--){const m=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),new THREE.MeshBasicMaterial({map:j?TS[ch]:TF[ch],transparent:true,alphaTest:0.3,side:THREE.DoubleSide}));m.position.z=-dp*j/N;m.position.y=-dp*0.15*j/N;g.add(m);}
+      [-0.27,0.27].forEach(o=>add(world,cyl,"#6F766F",p.x+o*wd,p.y+ht*0.38,p.z-dp-0.12*ht,0.07,ht*0.85,0.07));
+      add(world,box,"#6F766F",p.x,p.y+ht*0.5,p.z-dp-0.12*ht,wd*0.6,0.07,0.07);add(world,box,"#6F766F",p.x,p.y+ht*0.15,p.z-dp-0.12*ht,wd*0.6,0.07,0.07);});}
   const bearing=(dx,dn)=>["north","northeast","east","southeast","south","southwest","west","northwest"][Math.round(((Math.atan2(dx,dn)*180/Math.PI)+360)%360/45)%8];
   const LMDATA=[{"id": "hwsign", "name": "Hollywood Sign", "short": "Hollywood Sign", "desc": "Put up in 1923 as an ad for the Hollywoodland housing tract; the letters are 45 ft tall. It sits on Mount Lee, northeast of Runyon. From Clouds Rest and the upper East Trail it is in view across the hills.", "type": "sign", "x": 8424, "n": 10956, "s": 1.0, "theta": 0, "elev": 1581}, {"id": "observatory", "name": "Griffith Observatory", "short": "Observatory", "desc": "The white Art Deco observatory on Mount Hollywood, opened in 1935, east of Runyon in Griffith Park. Free to visit; its lawn looks over the whole basin.", "type": "observatory", "x": 14832, "n": 5253, "s": 1.0, "theta": 0, "elev": 1137}];
   LMDATA.forEach(L=>{
