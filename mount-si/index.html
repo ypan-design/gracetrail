@@ -574,7 +574,7 @@ const anim={};
     part(wf,box,PAL.rock,0,h+0.08,-0.15,w+0.6,0.2,0.45,1.06);part(wf,ico,PAL.rockDeep,-(w/2+0.25),h*0.5,-0.2,0.25,h*0.55,0.25);part(wf,ico,PAL.rock,w/2+0.25,h*0.45,-0.2,0.25,h*0.5,0.25);
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.06,18),new THREE.MeshBasicMaterial({color:"#9CD3E0"}));pool.position.set(0,0.04,0.35);pool.scale.set(w*0.7+0.15,1,0.35);wf.add(pool);
     return wf;}
-  const wL=fall(3634,5045,0.9,3.0,-0.772);
+  const wL=fall(3634,5045,0.9,3.0,0.799);
   for(let i=0;i<4;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wL.add(m);mist.push({m,ph:i/4,x:(i%3-1)*0.3});}
   anim.water={fallTex,rings,mist};
 
