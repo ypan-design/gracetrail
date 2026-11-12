@@ -566,10 +566,13 @@ TRAILS.forEach(T=>{const g={A:260,B:60,C:1600}[T.id];if(g)T.gain=g;});
     const ring=P.concat([P[0]]).map(([x,n])=>G(x,n,0.12));world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
 })();
 (function(){const mat=new THREE.MeshLambertMaterial({color:"#F2F7FA",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#A9C6D3"});
-  GLAC.forEach(([b,P])=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
-    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.14);pa.setXYZ(i,v.x,v.y,v.z);}
-    pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
-    const ring=P.concat([P[0]]).map(([x,n])=>G(x,n,0.16));world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
+  const S=110,h=S/2+4,pos=[];
+  GLAC.forEach(([b,P])=>{for(let x=b[0]+S/2;x<b[1];x+=S)for(let n=b[2]+S/2;n<b[3];n+=S){if(!inRing(x,n,P))continue;
+      const a=G(x-h,n-h,0.16),c=G(x+h,n-h,0.16),d=G(x+h,n+h,0.16),e=G(x-h,n+h,0.16);
+      pos.push(a.x,a.y,a.z,c.x,c.y,c.z,d.x,d.y,d.z,a.x,a.y,a.z,d.x,d.y,d.z,e.x,e.y,e.z);}
+    const ring=P.concat([P[0]]).map(([x,n])=>G(x,n,0.18));world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
+  const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geo.computeVertexNormals();
+  const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
 })();
 
 /* ================= animals ================= */
