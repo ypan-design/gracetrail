@@ -236,7 +236,7 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-5,"n":-20,"name":"Devils Gard
  {"id":"3","trails":["A","C"],"x":-1016,"n":1738,"name":"Pine Tree Arch","desc":"The other branch of the same side trail reaches Pine Tree Arch, a wide opening low in a fin. The side trip to both arches adds about half a mile."},
  {"id":"4","trails":["A","B","C"],"x":-3392,"n":3003,"name":"Landscape Arch","desc":"One of the longest natural arches in the world, about 290 feet across and only about 6 feet thick at its thinnest. Slabs fell from it in 1991 and 1995, and the old trail beneath it is closed. Past here the trail gets much harder."},
  {"id":"5","trails":["B","C"],"x":-3584,"n":3479,"name":"Wall Arch site","desc":"Wall Arch, with an opening about 71 feet wide, stood beside the trail here until it collapsed on the night of August 4, 2008."},
- {"id":"6","trails":["B","C"],"x":-4426,"n":3850,"name":"Partition and Navajo junction","desc":"After a steep slickrock climb between two fins, a side trail leads to Partition and Navajo Arches, about 0.8 mile round trip for both."},
+ {"id":"6","trails":["B","C"],"x":-4426,"n":3850,"name":"Partition–Navajo spur","desc":"After a steep slickrock climb between two fins, a side trail leads to Partition and Navajo Arches, about 0.8 mile round trip for both."},
  {"id":"C1","trails":["C"],"x":-3808,"n":3217,"name":"Partition Arch","desc":"Two openings side by side in one fin, split by a thin wall of rock. The larger one, about 27 feet wide, frames a long view west over the desert."},
  {"id":"C2","trails":["C"],"x":-3984,"n":3000,"name":"Navajo Arch","desc":"A short, cave-like arch about 40 feet across with a shaded, sandy floor. A good place to rest."},
  {"id":"7","trails":["B","C"],"x":-5968,"n":5236,"name":"Black Arch Overlook","desc":"A two-minute side path to a view across a canyon of fins toward Black Arch."},
@@ -929,7 +929,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":-0.75,"A":-0.7,"B":-0.75,"C":-0.75};
+const VIEWAZ={"all":0.05,"A":0.1,"B":0.05,"C":0.05};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
