@@ -1,0 +1,57 @@
+{
+ "name": "Wupatki National Monument",
+ "folder": "wupatki",
+ "city": "Flagstaff",
+ "area": "Flagstaff",
+ "region": "Southwest",
+ "state": "AZ",
+ "lat": 35.52034,
+ "lon": -111.37142,
+ "where": "Wupatki National Monument, north of Flagstaff, AZ",
+ "high": "5,460 ft",
+ "blurb": "Three short trails to ancestral pueblos from the 1100s on the grassland north of Flagstaff: the Citadel on its cinder hill, Lomaki on an earth crack, and Wupatki Pueblo with its ballcourt and blowhole.",
+ "status": "Open; trails sunrise to sunset. Visitor center 9 am to 4:30 pm, closed Tuesdays Nov. 3, 2026 to Mar. 2, 2027, and on Thanksgiving, Dec. 25 and Jan. 1. $25 per vehicle (7 days, includes Sunset Crater).",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Citadel and Nalakihu Trail",
+   "mi": 0.2,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 40
+  },
+  {
+   "id": "B",
+   "name": "Lomaki and Box Canyon Trail",
+   "mi": 0.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 30
+  },
+  {
+   "id": "C",
+   "name": "Wupatki Pueblo Trail",
+   "mi": 0.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 90
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/wupa/index.htm",
+  "https://www.nps.gov/wupa/planyourvisit/hours.htm",
+  "https://www.nps.gov/wupa/planyourvisit/fees.htm",
+  "https://www.nps.gov/thingstodo/visit-wupatki-pueblo.htm",
+  "https://www.nps.gov/thingstodo/visit-citadel-and-nalakihu-pueblos.htm",
+  "https://www.nps.gov/thingstodo/visit-lomaki-and-box-canyon-pueblos.htm",
+  "https://www.nps.gov/places/wupatki-pueblo-blowhole.htm",
+  "https://www.nps.gov/places/citadel-and-nalakihu-pueblos.htm",
+  "https://www.nps.gov/places/lomaki-and-box-canyon-pueblos.htm",
+  "https://www.nps.gov/articles/wupatki.htm",
+  "https://swvirtualmuseum.nau.edu/wp/?p=4148",
+  "https://www.nps.gov/wupa/learn/nature/animals.htm",
+  "https://www.nps.gov/wupa/learn/nature/plants.htm",
+  "https://www.nps.gov/wupa/learn/nature/reptiles.htm",
+  "https://nps.gov/wupa/learn/nature/birds.htm"
+ ]
+}
