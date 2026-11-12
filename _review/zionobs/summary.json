@@ -1,0 +1,50 @@
+{
+ "name": "Observation Point",
+ "folder": "zion-observation-point",
+ "city": "Zion National Park",
+ "area": "Zion National Park",
+ "region": "Southwest",
+ "state": "UT",
+ "lat": 37.29635,
+ "lon": -112.90139,
+ "where": "Zion National Park · Utah",
+ "high": "6,917 ft",
+ "blurb": "The only open way to Observation Point, across the ponderosa plateau of Zion’s east rim on the East Mesa Trail, plus the head of Mystery Canyon and the old cableworks on Cable Mountain.",
+ "status": "open; Observation Point reachable only via East Mesa — the Weeping Rock route (East Rim Trail, Hidden Canyon) has been closed since the 2019 rockfall, and the dirt trailhead roads off North Fork Road need high clearance/4WD and are often muddy or snowbound in winter and spring.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "East Mesa Trail to Mystery Canyon",
+   "mi": 4.2,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 360
+  },
+  {
+   "id": "B",
+   "name": "Observation Point via East Mesa Trail",
+   "mi": 6.8,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 750
+  },
+  {
+   "id": "C",
+   "name": "Cable Mountain from Stave Spring",
+   "mi": 7.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1110
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/zion/planyourvisit/east-rim-wilderness-trail-descriptions.htm",
+  "https://www.nps.gov/zion/planyourvisit/conditions.htm",
+  "https://www.nps.gov/zion/learn/news/zion-national-park-reopens-weeping-rock-trail-shuttle-stop.htm",
+  "https://www.citrusmilo.com/zionguide/eastmesatrail.php",
+  "https://girlonahike.com/hiking-observation-point-from-east-mesa.html",
+  "https://www.citrusmilo.com/zionguide/cablemountain.php",
+  "https://jameskaiser.com/zion/hiking/cable-mountain/",
+  "https://www.nps.gov/zion/learn/nature/condors.htm"
+ ]
+}
