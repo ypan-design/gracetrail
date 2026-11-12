@@ -236,7 +236,7 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-229,"n":-48,"name":"Ramona Fa
  {"id":"3","trails":["B","C"],"x":5872,"n":1517,"name":"Loop junction (PCT)","desc":"About a quarter mile past the river, the Sandy River Trail meets the Pacific Crest Trail and the loop begins. This page goes counterclockwise: east on the PCT above the Sandy River, back down the creek-side Ramona Falls Trail. Horses stay on the river side of the loop."},
  {"id":"4","trails":["B","C"],"x":11971,"n":-2551,"name":"Timberline Trail junction","desc":"The Timberline Trail #600 leaves the PCT here toward the falls, past a small horse camp. A few hundred feet south, on a bench above the floodplain, is the Upper Sandy Guard Station, a log cabin finished in 1935 and unused since 1978. It was listed on the National Register in 2009; by 2014 its roof had partly collapsed."},
  {"id":"5","trails":["B","C"],"x":13952,"n":-2531,"name":"Ramona Falls","desc":"Ramona Creek spreads about 120 feet down a wall of columnar basalt that erosion has broken into steps, so the water falls as a wide lacy fan. A wooden footbridge crosses the creek at the base, where the air stays noticeably cooler. Forest Service employee John E. Mills found the falls in August 1933 and named them after the 1884 novel Ramona. No camping within 500 feet."},
- {"id":"6","trails":["B","C"],"x":7744,"n":3145,"name":"Ramona Falls Trail meets the PCT","desc":"The Ramona Falls Trail #797 follows mossy Ramona Creek down from the falls, the cooler, wetter side of the loop, and rejoins the PCT here. Turn left (south) on the PCT back to the Sandy River Trail, not north toward Bald Mountain."},
+ {"id":"6","trails":["B","C"],"x":7744,"n":3145,"name":"Ramona Falls Trail junction","desc":"The Ramona Falls Trail #797 follows mossy Ramona Creek down from the falls, the cooler, wetter side of the loop, and rejoins the PCT here. Turn left (south) on the PCT back to the Sandy River Trail, not north toward Bald Mountain."},
  {"id":"C1","trails":["C"],"x":12139,"n":339,"name":"Yocum Ridge Trail junction","desc":"About 0.6 mile up the Timberline Trail from the falls, Yocum Ridge Trail #771 turns east. It runs about a mile through big old-growth trees, then switchbacks up the ridge."},
  {"id":"C2","trails":["C"],"x":18357,"n":-1644,"name":"Yocum Ridge tarn","desc":"A small tarn on a bench at about 5,100 feet; the trail curves around it. Just beyond, the first opening looks north across the Muddy Fork to Mount Adams and Mount Rainier."},
  {"id":"C3","trails":["C"],"x":22888,"n":-4062,"name":"Sandy River overlook","desc":"The maintained trail ends near 6,000 feet above the Sandy River canyon, with Mount Hood, Reid Glacier and Illumination Rock close ahead. An old continuation climbs 0.7 mile more to campsites near 6,200 feet. Snow usually covers the ridge from October through June."}];
@@ -562,7 +562,7 @@ const anim={};
   fall(14070,-2516,3566,14048,-2520,3542,110,10); fall(14048,-2520,3536,14026,-2524,3512,180,10); fall(14026,-2524,3506,14004,-2528,3482,250,10); fall(14004,-2528,3476,13982,-2532,3452,320,10);
   pool(13952,-2537,3446,0.55);
   // wooden footbridge across Ramona Creek at the base of the falls
-  {const q=G(13863,-2553,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,1.396,0);}
+  {const q=G(13952,-2531,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,1.396,0);}
   // fallen-log crossing of the Sandy River (no bridge)
   {const q=G(4828,1406,0.2);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-4.676;world.add(g);
     const l2=part(g,new THREE.CylinderGeometry(1,1,1,8),"#7A5A3C",0,0,0,0.12,1.6,0.12,1.08);rot(l2,0,0,Math.PI/2);}
@@ -930,13 +930,13 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":2.6,"A":2.6,"B":2.6,"C":2.6};
+const VIEWAZ={"all":-0.3,"A":-0.45,"B":-0.3,"C":-0.3};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.0, "B": 3.2, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 2.6, "C": 1.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
