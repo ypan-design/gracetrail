@@ -1,0 +1,52 @@
+{
+ "name": "Dog Mountain",
+ "folder": "dog-mountain",
+ "city": "Stevenson",
+ "area": "Columbia River Gorge",
+ "region": "Pacific NW",
+ "state": "WA",
+ "lat": 45.69928,
+ "lon": -121.70818,
+ "where": "Columbia River Gorge National Scenic Area, WA-14 milepost 53.7 near Stevenson, Washington",
+ "high": "2,948 ft",
+ "blurb": "A steep climb from the Columbia River to summit meadows that turn yellow with balsamroot every spring.",
+ "status": "Open. Spring weekend permits (per vehicle, $2 on Recreation.gov, or the free CAT shuttle from Stevenson) on Saturdays, Sundays and Memorial Day in balsamroot season, April 11 to June 7 in 2026; 2027 dates not announced yet. $5 day-use fee or Northwest Forest Pass year-round.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Dog Mountain Trail to the lower viewpoint",
+   "mi": 3.8,
+   "unit": "round trip",
+   "level": "Hard",
+   "gain_ft": 1500
+  },
+  {
+   "id": "B",
+   "name": "Dog Mountain Loop",
+   "mi": 6.0,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 2800
+  },
+  {
+   "id": "C",
+   "name": "Dog Mountain–Augspurger Loop",
+   "mi": 6.8,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 2830
+  }
+ ],
+ "sources": [
+  "https://fs.usda.gov/r06/columbiarivergorge/recreation/trails/dog-mountain-trail-147",
+  "https://fs.usda.gov/r06/columbiarivergorge/recreation/trails/augspurger-trail-4407",
+  "https://www.fs.usda.gov/r06/columbiarivergorge/recreation/dog-mountain-area",
+  "https://www.fs.usda.gov/r06/columbiarivergorge/newsroom/releases/us-forest-service-release-spring-weekend-hiking-permits-0",
+  "https://www.recreation.gov/ticket/facility/273800",
+  "https://www.wta.org/go-hiking/hikes/dog-mountain",
+  "https://gorgefriends.org/find-a-hike/dog-mountain/",
+  "https://modernhiker.com/?p=13671",
+  "https://www.hikespeak.com/?p=63621",
+  "https://naturalhistorywanderings.com/2014/05/20/dog-mt-wildflowers-52014"
+ ]
+}
