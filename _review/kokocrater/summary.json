@@ -1,0 +1,55 @@
+{
+ "name": "Koko Crater",
+ "folder": "koko-crater",
+ "city": "Honolulu",
+ "area": "Honolulu",
+ "region": "Alaska & Hawaii",
+ "state": "HI",
+ "lat": 21.2809,
+ "lon": -157.6919,
+ "where": "Koko Head District Park, Hawaiʻi Kai, Honolulu, Oʻahu",
+ "high": "1,208 ft",
+ "blurb": "The 1,048 railroad-tie Koko Head Stairs to WWII bunkers on Koko Crater, with the botanical garden loop inside the crater and the walk down into Hanauma Bay.",
+ "status": "Open: Koko Crater Tramway free, no permit (reopened July 10, 2025 after summit bunker sealing); Hanauma Bay Wed–Sun only, reservation for non-residents.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Hanauma Bay to the beach",
+   "mi": 0.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 90
+  },
+  {
+   "id": "B",
+   "name": "Koko Crater Railway Trail",
+   "mi": 1.6,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1000
+  },
+  {
+   "id": "C",
+   "name": "Koko Crater Botanical Garden loop",
+   "mi": 2.0,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 270
+  }
+ ],
+ "sources": [
+  "https://www.honolulu.gov/dpr/dpr-news/koko-crater-tramway-remains-closed-pending-additional-bunker-sealing/",
+  "https://www8.honolulu.gov/mayor/blog/2023/06/05/project-to-replace-viewing-platform-atop-koko-crater-summit-begins-this-week/",
+  "https://www.honolulu.gov/events/locations/location/koko-head-district-park-312/",
+  "https://www.honolulu.gov/dpr/honolulu-botanical-gardens/koko-crater-botanical-garden/",
+  "https://www.honolulu.gov/dpr/hanauma-bay-nature-preserve/",
+  "https://www.honolulu.gov/dpr/hanauma-bay-nature-preserve/hanauma-bay-marine-life/",
+  "https://hawaiibirdingtrails.hawaii.gov/birding_hotspot/lana%CA%BBi-lookout",
+  "https://hawaii.com/blog/hiking-koko-crater-stairs",
+  "https://hawaii.com/blog/hanauma-bay",
+  "https://www.atlasobscura.com/places/koko-head-stairs",
+  "https://en.wikipedia.org/wiki/Koko_Crater",
+  "https://en.wikipedia.org/wiki/Koko_Crater_Botanical_Garden",
+  "https://www.hawaiimagazine.com/content/quick-escape-nature-koko-crater-botanical-garden-east-honolulu"
+ ]
+}

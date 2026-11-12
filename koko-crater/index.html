@@ -324,7 +324,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-3500,x1:8800,n0:-7000,n1:6900,ve:2.4};
+const C={x0:-3500,x1:8800,n0:-7000,n1:6900,ve:2.8};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -358,7 +358,7 @@ let MAXY=0;
     let c;
     if(me<3)c=col(me<1?"#9CCFE0":"#E9DDBF");else if(me<14&&g<0.25)c=col("#EADFC4");else if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
-    else if(me>600&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    else if(me>450&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
     const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
     const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
@@ -565,7 +565,7 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={B:1000}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={B:1000}[T.id];if(g)T.gain=g;if(T.id==="B")T.hi=1208;});
 // out-and-back: report the outbound mile for a stop
 mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};
 /* ================= animals ================= */
