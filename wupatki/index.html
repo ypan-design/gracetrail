@@ -409,7 +409,7 @@ const trailPts=[],trailMesh={};
 
 
 /* elevated trail pipes */
-const PIPE={lift:0.05,r:0.022,edge:0};
+const PIPE={lift:0.14,r:0.035,edge:0};
 function pipeCurve(pts,lift){const P=[];for(let i=0;i<pts.length;i+=1){const p=pts[i];let y=p.y;for(let k=-2;k<=2;k++){const q=pts[Math.max(0,Math.min(pts.length-1,i+k))];y=Math.max(y,q.y);}P.push(new THREE.Vector3(p.x,y+lift,p.z));}
   return new THREE.CatmullRomCurve3(P,false,"centripetal");}
 function pipe(pts,r,mat,lift,edgeR,edgeMat){const g=new THREE.Group(),cu=pipeCurve(pts,lift),n=Math.max(8,pts.length*3);
@@ -473,7 +473,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
     if(mk<0.25){type=null;}
     else if(g>0.8)type=null;
-    else{type=tr()<.45?"oak":"shrub";p=0.006+cl*.008;}
+    else{type=tr()<.45?"oak":"shrub";p=0.0015+cl*.002;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -919,7 +919,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 16, "B": 12, "C": 12}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 30, "B": 22, "C": 22}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
