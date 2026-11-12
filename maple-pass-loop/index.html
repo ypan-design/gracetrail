@@ -472,7 +472,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     if(inLake(x,n)){type=null;}
     else if(mk<0.25){type="conifer";p=0.05;}
     else if(g>1.1)type=null;
-    else if(e>5900){const r0=tr();type=r0<.45?"gold":r0<.75?"conifer":"shrub";p=0.10+cl*.10;}
+    else if(e>5900){const r0=tr();type=r0<.3?"gold":r0<.7?"conifer":"shrub";p=0.08+cl*.08;}
     else if(cd<230){type=tr()<.85?"conifer":"shrub";p=0.32;}
     else{type=tr()<.88?"conifer":"shrub";p=0.30+cl*.22;}
     if(type&&e>7000)type=(e<7250&&tr()<.35)?"shrub":null;
@@ -938,7 +938,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.6,"A":0.6,"B":0.6,"C":0.6};
+const VIEWAZ={"all":2.5,"A":2.5,"B":2.5,"C":2.5};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
