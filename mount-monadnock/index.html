@@ -479,8 +479,8 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     else if(g>1.25)type=null;
     else if(e<1900){const r0=tr();type=r0<.36?"oak":r0<.58?"syc":r0<.72?"gold":"conifer";p=0.3+cl*.2;}
     else if(e<2500){const r0=tr();type=r0<.62?"conifer":r0<.82?"gold":"oak";p=0.26+cl*.12;}
-    else if(e<2850){type=tr()<.75?"conifer":"shrub";p=0.14;}
-    else{type=tr()<.4?"conifer":"shrub";p=0.04;}
+    else if(e<2750){type=tr()<.7?"conifer":"shrub";p=0.12;}
+    else{type="shrub";p=0.03;}
     if(type&&e>3000)type=(e<3250&&tr()<.35)?"shrub":null;
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
