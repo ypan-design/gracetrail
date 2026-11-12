@@ -1,0 +1,55 @@
+{
+ "name": "Jordan Pond & the Bubbles",
+ "folder": "acadia-jordan-pond",
+ "city": "Mount Desert",
+ "area": "Mount Desert Island",
+ "region": "Northeast",
+ "state": "ME",
+ "lat": 44.3209,
+ "lon": -68.2541,
+ "where": "Acadia National Park, Jordan Pond House on the Park Loop Road, Mount Desert Island, Maine",
+ "high": "1,194 ft",
+ "blurb": "A clear glacial pond under the two rounded Bubbles: a loop around the shore, a short climb to Bubble Rock, and a steeper loop over Penobscot Mountain.",
+ "status": "Open (NPS, Nov 2026); most of the Park Loop Road, incl. the Bubbles lot, closes to cars Dec 1–Apr 14 but Jordan Pond Road from Seal Harbor stays plowed to the Jordan Pond lot; Jordan Pond House closed for the season; entrance pass required; no swimming in the pond.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "The Bubbles & Bubble Rock",
+   "mi": 1.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 500
+  },
+  {
+   "id": "B",
+   "name": "Jordan Pond Path",
+   "mi": 3.3,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 60
+  },
+  {
+   "id": "C",
+   "name": "Penobscot Mountain Loop",
+   "mi": 3.7,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 973
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/thingstodo/hike-jordan-pond-path.htm",
+  "https://www.nps.gov/thingstodo/hike-bubbles.htm",
+  "https://www.nps.gov/thingstodo/hike-bubbles-nubble-loop.htm",
+  "https://www.nps.gov/places/acadia-earthcache-stop-two.htm",
+  "https://jameskaiser.com/?p=9662",
+  "https://www.nps.gov/thingstodo/hike-sargent-and-penobscot-mountains-from-jph-with-island-explorer-bus.htm",
+  "https://www.nps.gov/thingstodo/hike-jordan-cliffs-loop.htm",
+  "https://www.bangordailynews.com/2015/10/13/outdoors/act-out/1-minute-hike-penobscot-mountain-trail-in-acadia-national-park-2/",
+  "https://www.nps.gov/acad/planyourvisit/hours.htm",
+  "https://www.nps.gov/acad/planyourvisit/winter.htm",
+  "https://www.nps.gov/thingstodo/tour-de-wildlife.htm",
+  "https://en.wikipedia.org/wiki/Jordan_Pond",
+  "https://www.citrusmilo.com/acadiaguide/jordanpond.php"
+ ]
+}
