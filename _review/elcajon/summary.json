@@ -1,0 +1,51 @@
+{
+ "name": "El Cajon Mountain",
+ "folder": "el-cajon-mountain",
+ "city": "Lakeside",
+ "area": "Lakeside",
+ "region": "San Diego",
+ "state": "CA",
+ "lat": 32.9126,
+ "lon": -116.8845,
+ "where": "El Capitan County Preserve, Lakeside, San Diego County",
+ "high": "3,675 ft",
+ "blurb": "One steep, exposed old mining road up a granite-ribbed ridge east of Lakeside, with turnarounds at the Mile 1 rest stop, the old mine shafts and the 3,675-foot summit.",
+ "status": "Open 8 am to sunset; the whole preserve closes every August for extreme heat. No water on the trail and very little shade.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "El Cajon Mountain Trail to the Mile 1 rest stop",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 500
+  },
+  {
+   "id": "B",
+   "name": "El Cajon Mountain Trail to the mine shafts",
+   "mi": 7.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2250
+  },
+  {
+   "id": "C",
+   "name": "El Cajon Mountain Trail to the summit",
+   "mi": 11.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 4000
+  }
+ ],
+ "sources": [
+  "https://www.sandiegocounty.gov/location/el-capitan-county-preserve/",
+  "https://sdparks.org/content/sdparks/en/park-pages/ElCapitan.html",
+  "https://www.countynewscenter.com/featured-park-el-capitan-county-preserve/",
+  "https://hikingproject.com/trail/7022017/el-cajon-mountain-summit-trail",
+  "https://hikingsdcounty.com/el-cajon-mountain-el-cap/",
+  "https://www.sandiegoreader.com/news/2002/nov/21/tackle-severe-ups-and-downs-old-mining-track-throu/",
+  "https://www.trailspotting.com/2025/02/el-cajon-mountain-lakeside-ca.html",
+  "https://sandiegoriver.org/what-we-do/land-conservation-preserves/el-cap-conservation/",
+  "https://www.summitpost.org/el-cajon-mountain/153145"
+ ]
+}
