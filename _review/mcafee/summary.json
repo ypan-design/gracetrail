@@ -1,0 +1,57 @@
+{
+ "name": "McAfee Knob",
+ "folder": "mcafee-knob",
+ "city": "Catawba",
+ "area": "Catawba",
+ "state": "VA",
+ "region": "Southeast",
+ "lat": 37.38006,
+ "lon": -80.08985,
+ "where": "Appalachian Trail on Catawba Mountain, VA 311 near Catawba, northwest of Salem and Roanoke, Virginia",
+ "high": "3,197 ft",
+ "blurb": "The overhanging ledge of McAfee Knob, the most photographed spot on the Appalachian Trail, plus the quartzite spire of Dragon’s Tooth: two of Virginia’s Triple Crown above the Catawba Valley.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Dragon’s Tooth",
+   "mi": 4.6,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1250
+  },
+  {
+   "id": "B",
+   "name": "McAfee Knob",
+   "mi": 8.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1700
+  },
+  {
+   "id": "C",
+   "name": "McAfee Knob from the Catawba Sustainability Center",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 2200
+  }
+ ],
+ "status": "open: VA 311 lot fills early on spring and fall weekends (no parking on VA 311, towing); McAfee Knob Trailhead Shuttle runs Fri–Sun through Nov 29, 2026; no camping or fires on McAfee Knob, overnight camping only at designated A.T. shelters and campsites.",
+ "sources": [
+  "https://www.roanokecountyva.gov/2935/McAfee-Knob",
+  "https://roanokecountyva.gov/2942/McAfee-Knob-Trailhead-Shuttle",
+  "https://www.visitroanokeva.com/things-to-do/outdoor-adventure/appalachian-trail/mcafee-knob/",
+  "https://www.visitroanokeva.com/things-to-do/outdoor-adventure/appalachian-trail/dragons-tooth/",
+  "https://www.fs.usda.gov/r08/gwj/recreation/trails/dragons-tooth-trail-forest-trail-5009",
+  "https://www.ratc.org/?p=9285",
+  "https://ratc.org/?p=9403",
+  "https://www.ratc.org/wp-content/uploads/2015/09/TRIPLE-CROWN.OFFICIAL.pdf",
+  "https://en.wikipedia.org/wiki/McAfee_Knob",
+  "https://www.hikingproject.com/trail/7013520/mcafee-knob",
+  "https://www.hikingproject.com/trail/7013521/dragons-tooth",
+  "https://gohikevirginia.com/?p=759",
+  "https://roanokecountyva.gov/CivicAlerts.asp?AID=5553",
+  "https://news.vt.edu/articles/2021/10/outreach-catawba-greenway.html",
+  "https://www.inaturalist.org/"
+ ]
+}

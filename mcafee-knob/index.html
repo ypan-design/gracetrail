@@ -239,9 +239,9 @@ const STOPS=[{"id":"1","trails":["B","C"],"x":4480,"n":1894,"name":"Johns Spring
  {"id":"A2","trails":["A"],"x":-19343,"n":-1732,"name":"Boy Scout Trail junction","desc":"The yellow-blazed Boy Scout connector forks off here. Stay on the blue-blazed Dragon’s Tooth Trail, which climbs gently along a stream with several crossings."},
  {"id":"A3","trails":["A"],"x":-22271,"n":-5250,"name":"Lost Spectacles Gap","desc":"The Dragon’s Tooth Trail meets the white-blazed Appalachian Trail on the ridge of Cove Mountain. Turn right (south) onto the A.T. for the last, steep 0.7 mile of rock steps and scrambles, with iron rungs set in the rock in two places."},
  {"id":"A4","trails":["A"],"x":-24272,"n":-7113,"name":"Dragon’s Tooth","desc":"A blade of Tuscarora quartzite about 35 feet tall on the crest of Cove Mountain, reached by a short blue-blazed spur. Views east over the Catawba Valley toward McAfee Knob. Climbing the Tooth itself is optional and exposed."},
- {"id":"B1","trails":["B"],"x":-78,"n":-71,"name":"McAfee Knob parking (VA 311)","desc":"The gravel lot at the top of Catawba Mountain, 4440 Catawba Valley Drive. It fills early on spring and fall weekends; cars parked on VA 311 or the side street are towed. Cross VA 311 on the pedestrian bridge and follow the white blazes north."},
- {"id":"C1","trails":["C"],"x":-3832,"n":1870,"name":"Catawba Sustainability Center","desc":"Virginia Tech’s farm at 5061 Catawba Creek Road has 25 day-use spaces for hikers, including two accessible spaces. No overnight parking."},
- {"id":"C2","trails":["C"],"x":1495,"n":857,"name":"Catawba Greenway meets the A.T.","desc":"The Catawba Greenway follows the old Route 311 roadbed across the farm, then climbs hand-built rock steps onto Appalachian Trail land and joins the route to the knob."}];
+ {"id":"B1","trails":["B"],"x":-78,"n":-71,"name":"McAfee Knob parking","desc":"The gravel lot at the top of Catawba Mountain, 4440 Catawba Valley Drive. It fills early on spring and fall weekends; cars parked on VA 311 or the side street are towed. Cross VA 311 on the pedestrian bridge and follow the white blazes north."},
+ {"id":"C1","trails":["C"],"x":-3832,"n":1870,"name":"Greenway trailhead","desc":"Parking at the Catawba Sustainability Center, Virginia Tech’s farm at 5061 Catawba Creek Road, which has 25 day-use spaces for hikers, including two accessible spaces. No overnight parking."},
+ {"id":"C2","trails":["C"],"x":1495,"n":857,"name":"Greenway joins the A.T.","desc":"The Catawba Greenway follows the old Route 311 roadbed across the farm, then climbs hand-built rock steps onto Appalachian Trail land and joins the route to the knob."}];
 const ORDER={"A":["A1","A2","A3","A4"],"B":["B1","1","2","3","4"],"C":["C1","C2","1","2","3","4"]};
 const SPECIES={
  laurel:{name:"Mountain laurel",latin:"Kalmia latifolia",color:"#F6D9E2",shape:"dome",bloom:[5,6],sum:"An evergreen shrub with glossy leaves and clusters of white to pale pink cup-shaped flowers in late May and June. Thick along the ridge below McAfee Knob and on Cove Mountain.",rule:(d,e,g,s)=>d>180&&e>2000},
@@ -325,7 +325,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-29000,x1:20000,n0:-12000,n1:9000,ve:1.7};
+const C={x0:-29000,x1:20000,n0:-12000,n1:9000,ve:2.4};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -471,11 +471,11 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type=tr()<.6?"oak":"conifer";p=0.06;}
-    else if(cd<230){type=tr()<.4?"syc":"oak";p=0.4;}
+    if(mk<0.25){type=tr()<.6?"oak":"conifer";p=0.03;}
+    else if(cd<230){type=tr()<.4?"syc":"oak";p=0.15;}
     else if(g>1.25)type=null;
-    else{const r0=tr();type=r0<.6?"oak":r0<.78?"syc":r0<.9?"gold":"conifer";p=0.38+cl*.25;}
-    if(!type||tr()>p||inst[type].length>420)continue;
+    else{const r0=tr();type=r0<.6?"oak":r0<.78?"syc":r0<.9?"gold":"conifer";p=(0.38+cl*.25)*0.35;}
+    if(!type||tr()>p||inst[type].length>150)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
   }
@@ -567,7 +567,7 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={A:1250,B:1700}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={A:1250,B:1700,C:2200}[T.id];if(g)T.gain=g;});
 // out-and-back: report the outbound mile for a stop
 mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=400)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+80);return {d:b.d,m:f.m,e:f.e};};
 /* ================= animals ================= */
