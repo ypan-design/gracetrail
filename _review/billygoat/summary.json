@@ -1,0 +1,57 @@
+{
+ "name": "Billy Goat Trail",
+ "folder": "billy-goat-trail",
+ "city": "Potomac",
+ "area": "Potomac",
+ "region": "Southeast",
+ "state": "MD",
+ "lat": 39.0002,
+ "lon": -77.2482,
+ "where": "Great Falls, C&O Canal National Historical Park, Potomac, Maryland",
+ "high": "347 ft",
+ "blurb": "Rock scrambling along the cliffs of Mather Gorge on Billy Goat Trail Section A, the Great Falls overlook on Olmsted Island, and a forest loop to an old gold mine.",
+ "status": "Open (NPS, Nov 10, 2026). Section A often closes for high water (Little Falls gauge 5 ft); no dogs on Section A or the Olmsted Island bridges; hike Section A downstream; $20 vehicle entrance fee, cards only.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Great Falls Overlook",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "B",
+   "name": "Gold Mine Loop",
+   "mi": 3.2,
+   "unit": "loop",
+   "level": "Easy to moderate",
+   "gain_ft": 360
+  },
+  {
+   "id": "C",
+   "name": "Billy Goat Trail Section A",
+   "mi": 3.9,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 240
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/choh/planyourvisit/billy-goat-trail.htm",
+  "https://www.nps.gov/choh/planyourvisit/conditions.htm",
+  "https://www.nps.gov/choh/planyourvisit/fees.htm",
+  "https://www.nps.gov/choh/planyourvisit/great-falls-overlook.htm",
+  "https://www.nps.gov/choh/planyourvisit/upload/GreatFallsHikingTrailsMap_2026.pdf",
+  "https://www.nps.gov/choh/learn/kidsyouth/widewater.htm",
+  "https://www.nps.gov/choh/learn/nature/birds.htm",
+  "https://www.nps.gov/grfa/learn/nature/mammals.htm",
+  "https://www.nps.gov/grfa/learn/nature/falls.htm",
+  "https://www.canaltrust.org/?p=7404",
+  "https://www.canaltrust.org/pyv/gold-mine-trails/",
+  "https://theclio.com/entry/100033",
+  "https://dnr.maryland.gov/wildlife/pages/naturalareas/central/potomac-gorge.aspx",
+  "https://origin-www.nature.org/content/dam/tnc/nature/en/documents/pdf-bear-island-brochure.pdf",
+  "https://en.wikipedia.org/wiki/Billy_Goat_Trail"
+ ]
+}
