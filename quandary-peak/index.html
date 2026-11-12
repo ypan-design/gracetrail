@@ -556,7 +556,7 @@ const anim={};
   rock(-8592,3665,0.5,"#8A867E");
   // White Falls: the outlet of the lake spilling down a rock step (waterfall from the Monrovia Canyon page)
   {const F=G(-9220,7828);const down=new THREE.Vector3(0.984,0,0.180).normalize();const ry=Math.atan2(down.x,down.z);
-  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(0.55);world.add(wf);
+  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(0.85);world.add(wf);
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   const tiers=[[1.2,2.6,-0.9,4.0],[1.6,1.8,-0.35,1.9],[1.9,1.2,0.15,0.6]];
@@ -895,11 +895,11 @@ const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
  {k:"goat",path:[-10698,3649,-10991,3786],per:36},
- {k:"goat",path:[-9178,8540,-9482,8540],per:34,ph:0.4},
+ {k:"goat",path:[-8917,7343,-9127,7471],per:34,ph:0.4},
  {k:"pika",at:[-6993,3635],hop:true},
- {k:"pika",at:[-7796,7411],hop:true},
+ {k:"pika",at:[-8423,7773],hop:true},
  {k:"marmot",at:[-5535,2484]},
- {k:"marmot",at:[-9962,8097]},
+ {k:"marmot",at:[-7728,7947]},
  {k:"elk",path:[-113,1684,-13,1435],per:36},
  {k:"deer",path:[-4945,5349,-5042,5412],per:28}
 ];
@@ -941,13 +941,13 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.6,"A":0.6,"B":0.6,"C":0.6};
+const VIEWAZ={"all":1.5,"A":0.6,"B":0.6,"C":1.5};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.6, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 2.8, "B": 2.6, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
