@@ -1,0 +1,52 @@
+{
+ "name": "Mount Tammany",
+ "folder": "mount-tammany",
+ "city": "Columbia",
+ "area": "Delaware Water Gap",
+ "region": "Northeast",
+ "state": "NJ",
+ "lat": 40.97213,
+ "lon": -75.12592,
+ "where": "Worthington State Forest, Delaware Water Gap NRA, NJ",
+ "high": "1,527 ft",
+ "blurb": "Three hikes from the Dunnfield Creek lot at the Delaware Water Gap: a creekside walk to a small falls, the steep Red Dot and Blue Dot loop over Mount Tammany, and a loop to Sunfish Pond on the Appalachian Trail.",
+ "status": "Open: no closures posted by NPS or NJ DEP (Nov 2026); the Dunnfield Creek lot off I-80 fills early on weekends, overflow at Kittatinny Point, no parking on I-80 or road shoulders.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Dunnfield Creek Falls",
+   "mi": 1.2,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 210
+  },
+  {
+   "id": "B",
+   "name": "Mount Tammany Loop (Red Dot and Blue Dot)",
+   "mi": 3.5,
+   "unit": "loop",
+   "level": "Difficult",
+   "gain_ft": 1200
+  },
+  {
+   "id": "C",
+   "name": "Sunfish Pond Loop",
+   "mi": 7.9,
+   "unit": "loop",
+   "level": "Moderately difficult",
+   "gain_ft": 1230
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/dewa/planyourvisit/red-dot-trail.htm",
+  "https://www.nps.gov/dewa/planyourvisit/dunnfield-creek-trail.htm",
+  "https://www.nps.gov/dewa/planyourvisit/conditions.htm",
+  "https://www.nps.gov/dewa/learn/nature/reptiles.htm",
+  "https://www.nj.gov/dep/parksandforests/parks/worthingtonstateforest.html",
+  "https://www.nj.gov/dep/parksandforests/parks/maps/Worthington_trail_brochure_text.pdf",
+  "https://www.nynjtc.org/hike/hike-mount-tammany-loop/",
+  "https://www.njhiking.com/sunfish-pond/",
+  "https://en.wikipedia.org/wiki/Sunfish_Pond",
+  "https://en.wikipedia.org/wiki/Mount_Tammany"
+ ]
+}
