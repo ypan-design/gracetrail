@@ -867,10 +867,10 @@ const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
  {k:"bear",path:[-528,1062,-589,1992],per:30},
- {k:"bear",path:[195,5005,745,6001],per:32,ph:0.4},
+ {k:"bear",path:[792,4673,561,5160],per:32,ph:0.4},
  {k:"deer",path:[2877,2062,2942,1669],per:26},
  {k:"deer",path:[433,4169,840,4307],per:28,ph:0.5},
- {k:"squirrel",at:[2282,2770],hop:true},
+ {k:"squirrel",at:[2840,2865],hop:true},
  {k:"squirrel",at:[-268,1752],hop:true},
  {k:"snake",path:[-695,838,-1199,836],per:30}
 ];
@@ -918,7 +918,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 5.0, "B": 3.6, "C": 2.6}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.0, "B": 3.6, "C": 2.6}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
