@@ -1,0 +1,54 @@
+{
+ "name": "Joshua Tree: Ryan Mountain",
+ "folder": "joshua-tree-ryan-mountain",
+ "city": "Twentynine Palms",
+ "area": "Joshua Tree National Park",
+ "region": "California",
+ "state": "CA",
+ "lat": 34.00255,
+ "lon": -116.13593,
+ "where": "Park Boulevard, central Joshua Tree National Park",
+ "high": "5,457 ft",
+ "blurb": "Three walks among Joshua trees and monzogranite boulders in the middle of Joshua Tree National Park: the Cap Rock loop, the Ryan Ranch ruins and the climb up 5,457-ft Ryan Mountain.",
+ "status": "Open: $30 vehicle entrance fee (7 days), no reservation; no water at trailheads; NPS does not recommend Ryan Mountain in summer heat.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Cap Rock Nature Trail",
+   "mi": 0.4,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 20
+  },
+  {
+   "id": "B",
+   "name": "Ryan Ranch Trail",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 135
+  },
+  {
+   "id": "C",
+   "name": "Ryan Mountain Trail",
+   "mi": 3.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1050
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/jotr/planyourvisit/hiking.htm",
+  "https://www.nps.gov/places/ryan-mountain-trailhead.htm",
+  "https://www.nps.gov/jotr/learn/nature/cap-rock-trail.htm",
+  "https://www.nps.gov/places/cap-rock.htm",
+  "https://www.nps.gov/jotr/planyourvisit/fees.htm",
+  "https://www.nps.gov/jotr/learn/nature/reptiles.htm",
+  "https://www.hikingproject.com/trail/7016889/ryan-mountain-trail",
+  "https://www.hikingproject.com/trail/7030543",
+  "https://www.hikespeak.com/trails/ryan-ranch-joshua-tree/",
+  "https://en.wikipedia.org/wiki/Ryan_Mountain",
+  "https://en.wikipedia.org/wiki/Ryan_House_and_Lost_Horse_Well",
+  "https://jameskaiser.com/?p=9374"
+ ]
+}
