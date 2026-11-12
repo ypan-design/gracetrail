@@ -555,14 +555,14 @@ const anim={};
   // Chautauqua Ranger Cottage beside the trailhead; Bluebell Shelter at the top of Bluebell Road
   house(-164,-32,0.8,0.2);house(-1562,-2827,0.6,0.5);
   const FT=(()=>{const a=G(0,0),b=G(1000,0);return Math.hypot(b.x-a.x,b.z-a.z)/1000;})();
-  const SST="#C47F5E",SST2="#B06C4E";
+  const SST="#D49A79",SST2="#C78A69";
   // the Flatirons: sandstone slabs tilted up to the east (OSM outlines)
   function flat(xe,xw,n0,n1,lift,c){const nm=(n0+n1)/2,a=G(xe,nm),b=G(xw,nm,lift*FT);const Y=b.clone().sub(a);const L=Y.length();Y.normalize();
-    const w=Math.abs(G(xe,n1).z-G(xe,n0).z);const sh=new THREE.Shape();sh.moveTo(-w/2,0);sh.lineTo(w/2,0);sh.lineTo(w*0.12,L);sh.lineTo(-w*0.12,L);sh.lineTo(-w/2,0);
-    const geo=new THREE.ExtrudeGeometry(sh,{depth:45*FT,bevelEnabled:false});geo.translate(0,0,-45*FT);
+    const w=0.8*Math.abs(G(xe,n1).z-G(xe,n0).z);const sh=new THREE.Shape();sh.moveTo(-w/2,0);sh.lineTo(w/2,0);sh.lineTo(w*0.12,L);sh.lineTo(-w*0.12,L);sh.lineTo(-w/2,0);
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:30*FT,bevelEnabled:false});geo.translate(0,0,-30*FT);
     const X=G(xe,n1).clone().sub(G(xe,n0));X.y=0;X.normalize();const Z=new THREE.Vector3().crossVectors(X,Y).normalize();const X2=new THREE.Vector3().crossVectors(Y,Z).normalize();
     const m=new THREE.Mesh(geo,pho(c));m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X2,Y,Z));m.position.copy(a);world.add(m);}
-  flat(-2955,-3672,-3292,-2610,220,SST);flat(-2665,-3444,-3765,-3110,200,SST2);flat(-2600,-3324,-4438,-4062,240,SST);
+  flat(-2955,-3672,-3292,-2610,110,SST);flat(-2665,-3444,-3765,-3110,100,SST2);flat(-2600,-3324,-4438,-4062,120,SST);
   // Royal Arch: a sandstone arch on its rock fin, opening facing north toward the Third Flatiron
   {const q=G(-2712,-6187);const g=new THREE.Group();g.position.set(q.x,q.y,q.z);world.add(g);const R=Math.max(0.5,70*FT),t=R*0.3;
     part(g,new THREE.TorusGeometry(R,t,8,18,Math.PI),SST,0,R*0.5,0,1,1,1,1.06);[-1,1].forEach(sd=>part(g,cyl,SST2,sd*R,R*0.25,0,t*1.3,R*0.55,t*1.3,1.06));
@@ -913,7 +913,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.2, "C": 2.6}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.0, "B": 2.6, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
