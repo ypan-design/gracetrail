@@ -1,0 +1,56 @@
+{
+ "name": "Yosemite Falls",
+ "folder": "yosemite-upper-falls",
+ "city": "Yosemite Valley",
+ "area": "Yosemite",
+ "state": "CA",
+ "region": "California",
+ "grp": "yos",
+ "reg": "ca",
+ "lat": 37.74609,
+ "lon": -119.59588,
+ "where": "Lower Yosemite Fall trailhead (shuttle stop 6) and the Yosemite Falls trailhead by Camp 4, Yosemite Valley, Yosemite National Park, California",
+ "high": "6,700 ft",
+ "blurb": "A paved loop to the base of Lower Yosemite Fall, and one of Yosemite's oldest trails up the north wall to Columbia Rock and the brink of the 2,425-foot falls.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Lower Yosemite Fall Loop",
+   "mi": 1.0,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "B",
+   "name": "Columbia Rock",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1000
+  },
+  {
+   "id": "C",
+   "name": "Top of Yosemite Falls",
+   "mi": 7.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2700
+  }
+ ],
+ "status": "open: Yosemite Falls flowing low as usual in fall (NPS, Nov 11, 2026); no entry reservation in 2026; Tioga and Glacier Point roads closing temporarily from Nov 12 for snow, chains may be required, upper trail can be icy.",
+ "sources": [
+  "https://www.nps.gov/yose/planyourvisit/lowerfalltrail.htm",
+  "https://www.nps.gov/places/000/lower-yosemite-fall-trailhead.htm",
+  "https://www.nps.gov/yose/planyourvisit/yosemitefallstrail.htm",
+  "https://www.nps.gov/places/000/upper-yosemite-fall-trailhead.htm",
+  "https://www.nps.gov/yose/planyourvisit/waterfalls.htm",
+  "https://www.nps.gov/yose/planyourvisit/conditions.htm",
+  "https://www.nps.gov/yose/planyourvisit/reservations.htm",
+  "https://www.nps.gov/yose/planyourvisit/fees.htm",
+  "https://www.nps.gov/yose/learn/nature/common-wildflowers.htm",
+  "https://www.hikespeak.com/trails/lower-yosemite-fall-hike/",
+  "https://www.hikespeak.com/trails/upper-yosemite-falls-trail/",
+  "https://www.hikingproject.com/trail/7005471/upper-yosemite-falls"
+ ]
+}
