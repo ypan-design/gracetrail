@@ -467,11 +467,10 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type="conifer";p=0.05;}
-    else if(cd<230){type=tr()<.3?"gold":"conifer";p=0.3;}
-    else if(g>1.15)type=null;
-    else if(south<-0.1){type=tr()<.88?"conifer":"syc";p=0.34+cl*.25;}
-    else{const r0=tr();type=r0<.72?"conifer":r0<.86?"shrub":"gold";p=0.2+cl*.2;}
+    if(mk<0.25){type="conifer";p=0.04;}
+    else if(e>8300&&south>-0.1){const r0=tr();type=r0<.45?"gold":r0<.7?"oak":"conifer";p=0.18+cl*.15;}
+    else if(e<7300){const r0=tr();type=r0<.72?"conifer":"shrub";p=0.16+cl*.12;}
+    else{const r0=tr();type=r0<.88?"conifer":r0<.95?"oak":"gold";p=0.24+cl*.2;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -867,7 +866,7 @@ const ANIMALS=[
  {k:"deer",path:[-449,9708,-421,9490],per:26},
  {k:"deer",path:[-2214,2612,-2107,2821],per:28,ph:0.4},
  {k:"bear",path:[-3217,11513,-1859,11868],per:34},
- {k:"fox",path:[-1636,3626,-1523,3185],per:24},
+ {k:"fox",path:[-1305,900,-1318,930],per:24},
  {k:"squirrel",at:[-515,3155],hop:true},
  {k:"squirrel",at:[-3721,3519],hop:true},
  {k:"squirrel",at:[169,4982],hop:true}

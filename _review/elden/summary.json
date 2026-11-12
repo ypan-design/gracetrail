@@ -1,0 +1,53 @@
+{
+ "name": "Mount Elden",
+ "folder": "flagstaff-mount-elden",
+ "city": "Flagstaff",
+ "area": "Flagstaff",
+ "region": "Southwest",
+ "state": "AZ",
+ "lat": 35.23031,
+ "lon": -111.57922,
+ "where": "Coconino National Forest, east Flagstaff, Arizona",
+ "high": "9,301 ft",
+ "blurb": "Fatmans Loop, the steep Elden Lookout Trail and a loop over the top of the lava dome above east Flagstaff, all from one trailhead on US-89.",
+ "status": "Open: no closures listed by Coconino National Forest; the summit lookout tower is closed to the public. Check fire restrictions; snow and ice on the upper trail in winter.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Fatmans Loop",
+   "mi": 2.5,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 600
+  },
+  {
+   "id": "B",
+   "name": "Elden Lookout Trail",
+   "mi": 5.4,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2400
+  },
+  {
+   "id": "C",
+   "name": "Mount Elden loop via Sunset and Heart trails",
+   "mi": 11.3,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 2600
+  }
+ ],
+ "sources": [
+  "https://www.fs.usda.gov/r03/coconino/recreation/trails/fatmans-loop-trail-no-25",
+  "https://www.fs.usda.gov/r03/coconino/recreation/trails/elden-lookout-trail-no-4",
+  "https://fs.usda.gov/r03/coconino/recreation/trails/sunset-trail-no-23",
+  "https://www.hikingproject.com/trail/7115492/fatmans-loop",
+  "https://www.hikearizona.com/decoder.php?ZTN=217",
+  "https://www.hikingproject.com/trail/7116185/new-heart",
+  "https://www.hikingproject.com/trail/7002917/sunset",
+  "https://socalhiker.net/hikes/hiking-to-mount-elden-in-the-coconino-national-forest/",
+  "https://arizonahandbook.com/mt_elden_trails.htm",
+  "https://en.wikipedia.org/wiki/Mount_Elden",
+  "https://hikingproject.com/trail/7015613/azt-passage-32-elden-mountain"
+ ]
+}
