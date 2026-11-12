@@ -1,0 +1,56 @@
+{
+ "name": "Abrams Falls",
+ "folder": "smokies-abrams-falls",
+ "city": "Townsend",
+ "area": "Cades Cove",
+ "state": "TN",
+ "region": "Southeast",
+ "lat": 35.59133,
+ "lon": -83.85286,
+ "where": "Cades Cove, Great Smoky Mountains National Park, west of Townsend, Tennessee",
+ "high": "about 3,700 ft",
+ "blurb": "A creekside trail from the far end of the Cades Cove loop to a 20-foot waterfall with a deep, dangerous pool, plus a short walk to the Elijah Oliver homestead and the Rich Mountain Loop above the cove.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Elijah Oliver Place",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 70
+  },
+  {
+   "id": "B",
+   "name": "Abrams Falls",
+   "mi": 5.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 460
+  },
+  {
+   "id": "C",
+   "name": "Rich Mountain Loop",
+   "mi": 8.5,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1890
+  }
+ ],
+ "status": "open: no current closures on these trails (Nov 2026). Cades Cove Loop Road is one way, open sunrise to sunset; vehicle-free Wednesdays ran May 6 to Sep 30, 2026. Parking tag required for stops over 15 minutes.",
+ "sources": [
+  "https://www.nps.gov/grsm/planyourvisit/abrams-falls.htm",
+  "https://www.nps.gov/places/abrams-falls.htm",
+  "https://home.nps.gov/grsm/planyourvisit/cadescove.htm",
+  "https://home.nps.gov/grsm/planyourvisit/cades-cove-vehicle-free-days.htm",
+  "https://www.nps.gov/grsm/planyourvisit/temproadclose.htm",
+  "https://npshistory.com/publications/grsm/newspaper/fall-2026.pdf",
+  "https://www.nps.gov/places/elijah-oliver-place.htm",
+  "https://www.nps.gov/places/john-oliver-place.htm",
+  "https://www.hikingproject.com/trail/7007997/abrams-falls-trail",
+  "https://en.wikipedia.org/wiki/Abrams_Falls_Trail",
+  "https://internetbrothers.org/2017/05/12/abrams-falls-trail-at-cades-cove-great-smoky-mountains-national-park/",
+  "https://smokymountains.com/park/hikes/rich-mountain-loop-trail",
+  "https://internetbrothers.org/2017/10/23/rich-mountain-loop-at-cades-cove-great-smoky-mountains-national-park/",
+  "https://theonefeather.com/2021/08/29/man-drowns-at-abrams-falls/"
+ ]
+}
