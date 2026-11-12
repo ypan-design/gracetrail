@@ -869,8 +869,8 @@ const ANIMALS=[
  {k:"bighorn",at:[17958,7959],flock:3},
  {k:"deer",path:[12984,14904,13372,14129],per:28},
  {k:"deer",path:[13036,11378,13494,10886],per:26,ph:0.4},
- {k:"coyote",path:[-2381,1415,-1766,1926],per:34},
- {k:"squirrel",at:[1191,-781],hop:true},
+ {k:"coyote",path:[12382,13019,12429,12330],per:34},
+ {k:"squirrel",at:[1122,317],hop:true},
  {k:"squirrel",at:[-2764,1713],hop:true},
  {k:"snake",path:[15793,10042,16253,9470],per:30}
 ];
@@ -1052,7 +1052,7 @@ function renderPanel(){let h="";const {ws,fs}=speciesHere();
   } else {const T=TR[view];
     h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
     <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
-      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.pts[0].e)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
     <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
     <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
     <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
