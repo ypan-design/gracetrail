@@ -551,7 +551,7 @@ const anim={};
   bench(-6357,-592,0.8);
   // The Lighthouse hoodoo at its OSM position (Lighthouse Peak node -8667,-5371): banded shale pedestal, column, Trujillo sandstone cap
   {const LX=-8667,LN=-5371,k=S*VE;let y0=1e9;[[0,0],[220,0],[-220,0],[0,220],[0,-220]].forEach(([a,b])=>{y0=Math.min(y0,G(LX+a,LN+b).y);});
-   const p0=G(LX,LN),h=Math.max(3.4,300*k),r=Math.max(0.36,40*S);
+   const p0=G(LX,LN),h=Math.max(5.2,420*k),r=Math.max(0.5,60*S);
    part(world,new THREE.CylinderGeometry(0.5,1,1,10),"#C2644A",p0.x,y0+h*0.22,p0.z,r*2.4,h*0.44,r*2.4,1.06);
    [0.12,0.24,0.36].forEach((t,i)=>part(world,new THREE.CylinderGeometry(1,1,1,10),i%2?"#C79AAA":"#E9DCC8",p0.x,y0+h*t,p0.z,r*(2.25-t*2.3),h*0.035,r*(2.25-t*2.3),0));
    part(world,new THREE.CylinderGeometry(0.85,1,1,10),"#C8704E",p0.x,y0+h*0.64,p0.z,r*0.95,h*0.42,r*0.95,1.06);

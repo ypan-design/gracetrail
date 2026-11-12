@@ -1,0 +1,52 @@
+{
+ "name": "Lighthouse Trail",
+ "folder": "palo-duro-lighthouse",
+ "city": "Canyon",
+ "area": "Canyon",
+ "region": "Texas",
+ "grp": "tx",
+ "reg": "sw",
+ "state": "TX",
+ "lat": 34.9512,
+ "lon": -101.6678,
+ "where": "Palo Duro Canyon State Park, Canyon, Texas",
+ "high": "3,150 ft",
+ "blurb": "A wide canyon-floor trail past Capitol Peak to the Lighthouse, a 310-foot hoodoo in the red-and-banded walls of Palo Duro Canyon.",
+ "status": "Open; day-pass reservations recommended (the park often fills), $8 entry. Lighthouse Trail closes 11 am–5 pm on heat-advisory days; trails may close after rain and flash floods are a danger.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Paseo del Rio Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 70
+  },
+  {
+   "id": "B",
+   "name": "Rojo Grande Trail",
+   "mi": 2.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 150
+  },
+  {
+   "id": "C",
+   "name": "Lighthouse Trail",
+   "mi": 5.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 470
+  }
+ ],
+ "sources": [
+  "https://tpwd.texas.gov/state-parks/palo-duro-canyon",
+  "https://tpwd.texas.gov/state-parks/palo-duro-canyon/trails-info",
+  "https://tpwd.texas.gov/state-parks/palo-duro-canyon/alert",
+  "https://tpwd.texas.gov/state-parks/palo-duro-canyon/nature",
+  "https://tpwd.texas.gov/publications/pwdpubs/media/park_maps/pwd_mp_p4506_0007p.pdf",
+  "https://www.hikingproject.com/trail/7009813/lighthouse-trail",
+  "https://www.americansouthwest.net/texas/palo-duro-canyon/lighthouse-trail.html",
+  "https://en.wikipedia.org/wiki/Palo_Duro_Canyon"
+ ]
+}
