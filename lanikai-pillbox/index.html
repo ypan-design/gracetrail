@@ -843,8 +843,8 @@ const SCALE={otter:1.7,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoo
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"otter",path:[183,-1434,87,-1385],per:16},
- {k:"otter",path:[-895,1216,-56,950],per:14,ph:0.3}
+ {k:"otter",path:[-137,-1689,-79,-1806],per:16},
+ {k:"otter",path:[-636,619,-675,750],per:14,ph:0.3}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
