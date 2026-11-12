@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Joshua Tree: Ryan Mountain · Grace&rsquo;s Trail</title>
+<meta name="description" content="Ryan Mountain, Joshua Tree National Park · California: the hike as an interactive 3D map with stops, wildlife and wildflowers.">
+<link rel="canonical" href="https://gracestrail.com/joshua-tree-ryan-mountain/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Grace's Trail">
+<meta property="og:title" content="Ryan Mountain · Grace&#x27;s Trail">
+<meta property="og:description" content="Ryan Mountain, Joshua Tree National Park · California: the hike as an interactive 3D map with stops, wildlife and wildflowers.">
+<meta property="og:url" content="https://gracestrail.com/joshua-tree-ryan-mountain/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TouristAttraction", "name": "Ryan Mountain", "description": "Ryan Mountain, Joshua Tree National Park · California: the hike as an interactive 3D map with stops, wildlife and wildflowers.", "url": "https://gracestrail.com/joshua-tree-ryan-mountain/", "touristType": "Hikers", "isPartOf": {"@type": "WebSite", "name": "Grace's Trail", "url": "https://gracestrail.com/"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-screen viewer. Model fills the screen on an organic island base; left panel holds the view switch and content; callouts in two columns either side; liquid-glass cards float over the model. Single light "illustration board" theme, chosen deliberately. */
+:root{
+  color-scheme:light;
+  --paper:#EEF4F1; --sheet:#FFFFFF; --ink:#1D2B26; --muted:#5F6F69; --rule:#D3DED9;
+  --tA:#E2553F; --tB:#E39A21; --tC:#6E4AA8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --panel:372px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.dragging{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#labels{position:absolute;inset:0;pointer-events:none}
+
+/* badges */
+.bd{flex:none;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;background:var(--sheet);border:1px solid var(--ink);color:var(--ink);line-height:1}
+.bd.t{background:var(--c);border-color:var(--c);color:#fff}
+.bd.ic{padding:0;width:22px;border-color:var(--rule)}
+.bd.ic svg{width:14px;height:14px}
+.kn{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font-size:12.5px;line-height:1.15;white-space:nowrap;pointer-events:auto;cursor:pointer}
+.kn .tx{background:color-mix(in srgb,var(--paper) 86%,transparent);padding:2px 6px;border-radius:4px}
+.kn.f .tx{font-style:italic;color:var(--muted)}
+.kn.left{flex-direction:row-reverse}
+.kn.dot .tx{display:none}
+.kn.on .tx{font-weight:600;color:var(--ink)}
+.kn.on .bd{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+
+/* liquid glass */
+.glass{background:linear-gradient(140deg,rgba(255,255,255,.62),rgba(255,255,255,.26));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 10px 30px rgba(29,43,38,.16),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);border-radius:16px}
+#card{position:absolute;left:0;top:0;width:250px;padding:12px 14px 13px;z-index:3;pointer-events:auto;transform-origin:50% 100%;transition:opacity .25s}
+#card .row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+#card h4{margin:0 0 3px;font-family:var(--display);font-stretch:108%;font-weight:500;font-size:17px;line-height:1.15}
+#card p{margin:0;font-size:12.5px;line-height:1.45;color:#33443E}
+#card .meta{margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+#card{transition:opacity .25s,width .3s}
+#card.big{width:340px}
+#card .gal{display:none;margin-top:10px}
+#card.big .gal{display:block}
+#card .gal .main{width:100%;height:200px;object-fit:cover;border-radius:10px;display:block;background:#E3EFEA}
+#card .cr{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+#card .cr a,.detail .cap a{color:inherit}
+#card .thumbs{display:flex;gap:5px;margin-top:6px;overflow-x:auto}
+#card .th{border:0;padding:0;background:none;cursor:pointer;border-radius:6px;outline:2px solid transparent;flex:none}
+#card .th.on{outline-color:var(--ink)}
+#card .th img{width:52px;height:38px;object-fit:cover;border-radius:6px;display:block}
+#card .none{font-size:12px;color:var(--muted)}
+#card .more{margin-top:7px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;cursor:pointer}
+#card.big .more{display:none}
+#card{cursor:pointer}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);padding:4px}
+#card::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+
+/* panel */
+.panel{position:absolute;left:0;top:0;bottom:0;width:var(--panel);display:flex;flex-direction:column;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-right:1px solid var(--rule);z-index:2}
+.head{padding:18px 22px 12px;display:flex;flex-direction:column;gap:4px}
+.head h1{font-family:var(--display);font-stretch:116%;font-weight:300;font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:-.01em}
+.switch{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:6px 22px 12px;border-bottom:1px solid var(--rule)}
+.switch button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 8px 8px;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.switch button:hover{border-color:var(--ink)}
+.switch button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.switch .sl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.switch .sn{font-size:12.5px;font-weight:600;line-height:1.15}
+.switch .bd{min-width:18px;height:18px;font-size:10px}
+.body{flex:1;overflow-y:auto;padding:16px 22px 28px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin}
+.body h2{font-family:var(--display);font-stretch:112%;font-weight:400;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.body h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 6px}
+.body p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin:0}
+.stat{padding:7px 9px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat dd{margin:1px 0 0;font-family:var(--display);font-stretch:106%;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.list>li{border-bottom:1px solid var(--rule)}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:1px 10px;align-items:center;width:100%;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer}
+.item:hover .nm,.list>li.on .nm{text-decoration:underline;text-underline-offset:3px}
+.item>.bd,.item>.ico{grid-row:1/3;justify-self:start}
+.item .nm{font-weight:600}
+.item .nm .mono{font-weight:400;font-size:10.5px;color:var(--muted);margin-left:6px}
+.item .lt{font-style:italic;color:var(--muted);font-weight:400}
+.item .ds{grid-column:2;font-size:13px;color:var(--muted)}
+.item .bm{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:right;grid-row:1/3;grid-column:3}
+.item .now{color:var(--tA);font-weight:500}
+.item .chev{grid-row:1/3;grid-column:3;font-family:var(--mono);color:var(--muted);transition:transform .25s}
+.list>li.open .chev{transform:rotate(90deg)}
+.detail{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;margin:0 0 10px;padding:10px;overflow:hidden}
+.detail img{width:118px;height:92px;object-fit:cover;border-radius:10px;background:linear-gradient(180deg,#F7FBF9,#E3EFEA);display:block}
+.detail p{font-size:12.5px;line-height:1.45;color:#33443E}
+.detail .cap{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:4px}
+.ico{width:18px;height:18px;flex:none}
+.tcard{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
+.tcard:hover .tn{text-decoration:underline;text-underline-offset:3px}
+.tcard .tn{font-weight:600}
+.tcard .tm{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tcard svg{grid-row:1/3;grid-column:3}
+.cards{border-top:1px solid var(--rule)}
+.prof svg{display:block;width:100%;height:96px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:9px}
+.links{display:grid;gap:4px;font-size:13px}
+.links a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--rule)}
+
+/* controls */
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:flex-end;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.grp{display:flex;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.grp button{border:0;background:none;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;min-width:32px;display:flex;align-items:center;gap:6px}
+.grp button+button{border-left:1px solid var(--rule)}
+.grp button:hover{background:var(--paper)}
+.grp button .sq{width:8px;height:8px;border-radius:2px;background:var(--ink)}
+.grp button[aria-pressed="false"]{color:var(--muted)}
+.grp button[aria-pressed="false"] .sq{background:transparent;outline:1px solid var(--muted)}
+.hint{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);z-index:2;pointer-events:none}
+
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;overflow:visible}
+  #stage{position:relative;height:58svh;min-height:340px}
+  .panel{position:relative;width:auto;bottom:auto;border-right:0;border-top:1px solid var(--rule);backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+  .switch{position:sticky;top:0;background:var(--paper);z-index:3}
+  .body{overflow:visible;padding:16px 16px 40px}
+  .head,.switch{padding-inline:16px}
+  .ctrls{bottom:auto;top:calc(58svh - 46px);right:10px}
+  .hint{display:none}
+  #card{width:210px}
+}
+@media (prefers-reduced-motion: reduce){ .switch button,#card,.item .chev{transition:none} }
+.homechip{position:relative;overflow:hidden;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-bottom:6px;padding:8px 14px 8px 10px;border-radius:18px;text-decoration:none;color:var(--ink);
+  background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);
+  -webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.homechip::after{content:"";position:absolute;top:-50%;left:-30%;width:30%;height:200%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));transform:rotate(18deg) translateX(-150%);transition:transform .8s ease}
+.homechip:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 16px 32px rgba(29,43,38,.16)}.homechip:hover::after{transform:rotate(18deg) translateX(600%)}
+.hc-arrow{font-size:14px}.hc-name{font-family:var(--display,inherit);font-stretch:118%;font-weight:400;font-size:16px;letter-spacing:-.01em}
+.hc-sub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-left:9px;border-left:1px solid rgba(29,43,38,.15)}
+
+
+
+
+
+@media (max-width:860px){.sitemenu.solo{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:30;margin:0;box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 12px 30px rgba(29,43,38,.18)}.hint{top:68px!important;left:14px;right:auto}}
+
+/* site menu */
+.sitemenu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:18px;align-self:flex-start;width:max-content;max-width:100%}
+.sitemenu a{display:flex;align-items:center;min-height:38px;padding:0 11px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:background .25s,color .25s;position:relative}
+.sitemenu a.logo{gap:8px;padding:0 12px 0 10px;font-family:var(--display);font-stretch:118%;font-weight:420;font-size:18px;letter-spacing:-.015em;text-transform:none}
+.sitemenu .gt-dot{flex:none;width:9px;height:9px;border-radius:50%;background:#E39A21;box-shadow:0 0 0 3px rgba(227,154,33,.22)}
+.sitemenu a:hover{background:rgba(207,230,218,.7)}
+.sitemenu a:not(.logo)[aria-current="page"]{background:var(--ink);color:#fff}
+.sitemenu a:focus-visible{outline:3px solid #E39A21;outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){.sitemenu a{padding:0 9px;min-height:36px;font-size:9.5px;letter-spacing:.04em}.sitemenu a.logo{font-size:16px;padding:0 9px 0 8px;gap:6px}}
+
+.sitemenu.solo{position:relative;overflow:hidden;margin-bottom:8px;background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 10px 26px rgba(29,43,38,.12);-webkit-backdrop-filter:blur(14px) saturate(1.7);backdrop-filter:blur(14px) saturate(1.7)}
+@media (max-width:860px){.sitemenu.solo{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:30;margin:0;box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 12px 30px rgba(29,43,38,.18)}.hint{top:68px!important;left:14px;right:auto}.switch{top:68px!important}}
+</style>
+
+<div class="app" id="app">
+  <div id="stage" aria-label="Interactive model of Ryan Mountain, Ryan Ranch and Cap Rock in Joshua Tree National Park">
+    <canvas id="gl"></canvas>
+    <svg id="lead" aria-hidden="true"></svg>
+    <div id="labels"></div>
+    <div id="card" class="glass" hidden role="dialog" aria-live="polite"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="head">
+      <nav class="sitemenu solo" aria-label="Site"><a href="../" class="logo" aria-current="page"><span class="gt-dot" aria-hidden="true"></span>Grace&rsquo;s Trail</a><a href="../about/">About me</a><a href="../contact/">Contact us</a></nav>
+      <h1>Joshua Tree: Ryan Mountain</h1>
+    </div>
+    <div class="switch" id="switch" role="group" aria-label="Choose a view"></div>
+    <div class="body" id="pbody" aria-live="polite"></div>
+  </aside>
+  <div class="hint">Drag to turn · scroll to zoom · click anything, tap the card for photos</div>
+  <div class="ctrls">
+    <div class="grp" role="group" aria-label="Layers">
+      <button id="tgTopo" aria-pressed="true"><span class="sq"></span>Topo</button>
+      <button id="tgTrees" aria-pressed="true"><span class="sq"></span>Trees</button>
+      <button id="tgAnimals" aria-pressed="true"><span class="sq"></span>Wildlife</button>
+      <button id="tgFlowers" aria-pressed="true"><span class="sq"></span>Flowers</button>
+      <button id="tgBase" aria-pressed="true"><span class="sq"></span>Base</button>
+    </div>
+    <div class="grp" role="group" aria-label="View">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" aria-label="Reset view">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const NOW_MONTH=new Date().getMonth()+1;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
+  band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};Object.assign(PAL,{"ground": "#EFE3C8", "groundN": "#E4D6B8", "rock": "#D9B48E", "rockDeep": "#C79E78", "ridge": "#F2E6CF", "oak": "#6F8A55", "shrub": "#A9A878"});
+
+/* ================= data ================= */
+const CANYONS=[];
+const TRAILS=[{"id":"A","name":"Cap Rock Nature Trail","short":"Cap Rock","official":0.4,"unit":"loop","route":"Loop","time":"30–45 min","level":"Easy","color":"--tA","desc":"A short, nearly flat loop at the junction of Park Boulevard and Keys View Road. It winds through Joshua tree woodland between monzogranite boulder piles, with signs about the desert plants. The NPS lists 0.4 mile and 20 ft of gain.","anchors":[[-4066,-3933,4268,0.0],[-4003,-4013,4270,0.021],[-3970,-4116,4274,0.042],[-3920,-4209,4277,0.062],[-3860,-4291,4280,0.082],[-3815,-4390,4284,0.105],[-3752,-4469,4284,0.124],[-3620,-4510,4284,0.152],[-3457,-4495,4282,0.183],[-3428,-4437,4284,0.203],[-3409,-4332,4288,0.224],[-3433,-4233,4291,0.245],[-3501,-4147,4291,0.267],[-3616,-4056,4286,0.295],[-3715,-4039,4282,0.314],[-3827,-4036,4277,0.336],[-3923,-3996,4273,0.357],[-3985,-3920,4270,0.376],[-4066,-3933,4268,0.393]]},
+ {"id":"B","name":"Ryan Ranch Trail","short":"Ryan Ranch","official":1.0,"unit":"round trip","route":"Out and back","time":"About 1 hr","level":"Easy","color":"--tB","desc":"An easy walk across Joshua tree flats to the adobe ruins of Ryan Ranch, the homestead that supplied water to the Lost Horse Mine. The NPS lists 1 mile round trip and 135 ft of gain. A shorter spur comes in from Ryan Campground.","anchors":[[-1176,-4029,4309,0.0],[-1087,-4143,4311,0.027],[-983,-4276,4313,0.059],[-831,-4462,4316,0.105],[-695,-4692,4320,0.156],[-579,-4807,4324,0.186],[-519,-4959,4328,0.217],[-467,-5058,4331,0.238],[-463,-5168,4335,0.259],[-482,-5372,4341,0.298],[-454,-5496,4347,0.322],[-400,-5589,4349,0.343],[-317,-5700,4352,0.369],[-218,-5804,4354,0.396],[-91,-5874,4357,0.424],[129,-5983,4363,0.47],[265,-5882,4367,0.506],[129,-5983,4363,0.542],[-91,-5874,4357,0.588],[-218,-5804,4354,0.616],[-317,-5700,4352,0.643],[-400,-5589,4349,0.669],[-454,-5496,4347,0.69],[-482,-5372,4341,0.714],[-463,-5168,4335,0.753],[-467,-5058,4331,0.774],[-519,-4959,4328,0.795],[-579,-4807,4324,0.826],[-695,-4692,4320,0.856],[-831,-4462,4316,0.907],[-983,-4276,4313,0.953],[-1087,-4143,4311,0.985],[-1176,-4029,4309,1.012]]},
+ {"id":"C","name":"Ryan Mountain Trail","short":"Ryan Mountain","official":3.0,"unit":"round trip","route":"Out and back","time":"1.5–2.5 hr","level":"Strenuous","color":"--tC","desc":"One of the most popular hikes in the park: 1.5 miles each way and 1,050 ft of climbing on a narrow trail with many stone steps, to a 5,457-ft summit with one of the best 360-degree views in Joshua Tree. Little shade. The NPS does not recommend it in summer heat.","anchors":[[4246,928,4404,0.0],[4269,788,4413,0.027],[4271,679,4425,0.048],[4293,452,4442,0.091],[4356,276,4460,0.126],[4407,152,4495,0.152],[4443,39,4514,0.175],[4388,-50,4544,0.195],[4339,-135,4571,0.215],[4279,-212,4594,0.235],[4243,-304,4619,0.255],[4203,-401,4657,0.275],[4127,-588,4679,0.314],[4003,-638,4704,0.341],[3954,-733,4712,0.362],[3879,-846,4720,0.388],[3937,-957,4746,0.413],[4106,-1022,4756,0.448],[4204,-1084,4780,0.47],[4290,-1160,4794,0.492],[4361,-1294,4834,0.521],[4464,-1396,4860,0.548],[4544,-1493,4887,0.572],[4631,-1622,4912,0.602],[4561,-1739,4945,0.63],[4491,-1865,4958,0.659],[4502,-1973,4971,0.679],[4565,-2064,4985,0.7],[4580,-2195,5014,0.726],[4499,-2255,5025,0.745],[4487,-2382,5035,0.77],[4490,-2502,5053,0.793],[4559,-2626,5070,0.82],[4627,-2750,5106,0.847],[4705,-2816,5123,0.868],[4789,-2877,5154,0.889],[4834,-3016,5173,0.917],[4845,-3147,5187,0.942],[4853,-3266,5200,0.964],[4817,-3383,5236,0.988],[4760,-3467,5260,1.007],[4786,-3560,5292,1.026],[4860,-3670,5314,1.052],[5022,-3723,5328,1.086],[5123,-3752,5333,1.106],[5164,-3843,5339,1.126],[5119,-3936,5344,1.145],[5029,-3888,5356,1.166],[4941,-3940,5372,1.186],[4848,-4011,5391,1.209],[4795,-4131,5406,1.234],[4718,-4297,5421,1.268],[4645,-4381,5438,1.29],[4631,-4513,5450,1.316],[4645,-4613,5455,1.336],[4665,-4717,5464,1.356],[4689,-4839,5467,1.38],[4652,-4973,5465,1.406],[4689,-4839,5467,1.432],[4665,-4717,5464,1.456],[4645,-4613,5455,1.476],[4631,-4513,5450,1.496],[4645,-4381,5438,1.522],[4718,-4297,5421,1.544],[4795,-4131,5406,1.578],[4848,-4011,5391,1.603],[4941,-3940,5372,1.626],[5029,-3888,5356,1.646],[5119,-3936,5344,1.667],[5164,-3843,5339,1.686],[5123,-3752,5333,1.706],[5022,-3723,5328,1.726],[4860,-3670,5314,1.76],[4786,-3560,5292,1.786],[4760,-3467,5260,1.805],[4817,-3383,5236,1.824],[4853,-3266,5200,1.848],[4845,-3147,5187,1.87],[4834,-3016,5173,1.895],[4789,-2877,5154,1.923],[4705,-2816,5123,1.944],[4627,-2750,5106,1.965],[4559,-2626,5070,1.992],[4490,-2502,5053,2.019],[4487,-2382,5035,2.042],[4499,-2255,5025,2.067],[4580,-2195,5014,2.086],[4565,-2064,4985,2.112],[4502,-1973,4971,2.133],[4491,-1865,4958,2.153],[4561,-1739,4945,2.182],[4631,-1622,4912,2.21],[4544,-1493,4887,2.24],[4464,-1396,4860,2.264],[4361,-1294,4834,2.291],[4290,-1160,4794,2.32],[4204,-1084,4780,2.342],[4106,-1022,4756,2.364],[3937,-957,4746,2.399],[3879,-846,4720,2.424],[3954,-733,4712,2.45],[4003,-638,4704,2.471],[4127,-588,4679,2.498],[4203,-401,4657,2.537],[4243,-304,4619,2.557],[4279,-212,4594,2.577],[4339,-135,4571,2.597],[4388,-50,4544,2.617],[4443,39,4514,2.637],[4407,152,4495,2.66],[4356,276,4460,2.686],[4293,452,4442,2.721],[4271,679,4425,2.764],[4269,788,4413,2.785],[4246,928,4404,2.812]]}];
+const STOPS=[{"id":"A1","trails":["A"],"x":-4066,"n":-3933,"name":"Cap Rock","desc":"The trailhead at the junction of Park Boulevard and Keys View Road, beside Cap Rock, a monzogranite pile topped by a flat slab like the bill of a cap. Parking, picnic tables with grills and a vault toilet; no water."},
+ {"id":"A2","trails":["A"],"x":-3752,"n":-4469,"name":"Plant signs","desc":"The loop is hard-packed sand, flat but loose in places, with signs naming the plants: Joshua trees, Mojave yucca, silver cholla, desert almond and desert sage among them."},
+ {"id":"A3","trails":["A"],"x":-3418,"n":-4265,"name":"Boulder piles","desc":"The path winds between big rounded piles of monzogranite. In a few spots boulders overhang the trail. The loop returns to the parking lot."},
+ {"id":"B1","trails":["B"],"x":-1176,"n":-4029,"name":"Ryan Ranch Trail","desc":"The trail leaves Park Boulevard just east of the Ryan Campground entrance and follows a sandy path south across the flats toward the base of Ryan Mountain."},
+ {"id":"B2","trails":["B"],"x":-42,"n":-5900,"name":"Campground trail junction","desc":"The trail from Ryan Campground joins from the right. Keep left for the ranch, a short way on."},
+ {"id":"B3","trails":["B"],"x":310,"n":-5847,"name":"Ryan Ranch","desc":"The adobe ruins of the ranch the Ryan brothers, Jepp and Tom, built in the 1890s by a spring that fed the Lost Horse Mine; they pumped water about 3.5 miles to the mine. The house burned in 1978. Walls, a covered well, an old windmill and graves remain. Look only; do not climb on the walls. Return the same way."},
+ {"id":"C1","trails":["C"],"x":4246,"n":928,"name":"Ryan Mountain Trailhead","desc":"A large parking area on Park Boulevard between Sheep Pass and Ryan Campground, with restrooms. It fills early on busy days. The trail starts climbing right away, past two big boulder piles."},
+ {"id":"C2","trails":["C"],"x":4406,"n":-39,"name":"Sheep Pass Connector","desc":"About 0.2 mile up, the connector trail from Sheep Pass Campground joins from the left. Stay right; the climb gets steeper from here, much of it on stone steps."},
+ {"id":"C3","trails":["C"],"x":4106,"n":-1022,"name":"Wonderland view","desc":"The trail wraps around the craggy northwest corner of the mountain, with views back over Hidden Valley and the Wonderland of Rocks."},
+ {"id":"C4","trails":["C"],"x":4808,"n":-2945,"name":"Saddle","desc":"At about 0.9 mile the trail crosses a saddle, a good place for a breather. Above it there are fewer steps and the grade eases near the top."},
+ {"id":"C5","trails":["C"],"x":4619,"n":-5047,"name":"Ryan Mountain summit","desc":"The 5,457-ft top, about 1,050 ft above the trailhead, with a summit sign and a large rock cairn. The view takes in Lost Horse, Queen and Pleasant valleys and the Pinto Basin, and on clear days Mount San Jacinto and San Gorgonio. Often windy. Return the same way."}];
+const ORDER={"A":["A1","A2","A3"],"B":["B1","B2","B3"],"C":["C1","C2","C3","C4","C5"]};
+const SPECIES={
+ jt_joshua:{name:"Joshua tree",latin:"Yucca brevifolia",color:"#EDEBCF",shape:"yucca",bloom:[2,3,4],sum:"The park’s namesake, a tree-sized yucca with shaggy trunks and clusters of stiff, spiky leaves. In spring some branch tips carry heavy clusters of creamy flowers, pollinated only by the yucca moth.",rule:(d,e,g,s)=>g<0.4},
+ jt_mojyucca:{name:"Mojave yucca",latin:"Yucca schidigera",color:"#F3EFDF",shape:"yucca",bloom:[2,3],sum:"A shorter, shrubby yucca with long, sharp leaves and cream flower clusters in late winter, also pollinated by yucca moths.",rule:(d,e,g,s)=>g<0.6},
+ jt_silvercholla:{name:"Silver cholla",latin:"Cylindropuntia echinocarpa",color:"#D6CB5A",shape:"spike",bloom:[4,5],sum:"A branching cactus covered in silvery spines, with greenish-yellow flowers in April and May. Like other cacti it makes food in its stems rather than leaves.",rule:(d,e,g,s)=>g<0.6},
+ jt_almond:{name:"Desert almond",latin:"Prunus fasciculata",color:"#F6EAD8",shape:"dome",bloom:[2,3],sum:"A twiggy shrub related to cherries and almonds, with small white flowers in February and March and fuzzy fruit after. It drops its leaves in drought.",rule:(d,e,g,s)=>g<0.6},
+ jt_dorrsage:{name:"Desert sage",latin:"Salvia dorrii",color:"#6E5BB5",shape:"spike",bloom:[5,6],sum:"An aromatic silvery shrub of the mint family with dark purple-blue flowers in May and June.",rule:(d,e,g,s)=>g<0.7},
+ jt_woollymarigold:{name:"Woolly marigold",latin:"Baileya pleniradiata",color:"#F4C430",shape:"dome",bloom:[3,4,5,6],sum:"Bright yellow flower heads on stems and leaves covered in fine woolly hair, from March into June.",rule:(d,e,g,s)=>g<0.35}
+};
+const FLORA={"A":["jt_joshua","jt_mojyucca","jt_silvercholla","jt_almond","jt_dorrsage","jt_woollymarigold"],"B":["jt_joshua","jt_silvercholla","jt_mojyucca","jt_woollymarigold"],"C":["jt_joshua","jt_mojyucca","jt_almond","jt_dorrsage"]};
+const WILD={
+ bighorn:{name:"Desert bighorn sheep",color:"#9C7A55",sum:"Desert bighorn live on Ryan Mountain; the NPS asks hikers to watch for them on the way up and down. Tan with a white rump, rams with heavy curled horns. Never approach them."},
+ turtle:{name:"Mojave desert tortoise",color:"#5E6B3A",sum:"A threatened tortoise that lives mostly in the park’s lower creosote flats and spends much of the year in burrows. Rarely seen up here; if you do see one, give it space and never pick it up."},
+ squirrel:{name:"White-tailed antelope squirrel",color:"#9A9A96",sum:"A small ground squirrel with a white side stripe that runs with its tail curled over its back, even in the heat, among rocks and shrubs."},
+ quail:{name:"Gambel’s quail",color:"#7D8A9A",sum:"A plump desert quail with a forward-curling black topknot. Small coveys run between the shrubs on the flats around Cap Rock and Ryan Ranch."},
+ snake:{name:"Speckled rattlesnake",color:"#B49867",sum:"A pale, speckled rattlesnake of rocky slopes and boulder piles, colored like the granite. Venomous; watch where you put your hands and feet."},
+ coyote:{name:"Coyote",color:"#A88B6A",sum:"A lean gray-tan wild dog, heard at dusk and sometimes seen crossing the flats. Do not feed it."},
+ hawk:{name:"Red-tailed hawk",color:"#A8572F",sum:"Soars over the valleys and perches on Joshua trees, hunting jackrabbits and ground squirrels."},
+ raven:{name:"Common raven",color:"#262626",sum:"Big black birds that ride the updrafts over Ryan Mountain and wait near parking lots for scraps."}
+};
+
+const PHOTOS={"stop":{"A1":[{"f":"../photos/pl_ryan_caprock_0.jpg","by":"Farragutful","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Cap_Rock_-_Joshua_Tree_National_Park_01.jpg","t":"Cap Rock - Joshua Tree National Park 01"},{"f":"../photos/pl_ryan_caprock_1.jpg","by":"Farragutful","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Cap_Rock_-_Joshua_Tree_National_Park_02.jpg","t":"Cap Rock - Joshua Tree National Park 02"}],"B1":[{"f":"../photos/pl_ryan_ranch_0.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Hiking_the_Ryan_Ranch_Trail_(31279281665).jpg","t":"Hiking the Ryan Ranch Trail (31279281665)"},{"f":"../photos/pl_ryan_ranch_4.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Trail_from_Ryan_Campground_to_Ryan_Ranch_(25306549550).jpg","t":"Trail from Ryan Campground to Ryan Ranch (25306549550)"}],"B2":[{"f":"../photos/pl_ryan_ranch_2.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Ryan_Campground;_Trail_to_Ryan_Ranch_(17572641051).jpg","t":"Ryan Campground; Trail to Ryan Ranch (17572641051)"}],"B3":[{"f":"../photos/pl_ryan_ranch_1.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Ryan_Ranch_and_trail_(25483538532).jpg","t":"Ryan Ranch and trail (25483538532)"}],"C1":[{"f":"../photos/pl_ryan_rmt_2.jpg","by":"daveynin from United States. Cropped and color-corrected by Daniel Case prior to","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Yucca_pines_near_Ryan_Mountain_Trail,_Joshua_Tree_National_Park,_CA.jpg","t":"Yucca pines near Ryan Mountain Trail, Joshua Tree National Park, CA"}],"C3":[{"f":"../photos/pl_ryan_rmt_4.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:View_from_Ryan_Mountain_Trail_-_12489681453.jpg","t":"View from Ryan Mountain Trail - 12489681453"}],"C5":[{"f":"../photos/pl_ryan_sum_4.jpg","by":"Bernard Gagnon","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Ryan_Mountain_Trail_04.jpg","t":"Ryan Mountain Trail 04"},{"f":"../photos/pl_ryan_sum_1.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Ryan_Mountain_Summit_(27234123579).jpg","t":"Ryan Mountain Summit (27234123579)"},{"f":"../photos/pl_ryan_sum_3.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Summit_of_Ryan_Mountain_(25141446408).jpg","t":"Summit of Ryan Mountain (25141446408)"}]},"animal":{"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_wtantsquirrel_1.jpg","by":"Juan Cruzado Cortés","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Ammospermophilus_leucurus_ssp._extimus.jpg","t":"Ammospermophilus leucurus ssp. extimus"},{"f":"../photos/sp_wtantsquirrel_3.jpg","by":"Marshal Hedin from San Diego","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:White-tailed_antelope_squirrel_(Ammospermophilus_leucurus)_(26298424863).jpg","t":"White-tailed antelope squirrel (Ammospermophilus leucurus) (26298424863)"}],"quail":[{"f":"../photos/sp_gambelquail_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/12938064105","t":"Gambel's quail (Callipepla gambelii)"},{"f":"../photos/sp_gambelquail_1.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/52419057373","t":"Gambel's quail"}],"snake":[{"f":"../photos/sp_speckledrattle_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14266785529","t":"Speckled rattlesnake (Crotalus mitchellii)"},{"f":"../photos/sp_speckledrattle_1.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/21269881154","t":"Speckled Rattlesnake (Crotalus mitchellii)"}],"hawk":[{"f":"../photos/sp_redtail_1.jpg","by":"Elwood P. Dowd","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Buteo_jamaicensis_in_flight,_Grand_Canyon_NP,_Arizona,_USA.png","t":"Buteo jamaicensis in flight, Grand Canyon NP, Arizona, USA"},{"f":"../photos/sp_redtail_2.jpg","by":"Brent Myers","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Red-tailed_Hawk_near_Tucson.jpg","t":"Red-tailed Hawk near Tucson"}],"raven":[{"f":"../photos/sp_sm_raven_0.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"},{"f":"../photos/sp_sm_raven_3.jpg","by":"USFWS Mountain Prairie","lic":"BY 2.0","src":"https://www.flickr.com/photos/51986662@N05/16741673188","t":"Common Raven on Seedskadee National Wildlife Refuge"}],"bighorn":[{"f":"../photos/sp_bighorn_dl0.jpg","by":"“Caveman Chuck” Coker","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/28402283@N07/3048899742","t":"Desert Bighorn Sheep (Ovis canadensis nelsoni)"},{"f":"../photos/sp_bighorn_dl1.jpg","by":"gainesp2003","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/33403047@N00/4295244237","t":"Desert Bighorn"}],"turtle":[{"f":"../photos/sp_tortoise_0.jpg","by":"Tigerhawkvok","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Gopherus_agassizii.jpg","t":"Gopherus agassizii"},{"f":"../photos/sp_tortoise_3.jpg","by":"Robb Hannawacker (Joshua Tree National Park)","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Desert_tortoise_(Gopherus_agassizii).jpg","t":"Desert tortoise (Gopherus agassizii)"},{"f":"../photos/sp_tortoise_2.jpg","by":"Kurtab123","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Desert_Tortoise_(Gopherus_agassizii)2.jpg","t":"Desert Tortoise (Gopherus agassizii)2"}]},"flower":{"jt_joshua":[{"f":"../photos/sp_joshuatree_0.jpg","by":"Tuxyso","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Joshua_Tree_National_Park_2013.jpg","t":"Joshua Tree National Park 2013"},{"f":"../photos/sp_joshuatree_1.jpg","by":"Dietmar Rabich","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Joshua_Tree_National_Park_(California,_USA)_--_2012_--_5688.jpg","t":"Joshua Tree National Park (California, USA) -- 2012 -- 5688"},{"f":"../photos/sp_joshuatree_2.jpg","by":"Dietmar Rabich","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Joshua_Tree_National_Park_(California,_USA)_--_2012_--_5690.jpg","t":"Joshua Tree National Park (California, USA) -- 2012 -- 5690"}],"jt_mojyucca":[{"f":"../photos/sp_mojaveyucca_1.jpg","by":"Joshua Tree National Park","lic":"Public domain","src":"https://commons.wikimedia.org/wiki/File:Mojave_yucca_(Yucca_schidigera)_and_boulders_(14674249427).jpg","t":"Mojave yucca (Yucca schidigera) and boulders (14674249427)"},{"f":"../photos/sp_mojaveyucca_2.jpg","by":"homeredwardprice","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Yucca_schidigera_Mojave_Yucca_003.jpg","t":"Yucca schidigera Mojave Yucca 003"},{"f":"../photos/sp_mojaveyucca_0.jpg","by":"Stan Shebs","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Yucca_schidigera_blooming.jpg","t":"Yucca schidigera blooming"}],"jt_silvercholla":[{"f":"../photos/sp_silvercholla_1.jpg","by":"Jim Morefield from Nevada, USA","lic":"CC BY-SA 2.0","src":"https://commons.wikimedia.org/wiki/File:Silver_cholla,_Cylindropuntia_echinocarpa_(15337658968).jpg","t":"Silver cholla, Cylindropuntia echinocarpa (15337658968)"},{"f":"../photos/sp_silvercholla_0.jpg","by":"Stan Shebs","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Cylindropuntia_echinocarpa_1.jpg","t":"Cylindropuntia echinocarpa 1"},{"f":"../photos/sp_silvercholla_2.jpg","by":"ZombiUwU","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Close_up_of_Silver_Cholla_(Cylindropuntia_echinocarpa)_flower_in_bloom_in_Anza_Borrego_Desert.png","t":"Close up of Silver Cholla (Cylindropuntia echinocarpa) flower in bloom in Anza Borrego Desert"}],"jt_almond":[{"f":"../photos/sp_desertalmond_0.jpg","by":"Stan Shebs","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Prunus_fasciculata_4.jpg","t":"Prunus fasciculata 4"},{"f":"../photos/sp_desertalmond_2.jpg","by":"Agnieszka Kwiecień, Nova","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Prunus_fasciculata_2018-04-11_Whitney_Pass_Rd_01.jpg","t":"Prunus fasciculata 2018-04-11 Whitney Pass Rd 01"},{"f":"../photos/sp_desertalmond_1.jpg","by":"Stan Shebs","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Prunus_fasciculata_form_1.jpg","t":"Prunus fasciculata form 1"}],"jt_dorrsage":[{"f":"../photos/sp_dorrsage_0.jpg","by":"unknown","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Salvia_dorrii_4.jpg","t":"Salvia dorrii 4"},{"f":"../photos/sp_dorrsage_1.jpg","by":"Alex Abair","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Salvia_dorrii_297834949.jpg","t":"Salvia dorrii 297834949"},{"f":"../photos/sp_dorrsage_2.jpg","by":"Alex Abair","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Salvia_dorrii_297834930.jpg","t":"Salvia dorrii 297834930"}]}};
+/* ================= terrain ================= */
+const X0=-7000,X1=7600,N0=-9200,N1=3800,STEP=100;
+const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
+function hash(i,j){let h=Math.imul(i,374761393)+Math.imul(j,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return (a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v)*2-1;}
+function fbm(x,y){let s=0,a=.5,f=1;for(let o=0;o<4;o++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5;}return s;}
+function closest(pts,x,n){let bd=1e9,bf=0;for(let k=0;k<pts.length-1;k++){const a=pts[k],b=pts[k+1];const dx=b[0]-a[0],dn=b[1]-a[1];let t=((x-a[0])*dx+(n-a[1])*dn)/(dx*dx+dn*dn);t=t<0?0:t>1?1:t;const d=Math.hypot(x-(a[0]+dx*t),n-(a[1]+dn*t));if(d<bd){bd=d;bf=a[2]+(b[2]-a[2])*t;}}return {d:bd,f:bf};}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25;}
+function creekDist(x,n){let m=1e9;for(const c of CANYONS){const r=closest(c.pts,x,n);if(r.d<m)m=r.d;}return m;}
+function interpField(A,idx,cum){const known=[];A.forEach((a,i)=>{if(a[idx]!==null)known.push(i);});return A.map((a,i)=>{if(a[idx]!==null)return a[idx];const lo=known.filter(k=>k<i).pop(),hi=known.find(k=>k>i);const t=(cum[i]-cum[lo])/(cum[hi]-cum[lo]);return A[lo][idx]+(A[hi][idx]-A[lo][idx])*t;});}
+TRAILS.forEach(T=>{const A=T.anchors,cum=[0];for(let i=1;i<A.length;i++)cum.push(cum[i-1]+Math.hypot(A[i][0]-A[i-1][0],A[i][1]-A[i-1][1]));
+  const E=interpField(A,2,cum),M=interpField(A,3,cum),pts=[];
+  for(let i=0;i<A.length-1;i++){const L=cum[i+1]-cum[i],st=Math.max(1,Math.ceil(L/30));for(let s=0;s<st;s++){const t=s/st;pts.push({x:A[i][0]+(A[i+1][0]-A[i][0])*t,n:A[i][1]+(A[i+1][1]-A[i][1])*t,e:E[i]+(E[i+1]-E[i])*t,m:M[i]+(M[i+1]-M[i])*t});}}
+  const L=A.length-1;pts.push({x:A[L][0],n:A[L][1],e:E[L],m:M[L]});T.pts=pts;
+  let gain=0,hi=-1e9,lo=1e9;pts.forEach((p,i)=>{if(i&&p.e>pts[i-1].e)gain+=p.e-pts[i-1].e;hi=Math.max(hi,p.e);lo=Math.min(lo,p.e);});T.gain=gain;T.hi=hi;T.lo=lo;T.total=pts[pts.length-1].m;});
+const TR=Object.fromEntries(TRAILS.map(t=>[t.id,t]));
+const Hg=new Float32Array(NX*NN);
+const DEM_B64="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";
+{const bin=atob(DEM_B64),u8=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);const i16=new Int16Array(u8.buffer);for(let k=0;k<NX*NN;k++)Hg[k]=i16[k];}
+function H(x,n){const fi=(x-X0)/STEP,fj=(n-N0)/STEP;const i=Math.max(0,Math.min(NX-2,Math.floor(fi))),j=Math.max(0,Math.min(NN-2,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));const a=Hg[j*NX+i],b=Hg[j*NX+i+1],c=Hg[(j+1)*NX+i],d=Hg[(j+1)*NX+i+1];return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v;}
+function correct(){const R=320,CELL=400,buckets=new Map(),samples=[];
+  TRAILS.forEach(T=>T.pts.forEach((p,i)=>{if(i%2===0)samples.push({x:p.x,n:p.n,dl:p.e-H(p.x,p.n)});}));
+  samples.forEach(s=>{const k=Math.floor(s.x/CELL)+","+Math.floor(s.n/CELL);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(s);});
+  const out=new Float32Array(Hg);
+  for(let j=0;j<NN;j++)for(let i=0;i<NX;i++){const x=X0+i*STEP,n=N0+j*STEP,bx=Math.floor(x/CELL),bn=Math.floor(n/CELL);let sw=0,sd=0;
+    for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=buckets.get((bx+a)+","+(bn+b));if(!arr)continue;for(const s of arr){const d2=(s.x-x)**2+(s.n-n)**2;if(d2>4*R*R)continue;const w=Math.exp(-d2/(R*R));sw+=w;sd+=w*s.dl;}}
+    if(sw>0)out[j*NX+i]+=sd/sw*Math.min(1,sw*1.4);}
+  Hg.set(out);}
+correct();
+function distToTrail(T,x,n){let b=1e9;for(let i=0;i<T.pts.length;i+=3){const p=T.pts[i];const d=Math.hypot(p.x-x,p.n-n);if(d<b)b=d;}return b;}
+const NEAR=1150;
+function nearTrails(x,n){return TRAILS.filter(T=>distToTrail(T,x,n)<NEAR).map(T=>T.id);}
+
+/* ================= scene setup ================= */
+const canvas=$("#gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-2000,2000);
+const dirL=new THREE.DirectionalLight(0xffffff,0.5);scene.add(new THREE.AmbientLight(0xffffff,0.58),dirL,dirL.target);
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const col=h=>new THREE.Color(h);
+const LAM={};const lam=c=>LAM[c]||(LAM[c]=new THREE.MeshLambertMaterial({color:c}));
+const PHO={};const pho=c=>PHO[c]||(PHO[c]=new THREE.MeshPhongMaterial({color:c,flatShading:true,shininess:0,specular:0x000000}));
+const HULL=new THREE.MeshBasicMaterial({color:PAL.outline,side:THREE.BackSide});
+function ribbon(points,width,mat,lift){
+  const pos=[],uv=[],idx=[];let len=0;
+  for(let i=0;i<points.length;i++){const p=points[i],a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)];
+    if(i)len+=points[i].distanceTo(points[i-1]);
+    let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;tx/=L;tz/=L;const px=-tz*width/2,pz=tx*width/2;
+    pos.push(p.x+px,p.y+lift,p.z+pz,p.x-px,p.y+lift,p.z-pz);uv.push(0,len/3,1,len/3);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}}
+  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
+  return new THREE.Mesh(g,typeof mat==="string"?new THREE.MeshBasicMaterial({color:mat,side:THREE.DoubleSide}):mat);
+}
+function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new THREE.Mesh(geo,phong?pho(color):lam(color));m.position.set(x,y,z);m.scale.set(sx,sy==null?sx:sy,sz==null?sx:sz);parent.add(m);
+  if(hull){const h=new THREE.Mesh(geo,HULL);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(hull);parent.add(h);m.userData.hull=h;}return m;}
+function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
+
+/* tile & organic boundary */
+const C={x0:-6800,x1:7400,n0:-9000,n1:3600,ve:1.6};
+const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
+function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
+const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+const mask=(x,n)=>{const t=sm(Math.min((1-Math.abs((x-cx)/(w/2)))*w/2,(1-Math.abs((n-cn)/(d/2)))*d/2)/(0.2*Math.min(w,d)));return t*t*(1.6-0.6*t);};
+const cells=96,nx=Math.round(cells*w/Math.max(w,d)),nn=Math.round(cells*d/Math.max(w,d)),dx=w/nx,dn=d/nn;
+let base=1e9;for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;if(qOf(x,n)<0.9)base=Math.min(base,H(x,n));}base-=10;
+const R1=nx+1,hv=new Float32Array((nx+1)*(nn+1));
+for(let j=0;j<=nn;j++)for(let i=0;i<=nx;i++){const x=C.x0+i*dx,n=C.n0+j*dn;hv[j*R1+i]=base+(H(x,n)-base)*mask(x,n);}
+const diag=new Uint8Array(nx*nn);for(let k=0;k<diag.length;k++)diag[k]=hash(k*7+11,1519)>.5?1:0;
+function surf(x,n){const fi=(x-C.x0)/dx,fj=(n-C.n0)/dn;const i=Math.max(0,Math.min(nx-1,Math.floor(fi))),j=Math.max(0,Math.min(nn-1,Math.floor(fj)));const u=Math.min(1,Math.max(0,fi-i)),v=Math.min(1,Math.max(0,fj-j));
+  const a=hv[j*R1+i],b=hv[j*R1+i+1],c=hv[(j+1)*R1+i],e=hv[(j+1)*R1+i+1];
+  if(diag[j*nx+i])return u>=v?a+(b-a)*u+(e-b)*v:a+(c-a)*v+(e-c)*u;
+  return u+v<=1?a+(b-a)*u+(c-a)*v:e+(c-e)*(1-u)+(b-e)*(1-v);}
+const Wv=(x,n,e)=>new THREE.Vector3((x-cx)*S,(e-base)*S*VE,-(n-cn)*S);
+const G=(x,n,lift=0)=>Wv(x,n,surf(x,n)).add(new THREE.Vector3(0,lift,0));
+const world=new THREE.Group();scene.add(world);
+const topoGroup=new THREE.Group();world.add(topoGroup);const treeGroup=new THREE.Group();world.add(treeGroup);const trail3D=new THREE.Group();trail3D.visible=false;world.add(trail3D);
+const BAND=0,BASEH=0.45;const baseGroup=new THREE.Group();
+const boundary=[{x:C.x0,n:C.n0},{x:C.x1,n:C.n0},{x:C.x1,n:C.n1},{x:C.x0,n:C.n1}];
+let MAXY=0;
+
+// terrain + contours
+(function(){
+  const pos=[],cols=[],r=rng(97),tris=[];
+  function tri(A,B,Q){
+    
+    const ux=B[0]-A[0],uy=B[2]-A[2],uz=B[1]-A[1],vx=Q[0]-A[0],vy=Q[2]-A[2],vz=Q[1]-A[1];
+    let Nx=uy*vz-uz*vy,Ny=uz*vx-ux*vz,Nz=ux*vy-uy*vx;if(Ny<0){Nx=-Nx;Ny=-Ny;Nz=-Nz;}
+    const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
+    const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
+    let c;
+    if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
+    else if(me>4700.0&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
+    const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
+    const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
+    W3.forEach(p=>{pos.push(p.x,p.y,p.z);cols.push(c.r,c.g,c.b);MAXY=Math.max(MAXY,p.y);});
+    tris.push([A,B,Q]);
+  }
+  for(let j=0;j<nn;j++)for(let i=0;i<nx;i++){const P=(ii,jj)=>[C.x0+ii*dx,C.n0+jj*dn,hv[jj*R1+ii]];const a=P(i,j),b=P(i+1,j),c=P(i,j+1),e=P(i+1,j+1);
+    if(diag[j*nx+i]){tri(a,b,e);tri(a,e,c);}else{tri(a,b,c);tri(b,e,c);}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));tg.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));tg.computeVertexNormals();
+  topoGroup.add(new THREE.Mesh(tg,new THREE.MeshLambertMaterial({vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+  topoGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(tg,26),new THREE.LineBasicMaterial({color:PAL.terrLine,transparent:true,opacity:.16})));
+  // contour lines every 100 ft, heavier every 500 ft
+  const minor=[],major=[];
+  tris.forEach(T=>{const hs=T.map(v=>v[2]);const lo=Math.min(...hs),hi=Math.max(...hs);if(hi-lo<1)return;
+    for(let L=Math.ceil((lo-base+1)/100)*100+base;L<hi;L+=100){if(L-base<40)continue;const pts=[];
+      for(let k=0;k<3;k++){const P=T[k],Q=T[(k+1)%3];if((P[2]-L)*(Q[2]-L)<0){const t=(L-P[2])/(Q[2]-P[2]);pts.push(Wv(P[0]+(Q[0]-P[0])*t,P[1]+(Q[1]-P[1])*t,L).add(new THREE.Vector3(0,0.06,0)));}}
+      if(pts.length===2){const arr=Math.round(L-base)%500<1||Math.round(L-base)%500>499?major:minor;arr.push(pts[0].x,pts[0].y,pts[0].z,pts[1].x,pts[1].y,pts[1].z);}}});
+  const mk=(arr,op,c)=>{const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:op}));};
+  topoGroup.add(mk(minor,.38,PAL.terrLine),mk(major,.75,"#3F6A5D"));
+  // base: one thin sheet of liquid glass
+  const shape=new THREE.Shape();boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Y=(b.n-cn)*S;i?shape.lineTo(X,Y):shape.moveTo(X,Y);});shape.closePath();
+  const ex=(depth)=>new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1}).rotateX(-Math.PI/2);
+  const GL=BASEH;const glassG=ex(GL);
+  // thin liquid-glass base: clear body, bright rim, faint mint edge for definition
+  const gMat=(o)=>new THREE.MeshPhongMaterial({color:0xFFFFFF,emissive:0xEAF6F1,emissiveIntensity:.35,specular:0xffffff,shininess:160,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+  const glassM=new THREE.Mesh(glassG,[gMat(.42),gMat(.68)]);glassM.scale.set(1.025,1,1.025);
+  glassM.position.y=-GL-0.03;glassM.renderOrder=3;baseGroup.add(glassM);
+  const gE=new THREE.EdgesGeometry(glassG,35);
+  const rim=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}));rim.position.copy(glassM.position);rim.scale.copy(glassM.scale);rim.renderOrder=4;baseGroup.add(rim);
+  const rim2=new THREE.LineSegments(gE,new THREE.LineBasicMaterial({color:0x6FAE99,transparent:true,opacity:.55}));rim2.position.copy(glassM.position);rim2.scale.copy(glassM.scale);rim2.position.y-=0.02;baseGroup.add(rim2);
+  world.add(baseGroup);
+})();
+
+// creeks with flowing texture
+function stripeTex(bg,stroke,w0,h0,n,seed,len){const c=document.createElement("canvas");c.width=w0;c.height=h0;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,w0,h0);const r=rng(seed);x.fillStyle=stroke;
+  for(let i=0;i<n;i++){const px=r()*w0,py=r()*h0,l=len*(0.5+r()),wd=1.5+r()*2.5;x.globalAlpha=0.55+r()*0.45;x.beginPath();x.ellipse(px,py,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py+h0,wd,l,0,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(px,py-h0,wd,l,0,0,Math.PI*2);x.fill();}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+const creekTex=stripeTex(PAL.water,"#FFFFFF",32,128,10,5,9);
+const creekMat=new THREE.MeshBasicMaterial({map:creekTex,side:THREE.DoubleSide});
+CANYONS.forEach(cy=>{const pts=[];let done=false;
+  for(let k=0;k<cy.pts.length-1&&!done;k++){const a=cy.pts[k],b=cy.pts[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),st=Math.ceil(L/(dx/3));
+    for(let s=0;s<st;s++){const t=s/st,x=a[0]+(b[0]-a[0])*t,n=a[1]+(b[1]-a[1])*t;if(qOf(x,n)>0.95){if(pts.length>1){done=true;break;}continue;}pts.push(G(x,n));}}
+  if(pts.length<2)return;const wd=cy.minor?0.5:0.85;world.add(ribbon(pts,wd+0.4,PAL.waterEdge,0.2));world.add(ribbon(pts,wd,creekMat,0.26));});
+
+// trails
+const trailPts=[],trailMesh={};
+
+
+/* elevated trail pipes */
+const PIPE={lift:0.6,r:0.15,edge:0};
+function pipeCurve(pts,lift){const P=[];for(let i=0;i<pts.length;i+=1){const p=pts[i];let y=p.y;for(let k=-2;k<=2;k++){const q=pts[Math.max(0,Math.min(pts.length-1,i+k))];y=Math.max(y,q.y);}P.push(new THREE.Vector3(p.x,y+lift,p.z));}
+  return new THREE.CatmullRomCurve3(P,false,"centripetal");}
+function pipe(pts,r,mat,lift,edgeR,edgeMat){const g=new THREE.Group(),cu=pipeCurve(pts,lift),n=Math.max(8,pts.length*3);
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(cu,n,r,10,false),mat));
+  if(edgeR)g.add(new THREE.Mesh(new THREE.TubeGeometry(cu,n,edgeR,10,false),edgeMat));
+  [0,1].forEach(e=>{const t=e?cu.getPoint(1):cu.getPoint(0);const s=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),mat);s.position.copy(t);g.add(s);});
+  return g;}
+const PIPE_EDGE=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.BackSide});
+/* metro lanes: shared stretches are drawn side by side (v2: smoothed, out-and-back drawn once) */
+function METRO(){const lane=0.46,th=0.8,R=4,SP=0.6;
+  TRAILS.forEach(T=>{const W=T.world;const cum=[0];for(let i=1;i<W.length;i++)cum.push(cum[i-1]+Math.hypot(W[i].x-W[i-1].x,W[i].z-W[i-1].z));
+    const L=cum[cum.length-1];let P=[];let j=0;for(let s=0;s<=L+1e-6;s+=SP){while(j<W.length-2&&cum[j+1]<s)j++;const t=Math.min(1,Math.max(0,(s-cum[j])/((cum[j+1]-cum[j])||1)));P.push(new THREE.Vector3().lerpVectors(W[j],W[j+1]||W[j],t));}
+    if(P.length<2)P=W.map(p=>p.clone());
+    for(let pass=0;pass<3;pass++){const Q=P.map(p=>p.clone());for(let i=1;i<P.length-1;i++){Q[i].x=(P[i-1].x+2*P[i].x+P[i+1].x)/4;Q[i].z=(P[i-1].z+2*P[i].z+P[i+1].z)/4;Q[i].y=Math.max(P[i].y,(P[i-1].y+P[i+1].y)/2);}P=Q;}
+    const n=P.length;if(n>8&&Math.hypot(P[0].x-P[n-1].x,P[0].z-P[n-1].z)<3){const half=n>>1;let hit=0,tot=0;
+      for(let i=0;i<half;i+=2){tot++;let m=1e9;for(let k=half;k<n;k+=2){const d=(P[i].x-P[k].x)**2+(P[i].z-P[k].z)**2;if(d<m)m=d;}if(m<1.44)hit++;}
+      if(tot&&hit/tot>0.75){let kk=0,md=-1;for(let i=0;i<n;i++){const d=(P[i].x-P[0].x)**2+(P[i].z-P[0].z)**2;if(d>md){md=d;kk=i;}}P=P.slice(0,kk+1);}}
+    T.base=P;});
+  const grid=new Map(),key=(x,z)=>Math.floor(x/th)+","+Math.floor(z/th);
+  TRAILS.forEach((T,ti)=>{const W=T.base,n=W.length;T._perp=W.map((p,i)=>{const a=W[Math.max(0,i-3)],b=W[Math.min(n-1,i+3)];let tx=b.x-a.x,tz=b.z-a.z;const L=Math.hypot(tx,tz)||1;return [-tz/L,tx/L];});
+    W.forEach((p,i)=>{const k=key(p.x,p.z);(grid.get(k)||grid.set(k,[]).get(k)).push([ti,i]);});});
+  TRAILS.forEach((T,ti)=>{const W=T.base,n=W.length,dx=new Float32Array(n),dz=new Float32Array(n);
+    for(let i=0;i<n;i++){const p=W[i],gx=Math.floor(p.x/th),gz=Math.floor(p.z/th),near={};near[ti]=[i,0];
+      for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=grid.get((gx+a)+","+(gz+b));if(!arr)continue;
+        for(const [t,j] of arr){if(t===ti)continue;const q=TRAILS[t].base[j],d=(q.x-p.x)**2+(q.z-p.z)**2;if(d<th*th&&(!near[t]||d<near[t][1]))near[t]=[j,d];}}
+      const g=Object.keys(near).map(Number).sort((a,b)=>a-b);if(g.length<2)continue;
+      const ref=g[0],rp=ref===ti?T._perp[i]:TRAILS[ref]._perp[near[ref][0]];
+      const o=(g.indexOf(ti)-(g.length-1)/2)*lane;dx[i]=rp[0]*o;dz[i]=rp[1]*o;}
+    T.draw=W.map((p,i)=>{let sx=0,sz=0,c=0;for(let k=-R;k<=R;k++){const j=i+k;if(j>=0&&j<n){sx+=dx[j];sz+=dz[j];c++;}}return new THREE.Vector3(p.x+sx/c,p.y,p.z+sz/c);});});}
+TRAILS.forEach(T=>{const pts=T.pts.map(p=>{const v=G(p.x,p.n);trailPts.push(v);return v;});T.world=pts;});METRO();TRAILS.forEach(T=>{const pts=T.draw;
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(pipe(pts,PIPE.r,new THREE.MeshLambertMaterial({color:c,emissive:c,emissiveIntensity:0.18}),PIPE.lift,PIPE.edge,PIPE_EDGE),ribbon(pts,0.42,new THREE.MeshBasicMaterial({color:0x1D2B26,transparent:true,opacity:0.13,side:THREE.DoubleSide,depthWrite:false}),0.06));
+  const dim=new THREE.Group();dim.add(pipe(pts,0.11,new THREE.MeshLambertMaterial({color:0xF2ECE0}),PIPE.lift*0.8,0,null));dim.visible=false;
+  world.add(bright,dim);trailMesh[T.id]={bright,dim};});
+TRAILS.forEach(T=>{const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();const g=new THREE.Group();
+  const pts=(T.draw||T.world).filter((p,i)=>i%2===0);const pos=[],idx=[];pts.forEach((p,i)=>{pos.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);if(i){const k=i*2;idx.push(k-2,k-1,k,k-1,k+1,k);}});
+  const cg=new THREE.BufferGeometry();cg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);
+  g.add(new THREE.Mesh(cg,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})));
+  const ln=[];pts.forEach((p,i)=>{if(i%6===0)ln.push(p.x,p.y+0.35,p.z,p.x,-0.02,p.z);});const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(ln,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55})));
+  const foot=pts.map(p=>new THREE.Vector3(p.x,0.02,p.z));g.add(ribbon(foot,0.5,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35,side:THREE.DoubleSide}),0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.4,0)))),pts.length*2,0.32,6,false),new THREE.MeshLambertMaterial({color:c})));
+  trail3D.add(g);T.g3=g;});
+const TG=new Map(),tgk=(x,z)=>Math.floor(x/1.6)+","+Math.floor(z/1.6);trailPts.forEach(p=>{const k=tgk(p.x,p.z);(TG.get(k)||TG.set(k,[]).get(k)).push(p);});
+const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const arr=TG.get((i+a)+","+(j+b));if(!arr)continue;for(const p of arr){const ddx=p.x-v.x,ddz=p.z-v.z;if(ddx*ddx+ddz*ddz<2.2)return true;}}return false;};
+
+// trees
+(function(){
+  const types={
+    oak:{geo:new THREE.IcosahedronGeometry(0.8,1),color:PAL.oak,y:1.3,trunk:true},
+    syc:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.sycamore,y:1.2,trunk:true},
+    gold:{geo:new THREE.IcosahedronGeometry(0.72,1),color:PAL.gold,y:1.2,trunk:true},
+    conifer:{geo:new THREE.ConeGeometry(0.6,2.4,7).translate(0,1.45,0),color:PAL.conifer,y:0,trunk:false},
+    shrub:{geo:new THREE.IcosahedronGeometry(0.4,0).scale(1,0.7,1),color:PAL.shrub,y:0.22,trunk:false}};
+  const inst={};Object.keys(types).forEach(k=>inst[k]=[]);
+  const tr=rng(907);
+  for(let t=0;t<9000;t++){
+    const x=C.x0+tr()*w,n=C.n0+tr()*d,q=qOf(x,n);if(q>0.93)continue;
+    const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
+    const cd=creekDist(x,n);if(cd*S<0.8)continue;
+    const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
+    if(mk<0.25){type=null;}
+    else if(g>0.9)type=null;
+    else if(e>5000){type=tr()<.35?"conifer":"shrub";p=0.012+cl*.012;}
+    else{type="shrub";p=0.008+cl*.01;}
+    if(!type||tr()>p||inst[type].length>420)continue;
+    const v=Wv(x,n,e);if(nearTrail(v))continue;
+    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+  }
+  const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
+  Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
+    const mesh=new THREE.InstancedMesh(T.geo,pho(T.color),list.length),hull=new THREE.InstancedMesh(T.geo,HULL,list.length);
+    list.forEach((it,i)=>{q.setFromAxisAngle(up,it.ry);pv.set(it.v.x,it.v.y+T.y*it.s,it.v.z);sc.setScalar(it.s);m4.compose(pv,q,sc);mesh.setMatrixAt(i,m4);sc.setScalar(it.s*1.12);m4.compose(pv,q,sc);hull.setMatrixAt(i,m4);if(T.trunk)trunks.push({v:it.v,s:it.s,h:T.y});});
+    treeGroup.add(hull,mesh);});
+  const tm=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.08,0.11,1,5).translate(0,0.5,0),lam(PAL.trunk),trunks.length);q.identity();
+  trunks.forEach((t,i)=>{pv.set(t.v.x,t.v.y,t.v.z);sc.set(t.s,t.h*t.s,t.s);m4.compose(pv,q,sc);tm.setMatrixAt(i,m4);});treeGroup.add(tm);
+})();
+
+// boulders
+(function(){const r=rng(41),g=new THREE.IcosahedronGeometry(0.35,0),list=[];
+  CANYONS.forEach(cy=>{for(let k=0;k<cy.pts.length-1;k++){const a=cy.pts[k],b=cy.pts[k+1];for(let s=0;s<6;s++){const t=r(),x=a[0]+(b[0]-a[0])*t+(r()-.5)*160,n=a[1]+(b[1]-a[1])*t+(r()-.5)*160;if(qOf(x,n)>0.85)continue;list.push(G(x,n,0.15));}}});
+  const m=new THREE.InstancedMesh(g,pho(PAL.stone),list.length),h=new THREE.InstancedMesh(g,HULL,list.length),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  list.forEach((v,i)=>{const s=0.7+r()*0.8;q.setFromEuler(new THREE.Euler(r()*3,r()*3,r()*3));sc.set(s,s*.7,s);m4.compose(v,q,sc);m.setMatrixAt(i,m4);sc.multiplyScalar(1.12);m4.compose(v,q,sc);h.setMatrixAt(i,m4);});treeGroup.add(h,m);})();
+
+/* ================= flowers ================= */
+const FGEO={stem:new THREE.CylinderGeometry(0.03,0.03,1,4).translate(0,0.5,0),
+  tube:new THREE.ConeGeometry(0.09,0.34,5).translate(0,0.17,0),cup:new THREE.ConeGeometry(0.2,0.22,6).rotateX(Math.PI).translate(0,0.11,0),
+  dome:new THREE.SphereGeometry(0.2,6,4).scale(1,0.6,1),spike:new THREE.ConeGeometry(0.1,0.55,5).translate(0,0.28,0),
+  berry:new THREE.IcosahedronGeometry(0.075,0),bush:new THREE.IcosahedronGeometry(0.38,0).scale(1,.8,1),frond:new THREE.ConeGeometry(0.07,0.9,3).translate(0,0.45,0),
+  yuccaLeaf:new THREE.ConeGeometry(0.06,0.55,3).translate(0,0.27,0),pad:new THREE.SphereGeometry(0.2,7,5).scale(1,1.25,0.32)};
+function plant(k,sink,r){const sp=SPECIES[k],c=sp.color,G2="#5F8A3E",add=sink;
+  const M=(x,y,z,s,rx=0,rz=0)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rx,0,rz)),new THREE.Vector3(s,s,s));
+  const Ms=(x,y,z,sx,sy)=>new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(sx,sy,sx));
+  if(sp.shape==="tube"){for(let i=0;i<5;i++){const a=r()*6.28,rr=r()*0.25,x=Math.cos(a)*rr,z=Math.sin(a)*rr,h=0.35+r()*.25;add("stem",G2,Ms(x,0,z,1,h));add("tube",c,M(x,h,z,1,(r()-.5)*.6,(r()-.5)*.6));}}
+  else if(sp.shape==="cup"){add("bush",G2,Ms(0,0.25,0,0.9,0.8));for(let i=0;i<5;i++){const a=i/5*6.28+r(),x=Math.cos(a)*.28,z=Math.sin(a)*.28;add("cup",c,M(x,0.5+r()*.15,z,1));}}
+  else if(sp.shape==="dome"){add("bush",G2,Ms(0,0.2,0,0.8,0.6));for(let i=0;i<4;i++){const a=i/4*6.28+r(),x=Math.cos(a)*.22,z=Math.sin(a)*.22;add("dome",c,M(x,0.45,z,0.9+r()*.3));}}
+  else if(sp.shape==="spike"){add("bush",G2,Ms(0,0.2,0,0.7,0.6));for(let i=0;i<4;i++){const a=r()*6.28,x=Math.cos(a)*.18,z=Math.sin(a)*.18,h=0.5+r()*.3;add("stem",G2,Ms(x,0,z,1,h));add("spike",c,M(x,h,z,1));}}
+  else if(sp.shape==="yucca"){for(let i=0;i<8;i++){const a=i/8*6.28;add("yuccaLeaf","#7E9B5C",M(0,0,0,1,Math.cos(a)*.9,Math.sin(a)*.9));}add("stem","#8FA36A",Ms(0,0,0,1.4,1.6));add("spike",c,M(0,1.6,0,1.6));}
+  else if(sp.shape==="berry"){add("bush","#4F7A3A",Ms(0,0.32,0,1.15,1));for(let i=0;i<7;i++){const a=r()*6.28,b=r()*1.2,x=Math.cos(a)*.38*Math.cos(b-.6),z=Math.sin(a)*.38*Math.cos(b-.6);add("berry",c,M(x,0.32+Math.sin(b)*.3,z,1));}}
+  else if(sp.shape==="pad"){const PADS=[[0,0.24,0,1,0,0],[0.2,0.5,0.02,0.85,0,-0.5],[-0.2,0.48,0,0.85,0,0.5],[0.05,0.75,0.05,0.7,0,-0.2],[0.3,0.24,0.15,0.8,0.5,-0.3]];PADS.forEach(([x,y,z,s,ry,rz])=>{add("pad","#7FA552",new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(0,ry+r()*0.6,rz)),new THREE.Vector3(s,s,s)));});[[0.05,0.98,0.05],[0.32,0.73,0.02],[-0.3,0.72,0]].forEach(([x,y,z])=>add("berry",c,M(x,y,z,1.4)));}
+  else if(sp.shape==="fern"){for(let i=0;i<7;i++){const a=i/7*6.28+r()*.3;add("frond",c,M(0,0,0,1,Math.cos(a)*.95,Math.sin(a)*.95));}}
+}
+const flowerGroups={},clusters=[];
+(function(){
+  const r=rng(53),FS=1.8;
+  TRAILS.forEach(T=>{const buckets={};
+    FLORA[T.id].forEach(k=>{const sp=SPECIES[k];let got=0,tries=0;const want=T.id==="C"?4:3;
+      while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
+        if(qOf(x,n)>0.85)continue;
+        const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
+        plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
+        clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
+    const grp=new THREE.Group();Object.values(buckets).forEach(b=>{const m=new THREE.InstancedMesh(FGEO[b.g],pho(b.c),b.list.length);b.list.forEach((mm,i)=>m.setMatrixAt(i,mm));grp.add(m);});
+    world.add(grp);flowerGroups[T.id]=grp;});
+})();
+
+/* ================= landmarks + waterfall ================= */
+const anim={};
+(function(){
+  const box=new THREE.BoxGeometry(1,1,1),cyl=new THREE.CylinderGeometry(1,1,1,8),ico=new THREE.IcosahedronGeometry(1,0);
+  const roof=new THREE.CylinderGeometry(0.75,0.75,1,3).rotateZ(Math.PI/2).rotateX(Math.PI/2).rotateY(Math.PI/2);
+  function house(x,n,s,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry;world.add(g);
+    part(g,box,PAL.wall,0,0.6*s,0,1.8*s,1.2*s,1.2*s,1.06);const r=part(g,roof,PAL.roof,0,1.55*s,0,1.25*s,0.95*s,1.2*s,1.06);rot(r,0,Math.PI/2,0);
+    part(g,box,"#6B4F3A",0,0.35*s,0.61*s,0.35*s,0.7*s,0.05,0);}
+  function gate(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=ry||0;world.add(g);
+    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}
+  function bench(x,n,ry){const g=new THREE.Group();g.position.copy(G(x,n,0.05));g.rotation.y=ry||0;world.add(g);part(g,box,"#9C7653",0,0.42,0,1.3,0.1,0.42,1.08);part(g,box,"#9C7653",0,0.75,-0.2,1.3,0.45,0.08,1.08);part(g,box,"#6B4F3A",-0.55,0.2,0,0.1,0.4,0.36,0);part(g,box,"#6B4F3A",0.55,0.2,0,0.1,0.4,0.36,0);}
+  function palm(x,n,h,i){const b=G(x,n);const g=new THREE.Group();g.position.copy(b);g.rotation.y=(i||0)*1.3;world.add(g);
+    const tk=part(g,cyl,"#9A7B5B",0,h/2,0,0.11,h,0.11);rot(tk,0,0,((i||0)%2?0.06:-0.05));
+    for(let f=0;f<7;f++){const a=f/7*Math.PI*2;const fr=part(g,new THREE.ConeGeometry(0.16,1.5,4).translate(0,0.75,0),f%2?"#5E8F3E":"#6FA04A",0,h,0,1,1,1,1.1);rot(fr,Math.cos(a)*1.25,0,Math.sin(a)*1.25);}
+    part(g,new THREE.SphereGeometry(1,6,4),"#8C6B4A",0,h-0.05,0,0.22,0.18,0.22,1.1);}
+  function slab(x,n,sx,sz,c,ry){const p=G(x,n);const m=part(world,box,c||"#D9D4C8",p.x,p.y+0.1,p.z,sx,0.2,sz,1.06);rot(m,0,ry||0,0);return m;}
+  function tower(x,n,h,c){const p=G(x,n);part(world,cyl,c||"#E9E1D2",p.x,p.y+h/2,p.z,0.35,h,0.35,1.06);part(world,new THREE.ConeGeometry(0.6,0.8,8),"#B5523B",p.x,p.y+h+0.4,p.z,1,1,1,1.06);}
+  function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
+    [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
+  function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
+  gate(-4026,-3993,0.4);gate(-1146,-4099,-0.3);gate(4206,858,0.1);
+  // monzogranite boulder piles at the OSM bare-rock outlines
+  function pile(x,n,r,i){const q=G(x,n),s=r*0.007042,g=new THREE.Group();g.position.copy(q);g.rotation.y=i*0.9;world.add(g);
+    const cs=["#D8C3A2","#CDB592","#E2CFB0"];const k=3+(i%3);
+    for(let j=0;j<k;j++){const a=j/k*Math.PI*2+i,d=j?0.45*s:0;const b=part(g,new THREE.IcosahedronGeometry(1,1),cs[(i+j)%3],Math.cos(a)*d,(j?0.32:0.48)*s,Math.sin(a)*d,(j?0.42:0.6)*s,(j?0.34:0.5)*s,(j?0.4:0.55)*s,1.06);rot(b,0.2*j,a,0.1);}}
+  [[1901,183,147],[431,-823,140],[1052,-728,246],[1154,-415,85],[225,-338,60],[771,278,331],[971,-202,420],[4633,504,199],[4100,507,286],[3596,441,289],[4221,97,160],[-4083,-3620,259],[-3494,-4271,358],[-1173,-708,252],[-811,-987,137],[-1639,-1278,359],[-2450,-1349,236],[3373,-1978,420],[2624,-3432,420],[869,-5276,269],[395,-5431,289],[271,-4954,74],[-370,-5509,74],[-691,-5727,195],[-342,-6046,118],[26,-6053,69],[-295,-5617,91],[126,-5863,110],[-1318,-5869,99],[-1611,-6180,60],[-2928,-5022,239],[-4008,-4567,244],[24,864,106],[-4044,-3470,72],[-2495,-4297,60],[-2405,-4260,60],[-2423,-4237,60],[-2452,-4204,60],[-2514,-4203,60],[-2545,-4232,60],[-2479,-4224,60],[-1667,-4041,60],[-1670,-3987,60],[-1703,-4023,60],[-1746,-4034,60],[-1727,-4068,60],[-1677,-4062,60],[-1709,-4071,60],[-1868,-4235,60],[-1934,-4237,60],[-1895,-4231,60],[-4087,-3897,60],[-4088,-3872,60],[-1240,-5851,60]].forEach(([x,n,r],i)=>pile(x,n,r,i));
+  // Cap Rock: a rounded pile with a flat slab perched on top like a cap
+  {const q=G(-4110,-3690),g=new THREE.Group();g.position.copy(q);g.rotation.y=0.5;world.add(g);
+    part(g,new THREE.IcosahedronGeometry(1,1),"#D8C3A2",0,0.45,0,0.75,0.55,0.6,1.06);part(g,new THREE.IcosahedronGeometry(1,1),"#CDB592",0.6,0.3,0.2,0.45,0.35,0.4,1.06);
+    const c=part(g,new THREE.CylinderGeometry(1,1,1,10),"#E2CFB0",0.15,1.05,0,0.75,0.16,0.55,1.08);rot(c,0.08,0,-0.06);}
+  // Ryan Ranch: roofless adobe walls
+  {const q=G(330,-5860),g=new THREE.Group();g.position.copy(q);g.rotation.y=0.25;world.add(g);const c="#C7A07A";
+    [[0,-0.35,1.2,0.08],[0,0.35,1.2,0.08]].forEach(([x,z,w,d])=>part(g,box,c,x,0.16,z,w,0.32,d,1.06));
+    [[-0.6,0,0.08,0.7],[0.6,0,0.08,0.7],[0.05,0,0.08,0.7]].forEach(([x,z,w,d])=>part(g,box,c,x,0.13,z,w,0.26,d,1.06));
+    part(g,cyl,"#8C7A66",1.05,0.08,0.5,0.14,0.16,0.14,1.06);}
+  // summit: sign post and a big rock cairn
+  {const q=G(4609,-5053);part(world,new THREE.IcosahedronGeometry(1,0),"#8F8678",q.x+0.25,q.y+0.18,q.z,0.32,0.22,0.3,1.06);part(world,new THREE.IcosahedronGeometry(1,0),"#A39A8B",q.x+0.25,q.y+0.42,q.z,0.2,0.16,0.2,1.06);
+    part(world,cyl,"#6B4F3A",q.x-0.2,q.y+0.35,q.z,0.04,0.7,0.04);part(world,box,"#3A2E26",q.x-0.2,q.y+0.65,q.z,0.42,0.24,0.04,1.06);}
+  // Joshua trees: shaggy trunk, a few angled arms, spiky leaf clusters at the tips
+  function jtree(x,n,h,i){const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=i*1.1;world.add(g);const tc="#7E6C55",lc="#7C8F4A";
+    const t0=h*(0.45+0.08*(i%3));part(g,cyl,tc,0,t0/2,0,0.09,t0,0.09,1.05);
+    const arms=[[0.7,0],[-0.6,2.2],[0.5,4.1],[-0.8,1.1]].slice(0,2+(i%3));
+    arms.forEach(([tl,az],j)=>{const a=new THREE.Group();a.position.set(0,t0,0);a.rotation.y=az+i;g.add(a);
+      const len=h*(0.38+0.06*j);const b=part(a,cyl,tc,0,len/2,0,0.06,len,0.06,1.05);
+      const sub=new THREE.Group();sub.rotation.z=tl;a.add(sub);sub.add(b);b.position.set(0,len/2,0);
+      const tip=new THREE.Vector3(0,len,0);part(sub,new THREE.IcosahedronGeometry(1,0),lc,tip.x,tip.y+0.08,tip.z,0.2,0.18,0.2,1.1);
+      for(let s=0;s<5;s++){const c=part(sub,new THREE.ConeGeometry(0.05,0.32,4),lc,tip.x,tip.y+0.08,tip.z,1,1,1,1.1);rot(c,Math.cos(s*1.26)*1.0,0,Math.sin(s*1.26)*1.0);}});}
+  [[-193,-2176,2.22,3],[-199,410,1.49,4],[49,-1702,1.49,3],[3508,-1005,1.34,3],[5115,-1352,1.92,1],[1576,206,1.36,0],[-4568,-3016,1.74,1],[498,-1471,1.8,5],[-666,-2251,2.23,0],[2453,-4318,1.53,2],[-4572,-2147,1.41,0],[5045,342,1.3,1],[4724,-6622,1.68,5],[-763,-6440,1.93,5],[-2085,-6317,1.63,3],[-2327,-6195,1.36,3],[-3039,-2181,1.75,1],[-789,1593,1.3,4],[-1729,671,1.51,3],[1097,-6711,1.45,3],[-2204,-311,1.63,2],[-2718,-1503,1.32,2],[-1029,-3110,2.26,3],[-880,-1585,1.61,1],[-2914,-603,2.24,1],[119,-6392,1.35,0],[-4479,1353,1.54,5],[-823,-3394,2.2,3],[-1840,-5543,2.02,0],[-3570,-2881,1.95,4],[1484,-4625,2.22,1],[-618,-4898,1.35,2],[-1059,-2068,1.43,2],[-3446,-3135,1.63,5],[2281,-1960,1.44,0],[-1177,-4349,1.33,4],[1711,-2856,2.03,2],[-3465,-6445,1.75,2],[2756,-916,2.09,2],[-1235,-1078,2.2,3],[299,-6953,1.96,3],[1157,-1746,1.38,5],[-3683,-4827,1.72,2],[-856,-641,1.88,3],[494,-2573,1.61,0],[103,-5063,2.0,3],[3200,-1297,1.79,0],[1458,-2539,2.05,2],[1957,-3209,2.19,2],[1690,-39,2.05,1],[1161,-4308,1.44,3],[-1246,766,1.34,0],[-3128,-3132,1.58,1],[507,-1192,2.02,4],[-192,-6426,1.33,4],[-4450,-872,1.87,2],[1847,-2139,1.94,3],[-168,-6863,2.13,1],[3193,-100,2.28,0],[-254,-1562,1.96,2],[5050,-1084,1.5,3],[-2227,-823,2.06,4],[2519,-5511,1.57,2],[711,1214,1.8,1],[-803,-143,2.21,0],[-627,740,1.69,3],[1013,623,2.1,2],[-76,-1374,1.5,5],[4093,-87,2.22,0],[-2670,804,2.28,2],[-1561,892,2.16,2],[-1336,-3388,1.58,0],[-2618,520,1.73,0],[-3089,-4145,2.09,1],[-5,1678,2.2,4],[-2586,-2466,1.59,5],[937,-5640,1.81,4],[-3418,-2308,1.57,3],[333,-1778,1.33,0],[466,-3571,2.1,4],[-3617,-6263,1.47,4],[-125,986,2.1,3],[-2091,-2935,1.43,3],[-4575,-4800,2.0,0],[-4757,-4591,2.02,1],[1541,-6161,2.03,0],[3946,-1618,2.02,5],[614,-3254,1.68,3],[1198,-5885,2.21,5],[5463,695,1.43,1],[-1175,112,1.66,5],[359,-439,1.8,5],[3749,-47,1.78,0],[-3362,-5463,1.5,1],[-3893,-6537,2.25,3],[-4076,-6233,1.69,3],[-2858,-5634,1.81,0],[-3675,-572,1.46,3],[703,-3840,1.73,1],[-1196,-1485,1.92,1],[-2052,1342,1.6,1],[2385,-407,2.28,0],[-2424,-3194,1.8,1],[1833,-6986,1.56,2],[381,1392,1.87,0],[7,-5598,1.8,4],[1300,-3317,1.79,2],[-1093,-4577,1.96,4],[-1615,-3596,1.88,5],[68,1445,1.54,4],[-3860,17,2.21,1],[1587,-3088,1.5,0],[-560,-1815,1.94,5],[-534,-265,1.83,1],[1595,-3934,1.57,5],[-2911,-4639,1.54,1],[-2850,-1095,1.93,0],[-2073,-3355,1.92,0],[-2574,-4642,2.06,5],[5288,-2840,1.65,2],[-2672,-3363,1.56,1],[143,-1077,1.6,0],[-4092,-5212,1.96,0],[2321,-2746,2.06,2],[-1949,-5828,1.66,5],[-1539,-3217,1.89,5],[4803,758,1.55,2],[3368,-608,1.67,3],[-1964,-6885,1.82,4],[-4649,293,1.72,4],[-3389,-547,1.95,1],[-124,-4010,2.11,2],[2086,-2756,1.84,5],[-4401,-448,2.29,2],[2799,1601,1.68,1],[601,-4679,2.19,3],[-3021,-6534,1.76,4],[104,-68,1.61,1],[1282,-5118,1.48,2],[-709,1292,1.96,0],[-2036,1595,1.96,1],[750,-2648,1.32,1],[-1713,-2987,2.02,2],[-4110,-5849,1.97,5],[3716,-1352,1.31,3],[2494,-2917,1.59,0],[-1872,-3786,1.84,2],[876,-6319,1.49,3],[2698,-4194,2.25,4],[-251,-3730,1.4,4],[-712,251,1.89,0],[-3840,-6797,2.29,3],[3065,113,1.69,2],[2651,-1709,1.62,1],[1960,-1749,1.32,2],[-2924,-4393,1.74,4],[-968,-2618,2.09,0],[1454,-5693,2.07,2],[2511,1564,1.82,5],[2443,1119,1.87,0],[1617,-5346,1.38,1],[71,-3423,1.63,0],[929,-2171,1.56,5],[-4090,-6799,1.48,5],[1494,-1471,2.06,1],[-2813,-2980,1.44,3],[-2351,1082,1.35,0],[2596,-181,1.7,3],[1337,-2964,1.71,4],[-3692,1145,1.63,4]].forEach(([x,n,h,i])=>jtree(x,n,h,i));
+
+  anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
+})();
+
+TRAILS.forEach(T=>{const g={A:20,B:135,C:1050}[T.id];if(g)T.gain=g;});
+/* ================= animals ================= */
+const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
+function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
+const BUILD={
+ bighorn(){const g=new THREE.Group(),c="#9C7A55",lt="#F1E6D2",hn="#C9B48C";
+   part(g,SPH,c,0,1.05,0,0.75,0.45,0.4);part(g,SPH,lt,-0.68,1.05,0,0.16,0.3,0.3);
+   const neck=new THREE.Group();neck.position.set(0.55,1.25,0);g.add(neck);
+   part(neck,SPH,c,0.18,0.2,0,0.24,0.3,0.22);part(neck,SPH,c,0.42,0.42,0,0.3,0.22,0.2);part(neck,SPH,lt,0.66,0.36,0,0.12,0.1,0.13);
+   part(neck,SPH,"#111",0.5,0.52,0.15,0.04,0.04,0.04,0);part(neck,SPH,"#111",0.5,0.52,-0.15,0.04,0.04,0.04,0);
+   [1,-1].forEach(sd=>{const h=new THREE.Mesh(new THREE.TorusGeometry(0.22,0.08,6,10,Math.PI*1.5),lam(hn));h.position.set(0.25,0.55,0.22*sd);h.rotation.set(0,0,0.6);neck.add(h);});
+   legs4(g,c,[[0.42,0.18],[0.42,-0.18],[-0.42,0.18],[-0.42,-0.18]],0.8,0.8,0.08);g.userData.neck=neck;return g;},
+ turtle(){const g=new THREE.Group(),c="#5E6B3A",sk="#8A8F5A";part(g,SPH,c,0,0.25,0,0.5,0.28,0.42);part(g,SPH,sk,0.55,0.18,0,0.16,0.12,0.13);part(g,SPH,"#111",0.65,0.22,0.07,0.03,0.03,0.03,0);part(g,SPH,"#111",0.65,0.22,-0.07,0.03,0.03,0.03,0);
+   [[0.3,0.35],[0.3,-0.35],[-0.3,0.35],[-0.3,-0.35]].forEach(([x,z])=>part(g,SPH,sk,x,0.08,z,0.12,0.08,0.1));return g;},
+ bear(){const g=new THREE.Group(),c="#3E2C22",m="#C9A27A";part(g,SPH,c,0,1.0,0,1.15,0.8,0.75);part(g,SPH,c,0.95,1.35,0,0.55,0.52,0.52);part(g,SPH,m,1.38,1.25,0,0.24,0.2,0.22);part(g,SPH,"#1a1a1a",1.6,1.28,0,0.07,0.07,0.07,0);
+   part(g,SPH,c,0.85,1.85,0.3,0.16);part(g,SPH,c,0.85,1.85,-0.3,0.16);part(g,SPH,"#111",1.18,1.48,0.2,0.05,0.05,0.05,0);part(g,SPH,"#111",1.18,1.48,-0.2,0.05,0.05,0.05,0);
+   legs4(g,c,[[0.6,0.35],[0.6,-0.35],[-0.6,0.35],[-0.6,-0.35]],0.75,0.75,0.22);return g;},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6";part(g,SPH,c,0,1.35,0,0.85,0.45,0.38);part(g,SPH,lt,-0.8,1.4,0,0.18,0.22,0.22);
+   const neck=new THREE.Group();neck.position.set(0.6,1.5,0);g.add(neck);
+   part(neck,CYL,c,0.18,0.35,0,0.13,0.7,0.13);part(neck,SPH,c,0.35,0.75,0,0.32,0.22,0.2);part(neck,SPH,"#2a2a2a",0.66,0.72,0,0.06,0.06,0.06,0);
+   part(neck,SPH,c,0.15,1.0,0.25,0.2,0.09,0.06);part(neck,SPH,c,0.15,1.0,-0.25,0.2,0.09,0.06);
+   part(neck,CYL,"#8A6A4F",0.25,1.15,0.12,0.03,0.4,0.03,0);part(neck,CYL,"#8A6A4F",0.25,1.15,-0.12,0.03,0.4,0.03,0);
+   legs4(g,c,[[0.5,0.2],[0.5,-0.2],[-0.5,0.2],[-0.5,-0.2]],1.1,1.1,0.08);g.userData.neck=neck;return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C";part(g,SPH,c,0,0.7,0,0.55,0.7,0.45);part(g,SPH,c,0.15,1.45,0,0.38);part(g,SPH,"#F3E7D6",0.45,1.38,0,0.16,0.13,0.18);
+   part(g,CONE,c,0.1,1.85,0.2,0.1,0.25,0.1);part(g,CONE,c,0.1,1.85,-0.2,0.1,0.25,0.1);part(g,SPH,"#111",0.45,1.55,0.14,0.05,0.05,0.05,0);part(g,SPH,"#111",0.45,1.55,-0.14,0.05,0.05,0.05,0);
+   const tail=new THREE.Group();tail.position.set(-0.45,0.35,0);g.add(tail);part(tail,SPH,c,-0.18,0,0,0.22,0.1,0.1);g.userData.tail=tail;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF";part(g,SPH,c,0,1.05,0,0.85,0.38,0.32);part(g,SPH,lt,0.45,0.98,0,0.3,0.25,0.25);
+   part(g,SPH,c,0.85,1.38,0,0.3,0.26,0.24);const sn=part(g,CONE,c,1.18,1.32,0,0.13,0.4,0.13);rot(sn,0,0,-Math.PI/2);part(g,SPH,"#111",1.38,1.32,0,0.05,0.05,0.05,0);
+   part(g,CONE,c,0.8,1.68,0.13,0.08,0.26,0.08);part(g,CONE,c,0.8,1.68,-0.13,0.08,0.26,0.08);
+   const tail=new THREE.Group();tail.position.set(-0.8,1.05,0);g.add(tail);const t1=part(tail,SPH,c,-0.35,-0.2,0,0.42,0.16,0.16);rot(t1,0,0,0.5);part(tail,SPH,"#3a3a3a",-0.72,-0.4,0,0.12,0.1,0.1,0);g.userData.tail=tail;
+   legs4(g,c,[[0.5,0.15],[0.5,-0.15],[-0.5,0.15],[-0.5,-0.15]],0.9,0.9,0.07);return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";part(g,SPH,c,0,0.5,0,1.3,0.42,0.5);part(g,SPH,lt,0.3,0.38,0,0.7,0.2,0.38);
+   part(g,SPH,c,1.25,0.82,0,0.38,0.34,0.34);part(g,SPH,lt,1.55,0.74,0,0.16,0.13,0.18);part(g,SPH,"#111",1.68,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,c,1.18,1.16,0.2,0.1);part(g,SPH,c,1.18,1.16,-0.2,0.1);part(g,SPH,"#111",1.5,0.92,0.13,0.04,0.04,0.04,0);part(g,SPH,"#111",1.5,0.92,-0.13,0.04,0.04,0.04,0);
+   const a=part(g,CYL,c,1.2,0.2,0.28,0.1,0.8,0.1);rot(a,0,0,Math.PI/2);const b=part(g,CYL,c,1.2,0.2,-0.28,0.1,0.8,0.1);rot(b,0,0,Math.PI/2);
+   const tail=new THREE.Group();tail.position.set(-1.25,0.45,0);g.add(tail);[[-0.3,-0.1,0.1],[-0.6,-0.15,0.3],[-0.85,-0.05,0.55]].forEach(([x,y,z],i)=>part(tail,SPH,i===2?"#4a3626":c,x,y,z,0.14));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";part(g,SPH,c,0,0.6,0,0.6,0.45,0.42);part(g,SPH,c,0.62,0.82,0,0.32,0.28,0.3);
+   part(g,SPH,dk,0.78,0.86,0,0.16,0.08,0.3,0);part(g,SPH,lt,0.9,0.76,0,0.13,0.1,0.13);part(g,SPH,"#111",1.02,0.78,0,0.05,0.04,0.05,0);
+   part(g,SPH,lt,0.55,1.08,0.18,0.09);part(g,SPH,lt,0.55,1.08,-0.18,0.09);
+   const tail=new THREE.Group();tail.position.set(-0.55,0.7,0);g.add(tail);for(let i=0;i<5;i++)part(tail,SPH,i%2?dk:"#B9B5AE",-0.12-i*0.16,0.1+i*0.07,0,0.14,0.14,0.14,i===0?1.1:0);g.userData.tail=tail;
+   legs4(g,dk,[[0.35,0.22],[0.35,-0.22],[-0.35,0.22],[-0.35,-0.22]],0.42,0.42,0.08);return g;},
+ squirrel(){const g=new THREE.Group(),c="#9A9A96",lt="#F1EFEA";const b=part(g,SPH,c,0,0.42,0,0.3,0.36,0.25);rot(b,0,0,-0.3);part(g,SPH,lt,0.12,0.38,0,0.16,0.24,0.18,0);
+   part(g,SPH,c,0.2,0.8,0,0.2,0.18,0.17);part(g,SPH,"#111",0.37,0.83,0.07,0.035,0.035,0.035,0);part(g,CONE,c,0.15,1.0,0.08,0.05,0.12,0.05);part(g,CONE,c,0.15,1.0,-0.08,0.05,0.12,0.05);
+   const tail=new THREE.Group();tail.position.set(-0.25,0.3,0);g.add(tail);[[-0.12,0.15,0.2],[-0.18,0.45,0.22],[-0.08,0.75,0.2],[0.05,0.92,0.15]].forEach(([x,y,s])=>part(tail,SPH,c,x,y,0,s));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A";part(g,SPH,c,0,0.32,0,0.32,0.26,0.24);part(g,SPH,"#B98A5E",0.05,0.24,0,0.26,0.16,0.2,0);part(g,SPH,c,0.25,0.56,0,0.15);part(g,SPH,"#111",0.33,0.53,0,0.1,0.07,0.12,0);
+   part(g,SPH,"#FFFFFF",0.36,0.6,0.08,0.03,0.03,0.03,0);const tk=part(g,CONE,"#111",0.33,0.82,0,0.05,0.16,0.05,0);rot(tk,0,0,-0.6);return g;},
+ snake(){const g=new THREE.Group(),segs=[];for(let i=0;i<16;i++){segs.push(part(g,SPH,i%3===0?"#6E5638":"#C2A36E",0,0.12,0,0.16-i*0.004,0.12,0.16-i*0.004,1.12));}
+   part(segs[0],SPH,"#111",0.5,0.5,0.45,0.25,0.25,0.25,0);g.userData.segs=segs;return g;},
+ bird(c,belly,cap){const g=new THREE.Group();part(g,SPH,c,0,0,0,0.35,0.16,0.16);if(belly)part(g,SPH,belly,0.05,-0.07,0,0.26,0.1,0.12,0);part(g,SPH,cap||c,0.32,0.05,0,0.14);
+   const bk=part(g,CONE,"#E3A44A",0.48,0.04,0,0.05,0.12,0.05,0);rot(bk,0,0,-Math.PI/2);
+   const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute([0.18,0,0,-0.2,0,0,-0.05,0,1.1],3));wg.computeVertexNormals();
+   const wm=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});const wL=new THREE.Mesh(wg,wm),wR=new THREE.Mesh(wg,wm);wR.scale.z=-1;g.add(wL,wR);
+   const tl=part(g,CONE,c,-0.42,0,0,0.12,0.3,0.05,0);rot(tl,0,0,Math.PI/2);g.userData.w=[wL,wR];return g;}
+};
+/* ================= gentle animals (soft toon shading, rounded shapes, merged pieces) ================= */
+const GENTLE=(function(){
+const OUT=new THREE.MeshBasicMaterial({color:(typeof PAL!=="undefined"&&PAL.outline)||"#2D4A40",side:THREE.BackSide});
+const GRAD=(function(){const d=new Uint8Array([150,212,255]);const t=new THREE.DataTexture(d,3,1,THREE.LuminanceFormat);t.minFilter=t.magFilter=THREE.NearestFilter;t.generateMipmaps=false;t.needsUpdate=true;return t;})();
+const TOON=new THREE.MeshToonMaterial({vertexColors:true,gradientMap:GRAD});
+const TM={};const tmat=(c,ds)=>TM[c+(ds?"d":"")]||(TM[c+(ds?"d":"")]=new THREE.MeshToonMaterial({color:c,gradientMap:GRAD,side:ds?THREE.DoubleSide:THREE.FrontSide}));
+const SPH_HI=new THREE.SphereGeometry(1,12,8),SPH_LO=new THREE.SphereGeometry(1,6,4);
+function ell(rx,ry,rz,hi=1){const g=(hi?SPH_HI:SPH_LO).clone();g.scale(rx,ry,rz);return g;}
+function cap(r0,r1,len,seg=7){const p=[],n=3;
+  for(let i=0;i<=n;i++){const a=-Math.PI/2+i/n*Math.PI/2;p.push(new THREE.Vector2(Math.max(1e-4,Math.cos(a)*r0),Math.sin(a)*r0));}
+  for(let i=0;i<=n;i++){const a=i/n*Math.PI/2;p.push(new THREE.Vector2(Math.max(1e-4,Math.cos(a)*r1),len+Math.sin(a)*r1));}
+  const g=new THREE.LatheGeometry(p,seg);g.computeVertexNormals();return g;}
+const cone=(r,h,s=8)=>new THREE.ConeGeometry(r,h,s);
+const scl=(g,x,y,z)=>{g.scale(x,y,z);return g;};
+function merge(L){const pos=[],nor=[],col=[],idx=[];let off=0;const c=new THREE.Color(),m=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),s=new THREE.Vector3(1,1,1),v=new THREE.Vector3();
+  L.forEach(([g,hex,p,r])=>{const gg=g.clone();m.compose(v.set(p[0],p[1],p[2]),q.setFromEuler(e.set(r?r[0]:0,r?r[1]:0,r?r[2]:0)),s);gg.applyMatrix4(m);
+    const P=gg.attributes.position,N=gg.attributes.normal;c.set(hex);
+    for(let i=0;i<P.count;i++){pos.push(P.getX(i),P.getY(i),P.getZ(i));nor.push(N.getX(i),N.getY(i),N.getZ(i));col.push(c.r,c.g,c.b);}
+    if(gg.index){for(let i=0;i<gg.index.count;i++)idx.push(gg.index.getX(i)+off);}else{for(let i=0;i<P.count;i++)idx.push(i+off);}
+    off+=P.count;});
+  const G=new THREE.BufferGeometry();G.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));G.setAttribute("normal",new THREE.Float32BufferAttribute(nor,3));G.setAttribute("color",new THREE.Float32BufferAttribute(col,3));G.setIndex(idx);return G;}
+function shell(G,w){const H=new THREE.BufferGeometry();const P=G.attributes.position,N=G.attributes.normal,a=new Float32Array(P.count*3);
+  for(let i=0;i<P.count;i++){a[i*3]=P.getX(i)+N.getX(i)*w;a[i*3+1]=P.getY(i)+N.getY(i)*w;a[i*3+2]=P.getZ(i)+N.getZ(i)*w;}
+  H.setAttribute("position",new THREE.BufferAttribute(a,3));H.setIndex(G.index);return H;}
+function piece(L,w=0.04){const G=merge(L.filter(Boolean)),g=new THREE.Group();g.add(new THREE.Mesh(shell(G,w),OUT),new THREE.Mesh(G,TOON));return g;}
+function eyes(x,y,z,r){const E=[];[1,-1].forEach(s=>{E.push([ell(r,r*1.12,r*.8,0),"#16120F",[x,y,z*s]]);E.push([ell(r*.36,r*.36,r*.3,0),"#FFFFFF",[x+r*.45,y+r*.45,(z+r*.35)*s]]);});return E;}
+function along(p,r,len,t){return new THREE.Vector3(0,len*t,0).applyEuler(new THREE.Euler(r[0],r[1],r[2])).add(new THREE.Vector3(p[0],p[1],p[2]));}
+function legs(g,c,pts,len,r0,r1,foot){const L=[],hip=len+r1;pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,hip,z);g.add(q);
+  q.add(piece([[cap(r1,r0,len),c,[0,-len,0]],foot?[ell(r1*1.25,r1*.62,r1*1.12),foot,[r1*.3,-len-r1*.45,0]]:null]));L.push(q);});g.userData.legs=L;}
+function grp(parent,x,y,z){const q=new THREE.Group();q.position.set(x,y,z);parent.add(q);return q;}
+const H=-Math.PI/2; // turn a capsule from +y to +x
+
+function bearMake(c,m,hump){const g=new THREE.Group(),dk="#221812";
+  g.add(piece([[ell(.78,.6,.6),c,[.3,1.02,0]],[ell(.74,.58,.56),c,[-.35,.98,0]],[ell(.46,hump?.36:.3,.5),c,[hump?.3:.15,hump?1.5:1.42,0]],
+   [ell(.42,.38,.4),c,[.98,1.32,0]],[ell(.22,.16,.19),m,[1.32,1.22,0]],[ell(.075,.055,.08,0),dk,[1.53,1.27,0]],
+   [ell(.14,.14,.08),c,[.86,1.66,.25],[.3,0,0]],[ell(.14,.14,.08),c,[.86,1.66,-.25],[-.3,0,0]],
+   [ell(.08,.08,.04,0),m,[.89,1.66,.3],[.3,0,0]],[ell(.08,.08,.04,0),m,[.89,1.66,-.3],[-.3,0,0]],
+   [ell(.1,.09,.09,0),c,[-1.08,1.12,0]],...eyes(1.22,1.42,.16,.05)]));
+  legs(g,c,[[.5,.32],[.5,-.32],[-.5,.32],[-.5,-.32]],.6,.2,.17,dk);return g;}
+function smallRodent(c,lt,dk,stripes){const g=new THREE.Group();
+  const P=[[ell(.27,.33,.24),c,[0,.4,0],[0,0,-.3]],[ell(.15,.22,.17),lt,[.1,.38,0],[0,0,-.3]],[ell(.19,.17,.16),c,[.2,.78,0]],[ell(.08,.06,.07),lt,[.33,.74,0]],[ell(.03,.025,.03,0),"#2a2a2a",[.39,.76,0]],
+   [ell(.05,.08,.03),c,[.13,.96,.08],[.3,0,0]],[ell(.05,.08,.03),c,[.13,.96,-.08],[-.3,0,0]],[ell(.1,.06,.09),c,[.12,.05,.1]],[ell(.1,.06,.09),c,[.12,.05,-.1]],...eyes(.3,.83,.09,.03)];
+  if(stripes){[1,-1].forEach(s=>{P.push([ell(.22,.04,.025,0),dk,[-.02,.47,.2*s],[0,0,-1.2]]);P.push([ell(.18,.03,.02,0),lt,[-.02,.47,.225*s],[0,0,-1.2]]);P.push([ell(.1,.02,.02,0),dk,[.26,.8,.13*s]]);});}
+  g.add(piece(P,.03));
+  const tail=grp(g,-.22,.28,0);
+  tail.add(piece(stripes?[[ell(.09,.2,.08),c,[-.1,.2,0],[0,0,.3]],[ell(.09,.2,.08),c,[-.1,.5,0],[0,0,-.15]]]:[[ell(.14,.24,.13),c,[-.12,.2,0],[0,0,.3]],[ell(.15,.24,.14),c,[-.12,.55,0],[0,0,-.15]],[ell(.12,.14,.12),c,[0,.82,0],[0,0,-.6]]],.03));
+  g.userData.tail=tail;return g;}
+
+const B={
+ bear(){return bearMake("#3E2C22","#C9A27A",false);},
+ grizzly(){return bearMake("#7A5232","#C9A27A",true);},
+ deer(){const g=new THREE.Group(),c="#B98A5E",lt="#F1E6D6",dk="#3A2E26";
+  g.add(piece([[ell(.62,.34,.31),c,[.12,1.38,0]],[ell(.44,.35,.3),c,[-.38,1.36,0]],[ell(.5,.16,.24),lt,[0,1.16,0]],[ell(.15,.2,.22,0),lt,[-.76,1.42,0]],
+   [ell(.09,.12,.06,0),lt,[-.84,1.52,0],[0,0,.6]],[ell(.045,.05,.045,0),dk,[-.9,1.42,0]]]));
+  const neck=grp(g,.52,1.52,0);
+  neck.add(piece([[cap(.15,.11,.5),c,[0,0,0],[0,0,-.5]],[ell(.25,.19,.17),c,[.3,.6,0]],[ell(.15,.1,.11),c,[.5,.53,0]],[ell(.05,.04,.05,0),dk,[.64,.55,0]],
+   [ell(.2,.085,.05),c,[.18,.78,.2],[.7,0,.3]],[ell(.2,.085,.05),c,[.18,.78,-.2],[-.7,0,.3]],[ell(.12,.05,.03,0),lt,[.19,.78,.225],[.7,0,.3]],[ell(.12,.05,.03,0),lt,[.19,.78,-.225],[-.7,0,.3]],
+   ...eyes(.42,.66,.12,.04)]));
+  legs(g,c,[[.48,.17],[.48,-.17],[-.48,.17],[-.48,-.17]],1.06,.075,.05,dk);g.userData.neck=neck;return g;},
+ coyote(){const g=new THREE.Group(),c="#A88B6A",lt="#E9DFCF",dk="#3A3A3A";
+  g.add(piece([[ell(.6,.3,.27),c,[0,1.02,0]],[ell(.3,.27,.24),lt,[.42,.97,0]],[ell(.45,.13,.2),lt,[0,.86,0]],
+   [ell(.27,.23,.21),c,[.84,1.34,0]],[ell(.24,.1,.1),c,[1.1,1.27,0]],[ell(.14,.06,.08),lt,[1.12,1.22,0]],[ell(.05,.04,.05,0),"#1a1a1a",[1.33,1.29,0]],
+   [cone(.09,.26),c,[.78,1.62,.12],[.25,0,.1]],[cone(.09,.26),c,[.78,1.62,-.12],[-.25,0,.1]],...eyes(1.0,1.42,.11,.038)]));
+  const tail=grp(g,-.55,1.08,0);
+  tail.add(piece([[ell(.36,.13,.14),c,[-.3,-.16,0],[0,0,.5]],[ell(.13,.09,.1),dk,[-.62,-.34,0],[0,0,.5]]]));g.userData.tail=tail;
+  legs(g,c,[[.42,.14],[.42,-.14],[-.42,.14],[-.42,-.14]],.82,.07,.055,lt);return g;},
+ fox(){const g=new THREE.Group(),c="#C9682E",lt="#F4EDE2",dk="#2A2420";
+  g.add(piece([[ell(.62,.27,.24),c,[0,.82,0]],[ell(.26,.22,.21),lt,[.42,.78,0]],
+   [ell(.25,.21,.2),c,[.74,1.06,0]],[ell(.22,.09,.1),c,[.98,1.0,0]],[ell(.13,.05,.08),lt,[1.0,.96,0]],[ell(.045,.035,.045,0),"#111",[1.2,1.02,0]],
+   [cone(.08,.24),c,[.68,1.33,.11],[.25,0,.1]],[cone(.08,.24),c,[.68,1.33,-.11],[-.25,0,.1]],[cone(.04,.1,6),dk,[.68,1.43,.13],[.25,0,.1]],[cone(.04,.1,6),dk,[.68,1.43,-.13],[-.25,0,.1]],
+   ...eyes(.9,1.13,.1,.035)]));
+  const tail=grp(g,-.6,.84,0);
+  tail.add(piece([[ell(.42,.16,.16),c,[-.35,-.12,0],[0,0,.35]],[ell(.13,.11,.11),lt,[-.76,-.27,0],[0,0,.35]]]));g.userData.tail=tail;
+  legs(g,dk,[[.4,.13],[.4,-.13],[-.4,.13],[-.4,-.13]],.56,.06,.05,dk);return g;},
+ bobcat(){const g=new THREE.Group(),c="#C49A6C",lt="#F3E7D6";
+  g.add(piece([[ell(.46,.5,.4),c,[-.05,.55,0],[0,0,-.25]],[ell(.28,.38,.3),lt,[.18,.6,0],[0,0,-.25]],
+   [cap(.08,.1,.42),c,[.28,.08,.14]],[cap(.08,.1,.42),c,[.28,.08,-.14]],[ell(.12,.07,.12),lt,[.32,.07,.14]],[ell(.12,.07,.12),lt,[.32,.07,-.14]],
+   [ell(.2,.12,.2),c,[-.2,.12,.28]],[ell(.2,.12,.2),c,[-.2,.12,-.28]],
+   [ell(.34,.3,.32),c,[.14,1.2,0]],[ell(.16,.12,.24),lt,[.4,1.11,0]],[ell(.05,.035,.05,0),"#B5676A",[.5,1.17,0]],
+   [ell(.12,.1,.08),lt,[.3,1.06,.22],[0,0,.3]],[ell(.12,.1,.08),lt,[.3,1.06,-.22],[0,0,.3]],
+   [cone(.1,.24),c,[.08,1.52,.18],[.2,0,0]],[cone(.1,.24),c,[.08,1.52,-.18],[-.2,0,0]],
+   [cone(.025,.12,5),"#1a1a1a",[.08,1.69,.21],[.2,0,0]],[cone(.025,.12,5),"#1a1a1a",[.08,1.69,-.21],[-.2,0,0]],...eyes(.42,1.28,.13,.05)]));
+  const tail=grp(g,-.46,.3,0);tail.add(piece([[ell(.2,.09,.09),c,[-.14,0,0],[0,0,.3]],[ell(.07,.06,.07,0),"#1a1a1a",[-.3,.06,0]]]));g.userData.tail=tail;return g;},
+ lion(){const g=new THREE.Group(),c="#C9A06A",lt="#F2E3CB";
+  g.add(piece([[ell(1.15,.42,.48),c,[0,.5,0]],[ell(.7,.2,.38),lt,[.3,.36,0]],[ell(.45,.38,.44),c,[-.72,.55,0]],
+   [ell(.36,.32,.33),c,[1.25,.82,0]],[ell(.17,.13,.18),lt,[1.55,.74,0]],[ell(.05,.035,.05,0),"#7A4A3A",[1.69,.79,0]],
+   [ell(.1,.1,.05),c,[1.15,1.12,.2],[.3,0,0]],[ell(.1,.1,.05),c,[1.15,1.12,-.2],[-.3,0,0]],
+   [cap(.1,.11,.65),c,[.85,.13,.28],[0,0,H]],[cap(.1,.11,.65),c,[.85,.13,-.28],[0,0,H]],[ell(.14,.08,.13),lt,[1.55,.1,.28]],[ell(.14,.08,.13),lt,[1.55,.1,-.28]],
+   ...eyes(1.5,.92,.14,.045)]));
+  const tail=grp(g,-1.2,.45,0);
+  tail.add(piece([[ell(.3,.1,.1),c,[-.25,-.12,.1],[0,.4,.4]],[ell(.28,.09,.09),c,[-.55,-.2,.35],[0,.9,0]],[ell(.12,.09,.09),"#4a3626",[-.78,-.15,.55]]]));g.userData.tail=tail;return g;},
+ raccoon(){const g=new THREE.Group(),c="#7E7A74",dk="#2E2B28",lt="#F1EFEA";
+  g.add(piece([[ell(.55,.36,.38),c,[0,.62,0]],[ell(.38,.33,.34),c,[-.32,.62,0]],
+   [ell(.27,.23,.25),c,[.6,.82,0]],[ell(.12,.075,.25),dk,[.75,.86,0]],[ell(.13,.08,.1),lt,[.85,.76,0]],[ell(.04,.03,.04,0),"#111",[.97,.78,0]],
+   [ell(.08,.08,.04),c,[.52,1.06,.17],[.3,0,0]],[ell(.08,.08,.04),c,[.52,1.06,-.17],[-.3,0,0]],[ell(.05,.05,.02,0),lt,[.53,1.06,.2],[.3,0,0]],[ell(.05,.05,.02,0),lt,[.53,1.06,-.2],[-.3,0,0]],
+   [ell(.11,.04,.05,0),lt,[.72,.94,.12]],[ell(.11,.04,.05,0),lt,[.72,.94,-.12]],...eyes(.8,.88,.11,.032)]));
+  const tail=grp(g,-.6,.7,0);
+  const T=[];for(let i=0;i<5;i++)T.push([ell(.13,.13,.13),i%2?dk:"#B9B5AE",[-.1-i*.16,.08+i*.07,0]]);tail.add(piece(T));g.userData.tail=tail;
+  legs(g,dk,[[.36,.22],[.36,-.22],[-.36,.22],[-.36,-.22]],.34,.07,.06,dk);return g;},
+ squirrel(){return smallRodent("#9A9A96","#F1EFEA","#5A5A56",false);},
+ chipmunk(){const g=smallRodent("#B77A45","#F1E6D6","#3A2A1E",true);g.scale.setScalar(.85);const w=new THREE.Group();w.add(g);w.userData=g.userData;return w;},
+ pika(){const g=new THREE.Group(),c="#A39886",lt="#D9CFC0";
+  g.add(piece([[ell(.32,.27,.27),c,[0,.28,0]],[ell(.2,.16,.18),lt,[.12,.2,0]],[ell(.2,.18,.19),c,[.24,.43,0]],[ell(.04,.03,.04,0),"#2a2a2a",[.44,.42,0]],
+   [ell(.085,.085,.03),c,[.16,.62,.12],[.4,0,0]],[ell(.085,.085,.03),c,[.16,.62,-.12],[-.4,0,0]],[ell(.05,.05,.02,0),lt,[.17,.62,.14],[.4,0,0]],[ell(.05,.05,.02,0),lt,[.17,.62,-.14],[-.4,0,0]],
+   [ell(.08,.05,.07),c,[.18,.04,.12]],[ell(.08,.05,.07),c,[.18,.04,-.12]],...eyes(.38,.48,.1,.03)],.03));
+  const tail=grp(g,-.3,.25,0);tail.add(piece([[ell(.04,.04,.04,0),c,[-.02,0,0]]],.02));g.userData.tail=tail;return g;},
+ marmot(){const g=new THREE.Group(),c="#A9814F",lt="#D9BF92",dk="#6E5236";
+  g.add(piece([[ell(.42,.5,.38),c,[0,.52,0],[0,0,-.12]],[ell(.26,.36,.28),lt,[.18,.5,0],[0,0,-.12]],
+   [ell(.27,.24,.25),dk,[.16,1.04,0]],[ell(.14,.1,.14),lt,[.36,.98,0]],[ell(.045,.035,.045,0),"#1a1a1a",[.49,1.01,0]],
+   [ell(.07,.06,.04),dk,[.08,1.25,.15]],[ell(.07,.06,.04),dk,[.08,1.25,-.15]],
+   [cap(.06,.05,.22),c,[.26,.6,.15],[0,0,-1.1]],[cap(.06,.05,.22),c,[.26,.6,-.15],[0,0,-1.1]],
+   [ell(.18,.08,.14),c,[.2,.06,.18]],[ell(.18,.08,.14),c,[.2,.06,-.18]],...eyes(.34,1.1,.12,.035)]));
+  const tail=grp(g,-.35,.22,0);tail.add(piece([[ell(.26,.11,.13),dk,[-.2,0,0],[0,0,.25]]]));g.userData.tail=tail;return g;},
+ quail(){const g=new THREE.Group(),c="#7D8A9A",br="#B98A5E",dk="#1A1A1A";
+  g.add(piece([[ell(.32,.27,.25),c,[0,.34,0]],[ell(.24,.17,.2),br,[.06,.24,0]],[ell(.15,.15,.14),c,[.25,.58,0]],[ell(.1,.09,.11),dk,[.33,.53,0]],
+   [ell(.06,.02,.115,0),"#FFFFFF",[.33,.62,0]],[cone(.03,.08,6),"#2a2a2a",[.42,.56,0],[0,0,H]],
+   [ell(.05,.09,.04,0),dk,[.34,.8,0],[0,0,-.6]],[cap(.01,.01,.12,5),dk,[.27,.69,0],[0,0,-.5]],
+   [ell(.17,.05,.14),c,[-.28,.4,0],[0,0,.4]],[cap(.016,.012,.12,5),br,[.03,.02,.07]],[cap(.016,.012,.12,5),br,[.03,.02,-.07]],...eyes(.32,.63,.09,.02)],.03));return g;},
+ turkey(){const g=new THREE.Group(),c="#4A3A2E",br="#6B4E34",ft="#B5986E";
+  g.add(piece([[ell(.42,.38,.32),c,[0,.72,0]],[ell(.08,.52,.56),br,[-.4,1.0,0],[0,0,.3]],[ell(.06,.44,.48),"#C9A27A",[-.46,1.04,0],[0,0,.3]],[ell(.3,.12,.26),br,[-.05,.82,0]],
+   [cap(.06,.045,.38),"#7FA0C8",[.26,.86,0],[0,0,-.25]],[ell(.09,.09,.08),"#7FA0C8",[.36,1.27,0]],[ell(.04,.08,.03),"#C8322C",[.42,1.15,0]],[cone(.025,.07,6),"#D9B36A",[.46,1.27,0],[0,0,H]],
+   [cap(.025,.02,.36,5),ft,[.04,.02,.1]],[cap(.025,.02,.36,5),ft,[.04,.02,-.1]],...eyes(.4,1.31,.06,.018)],.03));return g;},
+ turtle(){const g=new THREE.Group(),c="#5E6B3A",lt="#7D8A4E",sk="#8A8F5A";
+  g.add(piece([[ell(.5,.28,.42),c,[0,.25,0]],[ell(.16,.04,.13,0),lt,[0,.5,0]],[ell(.12,.04,.1,0),lt,[.24,.44,.14]],[ell(.12,.04,.1,0),lt,[.24,.44,-.14]],[ell(.12,.04,.1,0),lt,[-.22,.44,.14]],[ell(.12,.04,.1,0),lt,[-.22,.44,-.14]],
+   [ell(.15,.12,.13),sk,[.56,.2,0]],[ell(.12,.07,.1),sk,[.3,.07,.35]],[ell(.12,.07,.1),sk,[.3,.07,-.35]],[ell(.12,.07,.1),sk,[-.3,.07,.35]],[ell(.12,.07,.1),sk,[-.3,.07,-.35]],...eyes(.64,.25,.08,.025)],.03));return g;},
+ heron(c,lt){c=c||"#8B9BAE";lt=lt||"#E8ECEF";const g=new THREE.Group(),lg="#5E5A4E";
+  g.add(piece([[ell(.38,.25,.22),c,[0,1.12,0],[0,0,.15]],[ell(.3,.1,.17),c,[-.3,1.06,0],[0,0,.35]],[cap(.025,.022,.95,6),lg,[.03,.02,.07]],[cap(.025,.022,.95,6),lg,[.03,.02,-.07]],
+   [ell(.08,.025,.05,0),lg,[.08,.02,.07]],[ell(.08,.025,.05,0),lg,[.08,.02,-.07]]],.03));
+  const neck=grp(g,.28,1.22,0);
+  neck.add(piece([[cap(.06,.05,.55),lt,[0,0,0],[0,0,-.35]],[ell(.11,.09,.09),lt,[.2,.58,0]],[cone(.035,.32,6),"#E3A44A",[.45,.56,0],[0,0,H]],[ell(.12,.025,.05,0),"#222",[.17,.66,0]],...eyes(.27,.62,.07,.022)],.03));
+  g.userData.neck=neck;return g;},
+ egret(){return B.heron("#F7F7F2","#FFFFFF");},
+ elk(){const g=new THREE.Group(),c="#9A6A43",dk="#4E3423",lt="#EBDDBE",an="#D9C7A3",hf="#2A1E16";
+  g.add(piece([[ell(.72,.42,.4),c,[.15,1.6,0]],[ell(.55,.42,.38),c,[-.45,1.58,0]],[ell(.26,.3,.3),lt,[-.9,1.62,0]],[ell(.5,.32,.36),dk,[.55,1.74,0]]]));
+  const neck=grp(g,.75,1.82,0);
+  const N=[[cap(.24,.16,.55),dk,[0,0,0],[0,0,-.55]],[ell(.36,.22,.2),c,[.42,.66,0]],[ell(.18,.13,.14),c,[.7,.6,0]],[ell(.06,.05,.06,0),"#1a1a1a",[.86,.62,0]],
+   [ell(.16,.07,.05),c,[.28,.84,.2],[.6,0,.3]],[ell(.16,.07,.05),c,[.28,.84,-.2],[-.6,0,.3]],...eyes(.55,.74,.15,.045)];
+  [1,-1].forEach(s=>{const b=[.32,.84,.12*s],r=[.42*s,0,.62];N.push([cap(.045,.03,1.0),an,b,r]);
+   [.28,.52,.76].forEach((t,i)=>{const p=along(b,r,1.0,t);N.push([cap(.032,.018,.34-.05*i),an,[p.x,p.y,p.z],[.2*s,0,-.45]]);});});
+  neck.add(piece(N));
+  legs(g,c,[[.6,.2],[.6,-.2],[-.6,.2],[-.6,-.2]],1.28,.09,.065,hf);g.userData.neck=neck;return g;},
+ moose(){const g=new THREE.Group(),c="#4A3326",lg="#A08C78",an="#CDB894";
+  g.add(piece([[ell(1.0,.56,.5),c,[0,1.85,0]],[ell(.55,.4,.44),c,[.45,2.22,0]],[ell(.5,.45,.45),c,[-.55,1.82,0]]]));
+  const neck=grp(g,.85,2.05,0);
+  const N=[[ell(.3,.32,.26),c,[.22,.02,0]],[ell(.48,.23,.21),c,[.62,-.08,0],[0,0,-.35]],[ell(.18,.16,.18),"#3A271C",[.98,-.25,0]],[ell(.07,.22,.05),c,[.35,-.38,0]],
+   ...eyes(.6,.1,.16,.04)];
+  [1,-1].forEach(s=>{N.push([ell(.3,.06,.4),an,[.02,.5,.52*s],[.45*s,0,.35]]);N.push([cap(.05,.04,.38),an,[.08,.2,.18*s],[.95*s,0,.2]]);N.push([ell(.1,.1,.05),c,[.12,.3,.25*s],[.4*s,0,0]]);});
+  neck.add(piece(N));
+  legs(g,lg,[[.62,.25],[.62,-.25],[-.62,.25],[-.62,-.25]],1.5,.1,.075,"#2A1E16");g.userData.neck=neck;return g;},
+ bison(){const g=new THREE.Group(),c="#6A4A33",dk="#3A281C";
+  g.add(piece([[ell(.9,.6,.55),c,[-.35,1.05,0]],[ell(.75,.85,.65),dk,[.45,1.35,0]],[ell(.42,.42,.38),dk,[1.05,.95,0]],[ell(.2,.2,.22),"#2A1C14",[1.38,.82,0]],
+   [cone(.06,.26),"#E8E0D0",[1.0,1.38,.36],[.7,0,0]],[cone(.06,.26),"#E8E0D0",[1.0,1.38,-.36],[-.7,0,0]],[ell(.14,.26,.12),dk,[1.05,.55,0]],...eyes(1.3,1.04,.24,.045)]));
+  const tail=grp(g,-1.22,1.2,0);tail.add(piece([[cap(.04,.035,.55),c,[0,-.6,0]],[ell(.08,.13,.08),dk,[0,-.68,0]]]));g.userData.tail=tail;
+  legs(g,dk,[[.6,.3],[.6,-.3],[-.7,.3],[-.7,-.3]],.62,.13,.11,"#1f1712");return g;},
+ bighorn(){const g=new THREE.Group(),c="#9C7A55",lt="#F1E6D2",hn="#C9B48C",dk="#3A2E26";
+  g.add(piece([[ell(.62,.42,.38),c,[.1,1.05,0]],[ell(.4,.4,.36),c,[-.35,1.03,0]],[ell(.16,.28,.3),lt,[-.7,1.06,0]],[ell(.45,.15,.26),lt,[0,.85,0]]]));
+  const neck=grp(g,.55,1.22,0);
+  const T=new THREE.TorusGeometry(.2,.075,8,18,Math.PI*1.55);
+  neck.add(piece([[cap(.2,.15,.3),c,[0,0,0],[0,0,-.6]],[ell(.28,.21,.19),c,[.36,.36,0]],[ell(.14,.11,.12),lt,[.58,.3,0]],[ell(.04,.035,.04,0),dk,[.7,.32,0]],
+   [T,hn,[.2,.5,.21],[0,.25,.9]],[T,hn,[.2,.5,-.21],[0,-.25,.9]],[ell(.1,.05,.04),c,[.18,.47,.25],[.6,0,0]],[ell(.1,.05,.04),c,[.18,.47,-.25],[-.6,0,0]],...eyes(.47,.42,.13,.04)]));
+  legs(g,c,[[.4,.17],[.4,-.17],[-.4,.17],[-.4,-.17]],.72,.085,.06,dk);g.userData.neck=neck;return g;},
+ goat(){const g=new THREE.Group(),c="#F4F1EA",sh="#E2DCCF";
+  g.add(piece([[ell(.68,.48,.42),c,[0,1.0,0]],[ell(.42,.46,.4),c,[.42,1.2,0]],[ell(.5,.16,.3),sh,[0,.72,0]]]));
+  const neck=grp(g,.72,1.25,0);
+  neck.add(piece([[ell(.3,.19,.17),c,[.24,.1,0],[0,0,-.3]],[ell(.09,.2,.08),sh,[.22,-.14,0]],[ell(.04,.035,.04,0),"#1a1a1a",[.5,.0,0]],
+   [cone(.035,.3,6),"#1A1A1A",[.07,.42,.08],[0,0,.35]],[cone(.035,.3,6),"#1A1A1A",[.07,.42,-.08],[0,0,.35]],[ell(.08,.04,.03),c,[.05,.27,.15],[.6,0,0]],[ell(.08,.04,.03),c,[.05,.27,-.15],[-.6,0,0]],
+   ...eyes(.3,.2,.11,.035)]));
+  legs(g,c,[[.42,.18],[.42,-.18],[-.42,.18],[-.42,-.18]],.72,.1,.08,"#2a2a2a");g.userData.neck=neck;return g;},
+ pronghorn(){const g=new THREE.Group(),c="#C8945A",lt="#F6EFE2";
+  g.add(piece([[ell(.75,.4,.33),c,[0,1.3,0]],[ell(.62,.2,.3),lt,[0,1.12,0]],[ell(.15,.24,.26),lt,[-.72,1.32,0]]]));
+  const neck=grp(g,.55,1.45,0);
+  neck.add(piece([[cap(.11,.09,.6),c,[0,0,0],[0,0,-.35]],[ell(.1,.04,.11,0),lt,[.12,.32,0]],[ell(.27,.17,.15),c,[.32,.7,0],[0,0,-.3]],[ell(.05,.04,.05,0),"#111",[.56,.64,0]],
+   [cap(.03,.018,.3,6),"#1A1A1A",[.2,.82,.08],[.1,0,.15]],[cap(.03,.018,.3,6),"#1A1A1A",[.2,.82,-.08],[-.1,0,.15]],[cap(.018,.01,.1,5),"#1A1A1A",[.22,.98,.09],[0,0,-1.0]],[cap(.018,.01,.1,5),"#1A1A1A",[.22,.98,-.09],[0,0,-1.0]],
+   ...eyes(.42,.76,.1,.035)]));
+  legs(g,c,[[.45,.16],[.45,-.16],[-.45,.16],[-.45,-.16]],1.0,.06,.045,"#2a2a2a");g.userData.neck=neck;return g;},
+ javelina(){const g=new THREE.Group(),c="#5E5852",lt="#B8B0A4",dk="#2A2622";
+  g.add(piece([[ell(.7,.42,.36),c,[0,.6,0]],[ell(.13,.42,.38),lt,[.3,.72,0]],[cap(.2,.08,.45),c,[.6,.55,0],[0,0,H]],[ell(.08,.08,.09),dk,[1.12,.53,0]],
+   [cone(.06,.15),c,[.6,.92,.12],[.2,0,0]],[cone(.06,.15),c,[.6,.92,-.12],[-.2,0,0]],...eyes(.78,.72,.13,.035)]));
+  legs(g,dk,[[.4,.18],[.4,-.18],[-.4,.18],[-.4,-.18]],.32,.07,.05,dk);return g;},
+ armadillo(){const g=new THREE.Group(),c="#B8A698",dk="#8E7D70";
+  const P=[[ell(.55,.3,.32),c,[0,.34,0]],[cap(.13,.05,.4),c,[.46,.3,0],[0,0,H]],[ell(.04,.07,.03),c,[.55,.46,.07],[.3,0,0]],[ell(.04,.07,.03),c,[.55,.46,-.07],[-.3,0,0]],...eyes(.62,.38,.08,.022)];
+  for(let i=0;i<5;i++)P.push([ell(.035,.305,.325,0),dk,[-.28+i*.14,.35,0]]);
+  [[.3,.2],[.3,-.2],[-.3,.2],[-.3,-.2]].forEach(([x,z])=>P.push([ell(.07,.08,.07,0),dk,[x,.06,z]]));
+  g.add(piece(P,.03));
+  const tail=grp(g,-.5,.28,0);tail.add(piece([[cap(.07,.02,.55),dk,[0,0,0],[0,0,Math.PI/2+.25]]],.03));g.userData.tail=tail;return g;},
+ otter(){const g=new THREE.Group(),c="#5A4232",lt="#B9A58E";
+  g.add(piece([[ell(.7,.24,.24),c,[0,.3,0]],[ell(.5,.12,.18),lt,[.1,.18,0]],[ell(.2,.17,.18),c,[.68,.42,0]],[ell(.11,.08,.11),lt,[.84,.38,0]],[ell(.035,.03,.035,0),"#111",[.94,.41,0]],
+   [ell(.05,.04,.03),c,[.62,.57,.12]],[ell(.05,.04,.03),c,[.62,.57,-.12]],[ell(.1,.05,.08),c,[.35,.06,.18]],[ell(.1,.05,.08),c,[.35,.06,-.18]],[ell(.1,.05,.08),c,[-.35,.06,.18]],[ell(.1,.05,.08),c,[-.35,.06,-.18]],
+   ...eyes(.8,.48,.1,.028)],.03));
+  const tail=grp(g,-.65,.25,0);tail.add(piece([[cap(.1,.03,.6),c,[0,0,0],[0,0,Math.PI/2]]],.03));g.userData.tail=tail;return g;},
+ beaver(){const g=new THREE.Group(),c="#6A4A30";
+  g.add(piece([[ell(.6,.38,.36),c,[0,.42,0]],[ell(.26,.24,.24),c,[.55,.55,0]],[ell(.05,.08,.06,0),"#E8C04A",[.78,.45,0]],...eyes(.72,.62,.13,.035)]));
+  const tail=grp(g,-.55,.15,0);tail.add(piece([[ell(.38,.05,.2),"#3A2E26",[-.35,0,0]]]));g.userData.tail=tail;return g;},
+ nene(){const g=new THREE.Group(),c="#9C8A72",dk="#2A2622",lt="#E9D9B0";
+  g.add(piece([[ell(.4,.28,.26),c,[0,.5,0]],[cap(.03,.025,.32,5),"#222",[0,.0,.08]],[cap(.03,.025,.32,5),"#222",[0,0,-.08]]],.03));
+  const neck=grp(g,.3,.6,0);neck.add(piece([[cap(.07,.06,.45),lt,[0,0,0]],[ell(.13,.1,.1),dk,[.12,.55,0]],[cone(.04,.14,6),"#222",[.3,.53,0],[0,0,H]],...eyes(.2,.58,.07,.02)],.03));
+  g.userData.neck=neck;return g;},
+ alligator(){const g=new THREE.Group(),c="#4B5A3A",lt="#C9C08F",dk="#38442B";
+  const P=[[ell(1.0,.24,.42),c,[0,.3,0]],[ell(.9,.12,.34),lt,[0,.18,0]],[ell(.42,.15,.26),c,[1.15,.3,0]],[ell(.52,.09,.18),c,[1.62,.25,0]],
+   [ell(.08,.07,.08),c,[1.02,.44,.14]],[ell(.08,.07,.08),c,[1.02,.44,-.14]],...eyes(1.06,.47,.15,.035)];
+  for(let i=0;i<6;i++)P.push([ell(.07,.05,.07,0),dk,[-.7+i*.28,.53,.1]],[ell(.07,.05,.07,0),dk,[-.7+i*.28,.53,-.1]]);
+  [[.6,.42],[.6,-.42],[-.5,.42],[-.5,-.42]].forEach(([x,z])=>P.push([ell(.16,.1,.12),c,[x,.1,z]]));
+  g.add(piece(P));
+  const tail=grp(g,-.9,.3,0);
+  tail.add(piece([[ell(.4,.2,.28),c,[-.3,0,0]],[ell(.38,.15,.2),c,[-.75,-.03,0]],[ell(.34,.1,.13),c,[-1.15,-.06,0]],[ell(.25,.07,.07),c,[-1.5,-.08,0]]]));g.userData.tail=tail;return g;},
+ snake(){const g=new THREE.Group(),segs=[];
+  for(let i=0;i<16;i++){const r=.16-i*.005,col=i%3===0?"#6E5638":"#C2A36E";
+    const m=new THREE.Mesh(SPH_HI,tmat(col));m.scale.set(r*1.25,.12,r);m.position.y=.12;g.add(m);
+    const h=new THREE.Mesh(SPH_HI,OUT);h.scale.set(r*1.25+.035,.155,r+.035);h.position.copy(m.position);g.add(h);m.userData.hull=h;segs.push(m);}
+  const head=piece([[ell(.24,.12,.17),"#8A6E48",[.06,0,0]],...eyes(.16,.05,.09,.035)],.03);head.scale.set(1/(.16*1.25),1/.12,1/.16);segs[0].add(head);
+  g.userData.segs=segs;return g;},
+ /* marine */
+ dolphin(){const g=new THREE.Group(),c="#6F7E8C",b="#DCE2E7";
+  g.add(piece([[ell(1.15,.34,.32),c,[0,0,0]],[ell(.95,.2,.24),b,[.1,-.12,0]],[ell(.32,.12,.12),c,[1.2,-.04,0]],[scl(cone(.22,.5),1,1,.35),c,[-.1,.38,0],[0,0,-.35]],
+   [ell(.26,.05,.12),c,[.5,-.2,.28],[-.4,0,.3]],[ell(.26,.05,.12),c,[.5,-.2,-.28],[.4,0,.3]],...eyes(.95,.06,.2,.04)]));
+  const t=grp(g,-1.1,0,0);t.add(piece([[ell(.28,.06,.42),c,[-.15,0,0]]]));g.userData.tail=t;return g;},
+ whale(){const g=new THREE.Group(),c="#5A646C",m="#8E979D";
+  g.add(piece([[ell(2.8,.55,.95),c,[0,0,0]],[ell(2.2,.3,.75),m,[.2,-.25,0]],[ell(.22,.07,.2,0),m,[.8,.45,.3]],[ell(.22,.07,.2,0),m,[-.4,.47,-.3]],[ell(.22,.07,.2,0),m,[1.6,.38,-.2]],[ell(.5,.08,.25),c,[1.2,-.35,.85],[-.3,.3,0]],[ell(.5,.08,.25),c,[1.2,-.35,-.85],[.3,-.3,0]],...eyes(2.2,.0,.68,.06)],.05));
+  const t=grp(g,-2.7,0,0);t.add(piece([[ell(.7,.18,.25),c,[-.5,0,0]],[ell(.28,.08,.95),c,[-1.1,.05,0]]],.05));g.userData.tail=t;
+  const sp=grp(g,1.9,.5,0);const sm=new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:.85});
+  [[0,.5,0,.35],[.15,1.0,.1,.45],[-.1,1.4,-.1,.5],[.1,1.75,0,.4]].forEach(([x,y,z,s])=>{const m2=new THREE.Mesh(SPH_HI,sm);m2.position.set(x,y,z);m2.scale.setScalar(s);sp.add(m2);});sp.visible=false;g.userData.spout=sp;return g;},
+ shark(){const g=new THREE.Group();const sh=new THREE.Mesh(SPH_HI,new THREE.MeshBasicMaterial({color:0x2E4752,transparent:true,opacity:.2,depthWrite:false}));sh.scale.set(1.0,.05,.32);sh.position.y=-.05;g.add(sh);
+  const f=piece([[scl(cone(.32,.85),1,1,.3),"#4A5660",[0,0,0]]],.03);f.position.set(.2,.38,0);f.rotation.z=-.28;g.add(f);
+  const t=piece([[scl(cone(.16,.4),1,1,.3),"#4A5660",[0,0,0]]],.03);t.position.set(-1.2,.16,0);t.rotation.z=.3;g.add(t);g.userData.fin=f;return g;},
+ sealion(cc){const g=new THREE.Group(),c=cc||"#7A5B43",lt=cc?"#B8B0A4":"#A07E62";
+  g.add(piece([[ell(.75,.32,.34),c,[0,.35,0],[0,0,.35]],[ell(.5,.18,.24),lt,[.15,.28,0],[0,0,.35]],[ell(.3,.05,.13),c,[.25,.1,.32],[0,.3,0]],[ell(.3,.05,.13),c,[.25,.1,-.32],[0,-.3,0]],[ell(.3,.06,.28),c,[-.7,.12,0]]]));
+  const h=grp(g,.62,.78,0);h.add(piece([[ell(.22,.2,.2),c,[0,0,0]],[ell(.12,.09,.11),lt,[.17,-.04,0]],[ell(.035,.03,.04,0),"#2B201A",[.28,-.02,0]],...eyes(.12,.06,.12,.035)]));
+  h.userData.hull=new THREE.Object3D();g.userData.head=h;return g;},
+ seal(){return B.sealion("#8A8378");},
+ bird(c,belly,capc){const g=new THREE.Group();
+  g.add(piece([[ell(.36,.16,.17),c,[0,0,0]],belly?[ell(.27,.1,.13),belly,[.05,-.07,0]]:null,[ell(.14,.13,.13),capc||c,[.33,.05,0]],[cone(.045,.14,6),"#E3A44A",[.5,.03,0],[0,0,H]],...eyes(.41,.09,.08,.022)],.025));
+  const sh=new THREE.Shape();sh.moveTo(.18,0);sh.quadraticCurveTo(.14,.7,-.02,1.12);sh.quadraticCurveTo(-.2,.9,-.24,.45);sh.quadraticCurveTo(-.25,.15,-.2,0);sh.lineTo(.18,0);
+  const wg=new THREE.ShapeGeometry(sh,6);wg.rotateX(Math.PI/2);
+  const wL=new THREE.Mesh(wg,tmat(c,1)),wR=new THREE.Mesh(wg,tmat(c,1));wR.scale.z=-1;g.add(wL,wR);
+  const ts=new THREE.Shape();ts.moveTo(0,-.05);ts.lineTo(-.34,-.13);ts.quadraticCurveTo(-.4,0,-.34,.13);ts.lineTo(0,.05);
+  const tg=new THREE.ShapeGeometry(ts,4);tg.rotateX(Math.PI/2);const tl=new THREE.Mesh(tg,tmat(c,1));tl.position.set(-.3,0,0);g.add(tl);
+  g.userData.w=[wL,wR];return g;}
+};
+return B;})();
+Object.assign(BUILD,GENTLE);
+const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={bighorn:1.45,turtle:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const animalGroup=new THREE.Group();world.add(animalGroup);
+const animals=[];
+const ANIMALS=[
+ {k:"bighorn",path:[4954,-2556,4917,-2493],per:30},
+ {k:"bighorn",path:[4779,-3678,5101,-3473],per:32,ph:0.4},
+ {k:"turtle",path:[-190,-5305,-172,-5383],per:60},
+ {k:"squirrel",at:[-3570,-4417],hop:true},
+ {k:"squirrel",at:[4218,-16],hop:true},
+ {k:"quail",at:[-1055,-4594],flock:3},
+ {k:"quail",at:[-3962,-4599],flock:3},
+ {k:"snake",path:[4233,-868,4506,-1140],per:30},
+ {k:"coyote",path:[-970,-4963,-891,-5154],per:24}
+];
+/* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
+ANIMALS.forEach((a,idx)=>{
+  const s=a.s||SCALE[a.k];const items=[];
+  const make=()=>{const o=BUILD[a.k]();o.scale.setScalar(s);return o;};
+  const x=a.at?a.at[0]:a.path[0],n=a.at?a.at[1]:a.path[1];
+  const holder=new THREE.Group();animalGroup.add(holder);
+  if(a.flock){const sp=Math.min(700,Math.max(260,0.07*Math.max(C.x1-C.x0,C.n1-C.n0)));const nF=Math.min(a.flock,2);for(let i=0;i<nF;i++){let dx=0,dn=0;if(i){for(let t=0;t<12;t++){const ang=t*0.52+idx,cx=Math.cos(ang)*sp,cn=Math.sin(ang)*sp;if(H(x+cx,n+cn)>0.8&&qOf(x+cx,n+cn)<0.86){dx=cx;dn=cn;break;}}}const o=make();holder.add(o);items.push({o,dx,dn});}}
+  else{const o=make();holder.add(o);items.push({o,dx:0,dn:0});}
+  let lift=0;if(a.rock){const p=G(x,n);part(holder,new THREE.IcosahedronGeometry(1,0),PAL.stone,p.x,p.y+0.5,p.z,1.6,0.9,1.4);lift=1.05;}
+  items.forEach(it=>{it.o.position.copy(G(x+it.dx,n+it.dn,lift));it.o.rotation.y=a.h||0;});
+  animals.push({...a,s,items,holder,x,n,ph:a.ph||idx*0.37,trails:nearTrails(x,n),pos:()=>items[0].o.position});
+});
+// birds
+const birds=[];
+[["hawk",-44,32,-30,8],["raven",44,26,26,7],["hawk",-36,35,40,7],["raven",34,30,-44,6],["hawk",0,38,-50,10],["raven",-10,28,50,6],["hawk",50,34,-10,9]].forEach((b,i)=>{
+  const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
+// clouds with varied shapes
+const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
+  const SHAPES={puff:[[0,0,0,2.6],[2.6,-.4,.4,2.0],[-2.5,-.6,-.2,1.9],[1,1.4,-.3,1.8],[4.4,-.9,.2,1.3]],
+    long:[[-4.5,0,0,1.3],[-2.6,.3,.2,1.7],[-.6,.5,0,2.0],[1.5,.3,-.2,1.8],[3.5,0,.1,1.5],[5.2,-.2,0,1.1]],
+    tower:[[0,0,0,2.2],[0.6,2.2,.2,1.8],[-.3,3.9,0,1.4],[1.9,.4,-.2,1.5],[-1.9,.2,.1,1.5]],
+    wisp:[[0,0,0,1.2],[1.5,.2,0,0.9],[-1.3,-.1,0,0.8]]};
+  [["puff",-46,30,-34,1.6],["long",64,32,-34,1.2],["tower",-60,34,6,1.1],["wisp",36,36,-46,1.6],["long",-8,38,-56,1.0],["wisp",58,30,-6,1.4],["puff",-22,40,-62,1.1]].forEach(([sh,x,y,z,s0],k)=>{const cl=new THREE.Group();
+    SHAPES[sh].forEach(([a,b,c,s])=>{const m=new THREE.Mesh(cg,lam(PAL.cloud));m.position.set(a,b,c);m.scale.set(s,s*(sh==="long"||sh==="wisp"?0.7:1),s);const h=new THREE.Mesh(cg,hm);h.position.copy(m.position);h.scale.copy(m.scale).multiplyScalar(1.05);cl.add(h,m);});
+    cl.position.set(x,y,z);cl.scale.setScalar(s0);scene.add(cl);clouds.push({obj:cl,hx:x,hz:z,hy:y,ph:k*1.9});});})();
+
+/* ================= camera & views ================= */
+const VIEW=100;
+const cur={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()},goal={az:1.0,el:0.58,zoom:1,target:new THREE.Vector3()};
+let view="all",hoverKey=null,animalsOn=true,flowersOn=true,topoOn=true,treesOn=true,baseOn=true;
+const dirOf=(az,el)=>new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az));
+const stage=$("#stage");
+const isPhone=()=>innerWidth<=860;
+function margins(){if(isPhone())return {l:12,r:12,t:16,b:52};const pl=$("#panel").offsetWidth;return {l:pl+200,r:200,t:56,b:56};}
+const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
+function viewPoints(v){
+  if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
+  const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
+const VIEWAZ={"all":0.6,"A":0.6,"B":0.6,"C":0.6};
+function fitFor(v,az,el){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
+  const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
+  const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
+  const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.2, "B": 3.4, "C": 2.6}[v]||2.4));
+  const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
+  return {zoom,target};}
+function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
+
+/* ================= icons ================= */
+function fIcon(sh,c){const s={tube:`<path d="M6 11V4" stroke="#5F8A3E"/><path d="M4.5 4.5 6 1l1.5 3.5z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  cup:`<circle cx="6" cy="8" r="3.4" fill="#5F8A3E"/><path d="M3.5 4h5L6 7z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  dome:`<circle cx="6" cy="8.5" r="3" fill="#5F8A3E"/><ellipse cx="6" cy="5" rx="3.6" ry="2.2" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  spike:`<path d="M6 11V6" stroke="#5F8A3E"/><path d="M4.6 7 6 1l1.4 6z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  yucca:`<path d="M2 11l4-3 4 3M6 8V3" stroke="#7E9B5C"/><path d="M5 4 6 .5 7 4z" fill="${c}" stroke="#2D4A40" stroke-width=".6"/>`,
+  berry:`<circle cx="6" cy="6.5" r="4.2" fill="#4F7A3A"/><circle cx="4.5" cy="5" r="1" fill="${c}"/><circle cx="7.5" cy="6.5" r="1" fill="${c}"/><circle cx="5.5" cy="8.2" r="1" fill="${c}"/>`,
+  fern:`<path d="M6 11 2 3M6 11 6 1M6 11 10 3" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`,
+  pad:`<ellipse cx="6" cy="8.3" rx="2.6" ry="3" fill="#7FA552"/><ellipse cx="3.6" cy="4.6" rx="1.8" ry="2.2" fill="#7FA552"/><ellipse cx="8.4" cy="4.4" rx="1.8" ry="2.2" fill="#7FA552"/><circle cx="3.6" cy="2.4" r="1.1" fill="${c}"/><circle cx="8.4" cy="2.2" r="1.1" fill="${c}"/>`}[sh];
+  return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true">${s}</svg>`;}
+function paw(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="8" rx="2.6" ry="2.2" fill="${c}"/><circle cx="2.6" cy="5" r="1.1" fill="${c}"/><circle cx="4.6" cy="3" r="1.1" fill="${c}"/><circle cx="7.4" cy="3" r="1.1" fill="${c}"/><circle cx="9.4" cy="5" r="1.1" fill="${c}"/></svg>`;}
+function wing(c){return `<svg class="ico" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6c2-2 3.5-2 5 0 1.5-2 3-2 5 0-1.5.4-3 1.6-5 3C4 7.6 2.5 6.4 1 6z" fill="${c}"/></svg>`;}
+const isBird=k=>!!BIRDC[k];
+const wIcon=k=>isBird(k)?wing(WILD[k].color):paw(WILD[k].color);
+function stopBadge(id){const s=STOP[id],t=s.trails.length===1?s.trails[0]:null;return t?`<span class="bd t" style="--c:var(${TR[t].color})">${id}</span>`:`<span class="bd">${id}</span>`;}
+
+/* ================= callouts ================= */
+const LABELS=[];const labelsBox=$("#labels");
+function addLabel(o){const el=document.createElement("div");el.className="kn"+(o.kind!=="stop"?" f":"");el.innerHTML=`${o.badge}<span class="tx">${o.text}</span>`;el.hidden=true;
+  el.addEventListener("pointerenter",()=>setHover(o.key));el.addEventListener("pointerleave",()=>setHover(null));
+  el.addEventListener("click",e=>{e.stopPropagation();openCard(o.item);});labelsBox.appendChild(el);o.el=el;o.ly=null;LABELS.push(o);}
+STOPS.forEach(s=>addLabel({key:"s-"+s.id,kind:"stop",badge:stopBadge(s.id),text:s.name,views:["all",...s.trails],pos:()=>s.v,item:{kind:"stop",id:s.id,pos:()=>s.v}}));
+TRAILS.forEach(T=>{
+  const best={};animals.forEach(a=>{if(!a.trails.includes(T.id))return;const dd=distToTrail(T,a.x,a.n);if(!best[a.k]||dd<best[a.k].d)best[a.k]={a,d:dd};});
+  Object.values(best).forEach(({a})=>{const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};
+    addLabel({key:"w-"+T.id+"-"+a.k,kind:"animal",badge:`<span class="bd ic">${wIcon(a.k)}</span>`,text:a.label||WILD[a.k].name,views:[T.id],pos:item.pos,item});});
+  const bestF={};clusters.filter(c=>c.trail===T.id).forEach(c=>{if(!bestF[c.k]||c.dist<bestF[c.k].dist)bestF[c.k]=c;});
+  Object.values(bestF).forEach(c=>{const item={kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))};
+    addLabel({key:"f-"+T.id+"-"+c.k,kind:"flower",badge:`<span class="bd ic">${fIcon(SPECIES[c.k].shape,SPECIES[c.k].color)}</span>`,text:SPECIES[c.k].name,views:[T.id],pos:item.pos,item});});
+});
+function labelOn(o){if(!o.views.includes(view))return false;if(o.kind==="animal")return animalsOn;if(o.kind==="flower")return flowersOn;return true;}
+function setHover(k){hoverKey=k;LABELS.forEach(o=>o.el.classList.toggle("on",o.key===k));}
+const tmpV=new THREE.Vector3();
+function project(v){tmpV.copy(v).project(cam);return {x:(tmpV.x+1)/2*stage.clientWidth,y:(1-tmpV.y)/2*stage.clientHeight};}
+function layoutLabels(){
+  const W=stage.clientWidth,Hh=stage.clientHeight,m=margins(),ink="#1D2B26";
+  const act=LABELS.filter(o=>{const on=labelOn(o);o.el.hidden=!on;return on;});
+  const P=act.map(o=>{const p=project(o.pos());return {o,x:p.x,y:p.y};});
+  if(isPhone()){P.forEach(p=>{p.o.el.classList.add("dot");p.o.el.classList.remove("left","right");p.o.el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`;});$("#lead").innerHTML="";return;}
+  const cxm=(m.l+(W-m.r))/2;let Lf=P.filter(p=>p.x<cxm),Rt=P.filter(p=>p.x>=cxm);
+  while(Lf.length>Rt.length+1){Lf.sort((a,b)=>b.x-a.x);Rt.push(Lf.shift());}
+  while(Rt.length>Lf.length+1){Rt.sort((a,b)=>a.x-b.x);Lf.push(Rt.shift());}
+  const gap=act.length>18?26:30,top=m.t+8,bot=Hh-m.b-8;
+  const spread=arr=>{arr.sort((a,b)=>a.y-b.y);const ys=arr.map(p=>Math.max(top,Math.min(bot,p.y)));for(let i=1;i<ys.length;i++)ys[i]=Math.max(ys[i],ys[i-1]+gap);
+    const over=ys.length?ys[ys.length-1]-bot:0;if(over>0){ys[ys.length-1]-=over;for(let i=ys.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]-gap);}
+    arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
+  spread(Lf);spread(Rt);
+  let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
+  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+    svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
+  P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
+  $("#lead").innerHTML=svg;
+}
+
+/* ================= glass card ================= */
+const card=$("#card");let cardItem=null;
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const r10=n=>fmt(Math.round(n/10)*10);
+function mileOf(T,x,n){let best=null;T.pts.forEach(p=>{const dd=Math.hypot(p.x-x,p.n-n);if(!best||dd<best.d)best={d:dd,m:p.m,e:p.e};});return best&&best.d<260?best:null;}
+function floraStatus(sp){if(sp.bloom.includes(NOW_MONTH))return ["In bloom now",1];if((sp.fruit||[]).includes(NOW_MONTH))return ["Berries now",1];if(!sp.bloom.length)return ["Green all year",0];return [`Blooms ${MONTHS[sp.bloom[0]-1]}–${MONTHS[sp.bloom[sp.bloom.length-1]-1]}`,0];}
+function photosFor(item){if(item.kind==="stop")return PHOTOS.stop[item.id]||[];if(item.kind==="animal")return PHOTOS.animal[item.k]||[];return PHOTOS.flower[item.k]||[];}
+function credit(p){return `Photo: <a href="${p.src}" target="_blank" rel="noopener">${p.by}</a> · CC ${p.lic}`;}
+function openCard(item){cardItem=item;let h="";
+  if(item.kind==="stop"){const s=STOP[item.id];const miles=s.trails.map(t=>{const mm=mileOf(TR[t],s.x,s.n);return mm?`Trail ${t} · ${mm.m.toFixed(2)} mi · ${fmt(mm.e)} ft`:""}).filter(Boolean).join("<br>");
+    h=`<div class="row">${stopBadge(s.id)}<span class="eyebrow">Stop</span></div><h4>${s.name}</h4><p>${s.desc}</p>${miles?`<div class="meta">${miles}</div>`:""}`;}
+  else if(item.kind==="animal"){const W=WILD[item.k];const tr=item.a?item.a.trails:[];h=`<div class="row"><span class="bd ic">${wIcon(item.k)}</span><span class="eyebrow">Wildlife</span></div><h4>${W.name}</h4><p>${W.sum}</p>${tr.length?`<div class="meta">Near Trail ${tr.join(", ")}</div>`:""}`;}
+  else{const sp=SPECIES[item.k],[st]=floraStatus(sp);h=`<div class="row"><span class="bd ic">${fIcon(sp.shape,sp.color)}</span><span class="eyebrow">Flower</span></div><h4>${sp.name}</h4><p>${sp.sum}</p><div class="meta"><i>${sp.latin}</i> · ${st}</div>`;}
+  const ph=photosFor(item);
+  const gal=ph.length?`<div class="gal"><img class="main" src="${ph[0].f}" alt="${ph[0].t||""}"><div class="cr">${credit(ph[0])}</div>${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button class="th${i?"":" on"}" data-i="${i}"><img src="${p.f}" alt=""></button>`).join("")}</div>`:""}</div>`
+    :`<div class="gal"><p class="none">No open-license traveler photos of this exact spot yet.</p></div>`;
+  card.classList.remove("big");
+  card.innerHTML=`<button class="x" aria-label="Close">×</button>`+h+gal+`<div class="more">${ph.length?`Tap for ${ph.length} photo${ph.length>1?"s":""}`:"Tap for photos"}</div>`;card.hidden=false;
+  card.querySelector(".x").onclick=e=>{e.stopPropagation();closeCard();};
+  card.querySelectorAll(".th").forEach(b=>b.onclick=e=>{e.stopPropagation();const p=ph[+b.dataset.i];card.querySelector(".main").src=p.f;card.querySelector(".cr").innerHTML=credit(p);card.querySelectorAll(".th").forEach(t=>t.classList.toggle("on",t===b));});
+  card.onclick=e=>{if(e.target.closest("a,.th,.x"))return;card.classList.toggle("big");positionCard();};
+  positionCard();}
+function closeCard(){cardItem=null;card.hidden=true;}
+function positionCard(){if(!cardItem)return;const p=project(cardItem.pos());const W=stage.clientWidth;const cw=card.offsetWidth,ch=card.offsetHeight;
+  let x=Math.max(cw/2+8,Math.min(W-cw/2-8,p.x)),y=p.y-14;if(y-ch<8)y=ch+8;card.style.transform=`translate(${x-cw/2}px,${y-ch}px)`;}
+
+/* ================= portraits (rendered from the same models) ================= */
+let pr=null;const PCACHE={};
+function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
+  if(!pr){pr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});pr.setPixelRatio(2);pr.setSize(236,184);}
+  const sc=new THREE.Scene();sc.add(new THREE.AmbientLight(0xffffff,0.62));const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-3,5,4);sc.add(dl);
+  const g=new THREE.Group();sc.add(g);
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.35,40),[lam(PAL.band),lam(PAL.ground),lam(PAL.ground)]);disc.position.y=-0.18;g.add(disc);
+  const ring=new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry,30),new THREE.LineBasicMaterial({color:PAL.slabLine}));ring.position.copy(disc.position);g.add(ring);
+  let subj;
+  if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
+    else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,elk:1.66,moose:1.73,bison:1.66,bighorn:1.43,goat:1.39,marmot:1.16,pika:0.95,chipmunk:1.04,grizzly:1.19,alligator:1.39,turtle:1.04,turkey:1.22,javelina:1.39,armadillo:1.09,heron:1.3,egret:1.3,nene:1.09,fox:1.49,pronghorn:1.49,otter:1.22,beaver:1.22}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+  else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
+  g.add(subj);
+  const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+  const c2=new THREE.OrthographicCamera(-1,1,1,-1,-100,100);const az=0.9,el=0.42;c2.position.copy(ctr).add(new THREE.Vector3(Math.cos(el)*Math.sin(az),Math.sin(el),Math.cos(el)*Math.cos(az)).multiplyScalar(20));c2.lookAt(ctr);
+  const hw=Math.max(size.x*0.62,size.z*0.62,size.y*0.75,1.2),a=236/184;c2.left=-hw*a;c2.right=hw*a;c2.top=hw;c2.bottom=-hw;c2.updateProjectionMatrix();
+  pr.render(sc,c2);const url=pr.domElement.toDataURL("image/png");PCACHE[key]=url;return url;}
+
+/* ================= panel ================= */
+function spark(T,w0,h0){const pts=T.pts.filter((p,i)=>i%3===0);const dd=pts.map((p,i)=>`${i?"L":"M"}${(p.m/T.total*w0).toFixed(1)},${(h0-2-(p.e-T.lo)/(T.hi-T.lo||1)*(h0-4)).toFixed(1)}`).join("");return `<svg width="${w0}" height="${h0}" viewBox="0 0 ${w0} ${h0}" aria-hidden="true"><path d="${dd}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/></svg>`;}
+function profileSVG(T){const w0=320,h0=96,m={l:38,r:8,t:24,b:16};const step=T.hi-T.lo>1000?500:T.hi-T.lo>450?200:100,lo=Math.floor((T.lo-20)/step)*step,hi=Math.ceil((T.hi+40)/step)*step;
+  const X=v=>m.l+v/T.total*(w0-m.l-m.r),Y=e=>m.t+(1-(e-lo)/(hi-lo))*(h0-m.t-m.b);let g="";
+  for(let e=lo;e<=hi;e+=step)g+=`<line x1="${m.l}" x2="${w0-m.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--rule)"/><text x="${m.l-5}" y="${Y(e)+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${fmt(e)}</text>`;
+  const line=T.pts.map((p,i)=>`${i?"L":"M"}${X(p.m).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  g+=`<path d="${line}L${X(T.total)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="var(${T.color})" fill-opacity=".14"/><path d="${line}" fill="none" stroke="var(${T.color})" stroke-width="1.6"/>`;
+  g+=`<text x="${m.l}" y="${h0-3}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">0 mi</text><text x="${w0-m.r}" y="${h0-3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="var(--muted)">${T.official} mi</text>`;
+  ORDER[T.id].forEach(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);if(!mm)return;const x=X(mm.m),y=Y(mm.e),t=s.trails.length===1?s.trails[0]:null,fill=t?`var(${TR[t].color})`:"#fff",tc=t?"#fff":"var(--ink)",wd=id.length>1?18:14;
+    g+=`<line x1="${x}" x2="${x}" y1="${y}" y2="${y-8}" stroke="var(--ink)" stroke-width=".7"/><rect x="${x-wd/2}" y="${y-21}" width="${wd}" height="13" rx="6.5" fill="${fill}" stroke="${t?fill:"var(--ink)"}"/><text x="${x}" y="${y-11.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="${tc}">${id}</text>`;});
+  return `<svg viewBox="0 0 ${w0} ${h0}" aria-label="Elevation profile">${g}</svg>`;}
+function speciesHere(){const ws=new Set(),fs=new Set();
+  animals.forEach(a=>{if(view==="all"||a.trails.includes(view))ws.add(a.k);});if(view==="all")["hawk","jay","raven","woodpecker"].forEach(k=>ws.add(k));else["hawk","jay"].forEach(k=>ws.add(k));
+  clusters.forEach(c=>{if(view==="all"||c.trail===view)fs.add(c.k);});return {ws:[...Object.keys(WILD)].filter(k=>ws.has(k)),fs:[...Object.keys(SPECIES)].filter(k=>fs.has(k))};}
+function wildList(ks){return `<ul class="list" data-kind="animal">${ks.map(k=>`<li data-k="${k}"><button class="item">${wIcon(k)}<span class="nm">${WILD[k].name}</span><span class="chev">›</span></button></li>`).join("")}</ul>`;}
+function floraList(ks){return `<ul class="list" data-kind="flower">${ks.map(k=>{const sp=SPECIES[k],[st,now]=floraStatus(sp);return `<li data-k="${k}"><button class="item">${fIcon(sp.shape,sp.color)}<span class="nm">${sp.name} <span class="lt">${sp.latin}</span></span><span class="bm${now?" now":""}">${st}</span></button></li>`;}).join("")}</ul>`;}
+function renderPanel(){let h="";const {ws,fs}=speciesHere();
+  if(view==="all"){
+    h=`<div><div class="eyebrow">All trails</div><h2>Joshua trees, a ranch ruin and a 5,457-ft summit</h2></div>
+    <p>The middle of Joshua Tree National Park is high desert at 4,000 to 5,000 ft, where the Mojave Desert’s Joshua tree woodland grows between piles of rounded monzogranite boulders. A is the short Cap Rock Nature Trail, B an easy walk to the adobe ruins of Ryan Ranch, and C the climb up Ryan Mountain, one of the most popular hikes in the park. Pick a trail to focus the model; click anything on it for a quick note.</p>
+    <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
+    <div><h3>How the numbers work</h3><p class="note">The three trails start from different trailheads on Park Boulevard, so every stop carries its trail’s letter: C5 is the fifth stop on Trail C. Mileage on B and C is counted on the way out.</p></div>
+    <div><h3>Wildlife around Ryan Mountain</h3>${wildList(ws)}</div>
+    <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
+    <p class="note"><b>Open.</b> Joshua Tree National Park, on Park Boulevard between the West Entrance (from the town of Joshua Tree) and the North Entrance (Twentynine Palms). Entrance fee $30 per private vehicle, good for 7 days; no reservation or timed entry. Cap Rock is at Park Boulevard and Keys View Road; the Ryan Mountain Trailhead is about 2 miles east on Park Boulevard. There is no water at these trailheads; bring plenty. Summer heat is extreme and the NPS does not recommend Ryan Mountain in summer; hike early or late. Dogs are not allowed on these trails. Check nps.gov/jotr for current alerts. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
+  } else {const T=TR[view];
+    h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
+    <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+    <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
+    <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
+    <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
+    <div><h3>Flowers along the way</h3>${floraList(fs)}</div>
+    <div><h3>Read more</h3><div class="links">${({A:`<a href="https://www.nps.gov/jotr/learn/nature/cap-rock-trail.htm" target="_blank" rel="noopener">Cap Rock Trail · NPS</a><a href="https://www.nps.gov/places/cap-rock.htm" target="_blank" rel="noopener">Cap Rock · NPS</a><a href="https://www.nps.gov/jotr/planyourvisit/hiking.htm" target="_blank" rel="noopener">Hiking in Joshua Tree · NPS</a>`,B:`<a href="https://www.nps.gov/jotr/planyourvisit/hiking.htm" target="_blank" rel="noopener">Hiking in Joshua Tree · NPS</a><a href="https://www.hikespeak.com/trails/ryan-ranch-joshua-tree/" target="_blank" rel="noopener">Ryan Ranch · Hikespeak</a><a href="https://en.wikipedia.org/wiki/Ryan_House_and_Lost_Horse_Well" target="_blank" rel="noopener">Ryan House and Lost Horse Well · Wikipedia</a>`,C:`<a href="https://www.nps.gov/places/ryan-mountain-trailhead.htm" target="_blank" rel="noopener">Ryan Mountain Trailhead · NPS</a><a href="https://www.hikingproject.com/trail/7016889/ryan-mountain-trail" target="_blank" rel="noopener">Ryan Mountain Trail · Hiking Project</a><a href="https://www.nps.gov/jotr/planyourvisit/hiking.htm" target="_blank" rel="noopener">Hiking in Joshua Tree · NPS</a>`})[T.id]||""}</div></div>`;}
+  $("#pbody").innerHTML=h;$("#pbody").scrollTop=0;
+  document.querySelectorAll("#pbody [data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+  document.querySelectorAll('#pbody .list[data-kind="stop"] li').forEach(li=>{const id=li.dataset.id;li.querySelector("button").addEventListener("click",()=>openCard({kind:"stop",id,pos:()=>STOP[id].v}));
+    li.addEventListener("pointerenter",()=>setHover("s-"+id));li.addEventListener("pointerleave",()=>setHover(null));});
+  document.querySelectorAll('#pbody .list[data-kind="animal"] li, #pbody .list[data-kind="flower"] li').forEach(li=>{const kind=li.parentElement.dataset.kind,k=li.dataset.k;
+    li.querySelector("button").addEventListener("click",()=>toggleDetail(li,kind,k));});
+}
+function toggleDetail(li,kind,k){const open=li.classList.contains("open");li.parentElement.parentElement.parentElement.querySelectorAll("li.open").forEach(o=>{o.classList.remove("open");const d=o.querySelector(".detail");if(d)d.remove();});
+  if(open){closeCard();return;}
+  li.classList.add("open");const isA=kind==="animal";const info=isA?WILD[k]:SPECIES[k];
+  const d=document.createElement("div");d.className="detail glass";
+  const ph=(isA?PHOTOS.animal[k]:PHOTOS.flower[k])||[];
+  d.innerHTML=`<div>${ph.length?`<img alt="${info.name}" src="${ph[0].f}"><div class="cap">${credit(ph[0])}</div>`:`<img alt="${info.name}, drawn in the model's style" src="${portrait(kind,k)}"><div class="cap">Model drawing</div>`}</div><div><p>${info.sum}</p>${isA?"":`<p style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i>${info.latin}</i> · ${floraStatus(info)[0]}</p>`}</div>`;
+  li.appendChild(d);
+  // also point to it on the model
+  if(isA){if(isBird(k)){const b=birds.find(b=>b.k===k);if(b)openCard({kind:"animal",k,a:null,pos:()=>b.obj.position});}
+    else{const a=animals.find(a=>a.k===k&&(view==="all"||a.trails.includes(view)));if(a&&animalsOn)openCard({kind:"animal",k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))});}}
+  else{const c=clusters.filter(c=>c.k===k&&(view==="all"||c.trail===view)).sort((a,b)=>a.dist-b.dist)[0];if(c&&flowersOn)openCard({kind:"flower",k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))});}}
+$("#switch").innerHTML=`<button data-v="all" aria-pressed="true"><span class="sl">Overview</span><span class="sn">All trails</span></button>`+TRAILS.map(T=>`<button data-v="${T.id}" aria-pressed="false"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="sn">${T.short}</span></button>`).join("");
+document.querySelectorAll("#switch button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.v)));
+function applyVisibility(){
+  animals.forEach(a=>{a.holder.visible=animalsOn&&(view==="all"||a.trails.includes(view));});
+  birds.forEach(b=>b.obj.visible=animalsOn);
+  Object.entries(flowerGroups).forEach(([t,g])=>g.visible=flowersOn&&(view==="all"||view===t));
+  topoGroup.visible=topoOn;treeGroup.visible=treesOn;baseGroup.visible=baseOn;trail3D.visible=!topoOn;TRAILS.forEach(T=>{T.g3.visible=view==="all"||view===T.id;});
+  if(cardItem&&((cardItem.kind==="animal"&&!animalsOn)||(cardItem.kind==="flower"&&!flowersOn)))closeCard();}
+function select(v){view=v;document.querySelectorAll("#switch button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===v)));
+  TRAILS.forEach(T=>{const on=v==="all"||v===T.id;trailMesh[T.id].bright.visible=on;trailMesh[T.id].dim.visible=!on;});
+  goal.az=VIEWAZ[v];goal.el=v==="all"?0.58:0.66;LABELS.forEach(o=>o.ly=null);closeCard();fitGoal();applyVisibility();renderPanel();setHover(null);
+  try{history.replaceState(null,"",v==="all"?location.pathname+location.search:"#trail-"+v);}catch(e){}}
+
+/* ================= interaction ================= */
+const ptrs=new Map();let pinch0=0,zoom0=1,down=null;
+function pickAt(px,py){let best=null,bd=26;
+  const test=(item,v)=>{const p=project(v);const dd=Math.hypot(p.x-px,p.y-py);if(dd<bd){bd=dd;best=item;}};
+  STOPS.forEach(s=>{if(view==="all"||s.trails.includes(view))test({kind:"stop",id:s.id,pos:()=>s.v},s.v);});
+  if(animalsOn){animals.forEach(a=>{if(!a.holder.visible)return;const item={kind:"animal",k:a.k,a,pos:()=>a.pos().clone().add(new THREE.Vector3(0,1.6*a.s/1.5,0))};test(item,a.pos().clone().add(new THREE.Vector3(0,0.8,0)));});
+    birds.forEach(b=>test({kind:"animal",k:b.k,a:null,pos:()=>b.obj.position},b.obj.position));}
+  if(flowersOn)clusters.forEach(c=>{if(view!=="all"&&c.trail!==view)return;test({kind:"flower",k:c.k,c,pos:()=>c.v.clone().add(new THREE.Vector3(0,1.2,0))},c.v.clone().add(new THREE.Vector3(0,0.6,0)));});
+  return best;}
+stage.addEventListener("pointerdown",e=>{if(e.target.closest("#card,.kn"))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now()};stage.setPointerCapture(e.pointerId);stage.classList.add("dragging");
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);zoom0=goal.zoom;}});
+stage.addEventListener("pointermove",e=>{const p=ptrs.get(e.pointerId);
+  if(!p){const r=stage.getBoundingClientRect();stage.classList.toggle("pick",!!pickAt(e.clientX-r.left,e.clientY-r.top));return;}
+  if(ptrs.size===2){p.x=e.clientX;p.y=e.clientY;const [a,b]=[...ptrs.values()];const dd=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)goal.zoom=Math.max(.5,Math.min(30,zoom0*dd/pinch0));return;}
+  const ddx=e.clientX-p.x,ddy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;goal.az-=ddx*0.006;goal.el=Math.max(0.3,Math.min(1.25,goal.el+ddy*0.004));});
+const endP=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!ptrs.size)stage.classList.remove("dragging");pinch0=0;
+  if(down&&e.type==="pointerup"&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&performance.now()-down.t<500){const r=stage.getBoundingClientRect();const it=pickAt(e.clientX-r.left,e.clientY-r.top);if(it)openCard(it);else closeCard();}down=null;};
+stage.addEventListener("pointerup",endP);stage.addEventListener("pointercancel",endP);
+stage.addEventListener("wheel",e=>{e.preventDefault();goal.zoom=Math.max(.5,Math.min(30,goal.zoom*Math.exp(-e.deltaY*0.0015)));},{passive:false});
+$("#zin").onclick=()=>goal.zoom=Math.min(30,goal.zoom*1.3);$("#zout").onclick=()=>goal.zoom=Math.max(.5,goal.zoom/1.3);
+$("#zfit").onclick=()=>{goal.az=VIEWAZ[view];goal.el=view==="all"?0.58:0.66;fitGoal();};
+const tog=(id,fn)=>$(id).addEventListener("click",e=>{const v=fn();e.currentTarget.setAttribute("aria-pressed",String(v));applyVisibility();});
+tog("#tgTopo",()=>topoOn=!topoOn);tog("#tgBase",()=>baseOn=!baseOn);tog("#tgTrees",()=>treesOn=!treesOn);tog("#tgAnimals",()=>animalsOn=!animalsOn);tog("#tgFlowers",()=>flowersOn=!flowersOn);
+addEventListener("keydown",e=>{if(e.metaKey||e.ctrlKey)return;const k={"0":"all","1":"A","2":"B","3":"C",Escape:"esc"}[e.key];if(!k)return;if(k==="esc"){if(cardItem){closeCard();return;}select("all");}else select(k);});
+function resize(){const W=stage.clientWidth,Hh=stage.clientHeight;if(!W||!Hh)return;renderer.setSize(W,Hh,false);const a=W/Hh;cam.left=-VIEW*a/2;cam.right=VIEW*a/2;cam.top=VIEW/2;cam.bottom=-VIEW/2;}
+new ResizeObserver(()=>{resize();fitGoal();}).observe(stage);
+
+/* ================= animation ================= */
+const UPV=new THREE.Vector3(0,1,0);let cloudLift=12;
+function animate(tt,dt){
+  animals.forEach(a=>{
+    if(a.path){const per=a.per,u=((tt/per+a.ph)%1),k=u<0.5?u*2:2-u*2,e=k*k*(3-2*k);
+      const [x0,n0,x1,n1]=a.path,x=x0+(x1-x0)*e,n=n0+(n1-n0)*e;const o=a.items[0].o;
+      if(a.k==="snake"){o.position.copy(G(x,n));const ang=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y=ang;
+        o.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(tt*3-i*0.6)*0.18);sg.userData.hull.position.copy(sg.position);});return;}
+      o.position.copy(G(x,n));const head=Math.atan2(n1-n0,x1-x0)+(u<0.5?0:Math.PI);o.rotation.y+=((head-o.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI)*0.08;
+      const spd=a.k==="raccoon"?7:a.k==="coyote"?6:5,sw=Math.sin(tt*spd+a.ph*20)*0.45;(o.userData.legs||[]).forEach((L,i)=>L.rotation.z=(i%2?sw:-sw)*(i<2?1:-1));
+      o.position.y+=Math.abs(Math.sin(tt*spd))*0.05*a.s;if(o.userData.tail)o.userData.tail.rotation.y=Math.sin(tt*3+a.ph)*0.3;}
+    else if(a.items[0].o.userData.neck&&!a.flock){const gz=(Math.sin(tt*0.6+a.ph*5)+1)/2;a.items[0].o.userData.neck.rotation.z=-gz*1.1;}
+    else if(a.items[0].o.userData.tail&&!a.hop&&!a.flock){a.items[0].o.userData.tail.rotation.y=Math.sin(tt*(a.k==="lion"?1.2:2.2)+a.ph)*0.6;}
+    else if(a.hop){const o=a.items[0].o,u=(tt*0.35+a.ph)%1,ang=u*Math.PI*2,rr=60;const x=a.x+Math.cos(ang)*rr,n=a.n+Math.sin(ang)*rr;o.position.copy(G(x,n,Math.abs(Math.sin(tt*6+a.ph*9))*0.35));o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;o.userData.tail.rotation.z=Math.sin(tt*6)*0.25;}
+    else if(a.flock){a.items.forEach((it,i)=>{const ang=tt*0.25+i*2.1+a.ph,x=a.x+it.dx+Math.cos(ang)*50,n=a.n+it.dn+Math.sin(ang)*50;it.o.position.copy(G(x,n,Math.abs(Math.sin(tt*5+i))*0.12));it.o.rotation.y=Math.atan2(Math.cos(ang),-Math.sin(ang))+Math.PI;});}
+  });
+  birds.forEach(b=>{const ang=tt*b.sp+b.ph;b.obj.position.set(b.cx+Math.cos(ang)*b.r,b.cy+Math.sin(tt*0.5+b.ph)*1.2,b.cz+Math.sin(ang)*b.r);
+    const s=Math.sign(b.sp),vx=-Math.sin(ang)*s,vz=Math.cos(ang)*s;b.obj.rotation.set(0,Math.atan2(-vz,vx),0);b.obj.rotateX(-0.28*s);
+    const flap=Math.max(0,Math.sin(tt*0.9+b.fl))**2;const fa=Math.sin(tt*9+b.fl)*0.7*flap+0.1;b.obj.userData.w[0].rotation.x=-fa;b.obj.userData.w[1].rotation.x=fa;});
+  cloudLift+=((view==="all"?12:48)-cloudLift)*Math.min(1,dt*1.5);
+  clouds.forEach(c=>{c.obj.position.x=c.hx+Math.sin(tt*0.06+c.ph)*8;c.obj.position.z=c.hz+Math.cos(tt*0.05+c.ph)*3;c.obj.position.y=c.hy+cloudLift+Math.sin(tt*0.3+c.ph)*0.4;});
+  creekTex.offset.y-=dt*0.35;
+  const W=anim.water;W.fallTex.offset.y+=dt*0.9;
+  W.rings.forEach((rg,i)=>{const u=(tt*0.5+i/3)%1;rg.scale.setScalar(0.5+u*1.6);rg.material.opacity=(1-u)*0.85;});
+  W.mist.forEach(m=>{const u=(tt*0.35+m.ph)%1;m.m.position.set(m.x+Math.sin(tt+m.ph*6)*0.15,0.2+u*1.6,0.9+u*0.4);m.m.scale.setScalar(0.6+u*1.2);m.m.material.opacity=(1-u)*0.7;});
+}
+let last=performance.now(),T0=last,lastRender=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+  const moving=Math.abs(goal.az-cur.az)>1e-3||Math.abs(goal.el-cur.el)>1e-3||Math.abs(goal.zoom-cur.zoom)/goal.zoom>1e-3||cur.target.distanceTo(goal.target)>1e-2||ptrs.size>0;
+  if(!moving&&t-lastRender<33)return;lastRender=t;
+  const dt=Math.min(0.05,(t-last)/1000);last=t;
+  const k=reduced?1:1-Math.exp(-dt*3.2);
+  cur.az+=(goal.az-cur.az)*k;cur.el+=(goal.el-cur.el)*k;cur.zoom+=(goal.zoom-cur.zoom)*k;cur.target.lerp(goal.target,k);
+  const fwd=dirOf(cur.az,cur.el);cam.position.copy(cur.target).addScaledVector(fwd,500);cam.up.set(0,1,0);cam.lookAt(cur.target);cam.zoom=cur.zoom;cam.updateProjectionMatrix();
+  const right=new THREE.Vector3().crossVectors(fwd.clone().negate(),UPV).normalize();
+  dirL.position.copy(cur.target).addScaledVector(right,-100).add(new THREE.Vector3(0,95,0)).addScaledVector(fwd,25);dirL.target.position.copy(cur.target);
+  if(!reduced)animate((t-T0)/1000,dt);
+  renderer.render(scene,cam);layoutLabels();positionCard();}
+resize();
+const h0=(location.hash||"").replace("#trail-","");
+select(TR[h0]?h0:"all");
+cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
+if(reduced)animate(6,0.016);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
+})();
+</script>
