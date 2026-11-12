@@ -1,0 +1,51 @@
+{
+ "name": "Quandary Peak",
+ "folder": "quandary-peak",
+ "city": "Breckenridge",
+ "area": "Breckenridge",
+ "region": "Rockies",
+ "state": "CO",
+ "lat": 39.38266,
+ "lon": -106.06278,
+ "where": "White River National Forest, Tenmile Range, 8 miles south of Breckenridge, Colorado",
+ "high": "14,265 ft",
+ "blurb": "One of Colorado's most climbed fourteeners: a Class 1 trail up the long east ridge to 14,265 feet, plus treeline and McCullough Gulch's White Falls as shorter hikes.",
+ "status": "Open; the 2026 summer parking reservation and shuttle season ended September 13, so the Quandary trailhead lot is free, first come, first served (no parking on McCullough Gulch Rd, Blue Lakes Rd or Hwy 9). Winter conditions: snow and avalanche terrain; winter gear and skills needed. Habituated mountain goats: never feed them.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Quandary Peak Trail to treeline",
+   "mi": 2.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 800
+  },
+  {
+   "id": "B",
+   "name": "McCullough Gulch to White Falls and the lake",
+   "mi": 4.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 900
+  },
+  {
+   "id": "C",
+   "name": "Quandary Peak East Ridge",
+   "mi": 6.75,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 3450
+  }
+ ],
+ "sources": [
+  "https://www.14ers.com/route.php?route=quan1&peak=Quandary+Peak",
+  "https://www.fs.usda.gov/r02/whiteriver/recreation/quandary-peak-th-47",
+  "https://www.hikequandary.com/",
+  "https://gobreck.com/go-breck/quandary-peak-hiking-guide/",
+  "https://www.gohikecolorado.com/mccullough-gulch",
+  "https://internetbrothers.org/2017/08/04/mccullough-gulch-trail-white-river-national-forest/",
+  "https://www.14ers.org/be-good-guests-to-our-wildlife-hosts/",
+  "https://en.wikipedia.org/wiki/Quandary_Peak",
+  "https://www.fs.usda.gov/sites/default/files/wildflowers-co-mountain-tops.pdf"
+ ]
+}
