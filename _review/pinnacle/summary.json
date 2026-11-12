@@ -1,0 +1,53 @@
+{
+ "name": "Pinnacle Peak Trail",
+ "folder": "pinnacle-peak",
+ "city": "Scottsdale",
+ "area": "Scottsdale",
+ "state": "AZ",
+ "region": "Southwest",
+ "lat": 33.72766,
+ "lon": -111.86066,
+ "where": "Pinnacle Peak Park, north Scottsdale, Arizona",
+ "high": "2,889 ft (trail); summit 3,169 ft",
+ "blurb": "A well-graded desert trail below a granite spire in north Scottsdale, with rest areas at Grandview and Owl’s Rest and saguaros all the way.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Pinnacle Peak Trail to Grandview",
+   "mi": 1.3,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 250
+  },
+  {
+   "id": "B",
+   "name": "Pinnacle Peak Trail to Owl’s Rest",
+   "mi": 1.9,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 400
+  },
+  {
+   "id": "C",
+   "name": "Pinnacle Peak Trail",
+   "mi": 3.8,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1300
+  }
+ ],
+ "status": "Open daily except Dec. 25, roughly sunrise to sunset (seasonal posted hours); no dogs or bikes on the trail; no heat closures, but the city urges finishing by 10 a.m. in hot weather.",
+ "sources": [
+  "https://www.scottsdaleaz.gov/parks/pinnacle-peak-park",
+  "https://www.scottsdaleaz.gov/parks/pinnacle-peak-park/rules-and-safety",
+  "https://www.scottsdaleaz.gov/parks/pinnacle-peak-park/faq",
+  "https://www.scottsdaleaz.gov/Assets/ScottsdaleAZ/Park+%24!26+Recreation/Pinnacle+Peak+Hours.pdf",
+  "https://www.scottsdaleaz.gov/news/details/triple-digit-temperatures-return-as-scottsdale-officials-urge-hikers-to-prepare-before-hitting-the-trails",
+  "https://en.wikipedia.org/wiki/Pinnacle_Peak_(Arizona)",
+  "https://www.hikingproject.com/trail/7002836/pinnacle-peak",
+  "https://www.hikearizona.com/decoder.php?ZTN=289",
+  "https://modernhiker.com/hike/pinnacle-peak/",
+  "https://backyardandbackcountry.blogspot.com/2015/08/pinnacle-peak.html",
+  "https://www.inaturalist.org/"
+ ]
+}
