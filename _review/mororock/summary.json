@@ -1,0 +1,59 @@
+{
+ "name": "Moro Rock",
+ "folder": "sequoia-moro-rock",
+ "city": "Three Rivers",
+ "area": "Sequoia National Park",
+ "region": "California",
+ "state": "CA",
+ "lat": 36.54698,
+ "lon": -118.76591,
+ "where": "Giant Forest, Sequoia National Park, California",
+ "high": "6,725 ft",
+ "blurb": "A historic stairway of more than 350 steps to the top of a granite dome above the Giant Forest, with loops past Crescent Meadow, Tharp's Log and Tunnel Log.",
+ "status": "Open: Crescent Meadow Road and the Giant Forest trails are open (NPS, Nov 10, 2026); the road closes to cars with snow and the stairway closes when icy; chains may be required.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Moro Rock",
+   "mi": 0.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 300
+  },
+  {
+   "id": "B",
+   "name": "Crescent Meadow, Tharp's Log and Chimney Tree",
+   "mi": 1.8,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 250
+  },
+  {
+   "id": "C",
+   "name": "Soldiers Loop",
+   "mi": 4.3,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 700
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/thingstodo/climb-moro-rock.htm",
+  "https://www.nps.gov/seki/planyourvisit/moro.htm",
+  "https://www.nps.gov/seki/planyourvisit/road-conditions.htm",
+  "https://www.nps.gov/seki/planyourvisit/conditions.htm",
+  "https://www.nps.gov/seki/planyourvisit/gfdayhikesum.htm",
+  "https://www.nps.gov/thingstodo/crescent-meadow.htm",
+  "https://www.nps.gov/places/tharps-log-wayside.htm",
+  "https://home.nps.gov/seki/faqtunnel.htm",
+  "https://www.nps.gov/places/000/booker-t-washington-tree.htm",
+  "https://en.wikipedia.org/wiki/Moro_Rock",
+  "https://www.hikespeak.com/trails/moro-rock-sequoia/",
+  "https://www.hikespeak.com/trails/crescent-meadow-sequoia/",
+  "https://www.hikespeak.com/trails/hanging-rock-sequoia/",
+  "https://modernhiker.com/hike/crescent-and-log-meadows/",
+  "https://modernhiker.com/hike/hiking-the-soldiers-loop-sequoia-national-park/",
+  "https://modernhiker.com/hike/hiking-the-sugar-pine-trail/",
+  "https://www.hikingproject.com/trail/7008449/moro-rock-trail"
+ ]
+}
