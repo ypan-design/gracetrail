@@ -1,0 +1,51 @@
+{
+ "name": "Escondido Falls",
+ "folder": "escondido-falls",
+ "city": "Malibu",
+ "area": "Malibu",
+ "region": "California",
+ "state": "CA",
+ "lat": 34.0261,
+ "lon": -118.78,
+ "where": "Escondido Canyon Park, Winding Way at Pacific Coast Highway, Malibu",
+ "high": "about 360 ft (lower falls)",
+ "blurb": "A road-and-creek walk from Pacific Coast Highway up Winding Way and into Escondido Canyon to a 50-foot waterfall that runs mostly after rain.",
+ "status": "Open. MRCA closed Escondido Canyon Park with other Malibu parks after the January 2025 fires and lifted the closure on May 23, 2025; MRCA parks may close on Red Flag Warning days. Parking $12 at the Winding Way lot; the upper falls are not open to the public.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Izumi Trail overlook",
+   "mi": 2.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 430
+  },
+  {
+   "id": "B",
+   "name": "Lower Escondido Falls",
+   "mi": 3.8,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 510
+  },
+  {
+   "id": "C",
+   "name": "Lower falls and Izumi Trail",
+   "mi": 4.7,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 630
+  }
+ ],
+ "sources": [
+  "https://mrca.ca.gov/parks/park-listing/escondido-canyon-park",
+  "https://mrca.ca.gov/order-of-closure-for-smmc-and-mrca-as-amended-may-23-2025",
+  "https://mrca.ca.gov/press/more-mrca-parks-reopened-not-in-evacuation-zones",
+  "https://mrca.ca.gov/wp-content/uploads/2023/03/Escondido-Canyon-Park-to-Escondido-Beach.pdf",
+  "https://www.hikespeak.com/trails/escondido-falls-santa-monica-mountains/",
+  "https://www.weekendsherpa.com/stories/hike-to-escondido-falls-in-malibu-california",
+  "https://smmtc.org/trailofthemonth/Escondido_Falls.php",
+  "https://modernhiker.com/hike/hiking-escondido-falls/",
+  "https://californiathroughmylens.com/escondido-falls-malibu-waterfall"
+ ]
+}
