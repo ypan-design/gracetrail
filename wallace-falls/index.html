@@ -467,7 +467,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type="conifer";p=0.05;}
+    if(Math.hypot(x-7085,n-2540)<230||Math.hypot(x-5720,n-2045)<170||Math.hypot(x-7860,n-3028)<170){type=null;}else if(mk<0.25){type="conifer";p=0.05;}
     else if(cd<230){type=tr()<.3?"gold":"conifer";p=0.3;}
     else if(g>1.15)type=null;
     else if(south<-0.1){type=tr()<.88?"conifer":"syc";p=0.34+cl*.25;}
@@ -560,11 +560,11 @@ const anim={};
     const m=new THREE.Mesh(geo,fallMat);m.renderOrder=2;world.add(m);return m;}
   function pool(x,n,e,r){const v=Wv(x,n,Math.max(e,surf(x,n)+2));part(world,new THREE.CylinderGeometry(1,1,0.05,18),"#CFEFF2",v.x,v.y,v.z,r,1,r*0.8,1.03,false);}
   // Lower Wallace Falls (OSM node ~5690,2050): cascades down to the pool below the shelter
-  fall(5800,2060,900,5740,2056,850,30,10);fall(5740,2056,850,5640,2030,790,34,10);pool(5605,2000,780,0.6);
+  fall(5800,2062,930,5730,2054,870,70,20);fall(5730,2054,870,5640,2028,800,80,16);pool(5600,1995,785,1.0);
   // Wallace Falls / Middle Falls (OSM node ~7035,2441): main 265 ft plunge
-  fall(7110,2610,1330,7070,2520,1240,40,16);fall(7070,2520,1240,7040,2450,1160,48,14);pool(7025,2430,1150,0.9);
+  fall(7135,2650,1400,7085,2540,1260,110,30);fall(7085,2540,1260,7045,2455,1165,130,20);pool(7030,2432,1152,1.4);
   // Upper Wallace Falls (OSM node ~7821,3032)
-  fall(7950,3022,1590,7880,3028,1540,30,10);fall(7880,3028,1540,7790,3028,1470,32,10);pool(7770,3020,1460,0.5);
+  fall(7950,3022,1620,7875,3028,1550,70,24);fall(7875,3028,1550,7790,3028,1475,80,18);pool(7770,3020,1462,0.9);
   const rings=[],mist=[];for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));
     const v=Wv(7025+(i%3-1)*25,2430+(i>2?20:-10),1175);m.position.copy(v);world.add(m);mist.push({m,ph:i/6,x:(i%3-1)*0.3});}
   anim.water={fallTex,rings,mist};
@@ -868,7 +868,7 @@ const animals=[];
 const ANIMALS=[
  {k:"deer",path:[2171,992,1881,1790],per:28},
  {k:"deer",path:[5251,2599,5320,2419],per:30,ph:0.4},
- {k:"bear",path:[6174,2251,6106,2385],per:34},
+ {k:"bear",path:[3321,946,3863,928],per:34},
  {k:"squirrel",at:[3724,1991],hop:true},
  {k:"squirrel",at:[6526,2575],hop:true},
  {k:"chipmunk",at:[1666,-437],hop:true},
@@ -919,7 +919,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.4, "C": 3.2}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.0, "B": 2.4, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
