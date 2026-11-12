@@ -1,0 +1,48 @@
+{
+ "name": "Alamere Falls",
+ "folder": "point-reyes-alamere-falls",
+ "city": "Bolinas",
+ "area": "Point Reyes National Seashore",
+ "region": "San Francisco Bay Area",
+ "state": "CA",
+ "lat": 37.934,
+ "lon": -122.7468,
+ "where": "Palomarin Trailhead, end of Mesa Road, Bolinas · Point Reyes National Seashore",
+ "high": "585 ft",
+ "blurb": "The Coast Trail from Palomarin along ocean bluffs and past Bass and Pelican lakes to Wildcat Camp, then a low-tide beach walk to a 40-ft waterfall that drops onto the sand.",
+ "status": "Open; no permit for day hikes. The Palomarin lot (about 75 spaces, last 1.2 mi of Mesa Road unpaved) fills early on weekends, and the 1.1-mile beach walk from Wildcat Camp to the falls is passable only at low tide.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Coast Trail to the bluffs",
+   "mi": 2.3,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 240
+  },
+  {
+   "id": "B",
+   "name": "Coast Trail to Bass Lake",
+   "mi": 5.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 810
+  },
+  {
+   "id": "C",
+   "name": "Alamere Falls via Wildcat Camp",
+   "mi": 13.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1950
+  }
+ ],
+ "sources": [
+  "https://home.nps.gov/pore/planyourvisit/alamere_falls.htm",
+  "https://www.nps.gov/thingstodo/hike-to-alamere-falls.htm",
+  "https://www.nps.gov/places/point-reyes-palomarin-trailhead.htm",
+  "https://www.nps.gov/pore/planyourvisit/conditions.htm",
+  "https://modernhiker.com/hike/alamere-falls-point-reyes-national-seashore/",
+  "https://www.theoutbound.com/san-francisco/hiking/hike-to-alamere-falls"
+ ]
+}
