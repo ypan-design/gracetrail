@@ -578,6 +578,13 @@ mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n
 (function(){const m4=new THREE.Matrix4(),pv=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
   treeGroup.children.forEach(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,m4);m4.decompose(pv,q,sc);
     const x=pv.x/S+cx,n=-pv.z/S+cn;if(H(x,n)<14){sc.setScalar(0);m4.compose(pv,q,sc);m.setMatrixAt(i,m4);}}m.instanceMatrix.needsUpdate=true;});})();
+// Trail C turns around at the falls, which is nearer the trailhead than Wildcat Camp: the shared out-and-back trim cuts the
+// pipe at the camp, so redraw C with the beach leg (camp -> falls) appended.
+(function(){const T=TR.C,W=T.world,D=T.draw,m=W.length>>1;if(!D||!W||W.length<4)return;const e=D[D.length-1];
+  let ic=0,bd=1e9;for(let i=0;i<=m;i++){const d=(W[i].x-e.x)**2+(W[i].z-e.z)**2;if(d<bd){bd=d;ic=i;}}
+  if(m-ic<3)return;const P=D.concat(W.slice(ic+1,m+1));const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const g=trailMesh.C;g.bright.clear();g.bright.add(pipe(P,PIPE.r,new THREE.MeshLambertMaterial({color:c,emissive:c,emissiveIntensity:0.18}),PIPE.lift,PIPE.edge,PIPE_EDGE),ribbon(P,0.42,new THREE.MeshBasicMaterial({color:0x1D2B26,transparent:true,opacity:0.13,side:THREE.DoubleSide,depthWrite:false}),0.06));
+  g.dim.clear();g.dim.add(pipe(P,0.11,new THREE.MeshLambertMaterial({color:0xF2ECE0}),PIPE.lift*0.8,0,null));})();
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
