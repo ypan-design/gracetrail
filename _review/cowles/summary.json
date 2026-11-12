@@ -1,0 +1,55 @@
+{
+ "name": "Cowles Mountain",
+ "folder": "cowles-mountain",
+ "city": "San Diego",
+ "area": "San Diego",
+ "region": "San Diego",
+ "state": "CA",
+ "lat": 32.80482,
+ "lon": -117.03754,
+ "where": "Mission Trails Regional Park, San Carlos and Santee",
+ "high": "1,592 ft",
+ "blurb": "The highest point in the City of San Diego, by the main trail from Golfcrest Drive, the Cowles Service Road from Barker Way, or the Mesa and Big Rock Trails from Santee.",
+ "status": "Open; no fee or permit. No shade or water on the trails; start early on hot days.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Cowles Mountain Trail",
+   "mi": 3.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 950
+  },
+  {
+   "id": "B",
+   "name": "Cowles Service Road and Barker Way Loop",
+   "mi": 3.0,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 870
+  },
+  {
+   "id": "C",
+   "name": "Big Rock and Mesa Trails",
+   "mi": 5.2,
+   "unit": "loop",
+   "level": "Moderately strenuous",
+   "gain_ft": 1250
+  }
+ ],
+ "sources": [
+  "https://mtrp.org/wp-content/uploads/2025/07/MTRP_Trail_Map_2025-07-14.pdf",
+  "https://mtrp.org/hot-trails-hot-paws-keeping-dogs-safe-at-mission-trails/",
+  "https://www.hikingproject.com/trail/7004658/cowles-mountain-backside-loop",
+  "https://www.hikingproject.com/trail/7004722/cowles-service-road",
+  "https://www.hikingproject.com/trail/7006034/big-rock-trail",
+  "https://hikingsdcounty.com/?p=1569",
+  "https://hikingsdcounty.com/?p=4636",
+  "https://www.sandiegoreader.com/news/2012/sep/19/roam-cowles-mountain-mesa-road/",
+  "https://summitpost.org/santee-approach/166588",
+  "https://trailforks.com/trails/mesa-trail",
+  "https://theoutbound.com/san-diego/chillin/106992",
+  "https://en.wikipedia.org/wiki/Cowles_Mountain",
+  "https://www.openstreetmap.org"
+ ]
+}
