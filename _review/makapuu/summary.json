@@ -1,0 +1,50 @@
+{
+ "name": "Makapuʻu Point Lighthouse Trail",
+ "folder": "makapuu-lighthouse",
+ "city": "Honolulu",
+ "area": "Honolulu (Waimānalo)",
+ "region": "Alaska & Hawaii",
+ "state": "HI",
+ "lat": 21.30516,
+ "lon": -157.65509,
+ "where": "Kaʻiwi State Scenic Shoreline, Oʻahu, Hawaiʻi",
+ "high": "about 500 ft (lookouts)",
+ "blurb": "A paved climb to lookouts above the 1909 Makapuʻu Point Light and Oʻahu’s best winter whale watching, with dirt shoreline paths to Pele’s Chair and Wāwāmalu.",
+ "status": "Open daily, gate 7 am–6:45 pm (7:45 pm from April 1); free, no permit. The lighthouse and the Makapuʻu tide pools are closed to the public.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Pele’s Chair and Alan Davis Beach",
+   "mi": 1.3,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 60
+  },
+  {
+   "id": "B",
+   "name": "Makapuʻu Point Lighthouse Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 500
+  },
+  {
+   "id": "C",
+   "name": "Kaʻiwi Shoreline Trail",
+   "mi": 2.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 115
+  }
+ ],
+ "sources": [
+  "https://dlnr.hawaii.gov/dsp/hiking/oahu/makapuu-point-lighthouse-trail/",
+  "https://dlnr.hawaii.gov/dsp/?p=266",
+  "https://noahlangphotography.com/blog/makapuu-point-lighthouse-trail-oahu-hawaii",
+  "https://noahlangphotography.com/blog/kaiwi-shoreline-trail-oahu-hawaii",
+  "https://www.theoutbound.com/hawaii/hiking/hike-to-pele-s-chair",
+  "https://on-walkabout.net/2016/08/19/best-hikes-on-oahu-the-kaiwi-shoreline-trail",
+  "https://hawaii.com/makapuu-lighthouse-trail",
+  "https://en.wikipedia.org/wiki/Makapu%CA%BBu_Point_Light"
+ ]
+}
