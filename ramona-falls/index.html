@@ -469,7 +469,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type="conifer";p=0.05;}
+    if(Math.hypot(x-14000,n-(-2528))<480){type=null;}else if(mk<0.25){type="conifer";p=0.05;}
     else if(cd<230){type=tr()<.3?"gold":"conifer";p=0.3;}
     else if(g>1.15)type=null;
     else if(south<-0.1){type=tr()<.88?"conifer":"syc";p=0.34+cl*.25;}
@@ -559,13 +559,13 @@ const anim={};
     const m=new THREE.Mesh(geo,fallMat);m.renderOrder=2;world.add(m);return m;}
   function pool(x,n,e,r){const v=Wv(x,n,Math.max(e,surf(x,n)+2));part(world,new THREE.CylinderGeometry(1,1,0.05,18),"#CFEFF2",v.x,v.y,v.z,r,1,r*0.8,1.03,false);}
   // Ramona Falls: ~120 ft fan of basalt steps, widening downward
-  fall(14070,-2516,3566,14048,-2520,3542,110,10); fall(14048,-2520,3536,14026,-2524,3512,180,10); fall(14026,-2524,3506,14004,-2528,3482,250,10); fall(14004,-2528,3476,13982,-2532,3452,320,10);
+  fall(14070,-2516,3676,14048,-2520,3627,200,12); fall(14048,-2520,3619,14026,-2524,3569,275,12); fall(14026,-2524,3561,14004,-2528,3512,350,12); fall(14004,-2528,3504,13982,-2532,3454,425,12);
   pool(13952,-2537,3446,0.55);
   // wooden footbridge across Ramona Creek at the base of the falls
   {const q=G(13952,-2531,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,1.396,0);}
   // fallen-log crossing of the Sandy River (no bridge)
-  {const q=G(4828,1406,0.2);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-4.676;world.add(g);
-    const l2=part(g,new THREE.CylinderGeometry(1,1,1,8),"#7A5A3C",0,0,0,0.12,1.6,0.12,1.08);rot(l2,0,0,Math.PI/2);}
+  {const q=G(4828,1406,0.4);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-4.676;world.add(g);
+    const l2=part(g,new THREE.CylinderGeometry(1,1,1,8),"#6B4A30",0,0,0,0.2,2.6,0.2,1.08);rot(l2,0,0,Math.PI/2);}
   // Upper Sandy Guard Station (1935 log cabin)
   {const q=G(12365,-3015);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;world.add(g);
     part(g,box,"#7A5638",0,0.35,0,1.1,0.7,0.8,1.06);const r=part(g,roof,"#5B4A3C",0,0.95,0,0.95,0.55,0.95,1.06);rot(r,0,Math.PI/2,0);}
@@ -886,7 +886,7 @@ const ANIMALS=[
  {k:"elk",path:[14810,-1294,15723,-1789],per:36},
  {k:"elk",path:[15672,-1919,16031,-2150],per:38,ph:0.3},
  {k:"deer",path:[10037,-318,10408,-788],per:30},
- {k:"squirrel",at:[13278,-2970],hop:true},
+ {k:"squirrel",at:[6191,1238],hop:true},
  {k:"squirrel",at:[12041,490],hop:true},
  {k:"chipmunk",at:[2668,822],hop:true},
  {k:"chipmunk",at:[5761,1813],hop:true},
