@@ -1,0 +1,61 @@
+{
+ "name": "Humphreys Peak",
+ "folder": "flagstaff-humphreys-peak",
+ "city": "Flagstaff",
+ "area": "Flagstaff",
+ "region": "Southwest",
+ "state": "AZ",
+ "lat": 35.33122,
+ "lon": -111.71172,
+ "where": "Arizona Snowbowl, San Francisco Peaks, Coconino National Forest",
+ "high": "12,633 ft",
+ "blurb": "The highest point in Arizona, on the San Francisco Peaks sacred to thirteen local tribes, with an aspen loop and the Kachina Trail from the same Snowbowl lots.",
+ "status": "Open, winter conditions: snow and ice on the upper trail from about November and avalanche danger near and above treeline; Snowbowl's ski season is set to open Nov 20, 2026 (Humphreys Trail from lot 1, Kachina from lot 2). Stay on trail above treeline; no camping above 11,400 ft.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Aspen Loop Trail",
+   "mi": 2.3,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 360
+  },
+  {
+   "id": "B",
+   "name": "Kachina Trail to the Flagstaff views",
+   "mi": 5.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 660
+  },
+  {
+   "id": "C",
+   "name": "Humphreys Peak Trail",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 3400
+  }
+ ],
+ "sources": [
+  "https://www.fs.usda.gov/r03/coconino/recreation/trails/humphreys-trail-no-151",
+  "https://www.fs.usda.gov/r03/coconino/recreation/trails/kachina-trail-no-150",
+  "https://fs.usda.gov/Internet/FSE_DOCUMENTS/stelprdb5315164.pdf",
+  "https://www.snowbowl.ski/hiking/",
+  "https://www.snowbowl.ski/",
+  "https://www.snowbowl.ski/the-mountain/parking-information/",
+  "https://www.snowbowl.ski/backcountry-access",
+  "https://www.hikingproject.com/trail/7002896/humphreys-peak",
+  "https://www.hikingproject.com/trail/7116025/kachina-trail-out-and-back",
+  "https://www.arizonahighways.com/aspen-loop-trail",
+  "https://www.hikearizona.com/decoder.php?ZTN=2096",
+  "https://grandcanyontrust.org/hikes/cpe-kachina-trail",
+  "https://wildpathsaz.com/kachina-trail/",
+  "https://www.americansouthwest.net/arizona/san-francisco-peaks/humphreys-peak-trail.html",
+  "https://mountainfieldguide.com/humphreys-peak/",
+  "https://arizonahighways.com/humphreys-peak",
+  "https://en.wikipedia.org/wiki/San_Francisco_Peaks",
+  "https://en.wikipedia.org/wiki/Humphreys_Peak",
+  "https://en.wikipedia.org/wiki/Packera_franciscana"
+ ]
+}
