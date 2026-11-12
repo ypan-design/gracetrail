@@ -1,0 +1,52 @@
+{
+ "name": "Mount Monadnock",
+ "folder": "mount-monadnock",
+ "city": "Jaffrey",
+ "area": "Jaffrey",
+ "region": "Northeast",
+ "state": "NH",
+ "lat": 42.84549,
+ "lon": -72.08866,
+ "where": "Monadnock State Park, Jaffrey, New Hampshire",
+ "high": "3,165 ft",
+ "blurb": "Three loops from park headquarters on one of the most climbed mountains in the world: a gentle woods walk, the classic White Dot and White Cross climb, and a summit loop out along the open Pumpelly ridge.",
+ "status": "Open, reservations advised: $15 per vehicle day-use fee; the HQ lot sells out on weekend days April–November, so reserve the HQ Hiking Pass. No pets anywhere in the park. Upper ledges ice over from late fall; carry traction.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "White Dot–Harling–Hinkley Loop",
+   "mi": 2.1,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 500
+  },
+  {
+   "id": "B",
+   "name": "White Dot–White Cross Loop",
+   "mi": 4.2,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1800
+  },
+  {
+   "id": "C",
+   "name": "White Dot–Pumpelly–Cascade Link Loop",
+   "mi": 5.4,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1800
+  }
+ ],
+ "sources": [
+  "https://www.nhstateparks.org/find-parks-trails/monadnock-state-park",
+  "https://www.nhstateparks.org/NHStateParks/media/NHStateParks/PDFs/Maps/monadnock-hiking-map_info_3-2026-combined.pdf",
+  "http://web.archive.org/web/20250810223757/https://blog.nhstateparks.org/monadnock-walks-alternatives-to-summiting/",
+  "http://web.archive.org/web/2024/https://blog.nhstateparks.org/off-the-beaten-path-points-of-interest-on-mount-monadnock/",
+  "http://web.archive.org/web/20240414003930/https://blog.nhstateparks.org/birds-of-monadnock-state-park/",
+  "https://www.hikingproject.com/trail/7051566/monadnock-east-peak-loop",
+  "https://hikenewengland.com/Monadnock071112.php",
+  "https://www.theoutbound.com/new-hampshire/hiking/hike-the-white-dot-white-cross-loop-at-mount-monadnock",
+  "https://www.trailfinder.info/trails/trail/mount-monadnock-hiking-trails",
+  "https://en.wikipedia.org/wiki/Mount_Monadnock"
+ ]
+}
