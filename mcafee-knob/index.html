@@ -864,17 +864,17 @@ const SCALE={chipmunk:2.0,turtle:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,l
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"bear",path:[9382,3433,10286,3512],per:34},
+ {k:"bear",path:[7402,1338,8424,955],per:34},
  {k:"bear",path:[-20841,-2342,-22368,-4218],per:36,ph:0.5},
  {k:"deer",path:[-1611,1111,-1145,666],per:28},
  {k:"deer",path:[-19960,-1397,-19801,-1400],per:30,ph:0.4},
- {k:"deer",path:[4859,1252,5328,1346],per:26,ph:0.7},
- {k:"chipmunk",at:[12224,4151],hop:true},
+ {k:"deer",path:[9382,3433,10327,3481],per:26,ph:0.7},
+ {k:"chipmunk",at:[-23951,-5956],hop:true},
  {k:"chipmunk",at:[-21727,-5168],hop:true},
  {k:"snake",path:[-23650,-7010,-23590,-6903],per:30},
  {k:"snake",path:[14632,4407,14248,4199],per:32,ph:0.5},
  {k:"turtle",at:[1265,1152]},
- {k:"turtle",at:[8078,2595]}
+ {k:"turtle",at:[2367,1849]}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
