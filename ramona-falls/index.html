@@ -995,9 +995,9 @@ function layoutLabels(){
     arr.forEach((p,k)=>{const y=Math.max(top,ys[k]);p.o.ly=p.o.ly==null||Math.abs(p.o.ly-y)>200?y:p.o.ly+(y-p.o.ly)*0.25;p.ly=p.o.ly;});};
   spread(Lf);spread(Rt);
   let svg="";const sw=o=>o.key===hoverKey?1.6:0.8,dash=o=>o.kind==="stop"?"":` stroke-dasharray="3 3"`;
-  Lf.forEach(p=>{const ex=m.l-4;p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
+  Lf.forEach(p=>{const w0=p.o.el.offsetWidth||0;const ex=Math.max(m.l-4,($("#panel")?$("#panel").offsetWidth:0)+w0+10);p.o.el.classList.remove("dot","right");p.o.el.classList.add("left");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(-100%,-50%)`;
     svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${m.l+16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
-  Rt.forEach(p=>{const ex=W-m.r+4;p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
+  Rt.forEach(p=>{const w0=p.o.el.offsetWidth||0;const ex=Math.min(W-m.r+4,W-6-w0);p.o.el.classList.remove("dot","left");p.o.el.classList.add("right");p.o.el.style.transform=`translate(${ex}px,${p.ly}px) translate(0,-50%)`;
     svg+=`<polyline points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${W-m.r-16},${p.ly.toFixed(1)} ${ex},${p.ly.toFixed(1)}" fill="none" stroke="${ink}" stroke-width="${sw(p.o)}"${dash(p.o)}/>`;});
   P.forEach(p=>{svg+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.o.key===hoverKey?4.5:3.2}" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`;});
   $("#lead").innerHTML=svg;
@@ -1076,7 +1076,7 @@ function renderPanel(){let h="";const {ws,fs}=speciesHere();
   } else {const T=TR[view];
     h=`<div><div class="eyebrow">Trail ${T.id} · ${T.level}</div><h2>${T.name}</h2></div>
     <dl class="stats"><div class="stat"><dt>Distance</dt><dd>${T.official} mi</dd></div><div class="stat"><dt>Gain</dt><dd>${r10(T.gain)} ft</dd></div><div class="stat"><dt>Time</dt><dd>${T.time}</dd></div>
-      <div class="stat"><dt>Start</dt><dd>${fmt(T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
+      <div class="stat"><dt>Start</dt><dd>${fmt(T.anchors&&T.anchors.length?T.anchors[0][2]:T.lo)} ft</dd></div><div class="stat"><dt>High</dt><dd>${fmt(T.hi)} ft</dd></div><div class="stat"><dt>Route</dt><dd>${T.route}</dd></div></dl>
     <p>${T.desc}</p><div class="prof">${profileSVG(T)}</div>
     <div><h3>Stops</h3><ul class="list" data-kind="stop">${ORDER[T.id].map(id=>{const s=STOP[id],mm=mileOf(T,s.x,s.n);return `<li data-id="${id}"><button class="item">${stopBadge(id)}<span class="nm">${s.name}${mm?`<span class="mono">${mm.m.toFixed(2)} mi</span>`:""}</span><span class="ds">${s.desc}</span></button></li>`;}).join("")}</ul></div>
     <div><h3>Wildlife around this trail</h3>${wildList(ws)}</div>
