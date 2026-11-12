@@ -468,11 +468,12 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type="conifer";p=0.05;}
-    else if(cd<230){type=tr()<.3?"gold":"conifer";p=0.3;}
-    else if(g>1.15)type=null;
-    else if(south<-0.1){type=tr()<.88?"conifer":"syc";p=0.34+cl*.25;}
-    else{const r0=tr();type=r0<.72?"conifer":r0<.86?"shrub":"gold";p=0.2+cl*.2;}
+    if(inMeadow(x,n)){type=null;}
+    else if(mk<0.25){type="conifer";p=0.05;}
+    else if(g>1.0)type=null;
+    else if(e<5600){const r0=tr();type=r0<.4?"oak":r0<.85?"conifer":"shrub";p=0.18+cl*.2;}
+    else if(cd<230){type="conifer";p=0.32;}
+    else{const r0=tr();type=r0<.9?"conifer":r0<.95?"oak":"shrub";p=0.3+cl*.22;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -567,7 +568,16 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={A:300,B:250,C:700}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={A:300,B:250,C:700}[T.id];if(g)T.gain=g;if(T.id==="A")T.hi=6725;});
+function meadowP(){return meadowP.c||(meadowP.c=[[[5111,2773],[5107,2806],[5108,2982],[5113,3036],[5103,3098],[5065,3202],[5035,3258],[5015,3418],[5036,3662],[5026,3832],[4967,4013],[4943,4143],[4919,4218],[4855,4288],[4675,4393],[4660,4414],[4650,4454],[4655,4470],[4705,4523],[4769,4530],[4894,4503],[4954,4478],[5070,4414],[5124,4378],[5223,4368],[5313,4332],[5349,4286],[5357,4216],[5321,4026],[5311,3892],[5315,3766],[5305,3572],[5310,3246],[5318,3126],[5344,3016],[5361,2966],[5377,2880],[5375,2750],[5342,2646],[5316,2610],[5260,2562],[5236,2556],[5201,2566],[5170,2592],[5136,2646],[5117,2736]],[[7252,5089],[7252,5069],[7262,5035],[7332,4977],[7342,4931],[7338,4901],[7236,4797],[7097,4673],[7047,4647],[6981,4587],[6896,4437],[6814,4273],[6745,4087],[6729,3827],[6739,3743],[6727,3617],[6751,3387],[6761,3363],[6741,3293],[6715,3207],[6715,3197],[6640,3123],[6606,3103],[6530,3083],[6461,3093],[6437,3119],[6431,3142],[6431,3169],[6447,3229],[6482,3473],[6494,3672],[6496,4068],[6486,4128],[6486,4269],[6543,4744],[6573,4844],[6663,4933],[6774,5018],[6838,5103],[6870,5133],[6890,5169],[7049,5317],[7122,5323],[7186,5327],[7200,5321],[7214,5315],[7218,5275],[7230,5211],[7250,5105]],[[3539,4015],[3501,4023],[3431,4054],[3354,4078],[3275,4122],[3232,4163],[3211,4213],[3216,4258],[3236,4302],[3285,4348],[3373,4371],[3440,4378],[3518,4400],[3569,4422],[3607,4462],[3623,4506],[3626,4547],[3621,4582],[3625,4608],[3652,4633],[3710,4639],[3747,4638],[3774,4630],[3806,4604],[3839,4565],[3868,4532],[3885,4491],[3883,4467],[3873,4435],[3850,4419],[3790,4348],[3726,4290],[3690,4262],[3659,4222],[3640,4163],[3617,4091],[3577,4031]],[[2556,8187],[2571,8191],[2595,8179],[2629,8119],[2667,8033],[2740,7847],[2830,7641],[2888,7437],[2913,7281],[2955,7123],[3043,6989],[3130,6899],[3218,6857],[3328,6834],[3445,6837],[3551,6844],[3780,6916],[3893,6958],[4007,7000],[4146,7094],[4290,7200],[4464,7265],[4542,7285],[4572,7305],[4632,7375],[4787,7479],[4859,7545],[4889,7555],[4932,7539],[4962,7499],[4968,7479],[4966,7365],[4972,7359],[4972,7289],[4941,7239],[4927,7229],[4907,7229],[4881,7235],[4851,7255],[4767,7265],[4691,7241],[4672,7221],[4652,7195],[4632,7141],[4626,7075],[4640,6985],[4606,6955],[4596,6955],[4516,7025],[4451,7039],[4289,7037],[4194,6988],[4154,6970],[4055,6902],[3905,6834],[3750,6754],[3614,6722],[3483,6713],[3186,6709],[3116,6719],[3073,6739],[3013,6793],[2975,6853],[2931,6923],[2881,6993],[2834,7011],[2788,7013],[2698,6999],[2664,7003],[2654,7033],[2666,7059],[2696,7093],[2748,7161],[2784,7229],[2788,7281],[2778,7377],[2752,7491],[2705,7663],[2633,7839],[2575,7971],[2547,8063],[2522,8149],[2532,8175]]]);}
+function inMeadow(x,n){for(const P of meadowP()){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>n)!==(b[1]>n)&&x<(b[0]-a[0])*(n-a[1])/(b[1]-a[1])+a[0])c=!c;}if(c)return true;}return false;}
+(function(){const mat=new THREE.MeshLambertMaterial({color:"#DCE9A9",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#B7CC7A"});
+  meadowP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
+    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.06);pa.setXYZ(i,v.x,v.y,v.z);}
+    pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
+    const ring=P.concat([P[0]]).map(([x,n])=>G(x,n,0.07));world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
+})();
+
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
@@ -915,7 +925,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.5, "B": 3.2, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.0, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
