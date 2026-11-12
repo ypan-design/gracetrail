@@ -1,0 +1,48 @@
+{
+ "name": "Sky Pond",
+ "folder": "rmnp-sky-pond",
+ "city": "Estes Park",
+ "area": "Estes Park",
+ "state": "CO",
+ "region": "Rockies",
+ "lat": 40.31034,
+ "lon": -105.64037,
+ "where": "Glacier Gorge Trailhead, Bear Lake Road, Rocky Mountain National Park, Colorado",
+ "high": "10,900 ft",
+ "blurb": "Three trails up from the Glacier Gorge Trailhead: The Loch, Black Lake, and Sky Pond by way of the Timberline Falls scramble.",
+ "status": "open: no timed entry after Oct 19, 2026 (entrance pass required); snow and ice above 10,000 ft, including the Timberline Falls scramble",
+ "trails": [
+  {
+   "id": "A",
+   "name": "The Loch",
+   "mi": 6.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 990
+  },
+  {
+   "id": "B",
+   "name": "Black Lake",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1430
+  },
+  {
+   "id": "C",
+   "name": "Sky Pond",
+   "mi": 9.8,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1710
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/romo/planyourvisit/list_hiking_trails.htm",
+  "https://www.nps.gov/romo/planyourvisit/trail_conditions.htm",
+  "https://www.nps.gov/romo/learn/news/rocky-mountain-national-park-announces-2026-timed-entry-reservation-system.htm",
+  "https://www.rockymountainhikingtrails.com/sky-pond.htm",
+  "https://www.rockymountainhikingtrails.com/the-loch.htm",
+  "https://www.rockymountainhikingtrails.com/black-lake.htm"
+ ]
+}
