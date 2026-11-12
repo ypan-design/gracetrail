@@ -879,7 +879,7 @@ const ANIMALS=[
  {k:"chipmunk",path:[-1772,2237,-1692,2074],per:14},
  {k:"chipmunk",path:[-1394,3133,-1394,3133],per:14,ph:0.5},
  {k:"snake",path:[-1371,-1398,-1444,-1372],per:20},
- {k:"heron",path:[-7044,1601,-6896,1634],per:30},
+ {k:"heron",path:[-5876,860,-6005,783],per:30},
  {k:"otter",path:[-6213,1071,-5968,1056],per:22}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
