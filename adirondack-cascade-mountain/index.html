@@ -358,7 +358,7 @@ let MAXY=0;
     let c;
     if(me>3880&&g<1.3&&mk>0.02)c=col(me>4040?"#BEBAB1":(g>0.5?"#C8C5BC":"#D1CEC5"));else if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
-    else if(me>3400&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    else if(me>3050&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
     const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
     const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
@@ -576,7 +576,7 @@ TRAILS.forEach(T=>{const g={A:1010,B:1940,C:2300}[T.id];if(g)T.gain=g;});
 function lakeP(){return lakeP.c||(lakeP.c=[[[2192,1215],[2468,1367],[2793,1494],[3022,1617],[3239,1785],[3374,1823],[3428,1860],[3379,2058],[3376,2300],[3293,2287],[3068,2318],[2995,2310],[2754,2184],[2542,2038],[2391,1931],[2286,1898],[2204,1847],[2088,1756],[2035,1692],[1937,1648],[1825,1544],[1710,1468],[1650,1427],[1573,1332],[1413,1176],[1339,1122],[1335,1060],[1303,989],[1365,930],[1436,950],[1537,905],[1621,858],[1671,908],[1724,901],[1826,927],[1903,977],[1959,1042],[1978,1064],[2101,1118]],[[3433,2566],[3532,2449],[3652,2385],[3813,2369],[3854,2453],[3990,2735],[4098,2882],[4210,2992],[4238,3138],[4311,3266],[4412,3395],[4477,3552],[4554,3745],[4623,3879],[4840,4304],[5023,4590],[5201,4790],[5460,5031],[5651,5351],[5973,5663],[6177,5874],[6406,6151],[6697,6427],[6896,6593],[7070,6805],[7007,6812],[6876,6717],[6579,6558],[6378,6435],[6229,6259],[6099,6120],[6001,5972],[5872,5793],[5801,5701],[5677,5520],[5580,5381],[5464,5254],[5390,5171],[5065,4877],[4882,4703],[4820,4620],[4775,4471],[4712,4408],[4654,4323],[4590,4198],[4482,4001],[4367,3822],[4265,3729],[4142,3616],[4020,3457],[3931,3363],[3904,3277],[3883,3239],[3845,3189],[3766,3067],[3706,2983],[3650,2906],[3610,2802],[3567,2735],[3536,2686],[3497,2648],[3442,2610],[3419,2583]]]);}
 function inLake(x,n){for(const P of lakeP()){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>n)!==(b[1]>n)&&x<(b[0]-a[0])*(n-a[1])/(b[1]-a[1])+a[0])c=!c;}if(c)return true;}return false;}
 (function(){const mat=new THREE.MeshLambertMaterial({color:"#8FC6DA",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#5E9FB8"});
-  lakeP().forEach(P=>{let lo=1e9;P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n).y);});const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
+  lakeP().forEach(P=>{const hs=P.map(([x,n])=>G(x,n).y).sort((a,b)=>a-b);const lo=hs[Math.floor(hs.length*0.3)];const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
     for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.12);pa.setXYZ(i,v.x,lo+0.12,v.z);}
     pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
     const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0.14);v.y=lo+0.14;return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
