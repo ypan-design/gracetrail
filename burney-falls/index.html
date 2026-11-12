@@ -320,7 +320,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-2600,x1:1300,n0:-1400,n1:7100,ve:3.0};
+const C={x0:-2600,x1:1300,n0:-1400,n1:7100,ve:2.2};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -551,22 +551,25 @@ const anim={};
     part(g,box,"#9C7653",0,0,0,L,0.08,0.32,1.06);part(g,box,"#7A5A3E",0,0.18,0.15,L,0.05,0.04,1.06);part(g,box,"#7A5A3E",0,0.18,-0.15,L,0.05,0.04,1.06);}
   bridge(-543,1351,-623,1330);bridge(-432,-439,-326,-407);
   // Burney Falls: a wide curtain of spring-fed streams over the basalt rim, falling north into its pool
-  const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(2,1.5);
+  const fallTex=stripeTex("#A9DCE8","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(2,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   const rings=[],mist=[];
   {const LX=-330,LN=-140,PX=-235,PN=15;
    const fl=Math.hypot(PX-LX,PN-LN),fx=(PX-LX)/fl,fn=(PN-LN)/fl,qx=-fn,qn=fx,HW=130,NI=10,NJ=8;
-   // the curtain follows the cliff face from the basalt rim down to the pool, a little above the terrain
+   // spray sheet draped over the cliff face from the rim to the pool
    const pos=[],uv=[],idx=[];
    for(let j=0;j<=NJ;j++)for(let i=0;i<=NI;i++){const u=i/NI,v=j/NJ;const w=(u-0.5)*2*HW*(1-0.25*v);
-     const x=LX+(PX-LX)*v*0.9+qx*w,n=LN+(PN-LN)*v*0.9+qn*w;const q=G(x,n,0.3);pos.push(q.x,q.y,q.z);uv.push(u*2,1-v);}
+     const x=LX+(PX-LX)*v*0.9+qx*w,n=LN+(PN-LN)*v*0.9+qn*w;const q=G(x,n,0.45);pos.push(q.x,q.y,q.z);uv.push(u*2,1-v);}
    for(let j=0;j<NJ;j++)for(let i=0;i<NI;i++){const a=j*(NI+1)+i,b=a+1,c=a+NI+1,d=c+1;idx.push(a,c,b,b,c,d);}
    const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geo.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));geo.setIndex(idx);
    const cur=new THREE.Mesh(geo,fallMat);cur.renderOrder=2;world.add(cur);
-   const T=G(LX,LN,0.35),Bt=G(PX+fx*40,PN+fn*40,0.2);
-   const lip=new THREE.Group();lip.position.copy(T);lip.rotation.y=Math.atan2(Bt.x-T.x,Bt.z-T.z);world.add(lip);
-   part(lip,box,PAL.rockDeep,0,0.05,-0.2,HW*2*0.0118+0.4,0.22,0.45,1.06);
-   const wf=new THREE.Group();wf.position.copy(Bt);wf.rotation.y=lip.rotation.y;world.add(wf);
+   // vertical curtain from rim height down to pool level, a third of the way from the pool to the rim
+   const T=G(LX,LN,0.3),Bt=G(PX+fx*40,PN+fn*40,0.2),M=G(PX+(LX-PX)*0.35,PN+(LN-PN)*0.35);const ry=Math.atan2(Bt.x-T.x,Bt.z-T.z);
+   const wv=new THREE.Group();wv.position.set(M.x,Bt.y,M.z);wv.rotation.y=ry;world.add(wv);const H=Math.max(1.5,T.y-Bt.y);const WD=HW*2*(100/Math.max(C.x1-C.x0,C.n1-C.n0))*0.9;
+   [[-0.32,0.36,1.0],[0.1,0.3,1.0],[-0.08,0.22,0.65],[0.38,0.2,0.6],[-0.45,0.12,0.7]].forEach(([x,w,f])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(w*WD,H*f),fallMat);pl.position.set(x*WD,H*(1-f)+H*f/2,0);wv.add(pl);});
+   const lip=new THREE.Group();lip.position.copy(T);lip.rotation.y=ry;world.add(lip);
+   part(lip,box,PAL.rockDeep,0,0.05,-0.2,WD+0.4,0.22,0.45,1.06);
+   const wf=new THREE.Group();wf.position.copy(Bt);wf.rotation.y=ry;world.add(wf);
    const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.06,24),new THREE.MeshBasicMaterial({color:"#7FC4D2"}));pool.position.set(0,0.02,0);pool.scale.set(1.5,1,0.8);wf.add(pool);
    for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.4,0.5,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set((i-1)*0.7,0.08,-0.2);wf.add(rg);rings.push(rg);}
    for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/6,x:(i%3-1)*0.6});}
@@ -927,7 +930,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.0, "B": 3.4, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.4, "B": 3.0, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

@@ -1,0 +1,52 @@
+{
+ "name": "Burney Falls",
+ "folder": "burney-falls",
+ "city": "Burney",
+ "area": "Shasta County",
+ "region": "Northern California",
+ "state": "CA",
+ "grp": "",
+ "lat": 41.01254,
+ "lon": -121.65094,
+ "where": "McArthur-Burney Falls Memorial State Park · Burney, California",
+ "high": "2,930 ft",
+ "blurb": "A 129-foot, spring-fed waterfall in the volcanic country northeast of Redding, seen from the overlook, the Falls Loop and the Rim Trail to Lake Britton.",
+ "status": "open — Falls Loop Trail open; Burney Creek Trail (Rainbow Bridge to Rim Trail) and PSEA Trail closed for storm erosion, use the Rim Trail to Lake Britton; $10 day use, reservations Fri–Sun and holidays May 15–Sept 27",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Falls Overlook to the base of the falls",
+   "mi": 0.3,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 80
+  },
+  {
+   "id": "B",
+   "name": "Falls Loop Trail",
+   "mi": 1.0,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 200
+  },
+  {
+   "id": "C",
+   "name": "Rim Trail to Lake Britton",
+   "mi": 2.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 220
+  }
+ ],
+ "sources": [
+  "https://www.parks.ca.gov/?page_id=455",
+  "https://www.parks.ca.gov/Post/103",
+  "https://www.parks.ca.gov/AccessibleFeatures/Details/455",
+  "https://www.parks.ca.gov/pages/455/files/mcarthurburneyfallsmemorialspfinalweblayout120816.pdf",
+  "https://demo2.parks.ca.gov/pages/735/files/transcriptfallstrailtourmcarthurburneyfalls.pdf",
+  "https://www.hikingproject.com/trail/7033790/falls-loop-trail",
+  "https://northerncaliforniahikingtrails.com/blog/?p=7977",
+  "https://liveandlethike.com/2017/10/28/falls-loop-trail-mcarthur-burney-falls-memorial-state-park-ca/",
+  "https://en.wikipedia.org/wiki/McArthur%E2%80%93Burney_Falls_Memorial_State_Park"
+ ]
+}
