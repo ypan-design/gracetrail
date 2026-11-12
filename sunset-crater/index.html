@@ -224,7 +224,7 @@ const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov",
 const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PAL={ground:"#BFE3D3",groundN:"#A3D0BE",riparian:"#D2EDE2",rock:"#DDB28A",rockDeep:"#CC9B72",ridge:"#E6D3B2",
   band:"#86C7B2",slab:"#FBFCFB",slabLine:"#9DB1A9",terrLine:"#5E8578",water:"#CDEDEE",waterEdge:"#86C3C6",
-  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};Object.assign(PAL,{"ground": "#6B6562", "groundN": "#615B58", "rock": "#4D4643", "rockDeep": "#433C3A", "ridge": "#A8553A", "conifer": "#3E6B47", "oak": "#5B7F45", "shrub": "#8E9161", "stone": "#3A3432", "stoneD": "#2E2927", "terrLine": "#3E3836"});
+  oak:"#4C7A36",conifer:"#2F5B3A",sycamore:"#A8C255",gold:"#E8B54E",shrub:"#9AA65C",trunk:"#8C6B50",outline:"#2D4A40",cloud:"#FFFFFF",stone:"#B9B4AA",stoneD:"#9C968B",roof:"#C9573E",wall:"#F4EEE2"};Object.assign(PAL,{"ground": "#625D5A", "groundN": "#595451", "rock": "#4D4643", "rockDeep": "#433C3A", "ridge": "#A8553A", "conifer": "#3E6B47", "oak": "#5B7F45", "shrub": "#8E9161", "stone": "#3A3432", "stoneD": "#2E2927", "terrLine": "#3E3836"});
 
 /* ================= data ================= */
 const CANYONS=[];
@@ -238,7 +238,7 @@ const STOPS=[{"id":"1","trails":["A","B"],"x":-4399,"n":-452,"name":"Lava Flow T
  {"id":"B1","trails":["B"],"x":-4683,"n":-801,"name":"Bonito Vista Trail fork","desc":"From the trailhead, the Lenox Crater Trail follows the paved Bonito Vista Trail across a field of cinders, then turns west. The paved trail continues a short way to a view over the Bonito Lava Flow."},
  {"id":"B2","trails":["B"],"x":-5635,"n":-544,"name":"Lenox loop junction","desc":"The trail splits into a loop that circles the top of Lenox Crater, an older cinder cone on the monument’s south boundary. Either way works; the climb on loose cinders is short but steep."},
  {"id":"B3","trails":["B"],"x":-7033,"n":-901,"name":"Lenox Crater rim","desc":"The top of the cone, about 7,230 feet and some 280 feet above the trailhead. From the rim you see Sunset Crater, the Bonito Lava Flow and O’Leary Peak, and the San Francisco Peaks to the west."},
- {"id":"C1","trails":["C"],"x":-11562,"n":1701,"name":"Sunset Crater Volcano Visitor Center","desc":"The monument’s visitor center, where entrance passes are sold, with restrooms and a picnic area where Abert’s squirrels are common. Open 9 am to 4:30 pm. The west end of the Lava’s Edge Trail is across the road."},
+ {"id":"C1","trails":["C"],"x":-11562,"n":1701,"name":"Visitor Center","desc":"The monument’s visitor center, where entrance passes are sold, with restrooms and a picnic area where Abert’s squirrels are common. Open 9 am to 4:30 pm. The west end of the Lava’s Edge Trail is across the road."},
  {"id":"C2","trails":["C"],"x":-10682,"n":1285,"name":"Bonito Campground","desc":"The trail passes the edge of Bonito Campground, run by Coconino National Forest; the monument itself has no camping. Leashed pets are allowed on this Forest Service part of the trail."},
  {"id":"C3","trails":["C"],"x":-8687,"n":42,"name":"Monument boundary","desc":"A fence marks the line between Coconino National Forest and the monument. Pets must turn back here. Past the fence the trail runs on loose cinders that feel like beach sand."},
  {"id":"C4","trails":["C"],"x":-7162,"n":372,"name":"Edge of the Bonito Lava Flow","desc":"The trail runs under ponderosa pines along the jagged edge of the flow, where the a’a lava often stands 10 feet or more above the path in ridges and spires. O’Leary Peak rises to the north."},
@@ -323,7 +323,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-14600,x1:5400,n0:-5200,n1:5200,ve:2.0};
+const C={x0:-14600,x1:5400,n0:-5200,n1:5200,ve:2.8};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -356,7 +356,7 @@ function inLava(x,n){const P=inLava.P||(inLava.P=[[-4064,7811],[-5125,7605],[-50
     const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
     const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
     let c;
-    if(mk<0.02)c=col(PAL.ground);else if(inLava(mx,mn))c=col(g>0.3?"#2F2A28":"#3B3533");else if(me>7930&&Math.hypot(mx-(188),mn-(-63))<1900)c=col(fbm(mx/260,mn/260)>0.0?"#D3A03C":"#B9612F");else if(me>7700&&Math.hypot(mx-(188),mn-(-63))<2100)c=col(fbm(mx/300+3,mn/300)>0.15?"#C08A3A":"#A24E33");else if(cd<140)c=col(PAL.riparian);
+    if(mk<0.02)c=col(PAL.ground);else if(inLava(mx,mn))c=col(g>0.3?"#24201F":"#302B29");else if(me>7780&&Math.hypot(mx-(188),mn-(-63))<1350)c=col(Math.hypot(mx-(188),mn-(-63))<420?"#7E3B2A":fbm(mx/220,mn/220)>0.05?"#D6A23A":"#B4552E");else if(me>7600&&Math.hypot(mx-(188),mn-(-63))<1550&&fbm(mx/240+3,mn/240)>0.1)c=col("#8F4A33");else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
     else if(me>7750&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
@@ -470,11 +470,11 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type="conifer";p=0.03;}
-    else if(inLava(x,n)){type=tr()<.7?"conifer":null;p=0.025;}
-    else if(e>7500){type=null;}
-    else if(e>7250&&g>0.35){type="conifer";p=0.04;}
-    else{const r0=tr();type=r0<.88?"conifer":"shrub";p=0.11+cl*.1;}
+    if(mk<0.25){type="conifer";p=0.012;}
+    else if(inLava(x,n)){type=tr()<.6?"conifer":null;p=0.006;}
+    else if(e>7450){type=null;}
+    else if(e>7250&&g>0.35){type="conifer";p=0.02;}
+    else{const r0=tr();type=r0<.85?"conifer":"shrub";p=0.04+cl*.04;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
