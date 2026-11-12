@@ -236,7 +236,7 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-443,"n":125,"name":"Bear Moun
  {"id":"3","trails":["A","C"],"x":-1553,"n":2632,"name":"North end of the lake","desc":"Near the north end of the lake the Major Welch Trail leaves the shore path and climbs stone steps into the woods. The lake path curves around the end, with a view south down the water to Bear Mountain."},
  {"id":"4","trails":["A","B"],"x":-408,"n":997,"name":"Hessian Lake east shore","desc":"The east shore path runs with the white-blazed Appalachian Trail past the picnic grounds between the lake and Route 9W."},
  {"id":"B1","trails":["B"],"x":-264,"n":1480,"name":"Route 9W underpass","desc":"The Appalachian Trail leaves the lake and passes under Route 9W to the Trailside Museums and Zoo."},
- {"id":"B2","trails":["B"],"x":-170,"n":2219,"name":"Trailside Museums and Zoo","desc":"A small zoo of native animals that cannot return to the wild, which began as a bear den in 1926, with history, geology and nature museums. The Appalachian Trail runs through it and reaches its lowest point here, 124 feet above sea level, by the bear enclosure. Open 10 am to 4:30 pm April to November (to 4 pm in winter); free, with a suggested $1 donation."},
+ {"id":"B2","trails":["B"],"x":-170,"n":2219,"name":"Trailside Zoo","desc":"The Trailside Museums and Zoo: a small zoo of native animals that cannot return to the wild, which began as a bear den in 1926, with history, geology and nature museums. The Appalachian Trail runs through it and reaches its lowest point here, 124 feet above sea level, by the bear enclosure. Open 10 am to 4:30 pm April to November (to 4 pm in winter); free, with a suggested $1 donation."},
  {"id":"B3","trails":["B"],"x":-10,"n":2521,"name":"Fort Clinton","desc":"The zoo and museums stand on the site of Fort Clinton, a Revolutionary War fort taken by the British on October 6, 1777, together with Fort Montgomery across Popolopen Creek. Earthworks of its western redoubt remain."},
  {"id":"B4","trails":["B"],"x":652,"n":2749,"name":"Bear Mountain Bridge","desc":"The suspension bridge over the Hudson opened in 1924. The Appalachian Trail crosses on its walkway to Anthony’s Nose in Westchester County. This walk turns around at the west end; step out onto the span for the view down the river to Iona Island."},
  {"id":"C1","trails":["C"],"x":-3871,"n":1893,"name":"Rock outcrop views","desc":"Above the woods the Major Welch Trail climbs bare rock ledges through mountain laurel and pitch pine, using hands in a few places. The higher outcrop looks over the Hudson, Brooks Lake and the Bear Mountain Bridge, a good place to rest."},
@@ -474,9 +474,9 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
     if(e<6||inLake(x,n)){type=null;}else if(mk<0.25){type=tr()<.6?"oak":"conifer";p=0.06;}
-    else if(cd<230){type=tr()<.4?"syc":"oak";p=0.24;}
+    else if(cd<230){type=tr()<.4?"syc":"oak";p=0.2;}
     else if(g>1.25)type=null;
-    else{const r0=tr();type=r0<.6?"oak":r0<.78?"syc":r0<.9?"gold":"conifer";p=0.18+cl*.12;}
+    else{const r0=tr();type=r0<.6?"oak":r0<.78?"syc":r0<.9?"gold":"conifer";p=0.14+cl*.1;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -929,7 +929,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.35,"A":0.35,"B":0.35,"C":0.35};
+const VIEWAZ={"all":0.35,"A":0.35,"B":0.35,"C":1.9};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
