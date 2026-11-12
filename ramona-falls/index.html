@@ -549,8 +549,8 @@ const anim={};
     [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(-309,12,0.6);
-  const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(2,2);
-  const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
+  const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1);
+  const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});const rings=[],mist=[];
   function fall(x0,n0,e0,x1,n1,e1,wd,lift){const N=10,L=Math.hypot(x1-x0,n1-n0)||1,px=-(n1-n0)/L*wd/2,pn=(x1-x0)/L*wd/2;const pos=[],uv=[],idx=[];
     for(let i=0;i<=N;i++){const t=i/N,x=x0+(x1-x0)*t,n=n0+(n1-n0)*t;const e=Math.max(e0+(e1-e0)*t,surf(x,n)+(lift||14));
       [-1,1].forEach(sd=>{const v=Wv(x+px*sd,n+pn*sd,e);pos.push(v.x,v.y,v.z);uv.push(sd<0?0:1,1-t);});
@@ -558,19 +558,25 @@ const anim={};
     const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geo.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));geo.setIndex(idx);
     const m=new THREE.Mesh(geo,fallMat);m.renderOrder=2;world.add(m);return m;}
   function pool(x,n,e,r){const v=Wv(x,n,Math.max(e,surf(x,n)+2));part(world,new THREE.CylinderGeometry(1,1,0.05,18),"#CFEFF2",v.x,v.y,v.z,r,1,r*0.8,1.03,false);}
-  // Ramona Falls: ~120 ft fan of basalt steps, widening downward
-  fall(14070,-2516,3676,14048,-2520,3627,200,12); fall(14048,-2520,3619,14026,-2524,3569,275,12); fall(14026,-2524,3561,14004,-2528,3512,350,12); fall(14004,-2528,3504,13982,-2532,3454,425,12);
-  pool(13952,-2537,3446,0.55);
+  // Ramona Falls at its OSM position: a wide fan of water over stepped columnar basalt, facing downstream (built in model units so it reads at this scale)
+  {const g=new THREE.Group();g.position.copy(G(14021,-2525,-0.05));g.rotation.y=-2.967;world.add(g);
+    part(g,box,"#55534E",-0.42,0.55,0,0.5,1.25,1.7,1.06);part(g,box,"#64625C",-0.2,0.95,0,0.3,0.5,1.25,1.06);
+    const TW=[[0.62,1.12,0.30],[0.84,0.82,0.30],[1.06,0.52,0.30],[1.30,0.22,0.30]];
+    TW.forEach(([w,y,h],i)=>{const x=-0.12+0.1*i;part(g,box,"#4A4844",x-0.07,y-h/2-0.02,0,0.18,0.05,w+0.06,1.04);
+      const pl=new THREE.Mesh(new THREE.PlaneGeometry(w,h+0.04),fallMat);pl.position.set(x,y,0);pl.rotation.y=Math.PI/2;pl.renderOrder=2;g.add(pl);});
+    part(g,new THREE.CylinderGeometry(1,1,0.04,20),"#CFEFF2",0.45,0.03,0,0.42,1,0.62,1.03,false);
+    const mg=new THREE.Group();mg.rotation.y=Math.PI/2;mg.position.set(-0.4,0,0);g.add(mg);
+    for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));mg.add(m);mist.push({m,ph:i/5,x:(i%3-1)*0.25});}
+    for(let i=0;i<2;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.16,0.2,20),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0.45,0.06,(i-0.5)*0.3);g.add(rg);rings.push(rg);}
+  }
   // wooden footbridge across Ramona Creek at the base of the falls
-  {const q=G(13952,-2531,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,1.396,0);}
+  {const q=G(13952,-2531,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,-1.396,0);}
   // fallen-log crossing of the Sandy River (no bridge)
-  {const q=G(4828,1406,0.4);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-4.676;world.add(g);
+  {const q=G(4828,1406,0.4);const g=new THREE.Group();g.position.copy(q);g.rotation.y=4.676;world.add(g);
     const l2=part(g,new THREE.CylinderGeometry(1,1,1,8),"#6B4A30",0,0,0,0.2,2.6,0.2,1.08);rot(l2,0,0,Math.PI/2);}
   // Upper Sandy Guard Station (1935 log cabin)
   {const q=G(12365,-3015);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;world.add(g);
     part(g,box,"#7A5638",0,0.35,0,1.1,0.7,0.8,1.06);const r=part(g,roof,"#5B4A3C",0,0.95,0,0.95,0.55,0.95,1.06);rot(r,0,Math.PI/2,0);}
-  const rings=[],mist=[];for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));
-    const v=Wv(13982+(i%3-1)*40,-2532+(i>2?30:-10),3471);m.position.copy(v);world.add(m);mist.push({m,ph:i/5,x:(i%3-1)*0.25});}
   anim.water={fallTex,rings,mist};
   bench(22828,-3982,0.9);
 
