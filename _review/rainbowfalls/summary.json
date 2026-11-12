@@ -1,0 +1,51 @@
+{
+ "name": "Rainbow Falls",
+ "folder": "smokies-rainbow-falls",
+ "city": "Gatlinburg",
+ "area": "Gatlinburg",
+ "state": "TN",
+ "region": "Southeast",
+ "lat": 35.6757,
+ "lon": -83.48567,
+ "where": "Great Smoky Mountains National Park, Cherokee Orchard Road and Roaring Fork Motor Nature Trail above Gatlinburg, Tennessee",
+ "high": "4,911 ft",
+ "blurb": "A rocky climb beside Le Conte Creek to 80-foot Rainbow Falls, the park's highest single drop, with Grotto Falls and the heath bald on Brushy Mountain from the nearby Trillium Gap trailhead.",
+ "status": "Open; parking tag required ($5/day). Roaring Fork Motor Nature Trail (Grotto Falls trailhead) closes for winter after November 29, 2026; Rainbow Falls is reached by Cherokee Orchard Road.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Grotto Falls",
+   "mi": 2.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 530
+  },
+  {
+   "id": "B",
+   "name": "Rainbow Falls",
+   "mi": 5.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1500
+  },
+  {
+   "id": "C",
+   "name": "Brushy Mountain via Trillium Gap",
+   "mi": 6.6,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1745
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/thingstodo/hike-to-rainbow-falls.htm",
+  "https://www.nps.gov/thingstodo/hike-to-grotto-falls.htm",
+  "https://www.nps.gov/grsm/planyourvisit/seasonalroads.htm",
+  "https://www.nps.gov/grsm/planyourvisit/temproadclose.htm",
+  "https://en.wikipedia.org/wiki/Rainbow_Falls_Trail",
+  "https://en.wikipedia.org/wiki/Trillium_Gap_Trail",
+  "https://smokymountains.com/park/hikes/rainbow-falls-trail/",
+  "https://smokymountains.com/park/hikes/brushy-mountain-trail-via-trillium-gap",
+  "https://lecontelodge.com/?p=82"
+ ]
+}
