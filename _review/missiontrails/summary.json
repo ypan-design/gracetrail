@@ -1,0 +1,53 @@
+{
+ "name": "Mission Trails: Kwaay Paay, Oak Canyon, Fortunas",
+ "folder": "mission-trails-kwaay-paay",
+ "city": "San Diego",
+ "area": "San Diego",
+ "region": "San Diego",
+ "state": "CA",
+ "lat": 32.8397,
+ "lon": -117.0418,
+ "where": "Mission Trails Regional Park, Old Mission Dam, San Diego",
+ "high": "1,291 ft",
+ "blurb": "The park's next most popular hikes after Cowles: steep Kwaay Paay Peak, the seasonal falls of Oak Canyon, and a loop over North and South Fortuna, all from the Old Mission Dam.",
+ "status": "Open. Weekdays 7 am to 4 pm through spring 2027, pipeline work blocks Father Junipero Serra Trail between the Visitor Center and Old Mission Dam; reach the dam lot from the Mission Gorge Road end. Heat rescues are common: carry water, avoid midday heat.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Kwaay Paay Peak",
+   "mi": 2.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 900
+  },
+  {
+   "id": "B",
+   "name": "Oak Canyon to the falls",
+   "mi": 3.2,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 300
+  },
+  {
+   "id": "C",
+   "name": "North and South Fortuna loop",
+   "mi": 5.5,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1250
+  }
+ ],
+ "sources": [
+  "https://mtrp.org/park-projects",
+  "https://mtrp.org/directions/",
+  "https://www.hikespeak.com/trails/kwaay-paay-peak-hike-san-diego/",
+  "https://www.summitpost.org/kwaay-paay-peak/412317",
+  "https://modernhiker.com/?p=37299",
+  "https://www.theoutbound.com/san-diego/hiking/hike-oak-canyon-in-mission-trails-regional-park",
+  "https://100peaks.com/2009/09/15/north-and-south-fortuna-mountains-peaks-11-and-12/",
+  "https://www.sandiegoreader.com/news/2014/jun/25/roam-south-fortuna-roam/",
+  "https://www.theoutbound.com/california/hiking/old-mission-dam-to-north-and-south-fortuna-loop",
+  "https://sdnhm.org/education/canyoneer-hikes/south-fortuna-mountain",
+  "https://en.wikipedia.org/wiki/Old_Mission_Dam"
+ ]
+}
