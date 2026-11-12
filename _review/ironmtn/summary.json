@@ -1,0 +1,50 @@
+{
+ "name": "Iron Mountain",
+ "folder": "iron-mountain-poway",
+ "city": "Poway",
+ "area": "Poway",
+ "region": "San Diego",
+ "state": "CA",
+ "lat": 32.9783,
+ "lon": -116.9726,
+ "where": "Iron Mountain trails, Highway 67 at Poway Road, Poway, San Diego County",
+ "high": "2,696 ft",
+ "blurb": "A busy, sunny trail from Highway 67 to the 2,696-foot summit of Iron Mountain east of Poway, with a quieter loop up the Ellie Lane Trail.",
+ "status": "Open sunrise to sunset; the City of Poway closes the Iron Mountain trails on extreme-heat days (forecast 100°F or a heat advisory). No water and almost no shade.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Iron Mountain Trail to the Ellie Lane junction",
+   "mi": 2.8,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 500
+  },
+  {
+   "id": "B",
+   "name": "Iron Mountain Trail to the summit",
+   "mi": 5.8,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1100
+  },
+  {
+   "id": "C",
+   "name": "Iron Mountain via the Ellie Lane Trail",
+   "mi": 7.4,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 1750
+  }
+ ],
+ "sources": [
+  "https://www.poway.org/DocumentCenter/View/8013/Poway-Trails-Guide-and-Map-2020",
+  "https://timesofsandiego.com/life/2018/08/05/dangerous-heat-wave-forces-trail-closures-in-poway/",
+  "https://modernhiker.com/?p=8818",
+  "https://www.summitpost.org/iron-mountain/463839",
+  "https://www.trailspotting.com/2024/04/iron-mountain-poway-ca.html",
+  "https://another100feet.com/iron-mountain-via-ellie-lane-trail/counties/san-diego-county/",
+  "https://hikingsdcounty.com/?p=4857",
+  "https://Www.sandiegoreader.com/news/2003/oct/23/climb-conical-summit-iron-mountain-which-rises-ove/"
+ ]
+}

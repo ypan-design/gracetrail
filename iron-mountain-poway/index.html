@@ -863,7 +863,7 @@ const ANIMALS=[
  {k:"lion",path:[7017,2329,7024,1999],per:30},
  {k:"squirrel",at:[1359,-467],hop:true},
  {k:"squirrel",at:[5750,-1292],hop:true},
- {k:"snake",path:[6179,-1314,6002,-1876],per:30},
+ {k:"snake",path:[1825,-517,2631,-519],per:30},
  {k:"snake",path:[5479,-1774,5424,-1851],per:30,ph:0.5},
  {k:"quail",at:[1259,276],flock:3}
 ];
@@ -905,7 +905,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.5,"A":0.5,"B":0.5,"C":0.5};
+const VIEWAZ={"all":0.5,"A":0.5,"B":3.6,"C":0.5};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
