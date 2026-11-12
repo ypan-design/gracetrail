@@ -242,7 +242,7 @@ const STOPS=[{"id":"1","trails":["A","C"],"x":-3,"n":-3,"name":"Call of the Cany
  {"id":"B3","trails":["B"],"x":-7739,"n":-5469,"name":"East Pocket Lookout","desc":"The trail runs about 0.8 mile west through ponderosa pine, poorly marked in places, to the East Pocket fire lookout tower on the rim at about 7,180 feet. The tower was protected during the 2026 Pocket Fire."}];
 const ORDER={"A":["1","2","3"],"B":["B1","B2","B3"],"C":["1","2","3","C1","C2","C3"]};
 const SPECIES={
- bigtoothmaple:{name:"Bigtooth maple",latin:"Acer grandidentatum",color:"#C8402A",shape:"berry",bloom:[10,11],sum:"A small maple of shady side canyons. Its leaves turn scarlet and orange in late October and early November, the West Fork’s best-known color.",rule:(d,e,g,s)=>d<260&&e<6200},
+ bigtoothmaple:{name:"Bigtooth maple",latin:"Acer grandidentatum",color:"#C8402A",shape:"berry",bloom:[10,11],sum:"A small maple of shady side canyons. Its leaves turn scarlet and orange in fall, the West Fork’s best-known color.",rule:(d,e,g,s)=>d<260&&e<6200},
  goldcolumbine:{name:"Golden columbine",latin:"Aquilegia chrysantha",color:"#F2D22E",shape:"cup",bloom:[4,5,6,7,8,9],sum:"Bright yellow flowers with long backward spurs, growing from seeps and hanging gardens on the canyon walls.",rule:(d,e,g,s)=>d<300&&g>0.2},
  lobelia:{name:"Cardinal flower",latin:"Lobelia cardinalis",color:"#D2232A",shape:"spike",bloom:[7,8,9,10],sum:"Spikes of deep scarlet flowers at the water’s edge in late summer. Hummingbirds are its main pollinators.",rule:(d,e,g,s)=>d<180},
  nmcheckermallow:{name:"New Mexico checkermallow",latin:"Sidalcea neomexicana",color:"#C77BC0",shape:"spike",bloom:[6,7,8,9],sum:"Pink-purple mallow flowers on tall stems in moist, sunny openings along the creek.",rule:(d,e,g,s)=>d<240&&g<0.5},
@@ -470,8 +470,8 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     if(mk<0.25){type=null;}
     else if(cd<260){const r0=tr();type=r0<.4?"gold":r0<.7?"syc":"conifer";p=0.42;}
     else if(g>0.95)type=null;
-    else if(e>6300){type=tr()<.85?"conifer":"oak";p=0.22+cl*.1;}
-    else if(south<-0.1){type=tr()<.6?"conifer":"oak";p=0.12+cl*.1;}
+    else if(e>6300){type=tr()<.85?"conifer":"oak";p=0.16+cl*.08;}
+    else if(south<-0.1){type=tr()<.6?"conifer":"oak";p=0.06+cl*.06;}
     else{type=tr()<.5?"oak":"shrub";p=0.05+cl*.04;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
@@ -894,13 +894,13 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.5,"A":0.4,"B":0.6,"C":0.4};
+const VIEWAZ={"all":0.5,"A":0.4,"B":0.6,"C":0.6};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.6, "B": 3.0, "C": 2.8}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.6, "B": 3.0, "C": 2.1}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

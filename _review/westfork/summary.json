@@ -1,0 +1,59 @@
+{
+ "name": "West Fork of Oak Creek",
+ "folder": "sedona-west-fork",
+ "city": "Sedona",
+ "area": "Sedona",
+ "state": "AZ",
+ "region": "Southwest",
+ "reg": "sw",
+ "lat": 34.990694,
+ "lon": -111.742944,
+ "where": "Oak Creek Canyon, Coconino National Forest (Red Rock Ranger District), north of Sedona, Arizona",
+ "high": "7,180 ft",
+ "blurb": "A creek canyon of red and buff sandstone with many stepping-stone crossings, the Mayhew Lodge ruins, and a steep climb to the East Pocket Lookout.",
+ "status": "Closed. A Forest Service order closes the West Fork Trail and land within 100 ft of the creek through Feb. 28, 2027 (flood debris and rockfall in the 2026 Pocket Fire burn area); the Bootlegger trailhead for the A.B. Young Trail and SR 89A north of Slide Rock State Park are also closed after the Nov. 1, 2026 flood.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Mayhew Lodge ruins",
+   "mi": 0.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "B",
+   "name": "A.B. Young Trail to East Pocket Lookout",
+   "mi": 5.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2020
+  },
+  {
+   "id": "C",
+   "name": "West Fork Trail No. 108",
+   "mi": 6.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 670
+  }
+ ],
+ "sources": [
+  "https://www.fs.usda.gov/r03/coconino/recreation/trails/west-fork-trail-no-108",
+  "https://fs.usda.gov/r03/coconino/recreation/trails/b-young-trail-no-100",
+  "https://www.fs.usda.gov/r03/coconino/alerts/west-fork-temporary-area-closure-extension-2-27-27",
+  "https://www.fs.usda.gov/r03/coconino/alerts/red-rock-ranger-district-affected-severe-flooding-many-closures-effect",
+  "https://www.fs.usda.gov/r03/coconino/fire/info/recent-large-wildfires",
+  "https://www.knau.org/knau-and-arizona-news/2026-11-10/lengthy-closure-in-store-for-sr-89a-following-oak-creek-flooding-damage",
+  "https://arizonahighways.com/west-fork-oak-creek-trail",
+  "https://www.arizonahighways.com/classroom/mayhews-oak-creek-lodge",
+  "https://www.hikingproject.com/trail/7002990/west-fork-oak-creek-trail",
+  "https://www.hikearizona.com/decoder.php?ZTN=147",
+  "https://www.sedonahikingtrails.com/west-fork-trail.htm",
+  "https://americansouthwest.net/arizona/sedona/west_oak_creek.html",
+  "https://americansouthwest.net/arizona/sedona/ab-young-trail.html",
+  "https://awcs.azgfd.com/conservation-opportunity-areas/aquatic/west-fork-oak-creek",
+  "https://azstateparks.com/slide-rock/things-to-do/wildlife-viewing",
+  "https://tommysbirdingexpeditions.blogspot.com/2013/04/birding-oak-creek-canyons-awesome-west.html"
+ ]
+}
