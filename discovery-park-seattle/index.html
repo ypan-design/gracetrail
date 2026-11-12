@@ -358,7 +358,7 @@ let MAXY=0;
     const g=Math.hypot(Nx,Nz)/Ny,south=g>1e-4?(-Nz/Ny)/g:0;
     const mx=(A[0]+B[0]+Q[0])/3,mn=(A[1]+B[1]+Q[1])/3,me=(A[2]+B[2]+Q[2])/3,cd=creekDist(mx,mn),mk=mask(mx,mn);
     let c;
-    if(me<3)c=col(me<1?"#9CCFE0":"#E9DDBF");else if(me<14&&g<0.25)c=col("#EADFC4");else if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
+    const hr=H(mx,mn);if(hr<3)c=col(hr<1?"#9CCFE0":"#E9DDBF");else if(hr<14&&g<0.25)c=col("#EADFC4");else if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
     else if(me>270&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
@@ -959,7 +959,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":2.4,"A":2.4,"B":2.4,"C":2.4};
+const VIEWAZ={"all":0.83,"A":0.83,"B":0.83,"C":0.83};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
