@@ -16,10 +16,10 @@
   {
    "id": "A",
    "name": "Falls Overlook to the base of the falls",
-   "mi": 0.3,
+   "mi": 0.4,
    "unit": "round trip",
    "level": "Easy",
-   "gain_ft": 80
+   "gain_ft": 90
   },
   {
    "id": "B",
