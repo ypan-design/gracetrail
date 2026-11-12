@@ -872,7 +872,7 @@ const ANIMALS=[
  {k:"squirrel",at:[181,9524],hop:true},
  {k:"raccoon",path:[167,1923,151,2565],per:20},
  {k:"bobcat",path:[-649,8288,-390,8801],per:30},
- {k:"fox",path:[814,5747,825,6750],per:26},
+ {k:"fox",path:[1067,-130,769,-231],per:26},
  {k:"snake",at:[-1201,10858]}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
