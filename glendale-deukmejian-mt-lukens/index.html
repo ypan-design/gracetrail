@@ -473,12 +473,11 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type=tr()<.5?"oak":"conifer";p=0.05;}
-    else if(cd<230){type=tr()<.38?"gold":"syc";p=0.32;}
-    else if(south<-0.15&&cd<1300){type=(e>2300&&tr()<.55)?"conifer":"oak";p=0.24+cl*.25;}
-    else if(e>2600){type="conifer";p=0.12;}
-    else if(g>1.15)type=null;
-    else{type="shrub";p=0.02+cl*.02;}
+    if(mk<0.25){type=null;}
+    else if(cd<230){const r0=tr();type=r0<.55?"oak":r0<.75?"syc":"conifer";p=0.32;}
+    else if(g>1.1)type=null;
+    else if(south<-0.15){const r0=tr();type=r0<.5?"oak":r0<.8?"shrub":(e>3000?"conifer":"oak");p=0.16+cl*.15;}
+    else{type=tr()<.25?"oak":"shrub";p=0.04+cl*.03;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
