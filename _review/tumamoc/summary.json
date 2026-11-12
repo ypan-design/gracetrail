@@ -1,0 +1,56 @@
+{
+ "name": "Tumamoc Hill",
+ "folder": "tucson-tumamoc-hill",
+ "city": "Tucson",
+ "area": "Tucson",
+ "region": "Southwest",
+ "state": "AZ",
+ "lat": 32.22611,
+ "lon": -111.00102,
+ "where": "Tumamoc Hill Road at W. Anklam Rd., Tucson",
+ "high": "3,108 ft",
+ "blurb": "The paved road up Tucson's Tumamoc Hill, home of the Desert Laboratory since 1903, plus the trail on Sentinel Peak next door.",
+ "status": "Open. Tumamoc Hill open daily 4 am to 10 pm; stay on the paved road, no pets or bikes. Sentinel Peak Park open sunrise to sunset.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Tumamoc Hill to the midpoint",
+   "mi": 1.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 320
+  },
+  {
+   "id": "B",
+   "name": "Gilbert Escandón Jiménez Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 320
+  },
+  {
+   "id": "C",
+   "name": "Tumamoc Hill to the top",
+   "mi": 3.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 700
+  }
+ ],
+ "sources": [
+  "https://desertlaboratory.arizona.edu/tumamoc-hill/walk-hill",
+  "https://desertlaboratory.arizona.edu/tumamoc-hill/walk-hill/rules-regulations",
+  "https://desertlaboratory.arizona.edu/tumamoc-hill/tumamoc-hill-timeline",
+  "https://desertlaboratory.arizona.edu/tumamoc-hill/tumamoc-tour/tumamoc-tour-english",
+  "https://www.hikearizona.com/decoder.php?ZTN=1780",
+  "https://en.wikipedia.org/wiki/Tumamoc_Hill",
+  "https://www.arizonahikersguide.com/all-hikes/cog47z7syzm31up2cubg0hu1h8wwci",
+  "https://www.tucsonaz.gov/parks/SentinelPeakPark",
+  "https://www.hikingproject.com/directory/8018648/sentinel-peak-park",
+  "https://thisistucson.com/lifestyles/recreation/article_53f319ee-6cc0-586f-bd66-c9c4af2a3722.html",
+  "https://santacruzheritage.org/?p=12030",
+  "https://desertlaboratory.arizona.edu/sites/default/files/2025-04/Birds_of_Tumamoc_English.pdf",
+  "https://tumamoc.org/catalog.html",
+  "https://en.wikipedia.org/wiki/Tumamoca_macdougalii"
+ ]
+}
