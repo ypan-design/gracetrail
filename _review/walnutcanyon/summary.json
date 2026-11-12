@@ -1,0 +1,57 @@
+{
+ "name": "Walnut Canyon National Monument",
+ "folder": "walnut-canyon",
+ "city": "Flagstaff",
+ "area": "Flagstaff",
+ "region": "Southwest",
+ "state": "AZ",
+ "lat": 35.17173,
+ "lon": -111.50936,
+ "where": "Walnut Canyon National Monument, 7.5 miles east of Flagstaff (I-40 exit 204)",
+ "high": "6,860 ft",
+ "blurb": "Sinagua cliff dwellings tucked under limestone ledges in a 400-foot-deep canyon, seen from the Island Trail, the level Rim Trail and the Arizona Trail outside the monument.",
+ "status": "Open daily 9 a.m.–5 p.m. (closed Dec. 25 and Jan. 1); Island Trail entry ends at 4 p.m. and the trail may close in winter for snow or ice; no NPS alerts posted as of Nov. 12, 2026. Entrance fee $25 per vehicle, card only.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Rim Trail",
+   "mi": 0.7,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 40
+  },
+  {
+   "id": "B",
+   "name": "Island Trail",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 185
+  },
+  {
+   "id": "C",
+   "name": "Arizona Trail to Walnut Canyon Overlook",
+   "mi": 4.8,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 650
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/waca/index.htm",
+  "https://www.nps.gov/waca/planyourvisit/island-trail.htm",
+  "https://www.nps.gov/waca/planyourvisit/rim-trail.htm",
+  "https://www.nps.gov/waca/planyourvisit/fees.htm",
+  "https://www.nps.gov/waca/planyourvisit/directions.htm",
+  "https://www.nps.gov/waca/planyourvisit/pets.htm",
+  "https://www.nps.gov/waca/planyourvisit/interpretive_programs.htm",
+  "https://www.nps.gov/waca/learn/nature/animals.htm",
+  "https://www.nps.gov/waca/learn/nature/plants.htm",
+  "https://www.nps.gov/articles/walnutcanyon.htm",
+  "https://gutenberg.org/cache/epub/59840/pg59840-images.html",
+  "https://www.hikearizona.com/decoder.php?ZTN=179",
+  "https://www.hikingproject.com/trail/7015614/azt-passage-31-walnut-canyon",
+  "https://www.hikingproject.com/trail/7003027/walnut-canyon-rim",
+  "https://www.grandcanyontrust.org/?p=14527"
+ ]
+}
