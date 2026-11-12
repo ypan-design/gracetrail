@@ -559,7 +559,7 @@ const anim={};
     const m=new THREE.Mesh(geo,fallMat);m.renderOrder=2;world.add(m);return m;}
   function pool(x,n,e,r){const v=Wv(x,n,Math.max(e,surf(x,n)+2));part(world,new THREE.CylinderGeometry(1,1,0.05,18),"#CFEFF2",v.x,v.y,v.z,r,1,r*0.8,1.03,false);}
   // Ramona Falls at its OSM position: a wide fan of water over stepped columnar basalt, facing downstream (built in model units so it reads at this scale)
-  {const g=new THREE.Group();g.position.copy(G(14021,-2525,-0.05));g.rotation.y=-2.967;world.add(g);
+  {const g=new THREE.Group();g.position.copy(G(14021,-2525,-0.05));g.rotation.y=-2.967;g.scale.setScalar(1.5);world.add(g);
     part(g,box,"#55534E",-0.42,0.55,0,0.5,1.25,1.7,1.06);part(g,box,"#64625C",-0.2,0.95,0,0.3,0.5,1.25,1.06);
     const TW=[[0.62,1.12,0.30],[0.84,0.82,0.30],[1.06,0.52,0.30],[1.30,0.22,0.30]];
     TW.forEach(([w,y,h],i)=>{const x=-0.12+0.1*i;part(g,box,"#4A4844",x-0.07,y-h/2-0.02,0,0.18,0.05,w+0.06,1.04);
@@ -572,10 +572,10 @@ const anim={};
   // wooden footbridge across Ramona Creek at the base of the falls
   {const q=G(13952,-2531,0.25);const br=part(world,box,"#9C7653",q.x,q.y,q.z,0.95,0.1,0.26,1.08);rot(br,0,-1.396,0);}
   // fallen-log crossing of the Sandy River (no bridge)
-  {const q=G(4828,1406,0.4);const g=new THREE.Group();g.position.copy(q);g.rotation.y=4.676;world.add(g);
+  {const q=G(4828,1406,0.55);const g=new THREE.Group();g.position.copy(q);g.rotation.y=4.676;world.add(g);
     const l2=part(g,new THREE.CylinderGeometry(1,1,1,8),"#6B4A30",0,0,0,0.2,2.6,0.2,1.08);rot(l2,0,0,Math.PI/2);}
   // Upper Sandy Guard Station (1935 log cabin)
-  {const q=G(12365,-3015);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;world.add(g);
+  {const q=G(12365,-3015);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;g.scale.setScalar(0.7);world.add(g);
     part(g,box,"#7A5638",0,0.35,0,1.1,0.7,0.8,1.06);const r=part(g,roof,"#5B4A3C",0,0.95,0,0.95,0.55,0.95,1.06);rot(r,0,Math.PI/2,0);}
   anim.water={fallTex,rings,mist};
   bench(22828,-3982,0.9);
