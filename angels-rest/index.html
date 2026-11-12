@@ -586,6 +586,12 @@ function inLake(x,n){for(const P of lakeP()){let c=false;for(let i=0,j=P.length-
     for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.12);pa.setXYZ(i,v.x,v.y,v.z);}
     pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);});
 })();
+// Trail A is a falls out-and-back plus a loop from one lot: draw the whole path (the shared out-and-back trim would cut the loop off)
+(function(){const T=TR.A,W=T.world,old=trailMesh.A;if(!T||!old)return;world.remove(old.bright);world.remove(old.dim);
+  const c=getComputedStyle(document.documentElement).getPropertyValue(T.color).trim();
+  const bright=new THREE.Group();bright.add(pipe(W,PIPE.r,new THREE.MeshLambertMaterial({color:c,emissive:c,emissiveIntensity:0.18}),PIPE.lift,PIPE.edge,PIPE_EDGE),ribbon(W,0.42,new THREE.MeshBasicMaterial({color:0x1D2B26,transparent:true,opacity:0.13,side:THREE.DoubleSide,depthWrite:false}),0.06));
+  const dim=new THREE.Group();dim.add(pipe(W,0.11,new THREE.MeshLambertMaterial({color:0xF2ECE0}),PIPE.lift*0.8,0,null));
+  bright.visible=old.bright.visible;dim.visible=old.dim.visible;world.add(bright,dim);trailMesh.A={bright,dim};T.draw=W;})();
 
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
