@@ -1,0 +1,49 @@
+{
+ "name": "Waiheʻe Ridge Trail",
+ "folder": "waihee-ridge",
+ "city": "Wailuku",
+ "area": "Waiheʻe, Maui",
+ "region": "Alaska & Hawaii",
+ "state": "HI",
+ "lat": 20.9528,
+ "lon": -156.53172,
+ "where": "West Maui Forest Reserve, top of Maluhia Road off Kahekili Hwy, Maui",
+ "high": "2,563 ft",
+ "blurb": "A state trail up Kanoa Ridge on windward West Maui, past a waterfall overlook and a view down Waiheʻe Valley, to the picnic table on Lanilili.",
+ "status": "Open (DLNR Nā Ala Hele, Nov 2026); access-road gate 7 am–7 pm, small lot fills early, deep mud and summit clouds are common.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Waiheʻe Ridge Trail to Makamakaʻole overlook",
+   "mi": 1.2,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 410
+  },
+  {
+   "id": "B",
+   "name": "Waiheʻe Ridge Trail to Waiheʻe Valley overlook",
+   "mi": 1.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 510
+  },
+  {
+   "id": "C",
+   "name": "Waiheʻe Ridge Trail to Lanilili",
+   "mi": 5.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1500
+  }
+ ],
+ "sources": [
+  "https://hawaiitrails.hawaii.gov/trails/#/trail/waihee-ridge-trail/111",
+  "https://www.hikingproject.com/trail/7049028/waihee-ridge-trail",
+  "https://noahlangphotography.com/blog/waihee-ridge-trail-maui-hawaii",
+  "https://mauinow.com/2017/05/05/122k-waihee-ridge-trail-facelift-nears-completion/",
+  "https://www.hawaiimagazine.com/the-views-on-mauis-waihee-ridge-trail-are-worth-the-1500-foot-ascent/",
+  "https://mauisierraclub.org/ideas-for-solo-hiking-waihee-ridge-trail/",
+  "https://dlnr.hawaii.gov/dofaw/?p=10766"
+ ]
+}
