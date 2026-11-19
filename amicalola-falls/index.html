@@ -558,17 +558,23 @@ const anim={};
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(-1396,-719,1.0);
   // ---- Amicalola Falls: water ribbon down the OSM falls centreline (way 31213081), exaggerated in width, with volume
-  const fallTex=stripeTex("#9ED3E8","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,3);
+  const fallTex=stripeTex("#86CBE6","#FFFFFF",64,128,26,9,16);fallTex.repeat.set(1,3);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex});
   const rings=[],mist=[];
   const FALL=[[-52,41],[-89,-47],[-174,-187],[-254,-260],[-339,-350],[-415,-423],[-452,-481],[-473,-525],[-497,-563],[-515,-612],[-518,-652]];
-  for(let i=0;i<FALL.length-1;i++){const a=G(FALL[i][0],FALL[i][1],0.18),b=G(FALL[i+1][0],FALL[i+1][1],0.18);
-    const L=a.distanceTo(b);const m=new THREE.Mesh(new THREE.BoxGeometry(0.85,0.16,L+0.12),fallMat);
+  for(let i=0;i<FALL.length-1;i++){const a=G(FALL[i][0],FALL[i][1],0.32),b=G(FALL[i+1][0],FALL[i+1][1],0.32);
+    const L=a.distanceTo(b);const m=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.3,L+0.14),fallMat);
     m.position.copy(a).add(b).multiplyScalar(0.5);m.lookAt(b);world.add(m);
     const sd=new THREE.Vector3().subVectors(b,a).normalize();const px=new THREE.Vector3(-sd.z,0,sd.x).normalize();
-    [1,-1].forEach(s=>{part(world,ico,i%2?"#7D776D":"#8F897E",m.position.x+px.x*0.62*s,m.position.y+0.1,m.position.z+px.z*0.62*s,0.32,0.34,0.32);});
-    if(i%2==0){part(world,box,"#FFFFFF",m.position.x,m.position.y+0.1,m.position.z,0.9,0.06,0.12,0).lookAt(b);}
+    if(i%2==0)[1,-1].forEach(s=>{part(world,ico,s>0?"#6E685F":"#837D72",m.position.x+px.x*0.48*s,m.position.y,m.position.z+px.z*0.48*s,0.22,0.3,0.22);});
+    const fm=part(world,box,"#FFFFFF",a.x,a.y+0.17,a.z,0.7,0.08,0.16,0);fm.lookAt(b.x,a.y+0.17,b.z);
   }
+  // two steep tiers drawn as near-vertical sheets of water with a rock face behind (top of the falls and the drop below the bridge)
+  function tier(x,n,dx,dn,w,h){const F=G(x,n,0.1);const g=new THREE.Group();g.position.copy(F);g.rotation.y=Math.atan2(dx,-dn);world.add(g);
+    const wt=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.2),fallMat);wt.position.set(0,h/2-0.2,0.05);g.add(wt);
+    part(g,box,"#6F6B64",0,h/2-0.25,-0.3,w+0.5,h+0.1,0.4,1.04);part(g,box,"#A39E93",0,h-0.15,-0.2,w+0.7,0.16,0.7,1.05);}
+  tier(FALL[0][0],FALL[0][1],FALL[1][0]-FALL[0][0],FALL[1][1]-FALL[0][1],0.62,1.1);
+  tier(FALL[3][0],FALL[3][1],FALL[4][0]-FALL[3][0],FALL[4][1]-FALL[3][1],0.62,0.9);
   {const q=G(FALL[FALL.length-1][0],FALL[FALL.length-1][1],0.05);
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,0.12,18),new THREE.MeshBasicMaterial({color:"#9CD3E0"}));pool.position.copy(q);world.add(pool);
     const wf=new THREE.Group();wf.position.copy(q);world.add(wf);
@@ -607,7 +613,11 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={A:60,B:750,C:2100}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={A:60,B:750,C:2100}[T.id];if(g)T.gain=g;});(function(){const P=[[-52,41],[-89,-47],[-174,-187],[-254,-260],[-339,-350],[-415,-423],[-452,-481],[-473,-525],[-497,-563],[-515,-612],[-518,-652],[-420,-178],[-130,-182]],m4=new THREE.Matrix4(),pv=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+  const dseg=(x,n,a,b)=>{const vx=b[0]-a[0],vn=b[1]-a[1],L=vx*vx+vn*vn||1;let t=((x-a[0])*vx+(n-a[1])*vn)/L;t=Math.max(0,Math.min(1,t));return Math.hypot(x-a[0]-t*vx,n-a[1]-t*vn);};
+  treeGroup.children.forEach(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,m4);m4.decompose(pv,q,sc);
+    const x=pv.x/S+cx,n=-pv.z/S+cn;let d=1e9;for(let k=0;k<P.length-1;k++){if(k===10)continue;d=Math.min(d,dseg(x,n,P[k],P[k+1]));}
+    if(d<170){sc.setScalar(0);m4.compose(pv,q,sc);m.setMatrixAt(i,m4);}}m.instanceMatrix.needsUpdate=true;});})();
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
