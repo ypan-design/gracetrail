@@ -1,0 +1,29 @@
+{
+ "name": "Colchuck Lake",
+ "where": "Alpine Lakes Wilderness \u00b7 Leavenworth, Washington",
+ "href": "colchuck-lake/",
+ "lat": 47.52776,
+ "lon": -120.82087,
+ "grp": "pnw",
+ "reg": "pnw",
+ "st": "WA",
+ "status": "permit required",
+ "trails": [
+  [
+   "A",
+   "Mountaineer Creek bridge",
+   "3 mi round trip"
+  ],
+  [
+   "B",
+   "Colchuck Lake",
+   "8 mi round trip"
+  ],
+  [
+   "C",
+   "Lake Stuart",
+   "9 mi round trip"
+  ]
+ ],
+ "high": "5,580 ft"
+}

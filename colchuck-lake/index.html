@@ -880,9 +880,9 @@ const animals=[];
 const ANIMALS=[
  {k:"goat",path:[3856,-2391,3560,-2015],per:36},
  {k:"goat",path:[2064,-2218,2203,-2682],per:34,ph:0.5},
- {k:"pika",at:[1718,-1698],hop:true},
+ {k:"pika",at:[2307,-2079],hop:true},
  {k:"marmot",at:[3131,-2999]},
- {k:"bear",path:[5050,2986,4804,2091],per:40},
+ {k:"bear",path:[330,-329,-554,-541],per:40},
  {k:"pika",at:[-2718,-2817],hop:true},
  {k:"marmot",at:[-4421,-2879]}
 ];
@@ -930,7 +930,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.0, "C": 2.8}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.2, "B": 2.3, "C": 2.6}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

@@ -1,0 +1,54 @@
+{
+ "name": "Colchuck Lake",
+ "folder": "colchuck-lake",
+ "city": "Leavenworth",
+ "area": "Okanogan-Wenatchee National Forest",
+ "state": "WA",
+ "region": "Pacific Northwest",
+ "lat": 47.52776,
+ "lon": -120.82087,
+ "where": "Alpine Lakes Wilderness near Leavenworth, Washington",
+ "high": "5,580 ft",
+ "blurb": "Two granite-ringed alpine lakes from one trailhead: Colchuck Lake under Dragontail Peak and Aasgard Pass, and Lake Stuart under Mount Stuart.",
+ "status": "permit required: free self-issued wilderness permit for day hikes, Enchantment permit for camping May 15\u2013Oct 31; Eightmile Road (FR 7601) closes to vehicles for winter, usually November to May",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Mountaineer Creek bridge",
+   "mi": 3.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 590
+  },
+  {
+   "id": "B",
+   "name": "Colchuck Lake",
+   "mi": 8.0,
+   "unit": "round trip",
+   "level": "Moderate\u2013hard",
+   "gain_ft": 2280
+  },
+  {
+   "id": "C",
+   "name": "Lake Stuart",
+   "mi": 9.0,
+   "unit": "round trip",
+   "level": "Moderate\u2013hard",
+   "gain_ft": 1665
+  }
+ ],
+ "sources": [
+  "https://www.fs.usda.gov/r06/okanogan-wenatchee/recreation/stuart-lake-trailhead",
+  "https://www.wta.org/go-hiking/hikes/colchuck-lake",
+  "https://www.wta.org/go-hiking/hikes/lake-stuart",
+  "https://www.wta.org/go-hiking/hikes/enchantments",
+  "https://www.hikingwithmybrother.com/colchuck-lake.html",
+  "https://www.hikingwithmybrother.com/stuart-lake-trail-1599.html",
+  "https://en.wikipedia.org/wiki/Colchuck_Lake",
+  "https://en.wikipedia.org/wiki/Aasgard_Pass",
+  "https://www.hikingproject.com/trail/7006899",
+  "https://www.wta.org/news/signpost/hiker-headlines-eightmile-road-chinook-and-cayuse-passes-closed-for-the-season-sno-park-permit-season-starts-11-7-24",
+  "https://wenatcheeoutdoors.org/?p=3560",
+  "https://www.wta.org/go-hiking/trip-reports/tripreport-2002071706"
+ ]
+}
