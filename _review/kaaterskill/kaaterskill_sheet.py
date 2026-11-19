@@ -60,7 +60,7 @@ trails = [
  dict(id='B', name='Kaaterskill Falls Trail to the pools', short='Kaaterskill Falls', official=1.4, unit='round trip', route='Out and back', time='1–1.5 hr', level='Moderate', color='--tB',
       desc='Crosses Spruce Creek above the falls, follows the Escarpment Trail a short way and descends a long stone staircase to the pools at the base of the upper fall, about 0.7 mile from the parking area. The climb back up the stairs is the hard part. Nine people died at the falls between 1988 and 2021; stay on the trail and off the ledges.', anchors=p.anchors(R['B'])),
  dict(id='C', name='Escarpment Trail loop to Inspiration Point', short='Inspiration Point', official=3.9, unit='loop', route='Loop', time='2–3 hr', level='Moderate', color='--tC',
-      desc='Follows the blue Escarpment Trail down a rocky stretch to Layman’s Monument, then along the rim of Kaaterskill Clove past several ledges to Sunset Rock and Inspiration Point, with views of Kaaterskill High Peak. It returns on the yellow Yellow Horse Trail, a flat former wood road, and the Schutt Road Trail. Junctions can be confusing; carry a map.', anchors=p.anchors(R['C'])),
+      desc='Follows the blue Escarpment Trail down a rocky stretch to Layman’s Monument, then along the rim of Kaaterskill Clove past several ledges to Sunset Rock and Inspiration Point, with views of Kaaterskill High Peak. It returns on the yellow-marked Yellow Horse Trail, a flat former wood road, and the Schutt Road Trail. Junctions can be confusing; carry a map.', anchors=p.anchors(R['C'])),
 ]
 
 pa = place_along
