@@ -588,14 +588,14 @@ const anim={};
     const y=Math.min(...P.map(q=>G(q[0],q[1]).y))+0.06;const m=new THREE.Mesh(new THREE.ShapeGeometry(sh),new THREE.MeshBasicMaterial({color:"#8CC8DA"}));m.rotation.x=-Math.PI/2;m.position.y=y;world.add(m);
     const ed=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.1,bevelEnabled:false}),new THREE.MeshBasicMaterial({color:"#7FB9CB"}));ed.rotation.x=-Math.PI/2;ed.position.y=y-0.1;world.add(ed);}
   // ---- stone arch at the Visitor Center (start of the Approach Trail), the trail passing through it to the north-east; exaggerated
-  {const q=G(-1498,-3514);const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(0.68,-0.73)+Math.PI/2;g.scale.setScalar(2.2);world.add(g);
+  {const q=G(-1498,-3514);const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(0.68,-0.73)+Math.PI/2;g.scale.setScalar(1.3);world.add(g);
     [1,-1].forEach(s=>{part(g,box,"#9A9184",0.55*s,0.5,0,0.32,1.0,0.36,1.06);part(g,box,"#B3AA9C",0.55*s,1.05,0,0.4,0.1,0.44,1.06);});
     const ar=new THREE.Mesh(new THREE.TorusGeometry(0.55,0.16,8,16,Math.PI),new THREE.MeshLambertMaterial({color:"#A39A8C"}));ar.position.set(0,1.05,0);g.add(ar);
     part(g,box,"#2F6FB5",0,1.45,0.2,0.32,0.18,0.03,0);}
   // ---- Amicalola Falls Lodge on the ridge (OSM), and the Len Foote Hike Inn (OSM) with its Star Base
-  house(413,-708,3.0,0.6);house(613,-588,2.2,0.6);
-  house(10797,9053,2.2,0.3);house(10967,9093,1.8,0.3);house(10857,8883,1.6,1.2);
-  {const q=G(10567,8933);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(1.6);world.add(g);
+  house(413,-708,0.75,0.6);house(583,-598,0.55,0.6);
+  house(10797,9053,0.6,0.3);house(10947,9093,0.45,0.3);house(10847,8903,0.45,1.2);
+  {const q=G(10567,8933);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(1.1);world.add(g);
     part(g,cyl,"#BDB6AA",0,0.06,0,0.9,0.12,0.9,1.04);for(let k=0;k<8;k++){const a=k*Math.PI/4;part(g,box,"#8E877B",Math.cos(a)*0.75,0.35,Math.sin(a)*0.75,0.18,0.6,0.12,1.06).rotation.y=-a;}
     part(g,box,"#7A746A",0,0.5,0,0.2,0.9,0.2,1.06);}
   // ---- lime-green blaze post where the Hike Inn Trail leaves the Approach Trail
@@ -921,11 +921,11 @@ const ANIMALS=[
  {k:"bear",path:[2540,961,3765,1919],per:36},
  {k:"bear",path:[7256,6888,7898,7798],per:38,ph:0.5},
  {k:"deer",path:[4368,4402,5133,4071],per:28},
- {k:"deer",path:[10179,7328,10445,7923],per:26,ph:0.4},
+ {k:"deer",path:[5019,7122,5416,6632],per:26,ph:0.4},
  {k:"bobcat",path:[5128,5882,5116,6051],per:30},
  {k:"coyote",path:[6431,6710,6609,6325],per:30,ph:0.3},
- {k:"fox",path:[3162,2723,3673,2997],per:26,ph:0.6},
- {k:"raccoon",path:[1457,1593,1107,1526],per:24},
+ {k:"fox",path:[-929,-2871,-857,-2681],per:26,ph:0.6},
+ {k:"raccoon",path:[-60,-413,-232,46],per:24},
  {k:"marmot",at:[673,-1128]},
  {k:"squirrel",at:[-892,-378],hop:true},
  {k:"squirrel",at:[8825,7030],hop:true},
