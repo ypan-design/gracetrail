@@ -558,15 +558,15 @@ const anim={};
   gate(-230,-118,0.6);
   gate(1930,-1170,0.2);
   // Sylvan Lake Dam: a granite-block wall across the outlet (OSM dam area)
-  {const d=G(-1633,315);const g=new THREE.Group();g.position.copy(d);g.rotation.y=0.9;g.scale.setScalar(2.4);world.add(g);
+  {const d=G(-1633,315);const g=new THREE.Group();g.position.copy(d);g.rotation.y=0.9;g.scale.setScalar(0.55);world.add(g);
    part(g,box,"#B9B2A4",0,0.5,0,4.2,1.0,0.9,1.05);part(g,box,"#A79F90",0,1.05,0,4.4,0.14,1.1,1.05);}
   // granite spires around the lake shore
-  [[-1121,585,1.6],[-1056,304,1.2],[-1335,-956,1.3],[-1600,420,1.1]].forEach(([x,n,s])=>{const q=G(x,n);part(world,new THREE.ConeGeometry(0.9,4.5,6),"#C9C0B0",q.x,q.y+2.2*s,q.z,s,s,s,1.06);});
+  [[-1121,585,0.42],[-1056,304,0.32],[-1335,-956,0.36],[-1600,420,0.3]].forEach(([x,n,s])=>{const q=G(x,n);part(world,new THREE.ConeGeometry(0.9,4.5,6),"#C9C0B0",q.x,q.y+2.2*s,q.z,s,s,s,1.06);});
   // Little Devils Tower: a cluster of granite pillars (OSM peak), drawn large
-  {const q=G(5677,2127);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(3.2);world.add(g);
+  {const q=G(5677,2127);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(1.05);world.add(g);
    [[0,0,1.0,5.2],[0.9,0.4,0.7,3.8],[-0.8,0.5,0.75,4.2],[0.3,-0.9,0.6,3.2],[-0.5,-0.7,0.55,2.6]].forEach(([x,z,r,h])=>{part(g,new THREE.CylinderGeometry(r*0.55,r,h,6),"#CFC6B4",x,h/2,z,1,1,1,1.06);part(g,new THREE.SphereGeometry(r*0.58,6,4),"#D8D0BF",x,h,z,1,0.6,1,1.06);});}
   // Black Elk Peak Lookout (OSM): stone tower on the summit rocks, with lookout room and roof, drawn large
-  {const q=G(7572,7156);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-0.574;g.scale.setScalar(3.4);world.add(g);
+  {const q=G(7572,7156);const g=new THREE.Group();g.position.copy(q);g.rotation.y=-0.574;g.scale.setScalar(1.25);world.add(g);
    part(g,ico,"#BDB5A6",0,0.4,0,2.4,1.1,2.0);
    part(g,box,"#8E8577",0,1.6,0,1.9,2.0,1.5,1.06);
    part(g,box,"#857C6E",0,3.3,0,1.3,1.6,1.3,1.06);
