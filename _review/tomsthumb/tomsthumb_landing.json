@@ -1,0 +1,29 @@
+{
+ "name": "Tom’s Thumb",
+ "where": "McDowell Sonoran Preserve · Arizona",
+ "href": "toms-thumb/",
+ "lat": 33.69447,
+ "lon": -111.80172,
+ "grp": "sw",
+ "reg": "sw",
+ "st": "AZ",
+ "status": "closed",
+ "trails": [
+  [
+   "A",
+   "Marcus Landslide Trail",
+   "3.7 mi round trip"
+  ],
+  [
+   "B",
+   "Tom’s Thumb",
+   "4.2 mi round trip"
+  ],
+  [
+   "C",
+   "Lookout via Tom’s Thumb Trail",
+   "5.1 mi round trip"
+  ]
+ ],
+ "high": "3,920 ft"
+}

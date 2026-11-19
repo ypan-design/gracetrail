@@ -1,0 +1,70 @@
+{
+ "name": "Tom’s Thumb",
+ "folder": "toms-thumb",
+ "city": "Scottsdale",
+ "area": "Scottsdale",
+ "state": "AZ",
+ "region": "Southwest",
+ "reg": "sw",
+ "lat": 33.69447,
+ "lon": -111.80172,
+ "where": "McDowell Sonoran Preserve, Scottsdale, Arizona",
+ "high": "3,920 ft",
+ "blurb": "A steep climb to a 140-foot granite thumb on the McDowell Mountains ridge, a longer hike to the Lookout, and a gentle walk across a half-million-year-old landslide.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Marcus Landslide Trail",
+   "mi": 3.7,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 300
+  },
+  {
+   "id": "B",
+   "name": "Tom’s Thumb",
+   "mi": 4.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1200
+  },
+  {
+   "id": "C",
+   "name": "Lookout via Tom’s Thumb Trail",
+   "mi": 5.1,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1440
+  }
+ ],
+ "status": "Closed: Tom’s Thumb Trailhead closed to all public access from Nov 18, 2026 while crews remove boulders loosened by recent rain; reopening date not announced.",
+ "rare": [
+  {
+   "animal": "Gila monster",
+   "why": "A venomous lizard protected by Arizona Game and Fish; it spends most of its life underground and is seldom seen.",
+   "source": "https://kjzz.org/content/1872065/qaz-are-gila-monsters-legal-pets-arizona"
+  },
+  {
+   "animal": "Sonoran desert tortoise",
+   "why": "Protected in Arizona as a Species of Greatest Conservation Need; the McDowell Sonoran Conservancy radio-tracks the preserve's tortoises.",
+   "source": "https://mcdowellsonoran.org/?p=10687"
+  }
+ ],
+ "sources": [
+  "https://scottsdaleaz.gov/Preserve",
+  "https://mcdowellsonoran.org/toms/",
+  "https://www.mcdowellsonoran.org/?p=6523",
+  "https://www.mcdowellsonoran.org/?p=6629",
+  "https://arizonahighways.com/toms-thumb-trail",
+  "https://www.hikearizona.com/decoder.php?ZTN=733",
+  "https://www.10adventures.com/hikes/phoenix/toms-thumb-trail-to-lookout/",
+  "https://www.experiencescottsdale.com/stories/post/marcus-landslide-trail-a-blast-from-the-past/",
+  "https://azgs.arizona.edu/marcus-landslide-mcdowell-mountains-central-arizona",
+  "https://www.mountainproject.com/v/105798944",
+  "https://arizonahighways.com/archive/issues/chapter/Doc.1219.Chapter.9",
+  "https://www.mcdowellsonoran.org/wp-content/uploads/2024/07/Birds-of-the-McDowell-Sonoran-Preserve.pdf",
+  "https://mcdowellsonoran.org/?p=10687",
+  "https://scottsdaleaz.gov/preserve/rattlesnakes",
+  "https://kjzz.org/content/1872065/qaz-are-gila-monsters-legal-pets-arizona"
+ ]
+}
