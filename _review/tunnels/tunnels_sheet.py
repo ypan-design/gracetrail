@@ -196,7 +196,7 @@ lm = """  gate(%(gx)d,%(gn)d,0.3);
   // Lakeview Overlook (OSM) on the cliff above Tunnel 5: shade shelter
   {const q=G(%(lvx)d,%(lvn)d);[[-0.6,-0.6],[0.6,-0.6],[-0.6,0.6],[0.6,0.6]].forEach(([a,b])=>part(world,cyl,"#6B5A4A",q.x+a*0.5,q.y+0.35,q.z+b*0.5,0.04,0.7,0.04,0));part(world,box,"#B9AA92",q.x,q.y+0.72,q.z,0.8,0.1,0.8,1.06);}
   // Hoover Dam: curved concrete arch from the OSM outline, crest about 1,232 ft
-  {const P=%(dam)s;for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];const mx=(a[0]+b[0])/2,mn=(a[1]+b[1])/2;const s0=surf(mx,mn);const top=Wv(mx,mn,Math.max(1232,s0+150)),bot=Wv(mx,mn,Math.min(810,s0-300));const L=Math.hypot(b[0]-a[0],b[1]-a[1])*S;
+  {const P=%(dam)s;let TOPD=1232;P.forEach(q=>{TOPD=Math.max(TOPD,surf(q[0],q[1])+70);});for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];const mx=(a[0]+b[0])/2,mn=(a[1]+b[1])/2;const top=Wv(mx,mn,TOPD),bot=Wv(mx,mn,Math.min(810,surf(mx,mn)-300));const L=Math.hypot(b[0]-a[0],b[1]-a[1])*S;
     const m=part(world,box,"#E3DDD0",top.x,(top.y+bot.y)/2,top.z,L+0.14,top.y-bot.y,0.26,1.04);rot(m,0,Math.atan2(b[1]-a[1],b[0]-a[0]),0);}
     }
   // four intake towers on the lake side (positions from the dam outline)
