@@ -355,7 +355,7 @@ let MAXY=0;
     let c;
     if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
-    else if(me>2210&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    else if(me>2350&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
     const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
     const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
@@ -553,15 +553,15 @@ const anim={};
   function fall(x,n,dx,dn,w,h,sc){const F=G(x,n);const d=new THREE.Vector3(dx,0,-dn).normalize();
     const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=Math.atan2(d.x,d.z);wf.scale.setScalar(sc);world.add(wf);
     const wt=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.22),fallMat);wt.position.set(0,h/2,-0.25);wf.add(wt);
-    part(wf,box,PAL.rockDeep,0,h/2,-0.75,w+1.8,h+0.3,0.8,1.04);
-    part(wf,box,PAL.rock,0,h+0.12,-0.55,w+1.9,0.3,1.2,1.05);
-    part(wf,ico,PAL.rock,-(w/2+0.7),h*0.45,-0.25,0.65,h*0.48,0.6);part(wf,ico,PAL.rockDeep,w/2+0.7,h*0.42,-0.25,0.62,h*0.44,0.6);
+    part(wf,box,"#8F8B82",0,h/2,-0.62,w+0.9,h+0.25,0.55,1.04);
+    part(wf,box,"#A39E93",0,h+0.1,-0.45,w+1.2,0.22,0.95,1.05);
+    for(let i=0;i<3;i++){part(wf,ico,i%2?"#9A958A":"#85817A",-(w/2+0.55)-i*0.15,h*(0.75-i*0.22),-0.3+i*0.25,0.55,h*0.3,0.5);part(wf,ico,i%2?"#85817A":"#9A958A",(w/2+0.55)+i*0.15,h*(0.72-i*0.2),-0.3+i*0.25,0.52,h*0.28,0.5);}
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,18),new THREE.MeshBasicMaterial({color:"#9CD3E0"}));pool.position.set(0,0.06,0.55);pool.scale.set(w*0.9+0.5,1,0.75);wf.add(pool);
     for(let i=0;i<2;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.45,0.55,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.14,0.45);wf.add(rg);rings.push(rg);}
     for(let i=0;i<4;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/4,x:(i%3-1)*0.35});}
     return wf;}
-  fall(-150,55,-1,0.3,0.8,4.6,1);
-  fall(-330,100,-1,0.15,1.3,2.3,1);
+  fall(-150,55,-1,0.3,0.8,3.8,1);
+  fall(-330,100,-1,0.15,1.3,1.9,1);
   fall(-2030,-650,-0.7,-0.7,1.2,0.9,0.8);   // Bastion Falls at the Route 23A hairpin
   // viewing platform (deck on posts with railing), facing the falls
   {const q=G(-141,272);const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(-0.1,-0.9);g.scale.setScalar(1.3);world.add(g);
@@ -581,7 +581,7 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={C:519}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={A:130,B:250,C:519}[T.id];if(g)T.gain=g;});
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
 function legs4(g,c,pts,y,len,r){const L=[];pts.forEach(([x,z])=>{const q=new THREE.Group();q.position.set(x,y,z);g.add(q);part(q,CYL,c,0,-len/2,0,r,len,r);L.push(q);});g.userData.legs=L;}
@@ -877,8 +877,8 @@ const SCALE={turkey:1.7,chipmunk:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,l
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"bear",path:[302,-2711,671,-2929],per:34},
- {k:"bear",path:[1741,-3165,1290,-3104],per:36,ph:0.5},
+ {k:"bear",path:[-1655,-1971,-989,-2399],per:34},
+ {k:"bear",path:[187,-1884,258,-945],per:36,ph:0.5},
  {k:"deer",path:[4275,-2887,4166,-2817],per:28},
  {k:"deer",path:[1393,47,756,687],per:26,ph:0.4},
  {k:"turkey",path:[3745,-2626,3376,-2495],per:26},
@@ -924,7 +924,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.35,"A":0.35,"B":0.35,"C":0.35};
+const VIEWAZ={"all":0.35,"A":-1.3,"B":-1.3,"C":0.35};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
