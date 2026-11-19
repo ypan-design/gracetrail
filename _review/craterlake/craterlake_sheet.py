@@ -133,13 +133,13 @@ mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n
 lm = f'''  [[{WOV[0] - 40},{WOV[1] - 60},0.4],[{STH[0] + 40},{STH[1] + 50},1.0]].forEach(([x,n,r])=>{{const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=r;g.scale.setScalar(0.4);world.add(g);
    part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);}});
   // Watchman Lookout (1932): stone ground floor, glass lookout room, low hipped roof, east wing; drawn large
-  {{const q=G({WSUM[0]},{WSUM[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.0;g.scale.setScalar(0.75);world.add(g);
+  {{const q=G({WSUM[0]},{WSUM[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.0;g.scale.setScalar(0.5);world.add(g);
    part(g,box,"#8A847B",0,0.55,0,1.3,1.1,1.0,1.05);part(g,box,"#7A746B",0.95,0.4,0,0.7,0.8,0.8,1.05);
    part(g,box,"#5A4632",0,1.14,0,1.5,0.1,1.2,1.05);part(g,box,"#BFE3EE",0,1.5,0,1.36,0.62,1.06,1.05);
    [[-0.66,-0.51],[0.66,-0.51],[-0.66,0.51],[0.66,0.51]].forEach(([a,b])=>part(g,box,"#5A4632",a,1.5,b,0.08,0.62,0.08,1.05));
    const rf=part(g,new THREE.ConeGeometry(1.15,0.5,4),"#4A3A2C",0,2.06,0,1.15,1,0.95,1.05);rf.rotation.y=Math.PI/4;}}
   // Mount Scott fire lookout on the summit, drawn large
-  {{const q=G({SSUM[0]},{SSUM[1]});const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(0.75);world.add(g);
+  {{const q=G({SSUM[0]},{SSUM[1]});const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(0.5);world.add(g);
    part(g,box,"#6E5236",0,0.45,0,1.1,0.9,1.1,1.05);part(g,box,"#5A4632",0,0.95,0,1.3,0.1,1.3,1.05);
    part(g,box,"#BFE3EE",0,1.3,0,1.16,0.6,1.16,1.05);
    [[-0.56,-0.56],[0.56,-0.56],[-0.56,0.56],[0.56,0.56]].forEach(([a,b])=>part(g,box,"#5A4632",a,1.3,b,0.08,0.6,0.08,1.05));
@@ -214,18 +214,18 @@ animal_photos = {k: v for k, v in animal_photos.items() if v}
 pa = place_along
 U = lambda k, f, s=1, o=240: pa(p, UP[k], [f], s, o)[0]
 an = []
-an += [f'{{k:"pika",at:{js(U("A",.55,-1,160))}}}', f'{{k:"pika",at:{js(U("C",.85,1,170))}}}']
-an += [f'{{k:"marmot",at:{js(U("A",.25,1,220))}}}', f'{{k:"marmot",at:{js(U("C",.7,-1,220))}}}']
-an += [f'{{k:"squirrel",at:{js(U("A",.08,-1,170))},hop:true}}', f'{{k:"squirrel",at:{js(U("B",.12,1,170))},hop:true}}', f'{{k:"squirrel",at:{js(U("C",.95,1,180))},hop:true}}']
-an += [f'{{k:"deer",path:{js(U("A",.15,1,700)+U("A",.3,1,700))},per:30}}', f'{{k:"deer",path:{js(U("B",.7,1,500)+U("B",.78,1,500))},per:30,ph:0.4}}']
-an += [f'{{k:"bear",path:{js(U("B",.45,-1,550)+U("B",.55,-1,550))},per:34}}']
-an += [f'{{k:"elk",path:{js(U("C",.1,-1,900)+U("C",.2,-1,900))},per:36}}', f'{{k:"elk",path:{js(U("C",.12,-1,1150)+U("C",.22,-1,1150))},per:36,ph:0.3}}']
-an += [f'{{k:"fox",path:{js(U("C",.4,1,450)+U("C",.46,1,450))},per:26}}']
-an += [f'{{k:"coyote",path:{js(U("C",.3,-1,600)+U("C",.36,-1,600))},per:24,ph:0.5}}']
-an += [f'{{k:"bobcat",path:{js(U("C",.55,-1,420)+U("C",.6,-1,420))},per:28}}']
-an += [f'{{k:"lion",path:{js(U("B",.85,-1,700)+U("B",.95,-1,700))},per:34,ph:0.2}}']
+def at(k, x, n, extra=''): return '{k:"%s",at:[%d,%d]%s}' % (k, x, n, extra)
+def mv(k, x, n, dx, dn, per, ph=0): return '{k:"%s",path:[%d,%d,%d,%d],per:%d,ph:%.1f}' % (k, x, n, x + dx, n + dn, per, ph)
+# Watchman (A): rock fields and pumice slopes around the peak
+an += [at('pika', -19800, 500), at('marmot', -20900, 2400), at('squirrel', -18100, 1400, ',hop:true'), mv('deer', -21600, -300, 500, -300, 30)]
+# Cleetwood (B): forest on the rim above the cove (land side only)
+an += [at('squirrel', 4900, 15200, ',hop:true'), mv('deer', 6000, 15400, 500, 250, 30, 0.4), mv('bear', 3000, 15800, 450, 200, 34), mv('lion', 1300, 15300, -400, 300, 34, 0.2)]
+# Mount Scott (C)
+an += [at('pika', 23000, -7000), at('marmot', 20600, -5100), at('squirrel', 19100, -4700, ',hop:true'),
+       mv('elk', 16800, -2400, 500, -300, 36), mv('elk', 16500, -3200, 500, -250, 36, 0.3), mv('fox', 20700, -2600, 450, -200, 26),
+       mv('coyote', 19300, -7700, 500, 200, 24, 0.5), mv('bobcat', 23800, -8600, 350, 250, 28)]
 SC = {'pika': 2.2, 'marmot': 1.8, 'elk': 1.25, 'fox': 1.4, 'bear': 1.7, 'deer': 1.4, 'bobcat': 1.45, 'coyote': 1.35, 'lion': 1.4, 'squirrel': 1.8}
-an = [a[:-1] + ',s:%.2f}' % (SC[re.search(r'k:"(\w+)"', a).group(1)] * 0.5) for a in an]
+an = [a[:-1] + ',s:%.2f}' % (SC[re.search(r'k:"(\w+)"', a).group(1)] * 0.4) for a in an]
 animals_js = '[\n ' + ',\n '.join(an) + '\n]'
 
 TREE = ('if(inLake(x,n)){type=null;}else if(mk<0.25){type="conifer";p=0.05;}else if(g>1.15)type=null;'
@@ -267,7 +267,7 @@ cfg = dict(
            'B': [('Cleetwood Cove · National Park Service', 'https://www.nps.gov/crla/planyourvisit/cleetwood-cove.htm'), ('Cleetwood Cove Trail and Marina Rehabilitation · NPS', 'https://www.nps.gov/crla/planyourvisit/cleetwood-cove-trail-and-marina-rehabilitation.htm'), ('Current conditions · NPS', 'https://www.nps.gov/crla/planyourvisit/conditions.htm')],
            'C': [('Mount Scott Hike · Oregon Hikers', 'https://www.oregonhikers.org/field_guide/Mount_Scott_Hike'), ('Hiking trails · National Park Service', 'https://www.nps.gov/crla/planyourvisit/hiking.htm')]},
     viewaz={'all': 0.35, 'A': 0.35, 'B': 0.35, 'C': 0.35},
-    zoomcap={'A': 12.0, 'B': 12.0, 'C': 8.0},
+    zoomcap={'A': 18.0, 'B': 16.0, 'C': 10.0},
 )
 OUT = '/home/claude/site/out/crater-lake-cleetwood/index.html'
 json.dump({k: {'mi': R[k]['mi'], 'gain': R[k]['gain'], 'lo': R[k]['lo'], 'hi': R[k]['hi']} for k in R} | {'stops': {s['id']: (s['name'], s['x'], s['n']) for s in stops}},
