@@ -261,7 +261,7 @@ const WILD={
  chipmunk:{name:"Eastern chipmunk",color:"#B77A45",sum:"A small striped ground squirrel that darts across Lake Road and over the rocks beside the trails."},
  squirrel:{name:"American red squirrel",color:"#9A9A96",sum:"A small, rusty squirrel of the spruce and fir that chatters loudly at hikers from the branches on the upper trails."},
  otter:{name:"American marten",color:"#5A4232",sum:"A cat-sized, tree-climbing member of the weasel family with a bushy tail and a buff throat, living in the mature conifer forest. Seen now and then on these trails, more often in winter tracks."},
- beaver:{name:"American beaver",color:"#6A4A30",sum:"Look for chewed stumps and dams along the East Branch of the Ausable River and its slow side channels beside Lake Road."},
+ beaver:{name:"American beaver",color:"#6A4A30",sum:"Beavers work the north end of Lower Ausable Lake near the dam; look for chewed stumps along the shore and the river below."},
  snake:{name:"Common garter snake",color:"#B49867",sum:"A small, harmless striped snake that suns on warm rocks and the edges of Lake Road in summer."},
  turtle:{name:"Common snapping turtle",color:"#5E6B3A",sum:"A big, heavy-shelled turtle of the lake and the slow water near the dam. Do not handle it: it bites hard."},
  turkey:{name:"Wild turkey",color:"#4A3A2E",sum:"Flocks forage in the open woods and along the road edges low in the valley, near the Ausable Club."},
@@ -332,7 +332,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-22000,x1:6200,n0:-21200,n1:7000,ve:1.5};
+const C={x0:-22000,x1:6200,n0:-21200,n1:7000,ve:1.8};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -933,14 +933,14 @@ const ANIMALS=[
  {k:"deer",path:[-6111,-2918,-5580,-2225],per:30,ph:0.4},
  {k:"bear",path:[-8346,-4006,-9132,-5127],per:36},
  {k:"moose",path:[-13629,-10512,-14196,-10905],per:44},
- {k:"chipmunk",at:[-2342,439],hop:true},
+ {k:"chipmunk",at:[-6061,-2267],hop:true},
  {k:"chipmunk",at:[-13186,-12861],hop:true},
  {k:"squirrel",at:[-14149,-11654],hop:true},
  {k:"squirrel",at:[-10613,-8031],hop:true},
  {k:"snake",path:[-7444,-4048,-7694,-4142],per:32},
  {k:"turtle",path:[-15158,-11616,-15557,-11586],per:60},
- {k:"beaver",path:[-10394,-7008,-10496,-7214],per:40},
- {k:"otter",path:[-13670,-14248,-12678,-14221],per:30},
+ {k:"beaver",path:[-14031,-11779,-14138,-11817],per:40},
+ {k:"otter",path:[-12024,-11501,-11616,-10538],per:30},
  {k:"turkey",path:[-3340,546,-2281,532],per:26},
  {k:"heron",at:[-12649,-9650]}
 ];
@@ -982,7 +982,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.6,"A":0.6,"B":0.6,"C":0.6};
+const VIEWAZ={"all":5.3,"A":5.3,"B":5.3,"C":5.3};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();

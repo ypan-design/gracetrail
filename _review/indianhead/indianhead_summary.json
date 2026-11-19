@@ -1,0 +1,61 @@
+{
+ "name": "Indian Head & Rainbow Falls",
+ "folder": "adirondack-indian-head",
+ "city": "Keene Valley",
+ "area": "Adirondack High Peaks",
+ "state": "NY",
+ "region": "ne",
+ "lat": 44.1498,
+ "lon": -73.7677,
+ "where": "Adirondack Mountain Reserve · Keene Valley, New York",
+ "high": "2,700 ft",
+ "blurb": "Lake Road up the Ausable valley to Rainbow Falls, and the Indian Head and Fish Hawk Cliffs ledges high over Lower Ausable Lake.",
+ "status": "permit required: a free parking reservation from hikeamr.org is needed May 1 to October 31 for everyone entering the Adirondack Mountain Reserve (70 a day, no walk-ins); none needed November to April. Private land open to hikers under a state easement; no dogs.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Rainbow Falls",
+   "mi": 8.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1100
+  },
+  {
+   "id": "B",
+   "name": "Indian Head and Fish Hawk Cliffs",
+   "mi": 9.4,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1675
+  },
+  {
+   "id": "C",
+   "name": "Indian Head and Rainbow Falls",
+   "mi": 10.1,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1796
+  }
+ ],
+ "rare": [
+  "Common loon: Species of Special Concern in New York; seen on Lower Ausable Lake (NYS DEC, https://dec.ny.gov/nature/animals-fish-plants/common-loon; iNaturalist research-grade records)",
+  "Moose: extirpated from the Adirondacks in the 1800s and only recently returned (500+ in the park per DEC); photographed on Upper Ausable Lake in the reserve (Adirondack Explorer, https://www.adirondackexplorer.org/?p=2981)"
+ ],
+ "sources": [
+  "https://www.lakeplacid.com/hiking/rainbow-falls",
+  "https://www.lakeplacid.com/hiking/indian-head-and-fish-hawk-cliffs",
+  "https://www.lakeplacid.com/hiking/adirondack-mountain-reserve-amr-waterfall-loop",
+  "https://myhikes.org/trails/indian-head-and-rainbow-falls",
+  "https://dec.ny.gov/news/press-releases/2025/4/dec-and-adirondack-mountain-reserve-announce-start-of-2025-parking-reservation-system",
+  "https://www.adirondackdailyenterprise.com/news/local-news/2026/04/dec-releases-high-peaks-visitor-management-report",
+  "https://www.hikeamr.org/",
+  "https://adk.org/?p=8255",
+  "https://nnywaterfalls.com/cascadebrook/rainbowfalls/",
+  "https://nnywaterfalls.com/ausableriver/amr",
+  "https://dec.ny.gov/nature/animals-fish-plants/common-loon",
+  "https://dec.ny.gov/nature/animals-fish-plants/black-bear/bearwise/bear-resistant-canisters",
+  "https://www.adirondackexplorer.org/?p=2981",
+  "https://www.inaturalist.org/observations?nelat=44.152&nelng=-73.76&swlat=44.09&swlng=-73.84&quality_grade=research",
+  "https://www.openstreetmap.org/way/139128979"
+ ]
+}
