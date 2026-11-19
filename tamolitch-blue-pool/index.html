@@ -569,23 +569,23 @@ const anim={};
   const FALLS=[];
   gate(-6110,-16671,0.4);gate(4100,4467,1.6);gate(2119,2039,0.6);gate(3568,13569,1.4);
   {const F=G(3824,4648);const down=new THREE.Vector3(-0.333,0,0.943).normalize();const ry=Math.atan2(down.x,down.z);
-  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(2.4);world.add(wf);
+  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(0.6);world.add(wf);
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   [[1.3,3.6,-0.9,1.8]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
-    part(wf,box,"#3E3B38",0,yc+ht/2+0.05,z-0.45,wd+1.6,0.5,1.0,1.04);
-    part(wf,ico,"#4A4642",-wd/2-0.55,yc,z-0.15,0.65,ht/2+0.3,0.7);part(wf,ico,"#3F3C39",wd/2+0.55,yc,z-0.15,0.6,ht/2+0.3,0.7);});
+    part(wf,ico,"#4A4642",-wd/2-0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);part(wf,ico,"#3F3C39",wd/2+0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);});
+  part(wf,box,"#3E3B38",0,3.6,-1.5,3.4,0.5,1.4,1.04);
   part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
   const rings=[];for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
   const mist=[];for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/7,x:(i%3-1)*0.45});}
   FALLS.push({fallTex,rings,mist});}
   {const F=G(2993,3026);const down=new THREE.Vector3(0.000,0,1.000).normalize();const ry=Math.atan2(down.x,down.z);
-  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(2.2);world.add(wf);
+  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(0.55);world.add(wf);
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   [[2.6,3.0,-0.9,1.5]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
-    part(wf,box,"#3E3B38",0,yc+ht/2+0.05,z-0.45,wd+1.6,0.5,1.0,1.04);
-    part(wf,ico,"#4A4642",-wd/2-0.55,yc,z-0.15,0.65,ht/2+0.3,0.7);part(wf,ico,"#3F3C39",wd/2+0.55,yc,z-0.15,0.6,ht/2+0.3,0.7);});
+    part(wf,ico,"#4A4642",-wd/2-0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);part(wf,ico,"#3F3C39",wd/2+0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);});
+  part(wf,box,"#3E3B38",0,3.0,-1.5,3.4,0.5,1.4,1.04);
   part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
   const rings=[];for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
   const mist=[];for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/7,x:(i%3-1)*0.45});}
@@ -593,28 +593,28 @@ const anim={};
   anim.water={fallTex:FALLS[0].fallTex,rings:FALLS[0].rings.concat(FALLS[1].rings),mist:FALLS[0].mist.concat(FALLS[1].mist)};
   {const t2=FALLS[1].fallTex;const t0=FALLS[0].fallTex;const f=()=>{t2.offset.y=t0.offset.y;requestAnimationFrame(f);};f();}
   // Tamolitch Falls: the dry 50-foot lava lip at the head of the Blue Pool
-  {const q=G(-3693,-8586);const d=new THREE.Vector3(-0.971,0,0.240).normalize();const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(d.x,d.z);g.scale.setScalar(2.4);world.add(g);
+  {const q=G(-3693,-8586);const d=new THREE.Vector3(-0.971,0,0.240).normalize();const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(d.x,d.z);g.scale.setScalar(0.7);world.add(g);
    part(g,box,"#3A3633",0,1.0,-0.9,3.2,2.0,1.2,1.05);part(g,ico,"#4A4642",-1.5,1.4,-0.6,0.8,1.2,0.8);part(g,ico,"#433F3B",1.5,1.3,-0.6,0.8,1.1,0.8);
    part(g,box,"#5B5550",0,2.05,-1.3,2.4,0.15,1.6,1.05);part(g,new THREE.CylinderGeometry(1,1,0.08,20),"#22B8DA",0,0.06,0.9,1.6,1,1.2,1.04,false);}
   // Great Spring: turquoise spring pool with a small sign
-  {const q=G(3923,15007);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(2.2);world.add(g);
+  {const q=G(3923,15007);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(0.7);world.add(g);
    part(g,new THREE.CylinderGeometry(1,1,0.12,20),"#2BC0C8",0,0.08,0,1.0,1,0.8,1.04,false);part(g,ico,"#4A4642",-1.1,0.2,0.2,0.4,0.3,0.4);part(g,ico,"#4A4642",0.9,0.2,-0.5,0.35,0.28,0.35);
    part(g,cyl,"#6B4F3A",1.2,0.55,0.6,0.05,1.1,0.05);part(g,box,"#7A5A3E",1.2,1.05,0.6,0.7,0.32,0.06,1.06);}
   // Carmen Diversion Dam (EWEB), on the OSM outline
-  {const q=G(2262,913);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.6;g.scale.setScalar(2.0);world.add(g);
+  {const q=G(2262,913);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.6;g.scale.setScalar(0.6);world.add(g);
    part(g,box,"#BDB8AE",0,0.35,0,2.6,0.7,0.6,1.05);part(g,box,"#8E8A82",0,0.75,0,0.6,0.35,0.7,1.05);}
   // CCC picnic shelter (1937) at the Clear Lake day use area; rowboats at the resort dock
-  {const q=G(3458,13729);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.3;g.scale.setScalar(2.0);world.add(g);
+  {const q=G(3458,13729);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.3;g.scale.setScalar(0.7);world.add(g);
    [[-0.5,-0.35],[0.5,-0.35],[-0.5,0.35],[0.5,0.35]].forEach(([a,b])=>part(g,box,"#6E5236",a,0.35,b,0.12,0.7,0.12,1.05));
    const rf=part(g,new THREE.ConeGeometry(0.95,0.55,4),"#4E3B2A",0,0.98,0,1.2,1,0.85,1.05);rf.rotation.y=Math.PI/4;}
-  [[3758,13809,0.9],[3798,13689,1.3]].forEach(([x,n,r])=>{const q=G(x,n,0.2);const g=new THREE.Group();g.position.copy(q);g.rotation.y=r;g.scale.setScalar(1.6);world.add(g);part(g,box,"#B5713E",0,0.12,0,1.2,0.22,0.45,1.06);});
+  [[3758,13809,0.9],[3798,13689,1.3]].forEach(([x,n,r])=>{const q=G(x,n,0.2);const g=new THREE.Group();g.position.copy(q);g.rotation.y=r;g.scale.setScalar(0.5);world.add(g);part(g,box,"#B5713E",0,0.12,0,1.2,0.22,0.45,1.06);});
   bench(-3875,-8553,2.2);
   {const a=G(3737,6406),b=G(3517,6544);const y=Math.max(a.y,b.y)+0.3;const L=Math.hypot(b.x-a.x,b.z-a.z);
    const g=new THREE.Group();g.position.set((a.x+b.x)/2,y,(a.z+b.z)/2);g.rotation.y=Math.atan2(-(b.z-a.z),b.x-a.x);world.add(g);
-   part(g,box,"#8A6544",0,0,0,L,0.18,0.9,1.06);part(g,box,"#5E4330",0,0.4,0.42,L,0.07,0.07,0);part(g,box,"#5E4330",0,0.4,-0.42,L,0.07,0.07,0);}
+   part(g,box,"#8A6544",0,0,0,L,0.1,0.32,1.06);part(g,box,"#5E4330",0,0.18,0.15,L,0.04,0.04,0);part(g,box,"#5E4330",0,0.18,-0.15,L,0.04,0.04,0);}
   {const a=G(4719,9122),b=G(4461,9092);const y=Math.max(a.y,b.y)+0.3;const L=Math.hypot(b.x-a.x,b.z-a.z);
    const g=new THREE.Group();g.position.set((a.x+b.x)/2,y,(a.z+b.z)/2);g.rotation.y=Math.atan2(-(b.z-a.z),b.x-a.x);world.add(g);
-   part(g,box,"#8A6544",0,0,0,L,0.18,0.9,1.06);part(g,box,"#5E4330",0,0.4,0.42,L,0.07,0.07,0);part(g,box,"#5E4330",0,0.4,-0.42,L,0.07,0.07,0);}
+   part(g,box,"#8A6544",0,0,0,L,0.1,0.32,1.06);part(g,box,"#5E4330",0,0.18,0.15,L,0.04,0.04,0);part(g,box,"#5E4330",0,0.18,-0.15,L,0.04,0.04,0);}
 
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
@@ -991,7 +991,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.2, "B": 3.2, "C": 3.2}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 5.0, "B": 3.4, "C": 3.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
@@ -1118,7 +1118,7 @@ function renderPanel(){let h="";const {ws,fs}=speciesHere();
     h=`<div><div class="eyebrow">All trails</div><h2>Where the McKenzie River begins</h2></div>
     <p>The McKenzie River rises from cold springs at Clear Lake, drops over Sahalie and Koosah Falls, sinks into a lava flow and comes back up at Tamolitch Blue Pool, all along the McKenzie River Trail in the Oregon Cascades. A loops past both falls, B follows the river to the Blue Pool, and C circles Clear Lake. Pick a trail to focus the model; click anything on it for a quick note.</p>
     <div class="cards">${TRAILS.map(T=>`<button class="tcard" data-go="${T.id}"><span class="bd t" style="--c:var(${T.color})">${T.id}</span><span class="tn">${T.name}</span><span class="tm">${T.official} mi ${T.unit} · ↑ ${r10(T.gain)} ft · ${T.level}</span>${spark(T,70,26)}</button>`).join("")}</div>
-    <div><h3>How the numbers work</h3><p class="note">The three trails do not share any stops, so every stop is lettered: B3 is the third stop on Trail B. North is up the model; the Blue Pool is at the south end, Clear Lake at the north end, about 6 miles apart as the crow flies.</p></div>
+    <div><h3>How the numbers work</h3><p class="note">The three trails do not share any stops, so every stop is lettered: B3 is the third stop on Trail B. The Blue Pool is at the south end of the model and Clear Lake at the north end, about 6 miles apart as the crow flies.</p></div>
     <div><h3>Wildlife along the upper McKenzie</h3>${wildList(ws)}</div>
     <div><h3>Flowers on the model</h3>${floraList(fs)}</div>
     <p class="note">Willamette National Forest, McKenzie River Ranger District, off Highway 126; the Blue Pool trailhead is about 10 miles east of the McKenzie River Ranger Station. Status (November 2026): trails open; no fee at the Blue Pool trailhead; day use 6 am to 10 pm. Winter snow and ice are common; Forest Service roads and lots are not plowed, except a small pullout usually kept open at Sahalie Falls. Forest Road 2600-740 off Highway 126 is closed to vehicles and walkers. Part of the west side of the Clear Lake loop can close to protect nesting bald eagles; check with the McKenzie River Ranger Station. Phone service is poor to none. Terrain from USGS elevation data, stylized; not for navigation.</p>`;
