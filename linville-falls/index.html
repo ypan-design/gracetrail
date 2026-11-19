@@ -473,7 +473,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const mk=mask(x,n),e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn),south=g>1e-4?gn/g:0;
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
-    if(mk<0.25){type=tr()<.6?"oak":"conifer";p=0.06;}
+    if(Math.hypot(x-(-23),n-(96))<260||Math.hypot(x-(-36),n-(195))<120||Math.hypot(x-(-240),n-(2600))<90){type=null;}else if(mk<0.25){type=tr()<.6?"oak":"conifer";p=0.06;}
     else if(cd<230){type=tr()<.4?"syc":"oak";p=0.4;}
     else if(g>1.25)type=null;
     else{const r0=tr();type=r0<.6?"oak":r0<.78?"syc":r0<.9?"gold":"conifer";p=0.38+cl*.25;}
@@ -551,17 +551,17 @@ const anim={};
     [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(-295,1984,0.3);gate(-462,2365,0.6);
-  const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
+  const fallTex=stripeTex("#9FD3E6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   const rings=[],mist=[];
   // waterfall: solid rock lip and cliff behind, water sheet, plunge pool (local +z = downstream)
   function fall(x,n,w,h,ry){const F=G(x,n);const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;world.add(wf);
-    part(wf,box,PAL.rockDeep,0,h*0.5,-0.45,w+1.0,h+0.3,0.8,1.06);
+    part(wf,box,"#77706A",0,h*0.5,-0.5,w+1.6,h+0.4,0.9,1.06);
     const pl=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.12),fallMat);pl.position.set(0,h/2,0.02);wf.add(pl);
     part(wf,box,PAL.rock,0,h+0.12,-0.2,w+1.0,0.25,0.7,1.06);part(wf,ico,PAL.rockDeep,-(w/2+0.45),h*0.55,0,0.4,h*0.6,0.4);part(wf,ico,PAL.rock,w/2+0.45,h*0.5,0,0.4,h*0.55,0.4);
-    const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,20),new THREE.MeshBasicMaterial({color:"#7FC3D4"}));pool.position.set(0,0.06,0.7);pool.scale.set(w*0.75+0.3,1,0.7);wf.add(pool);
+    const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,20),new THREE.MeshBasicMaterial({color:"#4FA6C4"}));pool.position.set(0,0.06,0.7);pool.scale.set(w*0.9+0.4,1,0.9);wf.add(pool);
     return wf;}
-  const wL=fall(-63,116,2.0,4.0,1.06);   // lower falls, ~45 ft, pours east-southeast into Plunge Basin
+  const wL=fall(-63,116,2.4,5.0,1.06);   // lower falls, ~45 ft, pours east-southeast into Plunge Basin
   fall(-36,195,1.3,1.7,0.23);              // upper (double) falls, flowing south
   for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));m.position.z=0.6;wL.add(m);mist.push({m,ph:i/5,x:(i%3-1)*0.4});}
   fall(-230,2620,0.7,1.3,2.9);   // Duggers Falls
@@ -878,14 +878,14 @@ const SCALE={fox:1.4,turkey:1.7,heron:1.6,bear:1.7,deer:1.4,bobcat:1.45,coyote:1
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"bear",path:[134,-748,696,-902],per:30},
+ {k:"bear",path:[983,494,1624,-755],per:30},
  {k:"deer",path:[239,1935,260,1847],per:26},
  {k:"deer",path:[-862,1190,-936,874],per:24,ph:0.5},
  {k:"fox",path:[-357,2430,-113,2738],per:22},
  {k:"raccoon",path:[[-90,1320],[-40,1200]],per:20},
  {k:"turkey",at:[790,878],flock:3},
  {k:"squirrel",at:[-549,69],hop:true},
- {k:"snake",path:[47,-441,-72,-522],per:30},
+ {k:"snake",path:[-301,1501,-301,1501],per:30},
  {k:"heron",at:[-140,860]}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
