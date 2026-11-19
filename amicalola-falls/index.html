@@ -558,23 +558,23 @@ const anim={};
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(-1396,-719,1.0);
   // ---- Amicalola Falls: water ribbon down the OSM falls centreline (way 31213081), exaggerated in width, with volume
-  const fallTex=stripeTex("#86CBE6","#FFFFFF",64,128,26,9,16);fallTex.repeat.set(1,3);
+  const fallTex=stripeTex("#9AD4EA","#FFFFFF",64,128,40,9,18);fallTex.repeat.set(1,3);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex});
   const rings=[],mist=[];
   const FALL=[[-52,41],[-89,-47],[-174,-187],[-254,-260],[-339,-350],[-415,-423],[-452,-481],[-473,-525],[-497,-563],[-515,-612],[-518,-652]];
   for(let i=0;i<FALL.length-1;i++){const a=G(FALL[i][0],FALL[i][1],0.32),b=G(FALL[i+1][0],FALL[i+1][1],0.32);
-    const L=a.distanceTo(b);const m=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.3,L+0.14),fallMat);
+    const L=a.distanceTo(b);const m=new THREE.Mesh(new THREE.BoxGeometry(1.0,0.34,L+0.16),fallMat);
     m.position.copy(a).add(b).multiplyScalar(0.5);m.lookAt(b);world.add(m);
     const sd=new THREE.Vector3().subVectors(b,a).normalize();const px=new THREE.Vector3(-sd.z,0,sd.x).normalize();
-    if(i%2==0)[1,-1].forEach(s=>{part(world,ico,s>0?"#6E685F":"#837D72",m.position.x+px.x*0.48*s,m.position.y,m.position.z+px.z*0.48*s,0.22,0.3,0.22);});
-    const fm=part(world,box,"#FFFFFF",a.x,a.y+0.17,a.z,0.7,0.08,0.16,0);fm.lookAt(b.x,a.y+0.17,b.z);
+    if(i%2==0)[1,-1].forEach(s=>{part(world,ico,s>0?"#6E685F":"#837D72",m.position.x+px.x*0.68*s,m.position.y,m.position.z+px.z*0.68*s,0.26,0.34,0.26);});
+    const fm=part(world,box,"#FFFFFF",a.x,a.y+0.19,a.z,1.1,0.08,0.18,0);fm.lookAt(b.x,a.y+0.19,b.z);
   }
   // two steep tiers drawn as near-vertical sheets of water with a rock face behind (top of the falls and the drop below the bridge)
   function tier(x,n,dx,dn,w,h){const F=G(x,n,0.1);const g=new THREE.Group();g.position.copy(F);g.rotation.y=Math.atan2(dx,-dn);world.add(g);
     const wt=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.2),fallMat);wt.position.set(0,h/2-0.2,0.05);g.add(wt);
-    part(g,box,"#6F6B64",0,h/2-0.25,-0.3,w+0.5,h+0.1,0.4,1.04);part(g,box,"#A39E93",0,h-0.15,-0.2,w+0.7,0.16,0.7,1.05);}
-  tier(FALL[0][0],FALL[0][1],FALL[1][0]-FALL[0][0],FALL[1][1]-FALL[0][1],0.62,1.1);
-  tier(FALL[3][0],FALL[3][1],FALL[4][0]-FALL[3][0],FALL[4][1]-FALL[3][1],0.62,0.9);
+    part(g,box,"#5E5A54",0,h/2-0.3,-0.32,w+0.4,h,0.4,1.04);[1,-1].forEach(s=>part(g,ico,"#77726A",s*(w/2+0.25),h*0.35,-0.1,0.35,h*0.4,0.35));}
+  tier(FALL[0][0],FALL[0][1],FALL[1][0]-FALL[0][0],FALL[1][1]-FALL[0][1],1.0,1.6);
+  tier(FALL[3][0],FALL[3][1],FALL[4][0]-FALL[3][0],FALL[4][1]-FALL[3][1],1.0,1.3);
   {const q=G(FALL[FALL.length-1][0],FALL[FALL.length-1][1],0.05);
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,0.12,18),new THREE.MeshBasicMaterial({color:"#9CD3E0"}));pool.position.copy(q);world.add(pool);
     const wf=new THREE.Group();wf.position.copy(q);world.add(wf);
@@ -587,7 +587,7 @@ const anim={};
     [[-1,1],[1,1],[-1,-1],[1,-1]].forEach(([s,t])=>part(g,cyl,"#6B4F3A",0.16*s,-0.45,t*L*0.42,0.05,0.9,0.05,0));}
   // ---- the staircases (OSM steps 259931804 upper, 317132222 lower): wooden treads, exaggerated
   function stairs(P){for(let i=0;i<P.length-1;i++){const a=G(P[i][0],P[i][1],0.12),b=G(P[i+1][0],P[i+1][1],0.12);const d=a.distanceTo(b);const n=Math.max(1,Math.round(d/0.12));
-    for(let k=0;k<n;k++){const t=(k+0.5)/n;const q=a.clone().lerp(b,t);const s=part(world,box,"#9C7653",q.x,q.y,q.z,0.34,0.07,0.1,0);s.lookAt(b.x,q.y,b.z);}}}
+    for(let k=0;k<n;k++){const t=(k+0.5)/n;const q=a.clone().lerp(b,t);const s=part(world,box,"#7A5535",q.x,q.y,q.z,0.46,0.09,0.1,0);s.lookAt(b.x,q.y,b.z);}}}
   stairs([[-396,-178],[-307,-131],[-336,-104],[-298,-78],[-306,-62],[-255,-43],[-281,-28],[-267,-24],[-276,-8],[-245,-4],[-259,5],[-195,20],[-172,12],[-170,24],[-179,28],[-175,44],[-152,36],[-170,61],[-150,63],[-120,53],[-98,82]]);stairs([[-397,-657],[-394,-649],[-392,-632],[-382,-594],[-375,-575],[-367,-542],[-367,-471],[-362,-444],[-368,-412],[-371,-395],[-364,-383],[-351,-373],[-308,-386],[-296,-373],[-282,-353],[-265,-345],[-255,-310],[-238,-279],[-228,-253],[-192,-213]]);
   // ---- Reflection Pool (OSM outline)
   {const P=[[-759,-1296],[-736,-1295],[-697,-1296],[-693,-1303],[-692,-1327],[-688,-1334],[-679,-1349],[-685,-1393],[-697,-1423],[-719,-1424],[-728,-1415],[-832,-1352],[-845,-1346],[-838,-1336],[-809,-1320],[-769,-1299],[-759,-1296]];const sh=new THREE.Shape();P.forEach((q,i)=>{const v=G(q[0],q[1]);i?sh.lineTo(v.x,-v.z):sh.moveTo(v.x,-v.z);});
@@ -984,7 +984,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.6,"A":0.9,"B":0.9,"C":0.6};
+const VIEWAZ={"all":0.6,"A":-0.75,"B":-0.75,"C":0.6};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
