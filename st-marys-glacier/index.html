@@ -578,17 +578,18 @@ function lakeP(){return lakeP.c||(lakeP.c=[[[-9128,2821],[-8919,2854],[-8811,292
 function inPoly(P,x,n){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>n)!==(b[1]>n)&&x<(b[0]-a[0])*(n-a[1])/(b[1]-a[1])+a[0])c=!c;}return c;}
 function inLake(x,n){for(const P of lakeP())if(inPoly(P,x,n))return true;return false;}
 (function(){const mat=new THREE.MeshLambertMaterial({color:"#8FC6DA",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#5E9FB8"});
-  lakeP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
-    let lo=1e9;P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n,0).y);});
-    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.12);pa.setXYZ(i,v.x,Math.min(v.y,lo+0.12),v.z);}
+  const LVS=[11204,11124,10845,11476,11897,11534,11040,12204,10698,10344,10305,10071,10081,11389,11068,11067,11135,11218,11190,11466];
+  lakeP().forEach((P,li)=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
+    const lv=LVS[li];
+    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=Wv(x,n,lv);v.y=Math.max(v.y,G(x,n,0.1).y);pa.setXYZ(i,v.x,v.y,v.z);}
     pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
-    const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0.14);v.y=Math.min(v.y,lo+0.14);return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
+    const ring=P.concat([P[0]]).map(([x,n])=>{const v=Wv(x,n,lv);v.y=Math.max(v.y,G(x,n,0.12).y);return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
 })();
 (function(){const P=[[-2446,4770],[-2343,4809],[-2265,4814],[-2238,4833],[-2133,4792],[-2019,4678],[-1872,4580],[-1617,4467],[-1419,4284],[-1331,4211],[-915,4046],[-881,4070],[-812,4086],[-796,4006],[-759,3968],[-696,3996],[-639,3977],[-638,3946],[-608,3956],[-548,3947],[-564,3895],[-601,3870],[-615,3843],[-474,3648],[-487,3595],[-451,3531],[-469,3499],[-498,3530],[-505,3519],[-550,3459],[-671,3469],[-725,3469],[-845,3467],[-872,3495],[-954,3495],[-902,3684],[-797,3715],[-882,3736],[-969,3850],[-1314,4040],[-1361,4034],[-1443,4115],[-1628,4380],[-1866,4478],[-2011,4571],[-2115,4619],[-2172,4670],[-2307,4721],[-2443,4743]],st=30;let x0=1e9,x1=-1e9,n0=1e9,n1=-1e9;P.forEach(([x,n])=>{x0=Math.min(x0,x);x1=Math.max(x1,x);n0=Math.min(n0,n);n1=Math.max(n1,n);});
-  const top=[],bot=[];const T=0.16;
+  const top=[],bot=[];const T=0.3;
   for(let x=x0;x<x1;x+=st)for(let n=n0;n<n1;n+=st){const q=[[x,n],[x+st,n],[x+st,n+st],[x,n+st]];if(q.filter(([a,b])=>inPoly(P,a,b)).length<2)continue;
     const v=q.map(([a,b])=>G(a,b,T)),w=q.map(([a,b])=>G(a,b,0.01));[0,1,2,0,2,3].forEach(i=>top.push(...v[i].toArray()));[0,2,1,0,3,2].forEach(i=>bot.push(...w[i].toArray()));}
-  [[top,"#F7FAFC"],[bot,"#DCE7EE"]].forEach(([pos,c])=>{const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geo.computeVertexNormals();
+  [[top,"#FFFFFF"],[bot,"#D6E3EC"]].forEach(([pos,c])=>{const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geo.computeVertexNormals();
     const m=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide}));m.renderOrder=1;world.add(m);});
   const ring=P.concat([P[0]]).map(([x,n])=>G(x,n,T+0.02));world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),new THREE.LineBasicMaterial({color:"#9FB8C8"})));
 })();
@@ -918,19 +919,19 @@ const SCALE={moose:1.2,marmot:1.8,pika:2.2,chipmunk:2.0,bighorn:1.45,goat:1.5,fo
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"moose",path:[-596,2569,-622,2886],per:40},
+ {k:"moose",path:[-1000,2300,-1100,2700],per:40},
  {k:"marmot",at:[-2164,4229]},
  {k:"marmot",at:[-208,3801]},
  {k:"pika",at:[-295,3910],hop:true},
  {k:"pika",at:[-12001,6986],hop:true},
- {k:"chipmunk",at:[-285,1543],hop:true},
+ {k:"chipmunk",at:[700,2300],hop:true},
  {k:"chipmunk",at:[-4295,5632],hop:true},
- {k:"squirrel",at:[602,1246],hop:true},
+ {k:"squirrel",at:[-650,800],hop:true},
  {k:"bighorn",path:[-8262,5343,-8018,5660],per:36},
  {k:"goat",path:[-11491,8727,-11521,8542],per:34},
  {k:"fox",path:[-6061,5986,-6412,6022],per:28},
- {k:"deer",path:[211,717,-838,2124],per:30},
- {k:"bear",path:[1267,1806,426,2485],per:40}
+ {k:"deer",path:[-1800,1200,-2000,1550],per:30},
+ {k:"bear",path:[2500,3500,2700,3850],per:40}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
@@ -976,7 +977,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 6.5, "B": 5.5, "C": 2.2}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.2, "C": 2.0}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
