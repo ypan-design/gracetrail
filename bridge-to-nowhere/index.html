@@ -252,6 +252,10 @@ const SPECIES={
 };
 const FLORA={"A":["yucca","buckwheat","monkey","toyon"],"B":["yucca","sage","buckwheat","fuchsia","monkey"],"C":["fuchsia","yucca","toyon","monkey"]};
 const WILD={
+/* wildlife7:start */
+ bighorn_bn:{name:"Nelson's bighorn sheep",color:"#A08868",sum:"Rare here: the San Gabriel herd fell from about 740 in 1979 to under 200 in the late 1990s and is back near 400; hikers see them on the canyon walls near the bridge."},
+ lion_bn:{name:"Mountain lion",color:"#B08A5A",sum:"Lives in the Sheep Mountain Wilderness above the canyon but is very rarely seen. Travels the ridges and canyon bottoms at night."},
+/* wildlife7:end */
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Big-eared deer that browse shrubs and graze open slopes and canyon bottoms, often in small groups."},
  bear:{name:"Black bear",color:"#3E2C22",sum:"Usually brown despite the name. Black bears range through the East Fork canyon, mostly at dawn and dusk near the river."},
  coyote:{name:"Coyote",color:"#A88B6A",sum:"A lean, gray-tan wild dog. Often heard at dusk; usually keeps its distance from people."},
@@ -857,12 +861,17 @@ const B={
   g.userData.w=[wL,wR];return g;}
 };
 return B;})();
-Object.assign(BUILD,GENTLE);
+Object.assign(BUILD,GENTLE);/* wildlife7:start */if(!BUILD["bighorn_bn"])BUILD["bighorn_bn"]=function(){return BUILD["bighorn"].apply(this,arguments);};if(!BUILD["lion_bn"])BUILD["lion_bn"]=function(){return BUILD["lion"].apply(this,arguments);};/* wildlife7:end */
 const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
-const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};/* wildlife7:start */if(!SCALE["bighorn_bn"])SCALE["bighorn_bn"]=1.45;if(!SCALE["lion_bn"])SCALE["lion_bn"]=1.4;/* wildlife7:end */
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
+/* wildlife7:start */
+ {k:"bighorn_bn",at:[5304,10586]},
+ {k:"bighorn_bn",at:[4222,15602]},
+ {k:"lion_bn",at:[5354,11220]},
+/* wildlife7:end */
  {k:"deer",path:[921,4157,1175,4785],per:26},
  {k:"deer",path:[5599,11603,5954,13371],per:28,ph:0.4},
  {k:"bear",path:[2666,6625,3271,7506],per:30},
@@ -1161,6 +1170,22 @@ cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
 if(reduced)animate(6,0.016);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+/* rare-animals:start */
+(function(){try{
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
+  Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
+    birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
+      addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
+  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
+  const cd=document.getElementById("card");
+  if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+}catch(e){console.warn("rare",e);}})();
+/* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
 })();
 </script>
