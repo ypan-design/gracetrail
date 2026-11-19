@@ -573,8 +573,9 @@ const anim={};
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   [[1.3,3.6,-0.9,1.8]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
-    part(wf,ico,"#4A4642",-wd/2-0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);part(wf,ico,"#3F3C39",wd/2+0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);});
-  part(wf,box,"#3E3B38",0,3.6,-1.5,3.4,0.5,1.4,1.04);
+    part(wf,box,"#3A3633",0,yc,z-0.6,wd+0.9,ht,0.9,1.04);
+    part(wf,ico,"#4A4642",-wd/2-0.55,yc*0.8,z+0.05,0.6,ht/2,0.6);part(wf,ico,"#3F3C39",wd/2+0.55,yc*0.8,z+0.05,0.6,ht/2,0.6);});
+  part(wf,box,"#45413D",0,3.6,-2.0,1.3+2.4,0.3,2.4,1.04);part(wf,box,"#BFE6EE",0,3.6+0.17,-2.2,1.3*0.8,0.04,2.2,0);
   part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
   const rings=[];for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
   const mist=[];for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/7,x:(i%3-1)*0.45});}
@@ -584,8 +585,9 @@ const anim={};
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   [[2.6,3.0,-0.9,1.5]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
-    part(wf,ico,"#4A4642",-wd/2-0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);part(wf,ico,"#3F3C39",wd/2+0.45,yc,z-0.15,0.5,ht/2+0.2,0.55);});
-  part(wf,box,"#3E3B38",0,3.0,-1.5,3.4,0.5,1.4,1.04);
+    part(wf,box,"#3A3633",0,yc,z-0.6,wd+0.9,ht,0.9,1.04);
+    part(wf,ico,"#4A4642",-wd/2-0.55,yc*0.8,z+0.05,0.6,ht/2,0.6);part(wf,ico,"#3F3C39",wd/2+0.55,yc*0.8,z+0.05,0.6,ht/2,0.6);});
+  part(wf,box,"#45413D",0,3.0,-2.0,2.6+2.4,0.3,2.4,1.04);part(wf,box,"#BFE6EE",0,3.0+0.17,-2.2,2.6*0.8,0.04,2.2,0);
   part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
   const rings=[];for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
   const mist=[];for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/7,x:(i%3-1)*0.45});}
@@ -933,7 +935,7 @@ const ANIMALS=[
  {k:"pika",at:[4649,13245]},
  {k:"pika",at:[2787,2616]},
  {k:"chipmunk",at:[-4962,-14382],hop:true},
- {k:"chipmunk",at:[3523,4644],hop:true},
+ {k:"chipmunk",at:[-5257,-10977],hop:true},
  {k:"chipmunk",at:[2244,16115],hop:true},
  {k:"squirrel",at:[3353,3991],hop:true},
  {k:"squirrel",at:[3820,12449],hop:true},
@@ -945,7 +947,7 @@ const ANIMALS=[
  {k:"deer",path:[-5163,-15785,-5073,-15613],per:30},
  {k:"deer",path:[2966,15224,2653,15473],per:30,ph:0.4},
  {k:"snake",path:[-4900,-10032,-4900,-10032],per:32},
- {k:"snake",path:[3578,6436,3562,6498],per:32,ph:0.5}
+ {k:"snake",path:[3829,14887,3907,14955],per:32,ph:0.5}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
@@ -991,7 +993,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 5.0, "B": 3.4, "C": 3.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 7.0, "B": 3.6, "C": 3.6}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
