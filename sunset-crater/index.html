@@ -252,6 +252,14 @@ const SPECIES={
 };
 const FLORA={"A":["sucrpenstemon","apacheplume","cliffrose","cinderphacelia"],"B":["cinderphacelia","sucrpenstemon","apacheplume"],"C":["apacheplume","cliffrose","sucrpenstemon"]};
 const WILD={
+/* wildlife7:start */
+ pronghorn:{name:"Pronghorn",color:"#C49A6C",sum:"Fast, tan-and-white grassland animal listed for the monument; look for it in the open meadows below the cinder hills."},
+ bobcat:{name:"Bobcat",color:"#A8865E",sum:"Short-tailed wild cat that hunts rodents and rabbits in the pine forest. Rarely seen, mostly at dawn and dusk."},
+ lion:{name:"Mountain lion",color:"#B08A5E",sum:"Rare here: the park lists the mountain lion among its rarely seen carnivores; it follows deer and elk through the ponderosa forest."},
+ prairiedog:{name:"Prairie dog",color:"#B89468",sum:"Burrowing ground squirrel the park lists among its mammals; colonies sit in open, grassy ground."},
+ hopirattler:{name:"Hopi rattlesnake",color:"#B07A5A",sum:"A small, pinkish-tan rattlesnake of northeastern Arizona, listed by the park. Stays on the warm cinders in summer; give it room."},
+ pinyonjay:{name:"Pinyon jay",color:"#8A7A66",sum:"Dull-blue, crestless jay that travels in noisy flocks and feeds on pinyon pine nuts."},
+/* wildlife7:end */
  squirrel:{name:"Abert’s squirrel",color:"#9A9A96",sum:"A gray squirrel with tall tasseled ears and a reddish stripe on its back that lives in the ponderosa pines. Often seen at the visitor center picnic area. Please don’t feed it."},
  chipmunk:{name:"Chipmunk",color:"#B77A45",sum:"Chipmunks forage in the grasses near the volcano and along the edges of the lava flow."},
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Big-eared deer of the pine forest around the monument, most often seen early in the morning or late in the afternoon."},
@@ -263,6 +271,7 @@ const WILD={
 };
 
 const PHOTOS={"stop":{"1":[{"f":"../photos/pl_sunsetcrater_lavaflow_4.jpg","by":"Coconino National Forest","lic":"CC0","src":"https://commons.wikimedia.org/wiki/File:Sunset_Crater_Volcano,_Lava_Flow_Trail_(34442404150).jpg","t":"Sunset Crater Volcano, Lava Flow Trail (34442404150)"}],"A2":[{"f":"../photos/pl_sunsetcrater_hornito_6.jpg","by":"James St. John","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Spatter_cone_atop_Bonito_Lava_Flow_(upper_Holocene;_near_Sunset_Crater,_San_Francisco_Volcanic_Field,_Arizona,_USA)_2_(49130382337).jpg","t":"Spatter cone atop Bonito Lava Flow (upper Holocene; near Sunset Crater, San Francisco Volcanic Field, Arizona, USA) 2 (49130382337)"},{"f":"../photos/pl_sunsetcrater_hornito_4.jpg","by":"James St. John","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Spatter_cone_atop_Bonito_Lava_Flow_(upper_Holocene;_near_Sunset_Crater,_San_Francisco_Volcanic_Field,_Arizona,_USA)_7_(49130381047).jpg","t":"Spatter cone atop Bonito Lava Flow (upper Holocene; near Sunset Crater, San Francisco Volcanic Field, Arizona, USA) 7 (49130381047)"},{"f":"../photos/pl_sunsetcrater_hornito_5.jpg","by":"James St. John","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Spatter_cone_atop_Bonito_Lava_Flow_(upper_Holocene;_near_Sunset_Crater,_San_Francisco_Volcanic_Field,_Arizona,_USA)_6_(49130197791).jpg","t":"Spatter cone atop Bonito Lava Flow (upper Holocene; near Sunset Crater, San Francisco Volcanic Field, Arizona, USA) 6 (49130197791)"}],"A3":[{"f":"../photos/pl_sunsetcrater_cone_6.jpg","by":"Nhartmannphotos","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_crater_2.jpg","t":"Sunset crater 2"},{"f":"../photos/pl_sunsetcrater_cone_5.jpg","by":"Nhartmannphotos","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_crater_1.jpg","t":"Sunset crater 1"},{"f":"../photos/pl_sunsetcrater_cone_7.jpg","by":"Nhartmannphotos","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_crater_3.jpg","t":"Sunset crater 3"}],"B2":[{"f":"../photos/pl_sunsetcrater_lenox_5.jpg","by":"James St. John","lic":"CC BY 2.0","src":"https://commons.wikimedia.org/wiki/File:Lenox_Crater_(San_Francisco_Volcanic_Field,_Arizona,_USA)_2_(49134987457).jpg","t":"Lenox Crater (San Francisco Volcanic Field, Arizona, USA) 2 (49134987457)"}],"B3":[{"f":"../photos/pl_sunsetcrater_lenox_4.jpg","by":"Karlunun","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Lenox_Crater_Ar_by_Sunset_Crater_Humphreys_Peak_w_PICT0071_19941028.jpg","t":"Lenox Crater Ar by Sunset Crater Humphreys Peak w PICT0071 19941028"}],"C5":[{"f":"../photos/pl_sunsetcrater_aa_6.jpg","by":"Nhartmannphotos","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_Crater_Bonito_a%27a_1.jpg","t":"Sunset Crater Bonito a'a 1"},{"f":"../photos/pl_sunsetcrater_aa_5.jpg","by":"Nhartmannphotos","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_Crater_Bonito_a%27a_2.jpg","t":"Sunset Crater Bonito a'a 2"},{"f":"../photos/pl_sunsetcrater_aa_4.jpg","by":"Nhartmannphotos","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Sunset_Crater_lava_flow.jpg","t":"Sunset Crater lava flow"}]},"animal":{"deer":[{"f":"../photos/sp_deer_2.jpg","by":"LassenNPS","lic":"BY 2.0","src":"https://www.flickr.com/photos/61860846@N05/9401081133","t":"Pair of Mule Deer: Odocoileus hemionus californicus"}],"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"squirrel":[{"f":"../photos/sp_abertsquirrel_0.jpg","by":"Grand Canyon NPS","lic":"BY 2.0","src":"https://www.flickr.com/photos/50693818@N08/16149244329","t":"Grand Canyon National Park: South Rim - Abert's Squirrel"},{"f":"../photos/sp_abertsquirrel_2.jpg","by":"Bandelier National Monument","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/51381301@N02/4725145530","t":"Portrait of Abert's Squirrel"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}],"elk":[{"f":"../photos/sp_elk_1.jpg","by":"James St. John","lic":"BY 2.0","src":"https://www.flickr.com/photos/47445767@N05/8291416034","t":"Cervus canadensis (North American elk) (Rocky Mountains National Park, Colorado, USA) 5"},{"f":"../photos/sp_elk_0.jpg","by":"Bryce Bradford","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/28508197@N07/5922322660","t":"The Elk & I"}],"steller":[{"f":"../photos/sp_stellersjay_0.jpg","by":"Aly3naa","lic":"BY 2.0","src":"https://www.flickr.com/photos/193745899@N04/52385817421","t":"A Stellers Jay giving me a look"},{"f":"../photos/sp_stellersjay_1.jpg","by":"Carandoom","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/153004825@N03/42220477825","t":"Steller's jay (Cyanocitta stelleri)"}],"goldeneagle":[{"f":"../photos/sp_goldeneagle_dl0.jpg","by":"ChuckThePhotographer","lic":"BY 2.0","src":"https://www.flickr.com/photos/93406569@N00/2391751046","t":"Golden Eagle (Aquila chrysaetos)"},{"f":"../photos/sp_goldeneagle_dl1.jpg","by":"sussexbirder","lic":"BY 2.0","src":"https://www.flickr.com/photos/9919745@N03/13668207994","t":"Golden Eagle (Aquila chrysaetos)"}]},"flower":{"sucrpenstemon":[{"f":"../photos/sp_sucrpenstemon_1.jpg","by":"JerryFriedman","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Penstemon_clutei2.jpg","t":"Penstemon clutei2"}],"apacheplume":[{"f":"../photos/sp_apacheplume_11.jpg","by":"Andrew Hart","lic":"CC BY-SA 4.0","src":"https://commons.wikimedia.org/wiki/File:Fallugia_paradoxa_2017.jpg","t":"Fallugia paradoxa 2017"},{"f":"../photos/sp_apacheplume_9.jpg","by":"Teresa Mayfield","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Fallugia_paradoxa_163852449.jpg","t":"Fallugia paradoxa 163852449"},{"f":"../photos/sp_apacheplume_8.jpg","by":"Stan Shebs","lic":"CC BY-SA 3.0","src":"https://commons.wikimedia.org/wiki/File:Fallugia_paradoxa_form.jpg","t":"Fallugia paradoxa form"}],"cliffrose":[{"f":"../photos/sp_cliffrose_sed_0.jpg","by":"PetrifiedForestNPS","lic":"PDM 1.0","src":"https://www.flickr.com/photos/73230544@N04/33156198310","t":"Stansbury cliffrose (Purshia stansburiana)"},{"f":"../photos/sp_cliffrose_sed_1.jpg","by":"PetrifiedForestNPS","lic":"PDM 1.0","src":"https://www.flickr.com/photos/73230544@N04/33156170110","t":"Stansbury cliffrose (Purshia stansburiana)"}]}};
+/* wildlife7:start */PHOTOS.animal["pronghorn"]=[{"f": "../photos/sp_pronghorn_1.jpg", "by": "Linda, Fortuna future", "lic": "BY-NC 2.0", "src": "https://www.flickr.com/photos/53470892@N08/28945461768", "t": "Pronghorn"}];PHOTOS.animal["bobcat"]=[{"f": "../photos/sp_bobcat_0.jpg", "by": "Joshua Tree National Park", "lic": "PDM 1.0", "src": "https://www.flickr.com/photos/115357548@N08/14252467743", "t": "Bobcat"}];PHOTOS.animal["lion"]=[{"f": "../photos/sp_lion_0.jpg", "by": "Joshua Tree National Park", "lic": "PDM 1.0", "src": "https://www.flickr.com/photos/115357548@N08/14209025856", "t": "Mountain lion"}];PHOTOS.animal["prairiedog"]=[{"f": "../photos/sp_prairiedog_0.jpg", "by": "James Marvin Phelps", "lic": "BY-NC 2.0", "src": "https://www.flickr.com/photos/66727626@N00/336751791", "t": "Prairie dog"}];PHOTOS.animal["pinyonjay"]=[{"f": "../photos/sp_pinyonjay_0.jpg", "by": "David Menke", "lic": "Public domain", "src": "https://commons.wikimedia.org/wiki/File:Gymnorhinus_cyanocephalus1.jpg", "t": "Pinyon jay"}];/* wildlife7:end */
 /* ================= terrain ================= */
 const X0=-14800,X1=5600,N0=-5400,N1=5400,STEP=75;
 const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
@@ -855,12 +864,19 @@ const B={
   g.userData.w=[wL,wR];return g;}
 };
 return B;})();
-Object.assign(BUILD,GENTLE);
-const BIRDC={steller:["#24406E", null, "#1A1A1A"],goldeneagle:["#5A4026", null, "#B88A4A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
-const SCALE={chipmunk:2.0,elk:1.25,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+Object.assign(BUILD,GENTLE);/* wildlife7:start */if(!BUILD["prairiedog"])BUILD["prairiedog"]=function(){return BUILD["squirrel"].apply(this,arguments);};if(!BUILD["hopirattler"])BUILD["hopirattler"]=function(){return BUILD["snake"].apply(this,arguments);};/* wildlife7:end */
+const BIRDC={/* wildlife7:start */pinyonjay:["#5A7DB0", null, null],/* wildlife7:end */steller:["#24406E", null, "#1A1A1A"],goldeneagle:["#5A4026", null, "#B88A4A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={chipmunk:2.0,elk:1.25,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};/* wildlife7:start */if(!SCALE["pronghorn"])SCALE["pronghorn"]=1.4;if(!SCALE["bobcat"])SCALE["bobcat"]=1.45;if(!SCALE["lion"])SCALE["lion"]=1.4;if(!SCALE["prairiedog"])SCALE["prairiedog"]=1.8;if(!SCALE["hopirattler"])SCALE["hopirattler"]=2.0;/* wildlife7:end */
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
+/* wildlife7:start */
+ {k:"pronghorn",at:[-8406,91]},
+ {k:"bobcat",at:[-5670,-1017]},
+ {k:"lion",at:[-6062,383]},
+ {k:"prairiedog",at:[-3447,-655],hop:true},
+ {k:"hopirattler",at:[-3428,-1163]},
+/* wildlife7:end */
  {k:"squirrel",at:[-10978,1638],hop:true},
  {k:"squirrel",at:[-7245,-1074],hop:true},
  {k:"chipmunk",at:[-3087,-879],hop:true},
@@ -884,7 +900,7 @@ ANIMALS.forEach((a,idx)=>{
 });
 // birds
 const birds=[];
-[["steller",-44,32,-30,8],["raven",44,26,26,7],["goldeneagle",-36,35,40,7],["steller",34,30,-44,6],["raven",0,38,-50,10],["goldeneagle",-10,28,50,6],["steller",50,34,-10,9]].forEach((b,i)=>{
+[["steller",-44,32,-30,8],["raven",44,26,26,7],["goldeneagle",-36,35,40,7],["steller",34,30,-44,6],["raven",0,38,-50,10],["goldeneagle",-10,28,50,6],["steller",50,34,-10,9],["pinyonjay",-50,30,10,7]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
@@ -1157,6 +1173,22 @@ cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
 if(reduced)animate(6,0.016);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+/* rare-animals:start */
+(function(){try{
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
+  Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
+    birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
+      addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
+  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
+  const cd=document.getElementById("card");
+  if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+}catch(e){console.warn("rare",e);}})();
+/* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
 })();
 </script>

@@ -262,6 +262,11 @@ const SPECIES={
 };
 const FLORA={"A":["coyotebrush","poppy","checker","sagebrush"],"B":["blupine","sagebrush","monkey","coyotebrush","poppy"],"C":["sagebrush","monkey","blupine","coyotebrush","checker"]};
 const WILD={
+/* wildlife7:start */
+ grayfox:{name:"Gray fox",color:"#8A8A86",sum:"Small grizzled fox of the Marin Headlands brush that can climb trees. Mostly out at night."},
+ quail:{name:"California quail",color:"#6E6A72",sum:"California's state bird, with a forward-curling head plume. Coveys run between coyote brush thickets."},
+ peregrine:{name:"Peregrine falcon",color:"#8A7A66",sum:"Fast falcon that hunts along the Headlands cliffs. Back from near-loss after DDT was banned."},
+/* wildlife7:end */
  bobcat:{name:"Bobcat",color:"#C49A6C",sum:"A short-tailed wild cat about twice the size of a house cat. Bobcats hunt gophers and voles in the open grassland and are occasionally seen from the valley trail."},
  coyote:{name:"Coyote",color:"#A88B6A",sum:"A lean, gray-tan wild dog that hunts the grassy slopes, mostly at dawn and dusk. Keep your distance."},
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Here these are black-tailed deer, the coastal form of mule deer. They graze the valley floor and grassy slopes, mostly early and late in the day."},
@@ -274,6 +279,7 @@ const WILD={
 };
 
 const PHOTOS={"stop":{"1":[{"f":"../photos/pl_tennessee_1_4.jpg","by":"quixoticlife","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/12513025@N00/4829369607","t":"Tennessee Valley, Marin Headlands"},{"f":"../photos/pl_tennessee_1_3.jpg","by":"quixoticlife","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/12513025@N00/4830037686","t":"Tennessee Valley, Marin Headlands"}],"A2":[{"f":"../photos/pl_tennessee_a2_1.jpg","by":"DBerry2006","lic":"BY 2.0","src":"https://www.flickr.com/photos/38572265@N00/3230690084","t":"Tennessee Cove, Marin Headlands"},{"f":"../photos/pl_tennessee_a2_2.jpg","by":"www78","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/40243520@N02/8292378299","t":"Tennessee Beach (Panorama)"}],"B3":[{"f":"../photos/pl_tennessee_b3_2.jpg","by":"albategnius","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/42914481@N00/36847926485","t":"Coyote Ridge rocks above Tennessee Valley"},{"f":"../photos/pl_tennessee_b3_0.jpg","by":"fabola","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/44124339301@N01/49653925067","t":"Biking on Coyote Ridge"}],"C3":[{"f":"../photos/pl_tennessee_c3_2.jpg","by":"AdamChandler86","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/44048128@N00/4245036477","t":"Muir Beach California"},{"f":"../photos/pl_tennessee_c3_4.jpg","by":"RebecaAR","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/47579743@N06/14962130998","t":"Muir Beach, California"}]},"animal":{"deer":[{"f":"../photos/sp_deer_2.jpg","by":"LassenNPS","lic":"BY 2.0","src":"https://www.flickr.com/photos/61860846@N05/9401081133","t":"Pair of Mule Deer: Odocoileus hemionus californicus"}],"bobcat":[{"f":"../photos/sp_bobcat_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14252467743","t":"Bobcat (Lynx rufus)"}],"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"raven":[{"f":"../photos/sp_raven_1.jpg","by":"Frank.Vassen","lic":"BY 2.0","src":"https://www.flickr.com/photos/42244964@N03/5357074718","t":"Common Raven (Corvus corax), Tefia, Fuerteventura"}],"whale":[{"f":"../photos/sp_whale_0.jpg","by":"Thomas Shahan 3","lic":"BY-NC 2.0","src":"https://www.flickr.com/photos/49580580@N02/14993137416","t":"Gray Whale (Eschrichtius robustus), Depoe Bay, Oregon"}],"seal":[{"f":"../photos/sp_seal_1.jpg","by":"Franco Folini","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/78425154@N00/5472518745","t":"Harbor Seal (Phoca vitulina)"}],"pelican":[{"f":"../photos/sp_pelican_0.jpg","by":"Franco Folini","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/78425154@N00/12079540953","t":"Juvenile Brown Pelican (Pelecanus occidentalis)"}]},"flower":{"monkey":[{"f":"../photos/sp_monkey_2.jpg","by":"Björn S...","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/40948266@N04/42902155992","t":"Sticky Monkey-Flower - Diplacus aurantiacus"}],"blupine":[{"f":"../photos/sp_blupine_0.jpg","by":"David A. Hofmann","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/23326361@N04/5610569234","t":"Lupinus albifrons var. albifrons Silver Lupine"},{"f":"../photos/sp_blupine_2.jpg","by":"Pete Tillman","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/29050464@N06/47541772962","t":"A dramatic bush lupine (Lupinus albifrons)...."},{"f":"../photos/sp_blupine_3.jpg","by":"-Dagmar-","lic":"BY-ND 2.0","src":"https://www.flickr.com/photos/53383848@N07/49459908296","t":"Silver Bush Lupine, Lupinus albifrons"}],"checker":[{"f":"../photos/sp_checker_1.jpg","by":"J.G. in S.F.","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/13892958@N07/4478995730","t":"Sidalcea malviflora #3"},{"f":"../photos/sp_checker_3.jpg","by":"J.G. in S.F.","lic":"BY-NC-ND 2.0","src":"https://www.flickr.com/photos/13892958@N07/2790787348","t":"Sidalcea malviflora #1"},{"f":"../photos/sp_checker_4.jpg","by":"David A. Hofmann","lic":"BY-NC-SA 2.0","src":"https://www.flickr.com/photos/23326361@N04/7281649900","t":"Sidalcea malviflora ssp. malviflora Round-leaved Checkerbloom"}],"coyotebrush":[{"f":"../photos/sp_coyotebrush_0.jpg","by":"campsjc","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/24284031@N00/15322501309","t":"Baccharis pilularis-Coyote Brush, Honeybees"},{"f":"../photos/sp_coyotebrush_1.jpg","by":"campsjc","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/24284031@N00/15322737728","t":"Atlides halesus corcorani-Great Purple Hairstreak, Baccharis pilularis-Coyote Brush"}]}};
+/* wildlife7:start */if(WILD["deer"])WILD["deer"].sum="The coastal form of the mule deer. Grazes the valley floor and grassy slopes, often in the open at dawn and dusk.";if(WILD["deer"])WILD["deer"].name="Black-tailed deer";PHOTOS.animal["grayfox"]=[{"f": "../photos/sp_grayfox_1.jpg", "by": "Maggie.Smith", "lic": "BY-NC 2.0", "src": "https://www.flickr.com/photos/12599017@N08/51695759101", "t": "Gray fox"}];PHOTOS.animal["quail"]=[{"f": "../photos/sp_quail_2.jpg", "by": "SidPix", "lic": "BY 2.0", "src": "https://www.flickr.com/photos/22357152@N02/6401999787", "t": "California quail"}];PHOTOS.animal["peregrine"]=[{"f": "../photos/sp_nar_peregrine_0.jpg", "by": "Jon David Nelson", "lic": "BY-NC-SA 2.0", "src": "https://www.flickr.com/photos/65771669@N07/30098270026", "t": "Peregrine falcon"}];/* wildlife7:end */
 /* ================= terrain ================= */
 const X0=-12300,X1=1500,N0=-7700,N1=4400,STEP=50;
 const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
@@ -963,13 +969,17 @@ const B={
   g.userData.w=[wL,wR];return g;}
 };
 return B;})();
-Object.assign(BUILD,GENTLE);
-const BIRDC={pelican:["#8C7E6E","#EDE6DA","#E8C66A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+Object.assign(BUILD,GENTLE);/* wildlife7:start */if(!BUILD["grayfox"])BUILD["grayfox"]=function(){return BUILD["fox"].apply(this,arguments);};/* wildlife7:end */
+const BIRDC={/* wildlife7:start */peregrine:["#55606A", "#ECE8E0", "#2A2A2A"],/* wildlife7:end */pelican:["#8C7E6E","#EDE6DA","#E8C66A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
 const MSCALE={dolphin:2.1,whale:2.2,shark:1.6,sealion:1.6,seal:1.5,pelican:2.4};
-const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};/* wildlife7:start */if(!SCALE["grayfox"])SCALE["grayfox"]=1.6;if(!SCALE["quail"])SCALE["quail"]=1.8;/* wildlife7:end */
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
+/* wildlife7:start */
+ {k:"grayfox",at:[-2788,3334]},
+ {k:"quail",at:[-694,-3868],flock:3},
+/* wildlife7:end */
  {k:"coyote",path:[-3030,2414,-3874,2278],per:24},
  {k:"coyote",path:[-9297,-1826,-10087,-1524],per:26,ph:0.5},
  {k:"bobcat",path:[-945,-3135,-995,-3441],per:26},
@@ -1033,7 +1043,7 @@ function marineTick(tt){marine.forEach(a=>{const y0=G(a.x,a.n).y;
 
 // birds
 const birds=[];
-[["hawk",-44,32,-30,8],["jay",44,26,26,7],["raven",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["jay",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
+[["hawk",-44,32,-30,8],["jay",44,26,26,7],["raven",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["jay",-10,28,50,6],["raven",50,34,-10,9],["peregrine",-50,30,10,7]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
@@ -1312,6 +1322,22 @@ cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
 if(reduced)animate(6,0.016);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+/* rare-animals:start */
+(function(){try{
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
+  Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
+    birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
+      addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
+  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
+  const cd=document.getElementById("card");
+  if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+}catch(e){console.warn("rare",e);}})();
+/* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
 })();
 </script>
