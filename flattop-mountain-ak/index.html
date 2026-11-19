@@ -892,7 +892,7 @@ const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
  {k:"moose",path:[4309,-528,4511,-154],per:40},
- {k:"moose",path:[1075,-2755,862,-2190],per:38,ph:0.5},
+ {k:"moose",path:[706,-629,168,-1300],per:38,ph:0.5},
  {k:"grizzly",path:[4042,-174,4217,-236],per:40},
  {k:"bear",path:[488,-1553,546,-820],per:36,ph:0.3},
  {k:"bighorn",at:[2537,-4526]},
@@ -901,8 +901,8 @@ const ANIMALS=[
  {k:"squirrel",at:[6362,996],hop:true},
  {k:"pika",at:[2029,-5007],hop:true},
  {k:"pika",at:[6186,125],hop:true},
- {k:"coyote",path:[299,-1296,642,-1588],per:26},
- {k:"bobcat",path:[2619,-926,4119,-742],per:30,ph:0.6},
+ {k:"coyote",path:[1514,-478,1060,195],per:26},
+ {k:"bobcat",path:[2491,480,2037,105],per:30,ph:0.6},
  {k:"fox",path:[1243,-1526,1371,-1742],per:24,ph:0.2}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
