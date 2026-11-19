@@ -203,7 +203,7 @@ lm = f'''  gate({S('A1')[0]},{S('A1')[1]},1.6);gate({S('s1')[0]},{S('s1')[1]},2.
     const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(sc);world.add(wf);
     [[1.3,3.0,-0.9,4.6],[1.7,2.0,-0.35,2.2],[2.0,1.3,0.15,0.7]].forEach(([wd,ht,z,yc])=>{{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
       part(wf,ico,PAL.stone,-wd/2-0.45,yc+ht/2-0.25,z-0.1,0.55,0.45,0.5);part(wf,ico,PAL.stoneD,wd/2+0.45,yc+ht/2-0.35,z-0.1,0.5,0.42,0.5);}});
-    part(wf,ico,"#8E6A5E",-1.7,2.6,-1.3,0.8,1.4,0.7);part(wf,ico,"#9A7466",1.7,2.4,-1.2,0.75,1.3,0.7);
+    part(wf,ico,PAL.stoneD,-1.5,2.2,-1.3,0.55,0.9,0.5);part(wf,ico,PAL.stone,1.5,2.0,-1.2,0.5,0.85,0.5);
     part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
     for(let i=0;i<3;i++){{const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}}
     for(let i=0;i<6;i++){{const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true}}));wf.add(m);mist.push({{m,ph:i/6,x:(i%3-1)*0.45}});}}}}
@@ -212,10 +212,10 @@ lm = f'''  gate({S('A1')[0]},{S('A1')[1]},1.6);gate({S('s1')[0]},{S('s1')[1]},2.
   anim.water={{fallTex,rings,mist}};
   // Ptarmigan Tunnel: stone portal block with a dark arched opening and open steel doors, facing along the tunnel
   {{const q=G({TU[0]},{TU[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2({tdx},{-tdn});world.add(g);
-    part(g,box,"#8E7F70",0,1.6,-0.6,4.2,3.4,1.6,1.04);
-    part(g,box,"#1E1A18",0,1.05,0.22,1.5,2.1,0.2,0);{{const a=part(g,new THREE.CylinderGeometry(0.75,0.75,0.2,16,1,false,-Math.PI/2,Math.PI),"#1E1A18",0,2.1,0.22,1,1,1,0);rot(a,-Math.PI/2,0,0);}}
-    const d1=part(g,box,"#6E7378",-1.15,1.05,0.75,0.08,2.1,0.95,1.04);const d2=part(g,box,"#6E7378",1.15,1.05,0.75,0.08,2.1,0.95,1.04);
-    part(g,box,"#A89A8A",0,3.45,-0.6,4.5,0.3,1.8,1.04);}}
+    part(g,box,"#8E7F70",0,0.9,0,3.6,2.6,2.4,1.04);
+    [1,-1].forEach(sd=>{{part(g,box,"#1E1A18",0,0.85,1.22*sd,1.3,1.7,0.06,0);const a=part(g,new THREE.CylinderGeometry(0.65,0.65,0.06,16,1,false,-Math.PI/2,Math.PI),"#1E1A18",0,1.7,1.22*sd,1,1,1,0);rot(a,-Math.PI/2,0,0);}});
+    part(g,box,"#6E7378",-0.95,0.85,1.6,0.08,1.7,0.75,1.04);part(g,box,"#6E7378",0.95,0.85,1.6,0.08,1.7,0.75,1.04);
+    part(g,box,"#A89A8A",0,2.3,0,3.9,0.25,2.6,1.04);}}
   // ice floes on Iceberg Lake
   {{let lo=1e9;lakeP().forEach(P=>{{if(inPoly({LK[0]},{LK[1]},P)||P.some(([x,n])=>Math.hypot(x-({ix0}+{ix1})/2,n-({in0}+{in1})/2)<1600))P.forEach(([x,n])=>{{lo=Math.min(lo,G(x,n,0).y);}});}});
     {js(FLOES)}.forEach(([x,n,s,r])=>{{const q=G(x,n);const y=Math.max(q.y,lo);const m=part(world,box,"#FFFFFF",q.x,y+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,y+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);}});}}
@@ -303,7 +303,7 @@ cfg = dict(
     links={'A': [('Redrock Falls Trail · NPS', 'https://www.nps.gov/places/redrock-falls-trail.htm'), ('Redrock Falls · Hiking in Glacier', 'https://hikinginglacier.com/redrock-falls.htm')],
            'B': [('Iceberg Lake Trailhead · NPS', 'https://www.nps.gov/places/iceberg-lake-trailhead.htm'), ('Iceberg Lake · Hiking in Glacier', 'https://hikinginglacier.com/iceberg-lake.htm'), ('Iceberg Lake · Hiking Project', 'https://www.hikingproject.com/trail/7018720/iceberg-lake')],
            'C': [('Ptarmigan Tunnel · Hiking in Glacier', 'https://hikinginglacier.com/ptarmigan-tunnel.htm'), ('Ptarmigan Tunnel · Wikipedia', 'https://en.wikipedia.org/wiki/Ptarmigan_Tunnel')]},
-    viewaz={'all': 0.8, 'A': 0.8, 'B': 0.8, 'C': 0.8},
+    viewaz={'all': 1.6, 'A': 1.6, 'B': 1.6, 'C': 2.4},
     zoomcap={'A': 3.6, 'B': 2.2, 'C': 2.6},
 )
 OUT = '/home/claude/site/out/glacier-iceberg-lake/index.html'

@@ -559,7 +559,7 @@ const anim={};
     const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(sc);world.add(wf);
     [[1.3,3.0,-0.9,4.6],[1.7,2.0,-0.35,2.2],[2.0,1.3,0.15,0.7]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
       part(wf,ico,PAL.stone,-wd/2-0.45,yc+ht/2-0.25,z-0.1,0.55,0.45,0.5);part(wf,ico,PAL.stoneD,wd/2+0.45,yc+ht/2-0.35,z-0.1,0.5,0.42,0.5);});
-    part(wf,ico,"#8E6A5E",-1.7,2.6,-1.3,0.8,1.4,0.7);part(wf,ico,"#9A7466",1.7,2.4,-1.2,0.75,1.3,0.7);
+    part(wf,ico,PAL.stoneD,-1.5,2.2,-1.3,0.55,0.9,0.5);part(wf,ico,PAL.stone,1.5,2.0,-1.2,0.5,0.85,0.5);
     part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
     for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
     for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/6,x:(i%3-1)*0.45});}}
@@ -568,10 +568,10 @@ const anim={};
   anim.water={fallTex,rings,mist};
   // Ptarmigan Tunnel: stone portal block with a dark arched opening and open steel doors, facing along the tunnel
   {const q=G(-6594,18508);const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(54,-80);world.add(g);
-    part(g,box,"#8E7F70",0,1.6,-0.6,4.2,3.4,1.6,1.04);
-    part(g,box,"#1E1A18",0,1.05,0.22,1.5,2.1,0.2,0);{const a=part(g,new THREE.CylinderGeometry(0.75,0.75,0.2,16,1,false,-Math.PI/2,Math.PI),"#1E1A18",0,2.1,0.22,1,1,1,0);rot(a,-Math.PI/2,0,0);}
-    const d1=part(g,box,"#6E7378",-1.15,1.05,0.75,0.08,2.1,0.95,1.04);const d2=part(g,box,"#6E7378",1.15,1.05,0.75,0.08,2.1,0.95,1.04);
-    part(g,box,"#A89A8A",0,3.45,-0.6,4.5,0.3,1.8,1.04);}
+    part(g,box,"#8E7F70",0,0.9,0,3.6,2.6,2.4,1.04);
+    [1,-1].forEach(sd=>{part(g,box,"#1E1A18",0,0.85,1.22*sd,1.3,1.7,0.06,0);const a=part(g,new THREE.CylinderGeometry(0.65,0.65,0.06,16,1,false,-Math.PI/2,Math.PI),"#1E1A18",0,1.7,1.22*sd,1,1,1,0);rot(a,-Math.PI/2,0,0);});
+    part(g,box,"#6E7378",-0.95,0.85,1.6,0.08,1.7,0.75,1.04);part(g,box,"#6E7378",0.95,0.85,1.6,0.08,1.7,0.75,1.04);
+    part(g,box,"#A89A8A",0,2.3,0,3.9,0.25,2.6,1.04);}
   // ice floes on Iceberg Lake
   {let lo=1e9;lakeP().forEach(P=>{if(inPoly(-14900,6150,P)||P.some(([x,n])=>Math.hypot(x-(-17580+-14562)/2,n-(3969+6643)/2)<1600))P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n,0).y);});});
     [[-15174,5220,0.71,0.86],[-16811,5159,0.85,1.72],[-16930,4397,0.93,0.14],[-15681,5344,0.85,0.77],[-15649,5952,0.56,1.68],[-16251,4610,0.78,0.3],[-15553,4772,1.11,2.05],[-14912,5685,0.9,1.17],[-16168,5433,0.73,2.33]].forEach(([x,n,s,r])=>{const q=G(x,n);const y=Math.max(q.y,lo);const m=part(world,box,"#FFFFFF",q.x,y+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,y+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);});}
@@ -968,7 +968,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.8,"A":0.8,"B":0.8,"C":0.8};
+const VIEWAZ={"all":1.6,"A":1.6,"B":1.6,"C":2.4};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
