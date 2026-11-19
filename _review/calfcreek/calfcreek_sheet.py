@@ -106,11 +106,11 @@ trails = [
 pa = place_along
 A_ = lambda k, f, s=1, o=240: pa(p, R[k], [f], s, o)[0]
 an = []
-an += [f'{{k:"beaver",at:{js(A_("C",.78,1,90))}}}', f'{{k:"beaver",at:{js(A_("B",.70,-1,110))}}}']
-an += [f'{{k:"deer",path:{js(A_("C",.30,1,520)+A_("C",.34,1,520))},per:28}}', f'{{k:"deer",path:{js(A_("A",.40,-1,600)+A_("A",.47,-1,600))},per:26,ph:0.4}}']
-an += [f'{{k:"squirrel",at:{js(A_("A",.15,1,260))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.10,-1,240))},hop:true}}']
+an += [f'{{k:"beaver",at:{js(A_("C",.78,1,90))}}}', f'{{k:"beaver",at:{js(A_("B",.60,-1,110))}}}']
+an += [f'{{k:"deer",path:{js(A_("C",.30,1,520)+A_("C",.34,1,520))},per:28}}', f'{{k:"deer",path:{js(A_("A",.22,-1,650)+A_("A",.30,-1,650))},per:26,ph:0.4}}']
+an += [f'{{k:"squirrel",at:{js(A_("A",.72,1,300))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.10,-1,240))},hop:true}}']
 an += [f'{{k:"chipmunk",at:{js(A_("B",.30,1,220))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("C",.55,1,240))},hop:true}}']
-an += [f'{{k:"turkey",path:{js(A_("B",.88,1,320)+A_("B",.92,1,320))},per:30}}', f'{{k:"turkey",at:{js(A_("C",.95,-1,300))}}}']
+an += [f'{{k:"turkey",path:{js(A_("B",.80,1,600)+A_("B",.84,1,600))},per:30}}', f'{{k:"turkey",at:{js(A_("C",.18,1,620))}}}']
 an += [f'{{k:"heron",at:{js(A_("B",.50,-1,140))}}}']
 animals_js = '[\n ' + ',\n '.join(an) + '\n]'
 
