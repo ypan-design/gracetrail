@@ -575,12 +575,12 @@ TRAILS.forEach(T=>{const g={A:100,B:200,C:2700}[T.id];if(g)T.gain=g;});
 mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};
 function lakeP(){return lakeP.c||(lakeP.c=[[[3070,3615],[3061,3607],[3043,3603],[2951,3602],[2921,3598],[2900,3591],[2900,3580],[2910,3559],[2914,3540],[2946,3455],[2955,3449],[2963,3449],[2969,3454],[2978,3436],[2980,3362],[2987,3336],[3005,3296],[3012,3287],[3020,3280],[3026,3268],[3017,3229],[3016,3205],[2999,3164],[3016,3139],[3021,3106],[3012,3044],[3029,3030],[3054,2963],[3062,2913],[3054,2885],[3022,2852],[3009,2823],[3008,2779],[2985,2749],[2959,2724],[2926,2699],[2885,2690],[2814,2669],[2736,2641],[2710,2640],[2687,2653],[2673,2652],[2631,2649],[2603,2602],[2599,2557],[2604,2527],[2619,2526],[2640,2491],[2642,2463],[2657,2451],[2681,2441],[2733,2432],[2738,2472],[2779,2518],[2832,2555],[2899,2586],[2943,2626],[2997,2689],[3040,2705],[3073,2755],[3084,2801],[3127,2905],[3151,3012],[3180,3066],[3204,3123],[3197,3234],[3211,3293],[3238,3316],[3223,3380],[3175,3401],[3131,3387],[3123,3468],[3130,3512],[3131,3567],[3126,3609],[3134,3632],[3140,3662],[3083,3661],[3076,3631]]]);}
 function inLake(x,n){for(const P of lakeP()){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>n)!==(b[1]>n)&&x<(b[0]-a[0])*(n-a[1])/(b[1]-a[1])+a[0])c=!c;}if(c)return true;}return false;}
-(function(){const mat=new THREE.MeshLambertMaterial({color:"#8FC6DA",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#5E9FB8"});
-  lakeP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
+(function(){const mat=new THREE.MeshLambertMaterial({color:"#5AA7CF",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#5E9FB8"});
+  lakeP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ExtrudeGeometry(sh,{depth:1,bevelEnabled:false});const pa=geo.attributes.position;
     let lo=-1e9;P.forEach(([x,n])=>{lo=Math.max(lo,G(x,n,0).y);});
-    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.12);pa.setXYZ(i,v.x,lo+0.1,v.z);}
-    pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
-    const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0);v.y=lo+0.12;return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
+    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const z0=pa.getZ(i);const v=G(x,n,0);pa.setXYZ(i,v.x,z0>0.5?lo+0.45:v.y-0.05,v.z);}
+    pa.needsUpdate=true;geo.computeVertexNormals();geo.computeBoundingSphere();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
+    const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0);v.y=lo+0.46;return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
 })();
 
 /* ================= animals ================= */
@@ -877,7 +877,7 @@ const ANIMALS=[
  {k:"deer",path:[1314,1012,1475,1040],per:26},
  {k:"deer",path:[2731,1433,2618,1511],per:28,ph:0.5},
  {k:"coyote",path:[4487,5245,4816,5464],per:24},
- {k:"squirrel",at:[2438,2697],hop:true},
+ {k:"squirrel",at:[1808,1276],hop:true},
  {k:"squirrel",at:[5872,11454],hop:true},
  {k:"snake",path:[6503,8586,6390,8710],per:30},
  {k:"bobcat",path:[3486,5161,3740,5501],per:28,ph:0.2}
