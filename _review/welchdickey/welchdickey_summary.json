@@ -1,0 +1,55 @@
+{
+ "name": "Welch-Dickey Loop",
+ "folder": "welch-dickey",
+ "city": "Thornton",
+ "area": "White Mountain National Forest",
+ "state": "NH",
+ "region": "Northeast",
+ "reg": "ne",
+ "lat": 43.9046,
+ "lon": -71.589,
+ "where": "Orris Road trailhead, Thornton, near Waterville Valley, New Hampshire",
+ "high": "2,734 ft",
+ "blurb": "Two bare granite summits at the gateway to Waterville Valley: a short climb to the Welch Ledges, Dickey Mountain up its slabs, and the classic loop over both.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Welch Ledges",
+   "mi": 2.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 820
+  },
+  {
+   "id": "B",
+   "name": "Dickey Mountain via the Dickey side",
+   "mi": 4.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1700
+  },
+  {
+   "id": "C",
+   "name": "Welch-Dickey Loop",
+   "mi": 4.4,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1730
+  }
+ ],
+ "status": "Open. No closures listed by the White Mountain National Forest as of November 2026. $5 per vehicle day-use fee at the Orris Road lot; the bare ledges are icy from fall to spring, so carry traction.",
+ "rare": [],
+ "notes": "No animal on these trails is flagged as rare. The notable rarity is a plant: Welch is one of five New Hampshire sites where jack pine survives (USFS trail sheet); it is drawn as a landmark and named in the Welch summit stop. B's 4.0 mi is derived from the USFS segment distance (Dickey summit to parking 2.0 mi). Animals documented (iNaturalist within 2 km, Spicebush 2012 trip report) but not modeled for lack of a model: snowshoe hare, eastern milksnake, eastern newt, salamanders, toads/frogs, dark-eyed junco, warblers, kinglets, mourning dove.",
+ "sources": [
+  "https://www.fs.usda.gov/r09/whitemountain/recreation/welch-dickey-trailhead",
+  "https://fs.usda.gov/Internet/FSE_DOCUMENTS/stelprdb5365159.pdf",
+  "https://www.trailfinder.info/trails/trail/welch-dickey-loop-trail",
+  "https://www.hikingproject.com/trail/7010629/welch-dickey-mountain-loop",
+  "https://hikenewengland.com/WelchDickey100530.php",
+  "https://www.franklinsites.com/hikephotos/NewHampshire/welchmtn-2014-0508.php",
+  "https://spicebush.blogspot.com/2012/04/welch-dickey-loop-trail.html",
+  "https://www.inaturalist.org/observations?lat=43.913&lng=-71.588&radius=2",
+  "https://ebirdhotspots.com/birding-in-new-hampshire/usnh-grafton-county/usnh-white-mountain-national-forest-welch-dickey-trail-loop/",
+  "https://www.fs.usda.gov/r09/whitemountain/passes"
+ ]
+}
