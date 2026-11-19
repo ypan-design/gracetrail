@@ -1,0 +1,57 @@
+{
+ "name": "Humpback Rocks",
+ "folder": "humpback-rocks",
+ "city": "Lyndhurst",
+ "area": "Blue Ridge Parkway",
+ "state": "VA",
+ "region": "Southeast",
+ "reg": "se",
+ "lat": 37.9686,
+ "lon": -78.8966,
+ "where": "Blue Ridge Parkway milepost 5.8–6.0, near Waynesboro, Virginia",
+ "high": "3,606 ft",
+ "blurb": "An 1890s mountain farm, the steep mile up to the Humpback Rocks outcrop, and the Appalachian Trail on to the summit of Humpback Mountain.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Mountain Farm Trail",
+   "mi": 0.25,
+   "unit": "one way",
+   "level": "Easy",
+   "gain_ft": 40
+  },
+  {
+   "id": "B",
+   "name": "Humpback Rocks Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 800
+  },
+  {
+   "id": "C",
+   "name": "Humpback Mountain via the Appalachian Trail",
+   "mi": 4.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1300
+  }
+ ],
+ "status": "Open. The Parkway is open from Rockfish Gap past Humpback Rocks (NPS road status, Nov 18, 2026); the nearby Dobie Mountain Trail is permanently closed. Visitor center and restrooms are seasonal; winter weather can close the road.",
+ "sources": [
+  "https://www.nps.gov/blri/planyourvisit/humpback-rocks-trails.htm",
+  "https://www.nps.gov/thingstodo/humpback-rocks-hike.htm",
+  "https://www.nps.gov/places/humpback-rocks-trailhead.htm",
+  "https://www.nps.gov/places/humpback-rocks-mountain-farm.htm",
+  "https://home.nps.gov/blri/planyourvisit/humpback-rocks-mp-5-8.htm",
+  "https://www.nps.gov/blri/planyourvisit/roadclosures.htm",
+  "https://www.nps.gov/blri/planyourvisit/visitorcenters.htm",
+  "https://www.nps.gov/blri/learn/nature/showy-blooms.htm",
+  "https://en.wikipedia.org/wiki/Humpback_Rock",
+  "https://gohikevirginia.com/humpback-rocks/",
+  "https://www.gaiagps.com/hike/2419/humpback-rocks-loop-via-appalachian-trail",
+  "https://myhikes.org/trails/humpback-rocks-hike",
+  "https://virginiatrailguide.com/2009/06/18/humpback-rock",
+  "https://dwr.virginia.gov/vbwt/sites/rockfish-gap-hawk-watch/"
+ ]
+}
