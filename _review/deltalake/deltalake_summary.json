@@ -1,0 +1,70 @@
+{
+ "name": "Taggart Lake & Delta Lake",
+ "folder": "teton-delta-lake",
+ "city": "Moose",
+ "area": "Grand Teton National Park",
+ "state": "WY",
+ "region": "Rockies",
+ "reg": "rk",
+ "lat": 43.6931,
+ "lon": -110.733,
+ "where": "Taggart Lake and Lupine Meadows trailheads, Teton Park Road, Grand Teton National Park, Wyoming",
+ "high": "9,016 ft",
+ "blurb": "A loop to Taggart Lake through the 1985 Beaver Creek burn, a longer loop past Bradley Lake, and the steep, partly unofficial climb to turquoise Delta Lake under the Grand Teton.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Taggart Lake–Beaver Creek Loop",
+   "mi": 3.8,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 620
+  },
+  {
+   "id": "B",
+   "name": "Taggart & Bradley Lakes Loop",
+   "mi": 5.6,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 860
+  },
+  {
+   "id": "C",
+   "name": "Delta Lake",
+   "mi": 7.4,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2300
+  }
+ ],
+ "status": "Open, with seasonal access limits. Teton Park Road is closed to cars from the Taggart Lake Trailhead to Signal Mountain Lodge from Nov 1 to Apr 30, so there is no car access to Lupine Meadows (Trail C) in winter, and Delta Lake is snowbound until early summer. The Taggart Lake Trailhead and trails (A, B) are open for hiking and over-snow use this winter, but close to all use from May 1, 2027 through about November 2027 for trailhead reconstruction; Taggart Lake will then be reachable only from the Valley Trail to the north. The final mile to Delta Lake is an unofficial, unmaintained route (Access Fund and park crews improved wayfinding in summer 2026).",
+ "rare": [
+  {
+   "animal": "Grizzly bear",
+   "why": "Grizzly bears are listed as threatened under the Endangered Species Act, and they are regularly active around Lupine Meadows and along the trail to Delta Lake.",
+   "source": "https://www.nps.gov/grte/learn/nature/species-at-risk.htm"
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/thingstodo/taggartloop.htm",
+  "https://www.nps.gov/thingstodo/taggartbradley.htm",
+  "https://www.nps.gov/tripideas/taggartlake-hikes.htm",
+  "https://home.nps.gov/grte/planyourvisit/park-construction.htm",
+  "https://www.nps.gov/grte/learn/news/upcoming-construction-changes-at-taggart-lake-trailhead-moose-wilson-road-and-teton-park-road.htm",
+  "https://www.nps.gov/grte/planyourvisit/roads.htm",
+  "https://www.nps.gov/places/000/lupine-meadows-trailhead.htm",
+  "https://www.nps.gov/grte/learn/news/trail-improvement-work-will-begin-in-late-june-on-delta-lake-route-in-grand-teton-national-park.htm",
+  "https://www.nps.gov/grte/learn/nature/species-at-risk.htm",
+  "https://home.nps.gov/grte/learn/nature/upload/Plants-access.pdf",
+  "https://tetonhikingtrails.com/taggart-lake-beaver-creek-loop.htm",
+  "https://tetonhikingtrails.com/bradley-lake.htm",
+  "https://tetonhikingtrails.com/amphitheater-lake.htm",
+  "https://www.hikingproject.com/trail/7116433/delta-lake",
+  "https://gowanderwild.com/?p=7893",
+  "https://www.earthtrekkers.com/surprise-amphitheater-delta-lake-hike/",
+  "https://en.wikipedia.org/wiki/Delta_Lake_(Teton_County,_Wyoming)",
+  "https://en.wikipedia.org/wiki/Taggart_Lake_Trail",
+  "https://en.wikipedia.org/wiki/Bradley_Lake_Trail",
+  "https://api.inaturalist.org/v1/observations/species_counts?nelat=43.745&nelng=-110.72&swlat=43.68&swlng=-110.785&quality_grade=research"
+ ]
+}

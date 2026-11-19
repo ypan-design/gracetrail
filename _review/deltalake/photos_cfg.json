@@ -1,0 +1,458 @@
+{
+ "stops": {
+  "Taggart Lake Trailhead": [
+   {
+    "f": "../photos/pl_deltalake_taggartlake_1.jpg",
+    "by": "GrandTetonNPS",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Taggart_Lake_Trailhead_Renewal_(55545880452).jpg",
+    "t": "Taggart Lake Trailhead Renewal (55545880452)"
+   }
+  ],
+  "Bradley Lake": [
+   {
+    "f": "../photos/pl_deltalake_bradleylake_4.jpg",
+    "by": "Jonnyapple",
+    "lic": "CC BY 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Bradley_Lake.jpg",
+    "t": "Bradley Lake"
+   }
+  ],
+  "Switchbacks over the lakes": [
+   {
+    "f": "../photos/pl_deltalake_bradleylake_3.jpg",
+    "by": "National Park Service",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Bradley_and_Taggart_Lakes.jpg",
+    "t": "Bradley and Taggart Lakes"
+   },
+   {
+    "f": "../photos/pl_deltalake_bradleylake_2.jpg",
+    "by": "GrandTetonNPS",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Bradley_Lake_and_the_Jackson_Hole_Valley_(36599951291).jpg",
+    "t": "Bradley Lake and the Jackson Hole Valley (36599951291)"
+   }
+  ],
+  "Delta Lake": [
+   {
+    "f": "../photos/pl_deltalake_deltalake_4.jpg",
+    "by": "Gideon Tsang",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Delta_Lake_Gideon_Tsang_July_2020_1.jpg",
+    "t": "Delta Lake Gideon Tsang July 2020 1"
+   },
+   {
+    "f": "../photos/pl_deltalake_deltalake_0.jpg",
+    "by": "National Park Service",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Delta_Lake_GrandTetonNP.jpg",
+    "t": "Delta Lake GrandTetonNP"
+   },
+   {
+    "f": "../photos/pl_deltalake_deltalake_2.jpg",
+    "by": "Gideon Tsang",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Delta_Lake_Gideon_Tsang_July_2020_2.jpg",
+    "t": "Delta Lake Gideon Tsang July 2020 2"
+   }
+  ],
+  "Lupine Meadows Trailhead": [
+   {
+    "f": "../photos/pl_deltalake_lupinemeadows_2.jpg",
+    "by": "GrandTetonNPS",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Sign_Lupine_Meadows_(2)_(54491043112).jpg",
+    "t": "Sign Lupine Meadows (2) (54491043112)"
+   },
+   {
+    "f": "../photos/pl_deltalake_lupinemeadows_1.jpg",
+    "by": "Tony Webster",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Lupine_Meadows_Road_-_Autumn_at_Grand_Teton_National_Park_-_Wyoming_(52902509334).jpg",
+    "t": "Lupine Meadows Road - Autumn at Grand Teton National Park - Wyoming (52902509334)"
+   }
+  ]
+ },
+ "flowers": {
+  "balsamroot_dl": [
+   {
+    "f": "../photos/sp_balsamroot_dl_1.jpg",
+    "by": "Jim Morefield from Nevada, USA",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Arrowleaf_balsamroot,_Balsamorhiza_sagittata_(16690747592).jpg",
+    "t": "Arrowleaf balsamroot, Balsamorhiza sagittata (16690747592)"
+   },
+   {
+    "f": "../photos/sp_balsamroot_dl_4.jpg",
+    "by": "Leslie Seaton from Seattle, WA, USA",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Arrowleaf_Balsamroot_(Balsamorhiza_sagittata)_(7235148352).jpg",
+    "t": "Arrowleaf Balsamroot (Balsamorhiza sagittata) (7235148352)"
+   },
+   {
+    "f": "../photos/sp_balsamroot_dl_0.jpg",
+    "by": "Matthew P. Del Buono",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Balsamorhiza_sagittata.jpg",
+    "t": "Balsamorhiza sagittata"
+   }
+  ],
+  "geranium_dl": [
+   {
+    "f": "../photos/sp_stickygeranium_dl_2.jpg",
+    "by": "Matt Lavin from Bozeman, Montana, USA",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Geranium_viscosissimum.jpg",
+    "t": "Geranium viscosissimum"
+   },
+   {
+    "f": "../photos/sp_stickygeranium_dl_4.jpg",
+    "by": "Matt Lavin",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Geranium_viscosissimum_-_sticky_purple_geranium_-_52198700234.jpg",
+    "t": "Geranium viscosissimum - sticky purple geranium - 52198700234"
+   },
+   {
+    "f": "../photos/sp_stickygeranium_dl_1.jpg",
+    "by": "Thayne Tuason",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Geranium_viscosissimum_1.jpg",
+    "t": "Geranium viscosissimum 1"
+   }
+  ],
+  "lupine_dl": [
+   {
+    "f": "../photos/sp_lupine_gt_0.jpg",
+    "by": "Lomatium",
+    "lic": "BY-NC 2.0",
+    "src": "https://www.flickr.com/photos/44455562@N07/5687534621",
+    "t": "Lupinus sericeus - Silky Lupine Patch"
+   },
+   {
+    "f": "../photos/sp_lupine_gt_2.jpg",
+    "by": "Matt Lavin",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/35478170@N08/52498447961",
+    "t": "Lupinus sericeus - silky lupine"
+   }
+  ],
+  "paintbrush_dl": [
+   {
+    "f": "../photos/sp_paintbrush_gt2_0.jpg",
+    "by": "USFWS Mountain Prairie",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/51986662@N05/9078382803",
+    "t": "Wyoming's State Flower"
+   },
+   {
+    "f": "../photos/sp_paintbrush_gt_2.jpg",
+    "by": "roy.luck",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/21550937@N03/19416391943",
+    "t": "Indian paintbrush along Cascade Canyon Trail"
+   }
+  ],
+  "columbine_dl": [
+   {
+    "f": "../photos/sp_bluecolumbine_gt_1.jpg",
+    "by": "Jim Morefield",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/127605180@N04/23193233013",
+    "t": "Colorado blue columbine, Aquilegia coerulea var. coerulea, with a morning visitor"
+   },
+   {
+    "f": "../photos/sp_bluecolumbine_gt_0.jpg",
+    "by": "schizoform",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/84175980@N00/53824847523",
+    "t": "20240621 Aquilegia coerulea (Blue Columbine)"
+   }
+  ],
+  "huckleberry_dl": [
+   {
+    "f": "../photos/sp_huckleberry_gt_0.jpg",
+    "by": "GlacierNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/43288043@N04/43741431161",
+    "t": "Huckleberry (Vaccinium membranaceum)"
+   },
+   {
+    "f": "../photos/sp_huckleberry_gt_3.jpg",
+    "by": "MT Lynette",
+    "lic": "BY-NC 2.0",
+    "src": "https://www.flickr.com/photos/25980517@N03/2786270835",
+    "t": "wild Huckleberry - Vaccinium membranaceum"
+   }
+  ],
+  "fireweed_dl": [
+   {
+    "f": "../photos/sp_fireweed_gt_1.jpg",
+    "by": "nordique",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/28435100@N00/4825391834",
+    "t": "Fireweed flower"
+   },
+   {
+    "f": "../photos/sp_fireweed_gt_2.jpg",
+    "by": "waferboard",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/60944931@N00/7691101616",
+    "t": "fireweed flowers"
+   }
+  ]
+ },
+ "animals": {
+  "moose": [
+   {
+    "f": "../photos/sp_moose_gt_0.jpg",
+    "by": "Al_HikesAZ",
+    "lic": "BY-NC 2.0",
+    "src": "https://www.flickr.com/photos/7202153@N03/2780298470",
+    "t": "Shiras Moose - Grand Teton National Park"
+   },
+   {
+    "f": "../photos/sp_moose_gt_3.jpg",
+    "by": "kirknelson",
+    "lic": "BY-NC-SA 2.0",
+    "src": "https://www.flickr.com/photos/35423702@N08/52443249915",
+    "t": "Young Moose, Grand Teton National Park"
+   }
+  ],
+  "grizzly": [
+   {
+    "f": "../photos/sp_grizzly_gt_0.jpg",
+    "by": "rudywilms.com",
+    "lic": "BY-NC-ND 2.0",
+    "src": "https://www.flickr.com/photos/57962209@N05/37832119811",
+    "t": "Grizzly Bear Grand Teton"
+   },
+   {
+    "f": "../photos/sp_grizzly_gt_1.jpg",
+    "by": "GrandTetonNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/144302732@N07/27300116037",
+    "t": "Grizzly Bear Road Crossing"
+   }
+  ],
+  "bear": [
+   {
+    "f": "../photos/sp_bear_0.jpg",
+    "by": "Gregory 'Slobirdr' Smith",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/22170893@N06/51514425465",
+    "t": "American Black Bear - Ursus americanus"
+   }
+  ],
+  "deer": [
+   {
+    "f": "../photos/sp_deer_2.jpg",
+    "by": "LassenNPS",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/61860846@N05/9401081133",
+    "t": "Pair of Mule Deer: Odocoileus hemionus californicus"
+   }
+  ],
+  "elk": [
+   {
+    "f": "../photos/sp_elk_1.jpg",
+    "by": "James St. John",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/47445767@N05/8291416034",
+    "t": "Cervus canadensis (North American elk) (Rocky Mountains National Park, Colorado, USA) 5"
+   },
+   {
+    "f": "../photos/sp_elk_2.jpg",
+    "by": "James St. John",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/47445767@N05/15725801161",
+    "t": "Cervus canadensis (North American elk) (Rocky Mountains National Park, Colorado, USA) 1"
+   }
+  ],
+  "pika": [
+   {
+    "f": "../photos/sp_pika_gt_0.jpg",
+    "by": "GlacierNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/43288043@N04/4428172158",
+    "t": "American pika (Citizen Science)"
+   },
+   {
+    "f": "../photos/sp_pika_gt_2.jpg",
+    "by": "GlacierNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/43288043@N04/51325896241",
+    "t": "American pika"
+   }
+  ],
+  "chipmunk": [
+   {
+    "f": "../photos/sp_gmgsq_gt_1.jpg",
+    "by": "Ingrid Taylar",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/49503118795@N01/14116965179",
+    "t": "Golden-Mantled Ground Squirrel"
+   },
+   {
+    "f": "../photos/sp_gmgsq_gt_3.jpg",
+    "by": "James St. John",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/47445767@N05/15541897949",
+    "t": "Callospermophilus lateralis (golden-mantled ground squirrel) (Rocky Mountains National Park, Colorado, USA)"
+   }
+  ],
+  "marmot": [
+   {
+    "f": "../photos/sp_ybmarmot_2.jpg",
+    "by": "matt 'smooth tooth' knoth",
+    "lic": "BY-NC-ND 2.0",
+    "src": "https://www.flickr.com/photos/18158503@N00/2606315258",
+    "t": "yellow-bellied marmot"
+   },
+   {
+    "f": "../photos/sp_ybmarmot_3.jpg",
+    "by": "Paxson Woelber",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/59306007@N08/14516033378",
+    "t": "A Yellow-Bellied Marmot in Yosemite National Park, California"
+   }
+  ],
+  "nutcracker": [
+   {
+    "f": "../photos/sp_nutcracker_gt_0.jpg",
+    "by": "GlacierNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/43288043@N04/51475545322",
+    "t": "Clark's Nutcracker - Nucifraga columbiana"
+   }
+  ],
+  "osprey": [
+   {
+    "f": "../photos/sp_osprey_gt_0.jpg",
+    "by": "szeke",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/43355249@N00/50318073781",
+    "t": "Osprey"
+   },
+   {
+    "f": "../photos/sp_yel_osprey_0.jpg",
+    "by": "szeke",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/43355249@N00/50401442822",
+    "t": "Osprey, Yellowstone"
+   }
+  ],
+  "bluebird": [
+   {
+    "f": "../photos/sp_yel_bluebird_0.jpg",
+    "by": "petechar",
+    "lic": "BY-NC 2.0",
+    "src": "https://www.flickr.com/photos/29286060@N06/14076166516",
+    "t": "Mountain Bluebird - Yellowstone"
+   },
+   {
+    "f": "../photos/sp_yel_bluebird_1.jpg",
+    "by": "alankrakauer",
+    "lic": "BY-NC 2.0",
+    "src": "https://www.flickr.com/photos/12341100@N06/26513380353",
+    "t": "Mountain Bluebird Yellowstone-6085"
+   }
+  ],
+  "eagle": [
+   {
+    "f": "../photos/sp_yel_eagle_1.jpg",
+    "by": "hesyifei",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/162912556@N06/49261742893",
+    "t": "Bald Eagle - Yellowstone National Park - IMGP5843"
+   },
+   {
+    "f": "../photos/sp_yel_eagle_2.jpg",
+    "by": "watts_photos",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/126288307@N05/52923589654",
+    "t": "Immature bald eagle - Yellowstone National Park - Wyoming"
+   }
+  ],
+  "fox": [
+   {
+    "f": "../photos/sp_ac_redfox_2.jpg",
+    "by": "Billy Lindblom",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/41502344@N02/4803601063",
+    "t": "Red Fox (Vulpes vulpes)"
+   }
+  ],
+  "beaver": [
+   {
+    "f": "../photos/sp_beaver_2.jpg",
+    "by": "GlacierNPS",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:North_American_beaver_(Castor_canadensis)_(46677957975).jpg",
+    "t": "North American beaver (Castor canadensis)"
+   },
+   {
+    "f": "../photos/sp_beaver_3.jpg",
+    "by": "GlacierNPS",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:North_American_beaver_(Castor_canadensis)_(47593489151).jpg",
+    "t": "North American beaver (Castor canadensis)"
+   }
+  ],
+  "squirrel": [
+   {
+    "f": "../photos/sp_sm_redsquirrel_0.jpg",
+    "by": "Mustang Joe",
+    "lic": "CC0 1.0",
+    "src": "https://www.flickr.com/photos/63234672@N04/30191461693",
+    "t": "Red Squirrel (Tamiasciurus hudsonicus)"
+   },
+   {
+    "f": "../photos/sp_sm_redsquirrel_1.jpg",
+    "by": "j van cise photos",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/115464896@N07/36315738116",
+    "t": "American Red Squirrel ~ Tamiasciurus hudsonicus ~ Huron River and Watershed"
+   }
+  ],
+  "steller": [
+   {
+    "f": "../photos/sp_mr_steller_0.jpg",
+    "by": "jimculp",
+    "lic": "BY-NC-ND 2.0",
+    "src": "https://www.flickr.com/photos/93815673@N00/22209778395",
+    "t": "Steller's Jay"
+   },
+   {
+    "f": "../photos/sp_stellersjay_0.jpg",
+    "by": "Aly3naa",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/193745899@N04/52385817421",
+    "t": "A Stellers Jay giving me a look"
+   }
+  ],
+  "woodpecker": [
+   {
+    "f": "../photos/sp_threetoed_dl_0.jpg",
+    "by": "Polinova",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:American_Three-Toed_Woodpecker.jpg",
+    "t": "American Three-Toed Woodpecker"
+   },
+   {
+    "f": "../photos/sp_threetoed_dl_1.jpg",
+    "by": "pbonenfant",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:American_Three-toed_Woodpecker_-_Picoides_dorsalis_(Male).jpg",
+    "t": "American Three-toed Woodpecker - Picoides dorsalis (Male)"
+   },
+   {
+    "f": "../photos/sp_threetoed_dl_2.jpg",
+    "by": "Dominic Sherony",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:American_Three-toed_Woodpecker_(Picoides_dorsalis)_(4431590959).jpg",
+    "t": "American Three-toed Woodpecker (Picoides dorsalis) (4431590959)"
+   }
+  ]
+ }
+}
