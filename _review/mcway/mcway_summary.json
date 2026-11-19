@@ -1,0 +1,74 @@
+{
+ "name": "McWay Falls",
+ "folder": "big-sur-mcway-falls",
+ "city": "Big Sur",
+ "area": "Julia Pfeiffer Burns State Park",
+ "state": "CA",
+ "region": "Central Coast",
+ "reg": "ca",
+ "lat": 36.1587,
+ "lon": -121.6705,
+ "where": "Julia Pfeiffer Burns State Park, Highway 1, Big Sur, California",
+ "high": "1,620 ft",
+ "blurb": "An 80-foot waterfall onto a Big Sur cove, a tunnel to the old tanbark landing at Partington Cove, and a redwood-to-chaparral loop up McWay Canyon.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Waterfall Overlook Trail",
+   "mi": 0.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "B",
+   "name": "Partington Cove Trail",
+   "mi": 1.25,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 275
+  },
+  {
+   "id": "C",
+   "name": "Ewoldsen Trail",
+   "mi": 4.8,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1430
+  }
+ ],
+ "status": "Closed. As of Nov 18, 2026, State Parks lists Julia Pfeiffer Burns closed because Highway 1 is closed from Nepenthe to Ragged Point (reassessment Nov 19). Backcountry trails east of Highway 1, including the Ewoldsen Trail, remain closed after the August 2026 Timber Fire; when open, the Waterfall Overlook and Partington Cove trails are the ones in use.",
+ "rare": [
+  {
+   "animal": "Southern sea otter",
+   "why": "A threatened subspecies found only on the central California coast; the park lies inside the California Sea Otter State Game Refuge.",
+   "source": "https://demo2.parks.ca.gov/pages/578/files/JuliaPfeifferBurnsFinalWebLayout2019.pdf"
+  },
+  {
+   "animal": "California condor",
+   "why": "One of the rarest birds in North America, listed as endangered for the park; Big Sur birds are released and tracked by the Ventana Wildlife Society, a park partner.",
+   "source": "https://demo2.parks.ca.gov/pages/578/files/JuliaPfeifferBurnsFinalWebLayout2019.pdf"
+  }
+ ],
+ "sources": [
+  "https://www.parks.ca.gov/?page_id=578",
+  "https://www.parks.ca.gov/?page_id=21284",
+  "https://parks.ca.gov/post/128",
+  "https://www.afar.com/magazine/wildfires-near-big-sur-close-part-of-highway-1",
+  "https://dot.ca.gov/caltrans-near-me/district-5/d5-news/d5-news-8-11-2026",
+  "https://demo2.parks.ca.gov/pages/578/files/JuliaPfeifferBurnsFinalWebLayout2019.pdf",
+  "https://en.wikipedia.org/wiki/McWay_Falls",
+  "https://en.wikipedia.org/wiki/Julia_Pfeiffer_Burns_State_Park",
+  "https://www.hikespeak.com/trails/mcway-falls-big-sur/",
+  "https://www.hikespeak.com/trails/partington-cove-big-sur/",
+  "https://modernhiker.com/hike/partington-cove/",
+  "https://hikingproject.com/trail/7003425/ewoldsen-loop",
+  "https://modernhiker.com/?p=8135",
+  "https://www.ventanawild.org/forums/topic/734",
+  "https://californiasbestbeaches.com/burns/burns_activities.html",
+  "https://www.thetrailmaster.com/hike/julia-pfeiffer-burns-state-park/",
+  "https://www.explore.com/1425064/take-in-incredible-wildlife-views-julia-pfeiffer-burns-state-park",
+  "https://ventanaws.org/biology.html",
+  "https://www.inaturalist.org/observations?lat=36.163&lng=-121.672&radius=3"
+ ]
+}
