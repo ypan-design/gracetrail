@@ -568,7 +568,7 @@ const anim={};
 })();
 
 WILD.grouse={name:"Ruffed grouse",color:"#8A6A4A",sum:"A chicken-sized forest bird listed among the wilderness wildlife. It often bursts up from the trail edge with a roar of wings; in spring males drum on logs, a low thump that speeds up."};
-WILD.salamander={name:"Chattahoochee slimy salamander",color:"#2A2A30",sum:"Rare here: this salamander lives only in the Chattahoochee and Nantahala national forests of north Georgia and western North Carolina, and NatureServe rates it vulnerable. A black salamander with small pale flecks, out on damp nights; it is the most-recorded amphibian on these trails in iNaturalist. Leave it under its log or rock."};
+WILD.salamander={name:"Chattahoochee slimy salamander",color:"#2A2A30",sum:"Rare here: this salamander lives only in the Chattahoochee and Nantahala national forests of north Georgia and western North Carolina, and NatureServe rates it vulnerable. A black salamander with small pale flecks, out on damp nights, and one of the salamanders most often recorded around these trails on iNaturalist. Leave it under its log or rock."};
 const _mo=mileOf;mileOf=function(T,x,n){if(T.id!=="A"&&T.id!=="B")return _mo(T,x,n);let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};
 /* ================= animals ================= */
 const SPH=new THREE.SphereGeometry(1,10,8),CYL=new THREE.CylinderGeometry(1,1,1,7),CONE=new THREE.ConeGeometry(1,1,6);
