@@ -70,9 +70,9 @@ A_ = lambda k, f, s=1, o=240: pa(p, R[k], f, s, o)
 an = []
 an += [f'{{k:"bighorn",path:{js(A_("B",[.3],1,450)[0]+A_("B",[.34],1,450)[0])},per:30}}', f'{{k:"bighorn",at:{js(A_("C",[.58],-1,900)[0])},flock:2}}']
 an += [f'{{k:"coyote",path:{js(A_("C",[.2],1,380)[0]+A_("C",[.25],1,380)[0])},per:24}}']
-an += [f'{{k:"squirrel",at:{js(A_("A",[.3],1,120)[0])},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",[.33],-1,200)[0])},hop:true}}']
+an += [f'{{k:"squirrel",at:{js(A_("A",[.62],-1,140)[0])},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",[.33],-1,200)[0])},hop:true}}']
 an += [f'{{k:"quail",at:{js(A_("B",[.8],-1,220)[0])},flock:3}}']
-an += [f'{{k:"snake",path:{js(A_("A",[.7],1,110)[0]+A_("A",[.72],1,110)[0])},per:30}}']
+an += [f'{{k:"snake",path:{js(A_("A",[.15],1,110)[0]+A_("A",[.17],1,110)[0])},per:30}}']
 an += [f'{{k:"turtle",path:{js(A_("C",[.12],-1,300)[0]+A_("C",[.13],-1,300)[0])},per:60}}']
 an += [f'{{k:"heron",at:[6745,6735]}}']
 animals_js = '[\n ' + ',\n '.join(an) + '\n]'
