@@ -1,0 +1,373 @@
+{
+ "stop": {
+  "Twin Falls": [
+   {
+    "f": "../photos/pl_barton_2_0.jpg",
+    "by": "LoneStarMike",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:BartonCreekGreenbelt-06.JPG",
+    "t": "BartonCreekGreenbelt-06"
+   },
+   {
+    "f": "../photos/pl_barton_2_2.jpg",
+    "by": "LoneStarMike",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:BartonCreekGreenbelt-04.JPG",
+    "t": "BartonCreekGreenbelt-04"
+   },
+   {
+    "f": "../photos/pl_barton_2_1.jpg",
+    "by": "LoneStarMike",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:BartonCreekGreenbelt-05.JPG",
+    "t": "BartonCreekGreenbelt-05"
+   }
+  ],
+  "Sculpture Falls": [
+   {
+    "f": "../photos/pl_barton_3_1.jpg",
+    "by": "LoneStarMike",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:BartonCreekGreenbelt-15.JPG",
+    "t": "BartonCreekGreenbelt-15"
+   },
+   {
+    "f": "../photos/pl_barton_3_2.jpg",
+    "by": "LoneStarMike",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:BartonCreek-2010-c.JPG",
+    "t": "BartonCreek-2010-c"
+   }
+  ],
+  "Zilker trailhead": [
+   {
+    "f": "../photos/pl_barton_c1_3.jpg",
+    "by": "Wordandgesture",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Barton_Springs_.jpg",
+    "t": "Barton Springs "
+   },
+   {
+    "f": "../photos/pl_barton_c1_2.jpg",
+    "by": "Downtown Austin",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:360_Barton_Springs_5July08_(9).JPG",
+    "t": "360 Barton Springs 5July08 (9)"
+   }
+  ],
+  "Gus Fruh": [
+   {
+    "f": "../photos/pl_barton_c2_0.jpg",
+    "by": "Todd Dwyer",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Gus_Fruh_-_View_from_the_Birthday_Rock_-_panoramio.jpg",
+    "t": "Gus Fruh - View from the Birthday Rock - panoramio"
+   },
+   {
+    "f": "../photos/pl_barton_c2_2.jpg",
+    "by": "Todd Dwyer",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Barton_Creek_Greenbelt_-_Gus_Fruh_-_panoramio.jpg",
+    "t": "Barton Creek Greenbelt - Gus Fruh - panoramio"
+   }
+  ]
+ },
+ "flower": {
+  "cedarsage": [
+   {
+    "f": "../photos/sp_bcg_cedarsage_0.jpg",
+    "by": "Scott Zona",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Salvia_roemeriana.jpg",
+    "t": "Salvia roemeriana"
+   },
+   {
+    "f": "../photos/sp_bcg_cedarsage_1.jpg",
+    "by": "peganum from Henfield, England",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Salvia_roemeriana_(9113579287).jpg",
+    "t": "Salvia roemeriana (9113579287)"
+   }
+  ],
+  "mtlaurel": [
+   {
+    "f": "../photos/sp_bcg_mtlaurel_0.jpg",
+    "by": "Stan Shebs",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Sophora_secundiflora_flower.jpg",
+    "t": "Sophora secundiflora flower"
+   }
+  ],
+  "turkscap": [
+   {
+    "f": "../photos/sp_bcg_turkscap_0.jpg",
+    "by": "William Farr",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Turkcap_(Malvaviscus_arboreus_var._drummondii)_photographed_in_San_Jacinto_County,_Texas,_USA_(16_August_2014).jpg",
+    "t": "Turkcap (Malvaviscus arboreus var. drummondii) photographed in San Jacinto County, Texas, USA (16 August 2014)"
+   },
+   {
+    "f": "../photos/sp_bcg_turkscap_1.jpg",
+    "by": "No machine-readable author provided. Hans B.~commonswiki assumed (based on copyr",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Malvaviscus_arboreus.jpg",
+    "t": "Malvaviscus arboreus"
+   }
+  ],
+  "redbuckeye": [
+   {
+    "f": "../photos/sp_bcg_redbuckeye_1.jpg",
+    "by": "Photo by David J. Stang",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Aesculus_pavia_6zz.jpg",
+    "t": "Aesculus pavia 6zz"
+   },
+   {
+    "f": "../photos/sp_bcg_redbuckeye_0.jpg",
+    "by": "A. Barra",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Aesculus_pavia_%27Atropurpurea%27.jpg",
+    "t": "Aesculus pavia 'Atropurpurea'"
+   }
+  ],
+  "firewheel": [
+   {
+    "f": "../photos/sp_bcg_firewheel_1.jpg",
+    "by": "Challa Teja",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Gaillardia_pulchella_(Indian_blanket).jpg",
+    "t": "Gaillardia pulchella (Indian blanket)"
+   }
+  ],
+  "twistflower": [
+   {
+    "f": "../photos/sp_bcg_twistflower_0.jpg",
+    "by": "Alison Northup",
+    "lic": "CC BY 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Streptanthus_bracteatus_17713293.jpg",
+    "t": "Streptanthus bracteatus 17713293"
+   }
+  ],
+  "rupicola": [
+   {
+    "f": "../photos/sp_bcg_rupicola_1.jpg",
+    "by": "Stan Shebs",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Yucca_rupicola_2.jpg",
+    "t": "Yucca rupicola 2"
+   },
+   {
+    "f": "../photos/sp_bcg_rupicola_0.jpg",
+    "by": "Mgust",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:DSCN5349_twisted_leaf_yucca_rupicola.jpg",
+    "t": "DSCN5349 twisted leaf yucca rupicola"
+   }
+  ]
+ },
+ "animal": {
+  "bluebird": [
+   {
+    "f": "../photos/sp_bcg_gcwarbler_0.jpg",
+    "by": "Steve Maslowski/U. S. Fish and Wildlife Service",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Dendroica_chrysoparia1.jpg",
+    "t": "Dendroica chrysoparia1"
+   },
+   {
+    "f": "../photos/sp_bcg_gcwarbler_1.jpg",
+    "by": "Richard Crossley",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Golden-cheeked_Warbler_from_The_Crossley_ID_Guide_Eastern_Birds.jpg",
+    "t": "Golden-cheeked Warbler from The Crossley ID Guide Eastern Birds"
+   }
+  ],
+  "armadillo": [
+   {
+    "f": "../photos/sp_bcg_armadillo_0.jpg",
+    "by": "Rhododendrites",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Nine-banded_armadillo_(13594).jpg",
+    "t": "Nine-banded armadillo (13594)"
+   },
+   {
+    "f": "../photos/sp_bcg_armadillo_1.jpg",
+    "by": "Rhododendrites",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Nine-banded_armadillo_(13578).jpg",
+    "t": "Nine-banded armadillo (13578)"
+   }
+  ],
+  "squirrel": [
+   {
+    "f": "../photos/sp_bcg_foxsquirrel_0.jpg",
+    "by": "Rhododendrites",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Fox_squirrel_(25037).jpg",
+    "t": "Fox squirrel (25037)"
+   },
+   {
+    "f": "../photos/sp_bcg_foxsquirrel_1.jpg",
+    "by": "Skyttea",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Sciurus_niger.jpg",
+    "t": "Sciurus niger"
+   }
+  ],
+  "turtle": [
+   {
+    "f": "../photos/sp_bcg_slider_0.jpg",
+    "by": "Charles J. Sharp",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Red-eared_slider_(Trachemys_scripta_elegans).jpg",
+    "t": "Red-eared slider (Trachemys scripta elegans)"
+   },
+   {
+    "f": "../photos/sp_bcg_slider_1.jpg",
+    "by": "Brocken Inaglory",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Red-eared_sliders_and_Mallard_in_Golden_Gate_Park_1.jpg",
+    "t": "Red-eared sliders and Mallard in Golden Gate Park 1"
+   }
+  ],
+  "egret": [
+   {
+    "f": "../photos/sp_bcg_snowyegret_1.jpg",
+    "by": "Rhododendrites",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Snowy_egret_in_JBWR_(30217).jpg",
+    "t": "Snowy egret in JBWR (30217)"
+   },
+   {
+    "f": "../photos/sp_bcg_snowyegret_0.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Egretta_thula_at_Las_Gallinas_Wildlife_Ponds.jpg",
+    "t": "Egretta thula at Las Gallinas Wildlife Ponds"
+   }
+  ],
+  "hawk": [
+   {
+    "f": "../photos/sp_bcg_rshawk_1.jpg",
+    "by": "Acroterion",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Buteo_lineatus_MD1.jpg",
+    "t": "Buteo lineatus MD1"
+   },
+   {
+    "f": "../photos/sp_bcg_rshawk_0.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Juvenile_buteo_lineatus_elegans,_Presidio.jpg",
+    "t": "Juvenile buteo lineatus elegans, Presidio"
+   }
+  ],
+  "vulture": [
+   {
+    "f": "../photos/sp_bcg_bvulture_0.jpg",
+    "by": "Mdf",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Coragyps-atratus-001.jpg",
+    "t": "Coragyps-atratus-001"
+   },
+   {
+    "f": "../photos/sp_bcg_bvulture_1.jpg",
+    "by": "Charles J. Sharp",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Black_vulture_(Coragyps_atratus)_head.JPG",
+    "t": "Black vulture (Coragyps atratus) head"
+   }
+  ],
+  "kingfisher": [
+   {
+    "f": "../photos/sp_bcg_kingfisher_0.jpg",
+    "by": "Cephas",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Megaceryle_alcyon_PIB.jpg",
+    "t": "Megaceryle alcyon PIB"
+   },
+   {
+    "f": "../photos/sp_bcg_kingfisher_1.jpg",
+    "by": "Hugh Sansom",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Belted_Kingfisher_over_the_pond_near_the_Audubon_Center.jpg",
+    "t": "Belted Kingfisher over the pond near the Audubon Center"
+   }
+  ],
+  "cardinal": [
+   {
+    "f": "../photos/sp_bcg_cardinal_0.jpg",
+    "by": "Rhododendrites",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Male_northern_cardinal_in_Central_Park_(52612).jpg",
+    "t": "Male northern cardinal in Central Park (52612)"
+   }
+  ],
+  "snake": [
+   {
+    "f": "../photos/sp_bcg_wdrattler_1.jpg",
+    "by": "Holger Krisp",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Crotalus-atrox-diamantklapperschlange.jpg",
+    "t": "Crotalus-atrox-diamantklapperschlange"
+   },
+   {
+    "f": "../photos/sp_bcg_wdrattler_0.jpg",
+    "by": "Holger Krisp",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Crotalus_atrox_diamantklapperschlange_kopf.jpg",
+    "t": "Crotalus atrox diamantklapperschlange kopf"
+   }
+  ],
+  "heron": [
+   {
+    "f": "../photos/sp_bcg_gbheron_1.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Great_Blue_Heron_(Ardea_herodias),_hunting.jpg",
+    "t": "Great Blue Heron (Ardea herodias), hunting"
+   },
+   {
+    "f": "../photos/sp_bcg_gbheron_0.jpg",
+    "by": "Acarpentier",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Le_Grand_Heron_Profil.jpg",
+    "t": "Le Grand Heron Profil"
+   }
+  ],
+  "coyote": [
+   {
+    "f": "../photos/sp_bcg_coyote_1.jpg",
+    "by": "Christopher Bruno",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Coyote_portrait.jpg",
+    "t": "Coyote portrait"
+   }
+  ],
+  "bobcat": [
+   {
+    "f": "../photos/sp_bcg_bobcat_1.jpg",
+    "by": "gailhampshire from Cradley, Malvern, U.K",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Bobcat._Lynx_rufus_-_Flickr_-_gailhampshire.jpg",
+    "t": "Bobcat. Lynx rufus - Flickr - gailhampshire"
+   }
+  ],
+  "raccoon": [
+   {
+    "f": "../photos/sp_bcg_raccoon_0.jpg",
+    "by": "Darkone",
+    "lic": "CC BY-SA 2.5",
+    "src": "https://commons.wikimedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg",
+    "t": "Raccoon (Procyon lotor) 2"
+   },
+   {
+    "f": "../photos/sp_bcg_raccoon_1.jpg",
+    "by": "BS Thurner Hof",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Procyon_lotor_7_-_am_Wasser.jpg",
+    "t": "Procyon lotor 7 - am Wasser"
+   }
+  ]
+ }
+}

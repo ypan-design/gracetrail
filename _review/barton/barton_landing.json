@@ -1,0 +1,29 @@
+{
+ "name": "Barton Creek Greenbelt",
+ "where": "Austin, Texas",
+ "href": "barton-creek-greenbelt/",
+ "lat": 30.2643,
+ "lon": -97.7732,
+ "grp": "tx",
+ "reg": "sw",
+ "st": "TX",
+ "status": "",
+ "trails": [
+  [
+   "A",
+   "Campbell’s Hole from Spyglass",
+   "0.9 mi round trip"
+  ],
+  [
+   "B",
+   "Twin Falls and Sculpture Falls",
+   "3.2 mi round trip"
+  ],
+  [
+   "C",
+   "Barton Creek Greenbelt Trail",
+   "7.5 mi one way"
+  ]
+ ],
+ "high": "870 ft"
+}

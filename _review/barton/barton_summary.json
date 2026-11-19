@@ -1,0 +1,67 @@
+{
+ "name": "Barton Creek Greenbelt",
+ "folder": "barton-creek-greenbelt",
+ "city": "Austin",
+ "area": "Austin",
+ "state": "TX",
+ "region": "Southwest",
+ "reg": "sw",
+ "lat": 30.2643,
+ "lon": -97.7732,
+ "where": "Barton Creek Greenbelt, Austin, Texas",
+ "high": "870 ft",
+ "blurb": "A 7.5-mile trail up a limestone creek canyon in the middle of Austin, with swimming holes and ledge falls that run after rain.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Campbell’s Hole from Spyglass",
+   "mi": 0.9,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 110
+  },
+  {
+   "id": "B",
+   "name": "Twin Falls and Sculpture Falls",
+   "mi": 3.2,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 230
+  },
+  {
+   "id": "C",
+   "name": "Barton Creek Greenbelt Trail",
+   "mi": 7.5,
+   "unit": "one way",
+   "level": "Moderate",
+   "gain_ft": 700
+  }
+ ],
+ "status": "Open: the City of Austin lists the greenbelt as open (closures page updated Oct 27, 2026). Falls and swimming holes hold water only after rain, and creek crossings can be impassable after storms.",
+ "rare": [
+  {
+   "animal": "Golden-cheeked warbler",
+   "why": "Federally endangered since 1990 and the only bird that nests only in Texas; the City of Austin lists it among the endangered species living along Barton Creek.",
+   "source": "https://www.austintexas.gov/parks/locations/barton-creek-greenbelt"
+  }
+ ],
+ "sources": [
+  "https://www.austintexas.gov/parks/locations/barton-creek-greenbelt",
+  "https://www.austintexas.gov/node/63684",
+  "https://austintexas.gov/parkclosures",
+  "https://austintexas.gov/sites/default/files/files/Parks/GIS/Barton_Creek_GBelt_Web_Map_reduced.pdf",
+  "https://www.traillink.com/trail/barton-creek-greenbelt/",
+  "https://en.wikipedia.org/wiki/Barton_Creek_Greenbelt",
+  "https://hikingproject.com/trail/7022781/barton-creek-greenbelt-trail",
+  "https://www.theoutbound.com/texas/hiking/hike-twin-falls-and-sculpture-falls-via-barton-creek-greenbelt-trail",
+  "https://www.theoutbound.com/texas/hiking/hike-the-barton-creek-greenbelt-trail",
+  "https://theoutbound.com/austin/swimming/swim-at-sculpture-falls",
+  "https://thekeenangroup.com/trail-guides/barton-creek-greenbelt",
+  "https://www.spyglassrealty.com/blog/barton-creek-greenbelt-guide",
+  "https://do512family.com/?p=35252",
+  "https://www.inaturalist.org/places/barton-creek-greenbelt",
+  "https://bartoncreektimestream.org/map/Birding_on_Barton_Creek/",
+  "https://tpwd.texas.gov/huntwild/wild/species/gcw/",
+  "https://www.fws.gov/press-release/2023-04/bracted-twistflower-listed-threatened-under-endangered-species-act"
+ ]
+}
