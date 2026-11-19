@@ -1,0 +1,29 @@
+{
+ "name": "Fern Canyon",
+ "where": "Prairie Creek Redwoods State Park · California",
+ "href": "redwoods-fern-canyon/",
+ "lat": 41.4004,
+ "lon": -124.0656,
+ "grp": "ca",
+ "reg": "ca",
+ "st": "CA",
+ "status": "",
+ "trails": [
+  [
+   "A",
+   "Fern Canyon Loop",
+   "1 mi loop"
+  ],
+  [
+   "B",
+   "Friendship Ridge Loop",
+   "8 mi loop"
+  ],
+  [
+   "C",
+   "James Irvine Trail to Fern Canyon",
+   "10 mi round trip"
+  ]
+ ],
+ "high": "815 ft"
+}

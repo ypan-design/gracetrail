@@ -1,0 +1,411 @@
+{
+ "stop": {
+  "MID": [
+   {
+    "f": "../photos/pl_ferncanyon_mid_0.jpg",
+    "by": "Ken Lund from Reno, Nevada, USA",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Fern_Canyon,_Prairie_Creek_Redwoods_State_Park,_California.jpg",
+    "t": "Fern Canyon, Prairie Creek Redwoods State Park, California"
+   },
+   {
+    "f": "../photos/pl_ferncanyon_mid_1.jpg",
+    "by": "Carol M. Highsmith",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Fern_Canyon_is_a_canyon_in_the_Prairie_Creek_Redwoods_State_Park_in_Humboldt_County,_California_LCCN2013632260.tif",
+    "t": "Fern Canyon is a canyon in the Prairie Creek Redwoods State Park in Humboldt County, California LCCN2013632260"
+   }
+  ],
+  "PRAIRIE": [
+   {
+    "f": "../photos/pl_ferncanyon_prairie_0.jpg",
+    "by": "sergejf",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Elk_near_Gold_Bluffs_in_the_Redwoods_National_Park_(2820215343).jpg",
+    "t": "Elk near Gold Bluffs in the Redwoods National Park (2820215343)"
+   },
+   {
+    "f": "../photos/pl_ferncanyon_prairie_1.jpg",
+    "by": "Department of the Interior. U.S. Fish and Wildlife Service. National Conservatio",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Roosevelt_elk_at_Gold_Bluffs_Beach_-_DPLA_-_eeff2f54972aefd741f1d0d2e35c1058.jpg",
+    "t": "Roosevelt elk at Gold Bluffs Beach - DPLA - eeff2f54972aefd741f1d0d2e35c1058"
+   }
+  ],
+  "GOD": [
+   {
+    "f": "../photos/pl_ferncanyon_god_0.jpg",
+    "by": "rachel_thecat",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Prairie_Creek_State_Park_-_James_Irvine_Trail,_Cathedral_Tree_%5E_an_architect_-_Flickr_-_rachel_thecat.jpg",
+    "t": "Prairie Creek State Park - James Irvine Trail, Cathedral Tree ^ an architect - Flickr - rachel thecat"
+   }
+  ]
+ },
+ "flower": {
+  "fivefinger": [
+   {
+    "f": "../photos/sp_fc_fivefinger_0.jpg",
+    "by": "Walter Siegmund (talk)",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Adiantum_aleuticum_0364.JPG",
+    "t": "Adiantum aleuticum 0364"
+   },
+   {
+    "f": "../photos/sp_fc_fivefinger_2.jpg",
+    "by": "iNaturalist user: eralverson",
+    "lic": "CC BY 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Adiantum_aleuticum_aleuticum.jpg",
+    "t": "Adiantum aleuticum aleuticum"
+   }
+  ],
+  "sorrel": [
+   {
+    "f": "../photos/sp_fc_sorrel_0.jpg",
+    "by": "unknown",
+    "lic": "CC BY 2.5",
+    "src": "https://commons.wikimedia.org/wiki/File:Oxalis_oregana_06112.JPG",
+    "t": "Oxalis oregana 06112"
+   },
+   {
+    "f": "../photos/sp_fc_sorrel_2.jpg",
+    "by": "James Steakley",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Oxalis_oregana_--_VanDusen_Botanical_Garden_--_Vancouver,_BC.jpg",
+    "t": "Oxalis oregana -- VanDusen Botanical Garden -- Vancouver, BC"
+   }
+  ],
+  "clintonia": [
+   {
+    "f": "../photos/sp_fc_clintonia_0.jpg",
+    "by": "Eric in SF",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Clintonia_andrewsiana.jpg",
+    "t": "Clintonia andrewsiana"
+   },
+   {
+    "f": "../photos/sp_fc_clintonia_1.jpg",
+    "by": "Larry Blakely",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Clintonia_andrewsiana,_Fortuna_Redwood_Park,_Humboldt_Co.,CA,_2019-05-23.jpg",
+    "t": "Clintonia andrewsiana, Fortuna Redwood Park, Humboldt Co.,CA, 2019-05-23"
+   }
+  ],
+  "skunkcabbage": [
+   {
+    "f": "../photos/sp_fc_skunkcabbage_0.jpg",
+    "by": "Robert Flogaus-Faust",
+    "lic": "CC BY 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Lysichiton_americanus_RF.jpg",
+    "t": "Lysichiton americanus RF"
+   },
+   {
+    "f": "../photos/sp_fc_skunkcabbage_1.jpg",
+    "by": "The Cosmonaut",
+    "lic": "CC BY-SA 2.5 ca",
+    "src": "https://commons.wikimedia.org/wiki/File:Lysichiton_americanus_-_Aldergrove_Regional_Park.jpg",
+    "t": "Lysichiton americanus - Aldergrove Regional Park"
+   }
+  ],
+  "seepmonkey": [
+   {
+    "f": "../photos/sp_fc_seepmonkey_1.jpg",
+    "by": "Rosser1954",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Erythranthe_guttata_or_Mimulus,_the_Monkey_Flower.jpg",
+    "t": "Erythranthe guttata or Mimulus, the Monkey Flower"
+   },
+   {
+    "f": "../photos/sp_fc_seepmonkey_2.jpg",
+    "by": "Thayne Tuason",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Erythranthe_guttata_3.jpg",
+    "t": "Erythranthe guttata 3"
+   }
+  ],
+  "rhododendron": [
+   {
+    "f": "../photos/sp_pacrhodo_1.jpg",
+    "by": "Robert Dunning",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_macrophyllum_biscuit_june_2005.jpg",
+    "t": "Rhododendron macrophyllum biscuit june 2005"
+   },
+   {
+    "f": "../photos/sp_pacrhodo_4.jpg",
+    "by": "Walter Siegmund (talk)",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_macrophyllum_4861.JPG",
+    "t": "Rhododendron macrophyllum 4861"
+   }
+  ],
+  "swordfern": [
+   {
+    "f": "../photos/sp_swordfern_0.jpg",
+    "by": "brewbooks",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/93452909@N00/340518924",
+    "t": "Polystichum munitum Sword Fern"
+   },
+   {
+    "f": "../photos/sp_swordfern_3.jpg",
+    "by": "brewbooks",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/93452909@N00/8084225656",
+    "t": "Polystichum munitum (Western Sword Fern)"
+   }
+  ]
+ },
+ "animal": {
+  "elk": [
+   {
+    "f": "../photos/sp_fc_rooseveltelk_0.jpg",
+    "by": "Ken Lund from Reno, Nevada, USA",
+    "lic": "CC BY-SA 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Roosevelt_Elk_Taking_in_the_Scenery,_Prairie_Creek_Redwoods_State_Park,_California_(219386433).jpg",
+    "t": "Roosevelt Elk Taking in the Scenery, Prairie Creek Redwoods State Park, California (219386433)"
+   },
+   {
+    "f": "../photos/sp_fc_rooseveltelk_2.jpg",
+    "by": "Joyce Cory on Flickr as docentjoyce",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Roosevelt_Elk.jpg",
+    "t": "Roosevelt Elk"
+   }
+  ],
+  "slug": [
+   {
+    "f": "../photos/sp_fc_bananaslug_0.jpg",
+    "by": "Grendelkhan",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Ariolimax_columbianus_between_two_tree_roots.jpg",
+    "t": "Ariolimax columbianus between two tree roots"
+   },
+   {
+    "f": "../photos/sp_fc_bananaslug_1.jpg",
+    "by": "Thomas Schoch",
+    "lic": "CC BY-SA 2.5",
+    "src": "https://commons.wikimedia.org/wiki/File:Banana_Slug-1.jpg",
+    "t": "Banana Slug-1"
+   }
+  ],
+  "salamander": [
+   {
+    "f": "../photos/sp_fc_pgsalamander_0.jpg",
+    "by": "Marjef07 (talk)Jeffrey Marsten",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG",
+    "t": "Dicamptodon tenebrosus 2"
+   }
+  ],
+  "plover": [
+   {
+    "f": "../photos/sp_fc_snowyplover_0.jpg",
+    "by": "Mike Baird, bairdphotos.com",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Snowy_Plover_srgb.jpg",
+    "t": "Snowy Plover srgb"
+   },
+   {
+    "f": "../photos/sp_fc_snowyplover_2.jpg",
+    "by": "USFWS Pacific Southwest Region",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:Western_snowy_plover_(55228057231).jpg",
+    "t": "Western snowy plover (55228057231)"
+   }
+  ],
+  "swift": [
+   {
+    "f": "../photos/sp_fc_murrelet_1.jpg",
+    "by": "Matt Muir",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Brachyramphus_marmoratus_171262942.jpg",
+    "t": "Brachyramphus marmoratus 171262942"
+   },
+   {
+    "f": "../photos/sp_fc_murrelet_2.jpg",
+    "by": "TRinaud",
+    "lic": "CC BY 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Marbled_murrelet_(Brachyramphus_marmoratus)_2023_01.jpg",
+    "t": "Marbled murrelet (Brachyramphus marmoratus) 2023 01"
+   }
+  ],
+  "fox": [
+   {
+    "f": "../photos/sp_fc_grayfox_1.jpg",
+    "by": "Dcrjsr",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Urocyon_cinereoargenteus_grayFox_cameo.jpg",
+    "t": "Urocyon cinereoargenteus grayFox cameo"
+   }
+  ],
+  "chipmunk": [
+   {
+    "f": "../photos/sp_fc_shadowchipmunk_0.jpg",
+    "by": "Greg Schechter",
+    "lic": "CC BY 2.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Neotamias_senex.jpg",
+    "t": "Neotamias senex"
+   }
+  ],
+  "gull": [
+   {
+    "f": "../photos/sp_fc_westerngull_0.jpg",
+    "by": "Diliff",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Larus_occidentalis_(Western_Gull),_Point_Lobos,_CA,_US_-_May_2013.jpg",
+    "t": "Larus occidentalis (Western Gull), Point Lobos, CA, US - May 2013"
+   },
+   {
+    "f": "../photos/sp_fc_westerngull_1.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Larus_occidentalis_in_flight_(Bodega_Head).jpg",
+    "t": "Larus occidentalis in flight (Bodega Head)"
+   }
+  ],
+  "squirrel": [
+   {
+    "f": "../photos/sp_douglassquirrel_0.jpg",
+    "by": "Franco Folini",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/78425154@N00/424678972",
+    "t": "Douglas' Squirrel, Oregon"
+   }
+  ],
+  "steller": [
+   {
+    "f": "../photos/sp_stellersjay_0.jpg",
+    "by": "Aly3naa",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/193745899@N04/52385817421",
+    "t": "A Stellers Jay giving me a look 😳"
+   },
+   {
+    "f": "../photos/sp_stellersjay_1.jpg",
+    "by": "Carandoom",
+    "lic": "BY-ND 2.0",
+    "src": "https://www.flickr.com/photos/153004825@N03/42220477825",
+    "t": "Steller's jay (Cyanocitta stelleri)"
+   }
+  ],
+  "deer": [
+   {
+    "f": "../photos/sp_dp_btdeer_0.jpg",
+    "by": "Charles J. Sharp",
+    "lic": "CC BY-SA 4.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Columbian_black-tailed_deer_(Odocoileus_hemionus_columbianus)_male_Mt_Rainier.jpg",
+    "t": "Columbian black-tailed deer (Odocoileus hemionus columbianus) male Mt Rainier"
+   },
+   {
+    "f": "../photos/sp_dp_btdeer_2.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Odocoileus_hemionus_columbianus_(male_and_female),_Point_Reyes_National_Seashore.jpg",
+    "t": "Odocoileus hemionus columbianus (male and female), Point Reyes National Seashore"
+   }
+  ],
+  "osprey": [
+   {
+    "f": "../photos/sp_osprey_0.jpg",
+    "by": "NASA",
+    "lic": "Public domain",
+    "src": "https://commons.wikimedia.org/wiki/File:OspreyNASA.jpg",
+    "t": "OspreyNASA"
+   }
+  ],
+  "peregrine": [
+   {
+    "f": "../photos/sp_peregrine_0.jpg",
+    "by": "Jon David Nelson",
+    "lic": "BY-NC-SA 2.0",
+    "src": "https://www.flickr.com/photos/65771669@N07/30098270026",
+    "t": "Peregrine Falcon"
+   },
+   {
+    "f": "../photos/sp_peregrine_2.jpg",
+    "by": "FurLined",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/8752533@N04/3875330734",
+    "t": "Peregrine Falcon"
+   }
+  ],
+  "heron": [
+   {
+    "f": "../photos/sp_gbheron_dl_0.jpg",
+    "by": "Acarpentier",
+    "lic": "CC BY 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Le_Grand_Heron_Profil.jpg",
+    "t": "Le Grand Heron Profil"
+   },
+   {
+    "f": "../photos/sp_gbheron_dl_1.jpg",
+    "by": "Frank Schulenburg",
+    "lic": "CC BY-SA 3.0",
+    "src": "https://commons.wikimedia.org/wiki/File:Great_Blue_Heron_(Ardea_herodias),_hunting.jpg",
+    "t": "Great Blue Heron (Ardea herodias), hunting"
+   }
+  ],
+  "snake": [
+   {
+    "f": "../photos/sp_gartersnake_0.jpg",
+    "by": "GlacierNPS",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/43288043@N04/27953016766",
+    "t": "Common Garter Snakes - Thamnophis sirtalis"
+   },
+   {
+    "f": "../photos/sp_gartersnake_1.jpg",
+    "by": "Greg Schechter",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/17004938@N00/4006692917",
+    "t": "Common Garter Snake (Thamnophis sirtalis)"
+   }
+  ],
+  "raven": [
+   {
+    "f": "../photos/sp_raven_1.jpg",
+    "by": "Frank.Vassen",
+    "lic": "BY 2.0",
+    "src": "https://www.flickr.com/photos/42244964@N03/5357074718",
+    "t": "Common Raven (Corvus corax), Tefia, Fuerteventura"
+   }
+  ],
+  "vulture": [
+   {
+    "f": "../photos/sp_vulture_sed_0.jpg",
+    "by": "hharryus",
+    "lic": "BY-NC-ND 2.0",
+    "src": "https://www.flickr.com/photos/8810508@N06/7239318264",
+    "t": "Turkey Vulture"
+   }
+  ],
+  "bear": [
+   {
+    "f": "../photos/sp_bear_0.jpg",
+    "by": "Gregory 'Slobirdr' Smith",
+    "lic": "BY-SA 2.0",
+    "src": "https://www.flickr.com/photos/22170893@N06/51514425465",
+    "t": "American Black Bear - Ursus americanus"
+   }
+  ],
+  "coyote": [
+   {
+    "f": "../photos/sp_coyote_0.jpg",
+    "by": "Joshua Tree National Park",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/115357548@N08/15527431969",
+    "t": "Coyote (Canis latrans)"
+   }
+  ],
+  "bobcat": [
+   {
+    "f": "../photos/sp_bobcat_0.jpg",
+    "by": "Joshua Tree National Park",
+    "lic": "PDM 1.0",
+    "src": "https://www.flickr.com/photos/115357548@N08/14252467743",
+    "t": "Bobcat (Lynx rufus)"
+   }
+  ]
+ }
+}

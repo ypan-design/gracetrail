@@ -1,0 +1,76 @@
+{
+ "name": "Fern Canyon",
+ "folder": "redwoods-fern-canyon",
+ "city": "Orick",
+ "area": "Prairie Creek Redwoods State Park",
+ "state": "CA",
+ "region": "North Coast",
+ "reg": "ca",
+ "lat": 41.4004,
+ "lon": -124.0656,
+ "where": "Prairie Creek Redwoods State Park, Redwood National and State Parks, Orick, California",
+ "high": "815 ft",
+ "blurb": "A 50-foot canyon hung with ferns behind Gold Bluffs Beach, a coast-and-ridge loop with Roosevelt elk, and the James Irvine Trail through old-growth redwoods.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Fern Canyon Loop",
+   "mi": 1.0,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 150
+  },
+  {
+   "id": "B",
+   "name": "Friendship Ridge Loop",
+   "mi": 8.0,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 1170
+  },
+  {
+   "id": "C",
+   "name": "James Irvine Trail to Fern Canyon",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1380
+  }
+ ],
+ "status": "Open (Nov 19, 2026). Fern Canyon and Davison Road open (two stream crossings, high clearance recommended); seasonal footbridges are out, so expect ankle- to knee-deep water. Easternmost stairs between Fern Canyon and the James Irvine Trail closed for construction; Miner’s Ridge Trail blocked by a downed tree; Newton B. Drury Parkway closed since Nov 17 for high winds (visitor center via Hwy 101 exit 753). Free parking reservation required May 15–Sep 15 to drive to Fern Canyon.",
+ "rare": [
+  {
+   "animal": "Roosevelt elk",
+   "why": "California's Roosevelt elk fell to as few as 15 animals by 1925; protected herds at Gold Bluffs Beach and Prairie Creek helped them rebound to more than 1,000, and hikers come to Fern Canyon to see them.",
+   "source": "https://www.nps.gov/redw/planyourvisit/upload/Elk-site-bulletin-508.pdf"
+  },
+  {
+   "animal": "Marbled murrelet",
+   "why": "An endangered seabird that nests in the old-growth redwoods of the park.",
+   "source": "https://www.parks.ca.gov/pages/415/files/PrairieCreekSPFinalWeb2016.pdf"
+  },
+  {
+   "animal": "Western snowy plover",
+   "why": "A federally threatened shorebird seen along Gold Bluffs Beach.",
+   "source": "https://www.parks.ca.gov/pages/415/files/PrairieCreekSPFinalWeb2016.pdf"
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/thingstodo/ferncanyon.htm",
+  "https://www.nps.gov/redw/planyourvisit/ferncanyonpermits.htm",
+  "https://www.nps.gov/redw/planyourvisit/conditions.htm",
+  "https://www.nps.gov/redw/planyourvisit/hiking-trails-south.htm",
+  "https://home.nps.gov/thingstodo/jamesirvine-ferncanyonloop.htm",
+  "https://www.nps.gov/redw/planyourvisit/coastal-trail-sections.htm",
+  "https://www.nps.gov/redw/learn/nature/roosevelt-elk.htm",
+  "https://www.nps.gov/redw/planyourvisit/upload/Elk-site-bulletin-508.pdf",
+  "https://www.parks.ca.gov/?page_id=415",
+  "https://www.parks.ca.gov/pages/415/files/PrairieCreekSPFinalWeb2016.pdf",
+  "https://www.hikingproject.com/trail/7029542/friendship-ridge-loop-hike",
+  "https://www.hikingproject.com/trail/7017373/coastal-trail-south",
+  "https://en.wikipedia.org/wiki/Fern_Canyon",
+  "https://roadsendnaturalist.com/2015/10/19/fern-canyon/",
+  "https://jessieonajourney.com/james-irvine-trail-to-fern-canyon/",
+  "https://api.inaturalist.org/v1/observations/species_counts?lat=41.40&lng=-124.06&radius=2.5"
+ ]
+}
