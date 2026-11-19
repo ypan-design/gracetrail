@@ -333,7 +333,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-14300,x1:12300,n0:-10600,n1:11400,ve:3.0};
+const C={x0:-14300,x1:12300,n0:-10600,n1:11400,ve:4.5};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -480,9 +480,9 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
     if(mk<0.25){type=null;}
-    else if(cd<170){const r0=tr();type=r0<.45?"syc":r0<.85?"oak":"shrub";p=0.12;}
+    else if(cd<170){const r0=tr();type=r0<.45?"syc":r0<.85?"oak":"shrub";p=0.16;}
     else if(g>1.1)type=null;
-    else{const r0=tr();type=r0<.5?"conifer":r0<.85?"oak":"shrub";p=0.03+cl*.02;}
+    else{const r0=tr();type=r0<.5?"conifer":r0<.85?"oak":"shrub";p=0.06+cl*.03;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -567,7 +567,7 @@ const anim={};
   // falls: a solid limestone ledge across the creek with white water spilling over it (exaggerated)
   function falls(x,n,w,tw){let bi=0,bd=1e18;for(let i=0;i<CK.length-1;i++){const d=Math.hypot(CK[i][0]-x,CK[i][1]-n);if(d<bd){bd=d;bi=i;}}
     const a=G(CK[bi][0],CK[bi][1]),b=G(CK[bi+1][0],CK[bi+1][1]),ang=-Math.atan2(b.z-a.z,b.x-a.x);const q=G(x,n);
-    const grp=new THREE.Group();grp.position.set(q.x,q.y,q.z);grp.rotation.y=ang;world.add(grp);
+    const grp=new THREE.Group();grp.position.set(q.x,q.y,q.z);grp.rotation.y=ang;grp.scale.set(2,2,2);world.add(grp);
     part(grp,box,"#D8CDB2",0.0,0.45,0,0.9,0.9,w,1.06);part(grp,box,"#CBBF9F",-0.75,0.2,0,0.8,0.4,w*1.15,1.06);
     part(grp,box,"#9CC6D6",0.75,0.55,0,0.9,0.12,w*0.95,1.06);
     if(tw){[-1,1].forEach(s=>{part(grp,box,"#F4FAFC",-0.5,0.4,s*w*0.22,0.18,0.85,w*0.22,1.06);part(grp,new THREE.SphereGeometry(1,8,6),"#FFFFFF",-1.0,0.12,s*w*0.22,0.4,0.16,w*0.16,1.06);});}
@@ -883,7 +883,7 @@ const B={
 };
 return B;})();
 Object.assign(BUILD,GENTLE);
-const BIRDC={vulture:["#2A2420", null, "#C8322C"],cardinal:["#C8322C", null, null],kingfisher:["#4E7FA8", "#FFFFFF", "#3A6A94"],bluebird:["#3D78C4", "#D98A4E", null],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const BIRDC={vulture:["#2A2420", null, "#C8322C"],cardinal:["#C8322C", null, null],kingfisher:["#4E7FA8", "#FFFFFF", "#3A6A94"],bluebird:["#2E2E2E", "#F2D33A", "#F2D33A"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
 const SCALE={fox:1.4,armadillo:1.9,turtle:2.0,heron:1.6,egret:1.6,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
@@ -948,7 +948,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 5.0, "B": 3.6, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 3.0, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
