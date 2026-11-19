@@ -124,10 +124,9 @@ dam = [p.xy(q) for q in p.WID['49938932']['p']]
 D = np.array(dam); c0 = D.mean(0); u, s_, vt = np.linalg.svd(D - c0); ax_ = vt[0]
 proj = (D - c0) @ ax_; perp = (D - c0) @ vt[1]
 DAMPTS = []
-for t in np.linspace(proj.min() + 20, proj.max() - 20, 11):
-    sel = np.abs(proj - t) < 60
-    off = perp[sel].mean() if sel.any() else 0
-    q = c0 + ax_ * t + vt[1] * off; DAMPTS.append([round(q[0]), round(q[1])])
+CF = np.polyfit(proj, perp, 2)   # smooth arch through the middle of the OSM outline
+for t in np.linspace(proj.min() + 20, proj.max() - 20, 13):
+    q = c0 + ax_ * t + vt[1] * np.polyval(CF, t); DAMPTS.append([round(q[0]), round(q[1])])
 print('dam crest pts', DAMPTS)
 BR = []
 for w in p.W:
