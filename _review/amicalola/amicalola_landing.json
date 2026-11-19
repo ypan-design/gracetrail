@@ -1,0 +1,29 @@
+{
+ "name": "Amicalola Falls",
+ "where": "Amicalola Falls State Park · Georgia",
+ "href": "amicalola-falls/",
+ "lat": 34.55765,
+ "lon": -84.2491,
+ "grp": "se",
+ "reg": "se",
+ "st": "GA",
+ "status": "",
+ "trails": [
+  [
+   "A",
+   "West Ridge Falls Access Trail",
+   "0.6 mi round trip"
+  ],
+  [
+   "B",
+   "Amicalola Falls Loop",
+   "2 mi loop"
+  ],
+  [
+   "C",
+   "Len Foote Hike Inn Trail",
+   "10 mi round trip"
+  ]
+ ],
+ "high": "3,067 ft"
+}

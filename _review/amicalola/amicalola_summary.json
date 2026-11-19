@@ -1,0 +1,62 @@
+{
+ "name": "Amicalola Falls",
+ "folder": "amicalola-falls",
+ "city": "Dawsonville",
+ "area": "Amicalola Falls State Park",
+ "state": "GA",
+ "region": "Southeast",
+ "reg": "se",
+ "lat": 34.55765,
+ "lon": -84.2491,
+ "where": "Amicalola Falls State Park, Dawsonville, Georgia",
+ "high": "3,067 ft",
+ "blurb": "Georgia’s tallest waterfall: a level path to the bridge at mid-falls, about 600 steps from the creek to the top, and the Hike Inn Trail 5 miles into the national forest.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "West Ridge Falls Access Trail",
+   "mi": 0.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 60
+  },
+  {
+   "id": "B",
+   "name": "Amicalola Falls Loop",
+   "mi": 2.0,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 750
+  },
+  {
+   "id": "C",
+   "name": "Len Foote Hike Inn Trail",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 2100
+  }
+ ],
+ "status": "Open. A Georgia State Parks ParkPass is required to park ($10 a day since January 2026). The East Ridge Trail (B's return leg) was slated for an erosion-repair closure announced in 2025 with no set dates; if closed, return down the stairs. Hike Inn overnight stays need a reservation.",
+ "rare": [],
+ "sources": [
+  "https://gastateparks.org/AmicalolaFalls",
+  "https://dlg.usg.edu/record/dlg_ggpd_s-ga-bn200-pp2-bm1-b2009-ba4-belec-p-btext/fulltext.text",
+  "https://amicalolafallslodge.com/appalachian-trail-gateway/",
+  "https://www.amicalolafallslodge.com/?p=58",
+  "https://amicalolafallslodge.com/wild-animals-are-our-neighbors/",
+  "https://amicalolafallslodge.com/naturalist-chats/",
+  "https://www.georgiaencyclopedia.org/articles/geography-environment/amicalola-falls/",
+  "https://hikethesouth.com/hikes/amicalola-falls-loop",
+  "https://www.hikingproject.com/trail/7042982/west-ridge-falls-access-trail",
+  "https://www.hikingproject.com/trail/7063674/base-of-the-falls-trail",
+  "https://www.hikingproject.com/trail/7027236/east-ridge-trail",
+  "https://appalachiantrail.org/hikes/len-foote-hike-inn-trail/",
+  "https://en.wikipedia.org/wiki/Len_Foote_Hike_Inn",
+  "https://lakesidenews.com/2025/07/renovations-planned-at-amicalola-falls-state-park/",
+  "https://feeds.ajc.com/politics/2025/11/georgia-parks-raise-parking-fees-and-more-price-hikes-could-be-on-the-way",
+  "https://sherpaguides.com/georgia/wildlife_viewing/northeast_ga_mtns/11.html",
+  "https://www.inaturalist.org/observations?nelat=34.585&nelng=-84.225&swlat=34.548&swlng=-84.265",
+  "https://thomashaynes.zenfolio.com/blog/2012/5/amicalola-falls-state-park-snakes"
+ ]
+}
