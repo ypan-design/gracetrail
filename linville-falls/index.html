@@ -556,7 +556,7 @@ const anim={};
   const rings=[],mist=[];
   // waterfall: solid rock lip and cliff behind, water sheet, plunge pool (local +z = downstream)
   function fall(x,n,w,h,ry){const F=G(x,n);const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;world.add(wf);
-    part(wf,box,"#77706A",0,h*0.5,-0.5,w+1.6,h+0.4,0.9,1.06);
+    part(wf,box,"#77706A",0,h*0.5,-0.5,w*1.6+0.4,h+0.4,0.9,1.06);
     const pl=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.12),fallMat);pl.position.set(0,h/2,0.02);wf.add(pl);
     part(wf,box,PAL.rock,0,h+0.12,-0.2,w+1.0,0.25,0.7,1.06);part(wf,ico,PAL.rockDeep,-(w/2+0.45),h*0.55,0,0.4,h*0.6,0.4);part(wf,ico,PAL.rock,w/2+0.45,h*0.5,0,0.4,h*0.55,0.4);
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,20),new THREE.MeshBasicMaterial({color:"#4FA6C4"}));pool.position.set(0,0.06,0.7);pool.scale.set(w*0.9+0.4,1,0.9);wf.add(pool);
@@ -564,7 +564,7 @@ const anim={};
   const wL=fall(-63,116,2.4,5.0,1.06);   // lower falls, ~45 ft, pours east-southeast into Plunge Basin
   fall(-36,195,1.3,1.7,0.23);              // upper (double) falls, flowing south
   for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));m.position.z=0.6;wL.add(m);mist.push({m,ph:i/5,x:(i%3-1)*0.4});}
-  fall(-230,2620,0.7,1.3,2.9);   // Duggers Falls
+  fall(-230,2620,0.5,1.0,-1.57);   // Duggers Falls
   // the Chimneys: rock towers on the east side of the lower falls
   {const q=G(47,46);[[0,0,1.0],[0.55,0.35,0.8],[-0.4,0.5,0.65]].forEach(([dx,dz,s])=>part(world,box,PAL.rockDeep,q.x+dx,q.y+1.3*s,q.z+dz,0.45*s,2.6*s,0.45*s,1.06));}
   // stone overlook decks
@@ -878,10 +878,10 @@ const SCALE={fox:1.4,turkey:1.7,heron:1.6,bear:1.7,deer:1.4,bobcat:1.45,coyote:1
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"bear",path:[983,494,1624,-755],per:30},
+ {k:"bear",path:[[-1050,-250],[-1100,-480]],per:30},
  {k:"deer",path:[239,1935,260,1847],per:26},
  {k:"deer",path:[-862,1190,-936,874],per:24,ph:0.5},
- {k:"fox",path:[-357,2430,-113,2738],per:22},
+ {k:"fox",path:[[250,2250],[380,2120]],per:22},
  {k:"raccoon",path:[[-90,1320],[-40,1200]],per:20},
  {k:"turkey",at:[790,878],flock:3},
  {k:"squirrel",at:[-549,69],hop:true},
