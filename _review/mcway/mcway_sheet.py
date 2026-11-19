@@ -134,9 +134,9 @@ OT1 = sea_pt(-500, 100, -0.7, -0.7, 250)
 OT2 = sea_pt(-7500, 5900, -0.8, -0.6, 200)
 print('otters', OT1, OT2)
 an = []
-an += [f'{{k:"deer",path:{path("C",.18,-1,420)},per:28}}', f'{{k:"deer",path:{path("C",.72,1,450)},per:30,ph:0.4}}']
-an += [f'{{k:"squirrel",at:{js(A_("B",.18,1,200))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.45,-1,260))},hop:true}}']
-an += [f'{{k:"bobcat",path:{path("C",.86,-1,380)},per:32,ph:0.2}}']
+an += [f'{{k:"deer",path:{path("C",.18,-1,420)},per:28}}', f'{{k:"deer",path:{path("C",.80,1,450)},per:30,ph:0.4}}']
+an += [f'{{k:"squirrel",at:{js(A_("B",.7,-1,200))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.06,1,220))},hop:true}}']
+an += [f'{{k:"bobcat",path:{path("C",.40,1,380)},per:32,ph:0.2}}']
 an += [f'{{k:"turkey",at:{js(A_("C",.55,-1,380))},flock:3}}']
 an += [f'{{k:"quail",at:{js(A_("B",.42,-1,220))},flock:3}}']
 an += [f'{{k:"otter",at:{js(OT1)}}}', f'{{k:"otter",at:{js(OT2)},ph:0.5}}']
