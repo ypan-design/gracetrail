@@ -64,7 +64,7 @@ A_ = lambda k, f, s=1, o=400: pa(p, R[k], [f], s, o)[0]
 def path(k, f, s=1, o=500, d=0.04): return js(A_(k, f, s, o) + A_(k, f + d, s, o))
 an = []
 an += [f'{{k:"bear",path:{path("C",.72,1,700)},per:34}}', f'{{k:"bear",path:{path("B",.28,1,700)},per:36,ph:0.5}}']
-an += [f'{{k:"deer",path:{path("A",.45,1,450,.2)},per:26}}', f'{{k:"deer",path:{path("C",.9,-1,600)},per:30,ph:0.4}}']
+an += [f'{{k:"deer",path:{path("A",.5,-1,750,.2)},per:26}}', f'{{k:"deer",path:{path("C",.9,-1,600)},per:30,ph:0.4}}']
 an += [f'{{k:"turkey",at:{js(A_("C",.6,-1,550))},flock:3}}']
 an += [f'{{k:"chipmunk",at:{js(A_("B",.25,1,280))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("C",.82,1,260))},hop:true}}']
 an += [f'{{k:"squirrel",at:{js(A_("A",.75,-1,300))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.5,1,320))},hop:true}}']
