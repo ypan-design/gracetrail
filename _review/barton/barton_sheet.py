@@ -79,7 +79,7 @@ def ck(ids, minor):
     except Exception as ex: print('creek err', ex); return None
 cr = ck([i if i in p.WID else int(i) for i in ['1384176561']], False)
 creeks = [dict(id='barton', **cr)] if cr else []
-CK = [[q[0], q[1]] for q in (cr['pts'] if cr else [])]
+CK = [[q[0], q[1]] for q in (cr['pts'] if cr else []) if TILE[0] + 250 < q[0] < TILE[1] - 250 and TILE[2] + 250 < q[1] < TILE[3] - 250]  # ribbon only on the terrain
 
 g = {s['name']: s for s in stops}
 def at(nm): return g[nm]['x'], g[nm]['n']
@@ -159,8 +159,7 @@ cfg = dict(
            'C': [('Barton Creek Greenbelt · Austin Parks and Recreation', 'https://www.austintexas.gov/parks/locations/barton-creek-greenbelt'), ('Barton Creek Greenbelt · TrailLink', 'https://www.traillink.com/trail/barton-creek-greenbelt/'), ('Barton Creek Greenbelt · Wikipedia', 'https://en.wikipedia.org/wiki/Barton_Creek_Greenbelt')]},
     extra_js=('TRAILS.forEach(T=>{const g={B:230}[T.id];if(g)T.gain=g;});\n'
               '// out-and-back: report the outbound mile for a stop\n'
-              'mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};\n'
-              'try{if(typeof BIRDC!=="undefined"&&BIRDC.bluebird)BIRDC.bluebird=["#2F2F2F","#F2D33A",null];}catch(e){}'),
+              'mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};'),
     viewaz={'all': 0.6, 'A': 0.6, 'B': 0.6, 'C': 0.6},
     stop_photos=stop_photos, flower_photos=PH['flower'], animal_photos=PH['animal'],
 )
