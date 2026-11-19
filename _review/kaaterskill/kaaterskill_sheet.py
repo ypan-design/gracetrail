@@ -139,7 +139,7 @@ cfg = dict(
               'hawk': ('Red-tailed hawk', 'Rides the updrafts along the escarpment and over Kaaterskill Clove.'),
               'raven': ('Common raven', 'Large black birds that soar and tumble along the cliffs of the clove; listen for their deep croaks.')},
     grid=GRID, step=STEP, dem_b64=b64, tile=TILE, ve=1.5, ridge_ft=2480,
-    palette='east', trees='east',
+    palette={'ground': '#C4E5C8', 'groundN': '#ADD7B4', 'oak': '#4E7F3A', 'sycamore': '#9DBF4E', 'gold': '#E39A3C', 'ridge': '#BBDDBF', 'rock': '#B7B0A4', 'rockDeep': '#9C958A'}, trees='east',
     landmarks=lm, animals_js=animals_js,
     extra_js='TRAILS.forEach(T=>{const g={A:130,B:250,C:519}[T.id];if(g)T.gain=g;});',
     overview=dict(h2='Kaaterskill Falls and the Catskill Escarpment',
