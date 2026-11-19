@@ -1,0 +1,67 @@
+{
+ "name": "Maryland Heights & Harpers Ferry",
+ "folder": "harpers-ferry-maryland-heights",
+ "city": "Harpers Ferry",
+ "area": "Harpers Ferry",
+ "state": "WV",
+ "region": "se",
+ "lat": 39.3228,
+ "lon": -77.7304,
+ "where": "Harpers Ferry National Historical Park · West Virginia and Maryland",
+ "high": "1,457 ft",
+ "blurb": "Jefferson Rock on the Appalachian Trail, and Maryland Heights across the Potomac with its Overlook Cliff and Civil War Stone Fort.",
+ "status": "partly closed: the Goodloe Byron Memorial Footbridge (Lower Town to Maryland Heights) has been closed since July 27, 2026, for stairway construction; Maryland Heights trails stay open, reached by shuttle from the visitor center to C&O Canal Lock 34.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Camp Hill and Appalachian Trail",
+   "mi": 1.8,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 216
+  },
+  {
+   "id": "B",
+   "name": "Maryland Heights to Overlook Cliff",
+   "mi": 4.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1154
+  },
+  {
+   "id": "C",
+   "name": "Maryland Heights with the Stone Fort Trail",
+   "mi": 6.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1522
+  }
+ ],
+ "rare": [
+  "Peregrine falcon: the Maryland Heights cliff is one of only two natural peregrine nest sites in Maryland since reintroduction (NPS, https://www.nps.gov/hafe/learn/news/first-successful-peregrine-falcon-fledging-at-harpers-ferry-in-almost-70-years.htm)"
+ ],
+ "sources": [
+  "https://www.nps.gov/hafe/planyourvisit/maryland-heights-trail.htm",
+  "https://www.nps.gov/hafe/planyourvisit/hikes.htm",
+  "https://www.nps.gov/hafe/planyourvisit/camp-hill-and-appalachian-trail.htm",
+  "https://home.nps.gov/choh/planyourvisit/byron-bridge.htm",
+  "https://www.nps.gov/places/information-panel-hiking-maryland-heights.htm",
+  "https://home.nps.gov/hafe/learn/historyculture/maryland-heights.htm",
+  "https://home.nps.gov/hafe/learn/historyculture/jefferson-rock.htm",
+  "https://www.nps.gov/places/000/naval-battery.htm",
+  "https://www.nps.gov/places/000/information-panel-100-pounder-battery-heaviest-and-highest.htm",
+  "https://www.hmdb.org/m.asp?m=5009",
+  "https://www.hmdb.org/m.asp?m=5010",
+  "https://www.hmdb.org/m.asp?m=10203",
+  "https://appalachiantrail.org/?p=858",
+  "https://en.wikipedia.org/wiki/Storer_College",
+  "https://midatlanticdaytrips.com/2015/05/hiking-maryland-heights-part-2-stone-fort-trail/",
+  "https://www.nps.gov/hafe/planyourvisit/fees.htm",
+  "https://home.nps.gov/hafe/learn/nature/animals.htm",
+  "https://www.nps.gov/hafe/learn/nature/reptiles.htm",
+  "https://www.nps.gov/hafe/learn/nature/birds.htm",
+  "https://home.nps.gov/hafe/learn/nature/hawks-eagles-and-kites.htm",
+  "https://home.nps.gov/hafe/learn/nature/wildflowers.htm",
+  "https://www.nps.gov/hafe/learn/news/first-successful-peregrine-falcon-fledging-at-harpers-ferry-in-almost-70-years.htm"
+ ]
+}
