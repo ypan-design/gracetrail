@@ -552,11 +552,11 @@ const anim={};
   bench(785,3280,2.4);
   // ---- hoodoos: tapered orange columns with pale bands and dark caprock on the steep breaks below the rim
   {const r=rng(4321),list=[];const up=new THREE.Vector3(0,1,0);
-   for(let t=0;t<30000&&list.length<1300;t++){const x=C.x0+r()*w,n=C.n0+r()*d;if(qOf(x,n)>0.9)continue;
+   for(let t=0;t<30000&&list.length<850;t++){const x=C.x0+r()*w,n=C.n0+r()*d;if(qOf(x,n)>0.9)continue;
      const e=surf(x,n),gx=(surf(x+dx*.5,n)-surf(x-dx*.5,n))/dx,gn=(surf(x,n+dn*.5)-surf(x,n-dn*.5))/dn,g=Math.hypot(gx,gn);
-     if(e<7050||e>8120||g<0.16||mask(x,n)<0.5)continue;
+     if(e<7100||e>8100||g<0.2||mask(x,n)<0.5)continue;
      const v=G(x,n);if(nearTrail(v))continue;const cl=fbm(x/700+3,n/700+1);if(r()>0.45+cl*0.9+(g-0.16)*1.2)continue;
-     list.push({v,h:1.0+r()*1.6+(g>0.35?0.5:0),rad:0.17+r()*0.15,ry:r()*6.28,c:r()});}
+     list.push({v,h:0.6+r()*0.9+(g>0.35?0.3:0),rad:0.12+r()*0.1,ry:r()*6.28,c:r()});}
    const shaft=new THREE.CylinderGeometry(0.75,1,1,7).translate(0,0.5,0),band=new THREE.CylinderGeometry(0.82,0.82,0.14,7),cap=new THREE.CylinderGeometry(1.05,0.95,0.2,7);
    const cols=["#E8946A","#E2845A","#EDB08C","#DA7650","#F0C6A8","#E59C74","#F3DCC4"];
    const ms=new THREE.InstancedMesh(shaft,new THREE.MeshLambertMaterial({color:"#FFFFFF",emissive:"#5E2E16"}),list.length),mb=new THREE.InstancedMesh(band,pho("#F6E6D2"),list.length),mc=new THREE.InstancedMesh(cap,pho("#E2A27A"),list.length),mh=new THREE.InstancedMesh(shaft,HULL,list.length);
@@ -567,7 +567,7 @@ const anim={};
      pv.set(it.v.x,it.v.y+it.h+0.02,it.v.z);sc.set(it.rad,1,it.rad);m4.compose(pv,q,sc);mc.setMatrixAt(i,m4);});
    world.add(ms,mb,mc);}
   // ---- Tower Bridge (OSM node), drawn large: two spires joined by a natural bridge, a window beside them; span runs east-west, seen from the spur to the north
-  {const p=G(1519,-3055);const g=new THREE.Group();g.position.set(p.x,p.y,p.z);g.rotation.y=0;world.add(g);
+  {const p=G(1519,-3055);const g=new THREE.Group();g.position.set(p.x,p.y,p.z);g.rotation.y=0;g.scale.setScalar(1.7);world.add(g);
    const sp=(x,h,r)=>{part(g,new THREE.CylinderGeometry(0.62,1,1,8),"#E07E4C",x,h/2-0.1,0,r,h,r,1.08);part(g,new THREE.CylinderGeometry(1,1,1,8),"#F6E6D2",x,h*0.55,0,r*0.84,0.18,r*0.84,0);part(g,box,"#A87A52",x,h+0.14,0,r*1.6,0.3,r*1.4,1.08);};
    sp(-1.25,4.2,0.5);sp(1.25,3.8,0.48);
    part(g,box,"#E58A55",0,2.7,0,2.1,0.55,0.62,1.08);part(g,box,"#F2C9A6",0,3.02,0,2.1,0.1,0.64,0);
@@ -928,7 +928,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 2.6, "B": 3.4, "C": 2.2}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 2.6, "B": 3.0, "C": 2.2}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
