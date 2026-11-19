@@ -243,7 +243,7 @@ cfg = dict(
     links={'A': [('Rainbow Falls · Lake Placid ADK', 'https://www.lakeplacid.com/hiking/rainbow-falls'), ('Rainbow Falls · Northern New York Waterfalls', 'https://nnywaterfalls.com/cascadebrook/rainbowfalls/'), ('AMR parking reservations · NYS DEC', 'https://dec.ny.gov/news/press-releases/2025/4/dec-and-adirondack-mountain-reserve-announce-start-of-2025-parking-reservation-system')],
            'B': [('Indian Head and Fish Hawk Cliffs · Lake Placid ADK', 'https://www.lakeplacid.com/hiking/indian-head-and-fish-hawk-cliffs'), ('Visiting the Adirondack Mountain Reserve · ADK', 'https://adk.org/?p=8255'), ('Hiker parking reservations · AMR', 'https://www.hikeamr.org/')],
            'C': [('Indian Head & Rainbow Falls · myHikes', 'https://myhikes.org/trails/indian-head-and-rainbow-falls'), ('AMR waterfalls · Northern New York Waterfalls', 'https://nnywaterfalls.com/ausableriver/amr'), ('AMR Waterfall Loop · Lake Placid ADK', 'https://www.lakeplacid.com/hiking/adirondack-mountain-reserve-amr-waterfall-loop')]},
-    viewaz={'all': 5.3, 'A': 5.3, 'B': 5.3, 'C': 5.3},
+    viewaz={'all': 5.3, 'A': 1.9, 'B': 5.3, 'C': 5.3},
     zoomcap={'A': 2.4, 'B': 3.0, 'C': 2.6},
 )
 OUT = '/home/claude/site/out/adirondack-indian-head/index.html'
