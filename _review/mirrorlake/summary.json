@@ -1,0 +1,70 @@
+{
+ "name": "Mirror Lake",
+ "folder": "yosemite-mirror-lake",
+ "city": "Yosemite Valley",
+ "area": "Yosemite",
+ "state": "CA",
+ "region": "Yosemite",
+ "grp": "yos",
+ "reg": "ca",
+ "lat": 37.73955,
+ "lon": -119.56002,
+ "where": "Mirror Lake trailhead (shuttle stop 17), east Yosemite Valley, Yosemite National Park, California",
+ "high": "6,740 ft",
+ "blurb": "A paved mile up Tenaya Creek to the seasonal pool below Half Dome, a 5-mile loop through Tenaya Canyon, and the Snow Creek Trail's switchbacks up the north wall.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Mirror Lake",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 100
+  },
+  {
+   "id": "B",
+   "name": "Mirror Lake Loop",
+   "mi": 5.0,
+   "unit": "loop",
+   "level": "Easy to moderate",
+   "gain_ft": 200
+  },
+  {
+   "id": "C",
+   "name": "Snow Creek Trail",
+   "mi": 9.4,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2700
+  }
+ ],
+ "status": "open: no entry reservation listed for 2026 ($35 vehicle fee, $100 non-US resident fee); no trailhead parking, use the free valley shuttle (stop 17); Tioga and Glacier Point roads closed for winter (NPS, Nov 18, 2026); trails can be icy or snowy from about November, especially the south side of the loop.",
+ "rare": [
+  {
+   "animal": "Peregrine falcon",
+   "why": "Absent from Yosemite 1949-1975, back nesting on El Capitan since 1978; the park now has the highest peregrine nesting density in the Sierra Nevada.",
+   "source": "https://www.nps.gov/yose/learn/nature/ss-bird-species.htm"
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/yose/planyourvisit/mirrorlaketrail.htm",
+  "https://www.nps.gov/places/000/mirror-lake-trailhead.htm",
+  "https://www.nps.gov/yose/planyourvisit/snowcreektrail.htm",
+  "https://www.nps.gov/yose/planyourvisit/valleyhikes.htm",
+  "https://www.nps.gov/yose/planyourvisit/conditions.htm",
+  "https://www.nps.gov/yose/planyourvisit/fees.htm",
+  "https://www.nps.gov/yose/learn/news/mirrorlakeloopopens.htm",
+  "https://www.nps.gov/yose/learn/news/ahwiyahrockfall.htm",
+  "https://www.hmdb.org/m.asp?m=81950",
+  "https://www.hmdb.org/m.asp?m=81951",
+  "https://www.yosemitehikes.com/yosemite-valley/mirror-lake/mirror-lake.htm",
+  "https://www.yosemitehikes.com/tioga-road/snow-creek/snow-creek.htm",
+  "https://www.yosemite.ca.us/library/yosemite_wildflower_trails/yosemite_valley.html",
+  "https://www.nps.gov/yose/learn/nature/common-wildflowers.htm",
+  "https://www.nps.gov/yose/learn/nature/mammals.htm",
+  "https://www.nps.gov/yose/learn/nature/birds.htm",
+  "https://www.nps.gov/yose/learn/nature/ss-bird-species.htm",
+  "https://www.nps.gov/yose/blogs/bobcat.htm",
+  "https://www.inaturalist.org/observations?lat=37.752&lng=-119.548&radius=3"
+ ]
+}
