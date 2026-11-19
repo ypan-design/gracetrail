@@ -323,7 +323,7 @@ function part(parent,geo,color,x,y,z,sx,sy,sz,hull=1.1,phong=true){const m=new T
 function rot(m,x,y,z){m.rotation.set(x,y,z);if(m.userData.hull)m.userData.hull.rotation.set(x,y,z);return m;}
 
 /* tile & organic boundary */
-const C={x0:-24500,x1:7200,n0:-8500,n1:25700,ve:1.4};
+const C={x0:-24500,x1:7200,n0:-8500,n1:25700,ve:1.6};
 const w=C.x1-C.x0,d=C.n1-C.n0,cx=(C.x0+C.x1)/2,cn=(C.n0+C.n1)/2,S=100/Math.max(w,d),VE=C.ve;
 function qOf(x,n){return Math.max(Math.abs((x-cx)/(w/2)),Math.abs((n-cn)/(d/2)));}
 const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -470,10 +470,10 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     const cd=creekDist(x,n);if(cd*S<0.8)continue;
     const cl=fbm(x/900+5,n/900-2);let type=null,p=0;
     if(inLake(x,n)){type=null;}else if(mk<0.25){type="conifer";p=0.05;}
-    else if(cd<230){type=tr()<.3?"gold":"conifer";p=0.3;}
+    else if(cd<230){type=tr()<.15?"gold":"conifer";p=0.3;}
     else if(g>1.15)type=null;
     else if(south<-0.1){type=tr()<.88?"conifer":"syc";p=0.34+cl*.25;}
-    else{const r0=tr();type=r0<.72?"conifer":r0<.86?"shrub":"gold";p=0.2+cl*.2;}
+    else{const r0=tr();type=r0<.8?"conifer":r0<.95?"shrub":"gold";p=0.2+cl*.2;}
     if(type&&e>6900)type=(e<7150&&tr()<.35)?"shrub":null;
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
@@ -559,7 +559,7 @@ const anim={};
     const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=ry;wf.scale.setScalar(sc);world.add(wf);
     [[1.3,3.0,-0.9,4.6],[1.7,2.0,-0.35,2.2],[2.0,1.3,0.15,0.7]].forEach(([wd,ht,z,yc])=>{const pl=new THREE.Mesh(new THREE.PlaneGeometry(wd,ht),fallMat);pl.position.set(0,yc,z);wf.add(pl);
       part(wf,ico,PAL.stone,-wd/2-0.45,yc+ht/2-0.25,z-0.1,0.55,0.45,0.5);part(wf,ico,PAL.stoneD,wd/2+0.45,yc+ht/2-0.35,z-0.1,0.5,0.42,0.5);});
-    part(wf,ico,"#9C5A48",-1.9,3.2,-1.4,1.0,2.1,0.9);part(wf,ico,"#A86452",1.9,2.9,-1.3,0.95,1.9,0.9);
+    part(wf,ico,"#8E6A5E",-1.7,2.6,-1.3,0.8,1.4,0.7);part(wf,ico,"#9A7466",1.7,2.4,-1.2,0.75,1.3,0.7);
     part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
     for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
     for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/6,x:(i%3-1)*0.45});}}
@@ -919,7 +919,7 @@ const SCALE={grizzly:1.75,moose:1.2,bighorn:1.45,goat:1.5,chipmunk:2.0,bear:1.7,
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"grizzly",path:[-3134,2576,-3746,2932],per:40},
+ {k:"grizzly",path:[-833,3126,-1179,3445],per:40},
  {k:"grizzly",path:[-12334,10363,-12823,10194],per:44,ph:0.4},
  {k:"moose",path:[-1450,-350,-1150,-500],per:40},
  {k:"moose",path:[-6389,-65,-6538,-150],per:44,ph:0.5},
@@ -974,7 +974,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 2.8, "C": 2.8}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.6, "B": 2.2, "C": 2.6}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

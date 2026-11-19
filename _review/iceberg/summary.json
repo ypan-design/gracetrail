@@ -1,0 +1,53 @@
+{
+ "name": "Iceberg Lake",
+ "folder": "glacier-iceberg-lake",
+ "city": "Many Glacier",
+ "area": "Glacier National Park",
+ "lat": 48.8001,
+ "lon": -113.6792,
+ "where": "Many Glacier · Glacier National Park, Montana",
+ "high": "7,200 ft",
+ "blurb": "Three out-and-back hikes from the Swiftcurrent Motor Inn in Many Glacier: Redrock Falls, Iceberg Lake past Ptarmigan Falls, and the Ptarmigan Tunnel.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Redrock Falls",
+   "mi": 3.8,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 267
+  },
+  {
+   "id": "B",
+   "name": "Iceberg Lake",
+   "mi": 9.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1275
+  },
+  {
+   "id": "C",
+   "name": "Ptarmigan Tunnel",
+   "mi": 10.7,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2300
+  }
+ ],
+ "sources": [
+  "https://www.nps.gov/places/iceberg-lake-trailhead.htm",
+  "https://www.nps.gov/places/redrock-falls-trail.htm",
+  "https://www.nps.gov/glac/planyourvisit/hours.htm",
+  "https://www.nps.gov/glac/learn/news/2026-construction-updates-in-glacier-national-park.htm",
+  "https://www.nps.gov/glac/planyourvisit/upload/Many-Glacier.pdf",
+  "https://hikinginglacier.com/iceberg-lake.htm",
+  "https://hikinginglacier.com/ptarmigan-tunnel.htm",
+  "https://hikinginglacier.com/redrock-falls.htm",
+  "https://www.hikingproject.com/trail/7018720/iceberg-lake",
+  "https://hikingwalking.com/destinations/mt/mt_glacier/many_glacier/iceberg_lake/iceberg_lake_detail",
+  "https://en.wikipedia.org/wiki/Ptarmigan_Tunnel"
+ ],
+ "region": "rk",
+ "state": "MT",
+ "status": "partly closed: Many Glacier Road closes for winter the third weekend of November (weather permitting); Ptarmigan Tunnel doors are shut from about Oct 1 to mid-July; trails are often closed for bear activity."
+}
