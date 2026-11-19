@@ -922,22 +922,20 @@ const animals=[];
 const ANIMALS=[
  {k:"elk",at:[6320,-8527],flock:3},
  {k:"elk",path:[6590,-11016,6713,-11059],per:40,ph:0.3},
- {k:"deer",path:[4748,847,5095,675],per:30},
- {k:"deer",path:[11990,-3124,12515,-3044],per:32,ph:0.5},
- {k:"bear",path:[9151,-2283,9184,-2411],per:44},
- {k:"bobcat",path:[9741,-3854,9798,-3785],per:30},
- {k:"coyote",path:[4036,197,4737,-151],per:26},
- {k:"fox",path:[7572,-10346,7958,-10099],per:24},
- {k:"raccoon",path:[15356,67,15218,343],per:22},
- {k:"otter",path:[11362,-6174,10909,-6897],per:20},
+ {k:"fox",path:[8692,-9642,8148,-9864],per:24},
+ {k:"bobcat",path:[7901,-10575,7926,-11258],per:30},
+ {k:"chipmunk",at:[6252,-9893],hop:true},
  {k:"beaver",path:[7256,-9032,7347,-9131],per:30,ph:0.4},
- {k:"heron",at:[15068,-831]},
- {k:"armadillo",path:[6027,712,6111,615],per:26},
- {k:"chipmunk",at:[1718,535],hop:true},
- {k:"chipmunk",at:[8059,-9756],hop:true},
- {k:"squirrel",at:[7956,-1345],hop:true},
- {k:"squirrel",at:[8613,-2220],hop:true},
- {k:"turkey",at:[1315,1274],flock:3}
+ {k:"turkey",at:[788,1068],flock:3},
+ {k:"coyote",path:[4426,-8,5937,248],per:26},
+ {k:"deer",path:[6712,360,6914,-168],per:30},
+ {k:"deer",path:[14151,-2482,14761,-2194],per:32,ph:0.5},
+ {k:"squirrel",at:[7091,-692],hop:true},
+ {k:"bear",path:[11665,-3427,11996,-3404],per:44},
+ {k:"armadillo",path:[12944,-3009,13769,-2527],per:26},
+ {k:"raccoon",path:[15218,343,14744,911],per:22},
+ {k:"otter",path:[12508,-7703,13192,-7443],per:20},
+ {k:"heron",at:[15068,-831]}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
