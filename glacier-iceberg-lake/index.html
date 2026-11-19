@@ -563,8 +563,8 @@ const anim={};
     part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
     for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}
     for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/6,x:(i%3-1)*0.45});}}
-  mkFall(-7681,8120,-103,-11,1.0);
-  mkFall(-7611,-1574,8,36,0.9);
+  mkFall(-7681,8120,-103,-11,1.4);
+  mkFall(-7611,-1574,8,36,1.2);
   anim.water={fallTex,rings,mist};
   // Ptarmigan Tunnel: stone portal block with a dark arched opening and open steel doors, facing along the tunnel
   {const q=G(-6594,18508);const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2(54,-80);world.add(g);
@@ -574,7 +574,7 @@ const anim={};
     part(g,box,"#A89A8A",0,3.45,-0.6,4.5,0.3,1.8,1.04);}
   // ice floes on Iceberg Lake
   {let lo=1e9;lakeP().forEach(P=>{if(inPoly(-14900,6150,P)||P.some(([x,n])=>Math.hypot(x-(-17580+-14562)/2,n-(3969+6643)/2)<1600))P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n,0).y);});});
-    [[-15174,5220,0.71,0.86],[-16811,5159,0.85,1.72],[-16930,4397,0.93,0.14],[-15681,5344,0.85,0.77],[-15649,5952,0.56,1.68],[-16251,4610,0.78,0.3],[-15553,4772,1.11,2.05],[-14912,5685,0.9,1.17],[-16168,5433,0.73,2.33]].forEach(([x,n,s,r])=>{const q=G(x,n);const m=part(world,box,"#FFFFFF",q.x,lo+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,lo+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);});}
+    [[-15174,5220,0.71,0.86],[-16811,5159,0.85,1.72],[-16930,4397,0.93,0.14],[-15681,5344,0.85,0.77],[-15649,5952,0.56,1.68],[-16251,4610,0.78,0.3],[-15553,4772,1.11,2.05],[-14912,5685,0.9,1.17],[-16168,5433,0.73,2.33]].forEach(([x,n,s,r])=>{const q=G(x,n);const y=Math.max(q.y,lo);const m=part(world,box,"#FFFFFF",q.x,y+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,y+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);});}
   // Swiftcurrent Motor Inn cabins by the trailheads
   house(513,25,0.7,0.3);house(713,125,0.7,0.3);house(333,-135,0.9,1.8);
   bench(-7553,8021,0.8);bench(-14851,6217,2.3);
@@ -593,7 +593,7 @@ function inLake(x,n){for(const P of lakeP()){if(inPoly(x,n,P))return true;}retur
 (function(){const mat=new THREE.MeshLambertMaterial({color:"#7CC4D2",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#4E98B2"});
   lakeP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
     let lo=1e9;P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n,0).y);});
-    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.15);pa.setXYZ(i,v.x,lo+0.15,v.z);}
+    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.15);pa.setXYZ(i,v.x,Math.max(v.y,lo+0.15),v.z);}
     pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
     const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0.17);v.y=lo+0.17;return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
   const gm=new THREE.MeshLambertMaterial({color:"#F4F8FA",side:THREE.DoubleSide});
@@ -924,7 +924,7 @@ const ANIMALS=[
  {k:"moose",path:[-1450,-350,-1150,-500],per:40},
  {k:"moose",path:[-6389,-65,-6538,-150],per:44,ph:0.5},
  {k:"bighorn",path:[-10132,9693,-9941,9740],per:32},
- {k:"bighorn",path:[-8274,16955,-8097,17695],per:30,ph:0.3},
+ {k:"bighorn",path:[-8123,14056,-8090,13557],per:30,ph:0.3},
  {k:"goat",path:[-16600,7400,-16450,7600],per:34},
  {k:"goat",path:[-6078,18245,-6377,18679],per:36,ph:0.5},
  {k:"chipmunk",at:[-8055,8416],hop:true},

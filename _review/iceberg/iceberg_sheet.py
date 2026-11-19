@@ -180,7 +180,7 @@ function inLake(x,n){for(const P of lakeP()){if(inPoly(x,n,P))return true;}retur
 (function(){const mat=new THREE.MeshLambertMaterial({color:"#7CC4D2",side:THREE.DoubleSide});const edge=new THREE.LineBasicMaterial({color:"#4E98B2"});
   lakeP().forEach(P=>{const sh=new THREE.Shape(P.map(([x,n])=>new THREE.Vector2(x,n)));const geo=new THREE.ShapeGeometry(sh);const pa=geo.attributes.position;
     let lo=1e9;P.forEach(([x,n])=>{lo=Math.min(lo,G(x,n,0).y);});
-    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.15);pa.setXYZ(i,v.x,lo+0.15,v.z);}
+    for(let i=0;i<pa.count;i++){const x=pa.getX(i),n=pa.getY(i);const v=G(x,n,0.15);pa.setXYZ(i,v.x,Math.max(v.y,lo+0.15),v.z);}
     pa.needsUpdate=true;geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.renderOrder=1;world.add(m);
     const ring=P.concat([P[0]]).map(([x,n])=>{const v=G(x,n,0.17);v.y=lo+0.17;return v;});world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring),edge));});
   const gm=new THREE.MeshLambertMaterial({color:"#F4F8FA",side:THREE.DoubleSide});
@@ -207,8 +207,8 @@ lm = f'''  gate({S('A1')[0]},{S('A1')[1]},1.6);gate({S('s1')[0]},{S('s1')[1]},2.
     part(wf,new THREE.CylinderGeometry(1,1,0.06,18),"#DDF3F3",0,0.05,1.3,1.7,1,1.2,1.04,false);
     for(let i=0;i<3;i++){{const rg=new THREE.Mesh(new THREE.RingGeometry(0.75,0.88,24),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.95);wf.add(rg);rings.push(rg);}}
     for(let i=0;i<6;i++){{const m=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true}}));wf.add(m);mist.push({{m,ph:i/6,x:(i%3-1)*0.45}});}}}}
-  mkFall({PF[0]:.0f},{PF[1]:.0f},{PFD[0]:.0f},{PFD[1]:.0f},1.0);
-  mkFall({RFX[0]:.0f},{RFX[1]:.0f},{RFD[0]:.0f},{RFD[1]:.0f},0.9);
+  mkFall({PF[0]:.0f},{PF[1]:.0f},{PFD[0]:.0f},{PFD[1]:.0f},1.4);
+  mkFall({RFX[0]:.0f},{RFX[1]:.0f},{RFD[0]:.0f},{RFD[1]:.0f},1.2);
   anim.water={{fallTex,rings,mist}};
   // Ptarmigan Tunnel: stone portal block with a dark arched opening and open steel doors, facing along the tunnel
   {{const q=G({TU[0]},{TU[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=Math.atan2({tdx},{-tdn});world.add(g);
@@ -218,7 +218,7 @@ lm = f'''  gate({S('A1')[0]},{S('A1')[1]},1.6);gate({S('s1')[0]},{S('s1')[1]},2.
     part(g,box,"#A89A8A",0,3.45,-0.6,4.5,0.3,1.8,1.04);}}
   // ice floes on Iceberg Lake
   {{let lo=1e9;lakeP().forEach(P=>{{if(inPoly({LK[0]},{LK[1]},P)||P.some(([x,n])=>Math.hypot(x-({ix0}+{ix1})/2,n-({in0}+{in1})/2)<1600))P.forEach(([x,n])=>{{lo=Math.min(lo,G(x,n,0).y);}});}});
-    {js(FLOES)}.forEach(([x,n,s,r])=>{{const q=G(x,n);const m=part(world,box,"#FFFFFF",q.x,lo+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,lo+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);}});}}
+    {js(FLOES)}.forEach(([x,n,s,r])=>{{const q=G(x,n);const y=Math.max(q.y,lo);const m=part(world,box,"#FFFFFF",q.x,y+0.32,q.z,1.6*s,0.35,1.0*s,1.04);rot(m,0,r,0);const t=part(world,box,"#E6F4F8",q.x+0.2*s,y+0.6,q.z,0.8*s,0.3,0.6*s,1.04);rot(t,0,r+0.4,0);}});}}
   // Swiftcurrent Motor Inn cabins by the trailheads
   house({S('s1')[0] + 320},{S('s1')[1] - 360},0.7,0.3);house({S('s1')[0] + 520},{S('s1')[1] - 260},0.7,0.3);house({S('s1')[0] + 140},{S('s1')[1] - 520},0.9,1.8);
   bench({S('s3')[0] + 70},{S('s3')[1] - 40},0.8);bench({S('B3')[0] + 60},{S('B3')[1] + 80},2.3);
@@ -231,7 +231,7 @@ def path2(k, f, s=1, o=240, d=0.02): return js(A_(k, f, s, o) + A_(k, f + d, s, 
 an = []
 an += [f'{{k:"grizzly",path:{path2("B", .13, -1, 900, .02)},per:40}}', f'{{k:"grizzly",path:{path2("B", .78, -1, 650, .02)},per:44,ph:0.4}}']
 an += [f'{{k:"moose",path:{js([-1450, -350, -1150, -500])},per:40}}', f'{{k:"moose",path:{path2("A", .8, -1, 260, .03)},per:44,ph:0.5}}']
-an += [f'{{k:"bighorn",path:{path2("B", .66, 1, 650, .02)},per:32}}', f'{{k:"bighorn",path:{path2("C", .86, 1, 450, .015)},per:30,ph:0.3}}']
+an += [f'{{k:"bighorn",path:{path2("B", .66, 1, 650, .02)},per:32}}', f'{{k:"bighorn",path:{path2("C", .72, -1, 600, .015)},per:30,ph:0.3}}']
 an += [f'{{k:"goat",path:{js([-16600, 7400, -16450, 7600])},per:34}}', f'{{k:"goat",path:{path2("C", .93, -1, 650, .01)},per:36,ph:0.5}}']
 an += [f'{{k:"chipmunk",at:{js(A_("B", .565, 1, 140))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("B", .985, -1, 160))},hop:true}}']
 animals_js = '[\n ' + ',\n '.join(an) + '\n]'
