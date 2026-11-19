@@ -1,0 +1,65 @@
+{
+ "name": "Grand Canyon of the Yellowstone",
+ "folder": "yellowstone-grand-canyon",
+ "city": "Canyon Village",
+ "area": "Yellowstone National Park",
+ "state": "WY",
+ "region": "Rocky Mountains",
+ "reg": "rk",
+ "lat": 44.7191,
+ "lon": -110.4988,
+ "where": "North Rim Drive and South Rim Drive, Canyon Village, Yellowstone National Park, Wyoming",
+ "high": "7,860 ft",
+ "blurb": "The brink of the 308-foot Lower Falls, the South Rim Trail to Artist Point, and the North Rim Trail past both falls to Inspiration Point.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Brink of the Lower Falls",
+   "mi": 0.7,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 600
+  },
+  {
+   "id": "B",
+   "name": "South Rim Trail to Artist Point",
+   "mi": 2.1,
+   "unit": "one way",
+   "level": "Easy",
+   "gain_ft": 240
+  },
+  {
+   "id": "C",
+   "name": "North Rim Trail to Inspiration Point",
+   "mi": 3.8,
+   "unit": "one way",
+   "level": "Moderate",
+   "gain_ft": 380
+  }
+ ],
+ "status": "Seasonal closure. Most Yellowstone roads closed to regular vehicles on November 1, 2026, so the canyon rims can't be reached by car until spring; oversnow (snowcoach/snowmobile) travel begins December 15. The Brink of the Lower Falls Trail is closed in winter, and Uncle Tom's Trail (passed on B) is permanently closed.",
+ "sources": [
+  "https://www.nps.gov/thingstodo/yell-trail-brink-of-the-lower-falls.htm",
+  "https://www.nps.gov/thingstodo/yell-grand-canyon-of-the-yellowstone.htm",
+  "https://www.nps.gov/yell/planyourvisit/canyonplan.htm",
+  "https://www.nps.gov/yell/learn/news/26026.htm",
+  "https://home.nps.gov/yell/learn/nature/osprey.htm",
+  "https://home.nps.gov/yell/learn/nature/mammals.htm",
+  "https://en.wikipedia.org/wiki/Small_mammals_of_Yellowstone_National_Park",
+  "https://www.yellowstone.org/yellowstones-inspiration-point-reopens-after-rehabilitation/",
+  "https://cowboystatedaily.com/2023/12/31/yellowstones-uncle-toms-trail-is-steep-exhilarating-and-permanently-closed",
+  "https://noahlangphotography.com/blog/south-rim-trail-yellowstone-national-park",
+  "https://www.hikespeak.com/trails/artist-point-grand-canyon-of-the-yellowstone-river/",
+  "https://www.hikespeak.com/trails/north-rim-trail-grand-canyon-of-the-yellowstone-river/",
+  "https://hikingproject.com/trail/7008885/north-rim-trail",
+  "https://www.tetonhikingtrails.com/north-rim-trail.htm",
+  "https://naturalatlas.com/waterfalls/crystal-falls-1083852"
+ ],
+ "rare": [
+  {
+   "animal": "Osprey",
+   "why": "One of two river canyons Yellowstone names as osprey nesting habitat; they nest on rock pinnacles in view of the rim overlooks, and the park-wide population has declined (27 occupied nests monitored in 2023).",
+   "source": "https://home.nps.gov/yell/learn/nature/osprey.htm"
+  }
+ ]
+}

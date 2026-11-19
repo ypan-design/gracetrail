@@ -253,7 +253,7 @@ const SPECIES={
 };
 const FLORA={"A":["arnica_yc","harebell_yc","yarrow_yc"],"B":["lupine_yc","paint_yc","yarrow_yc","harebell_yc","arnica_yc"],"C":["fireweed_yc","lupine_yc","paint_yc","arnica_yc","yarrow_yc"]};
 const WILD={
- osprey:{name:"Osprey",color:"#4A3B30",sum:"Rare here: one of the few places in the park where ospreys nest on rock pinnacles in a river canyon, close enough to watch from the rim; only 27 occupied nests were monitored park-wide in 2023. Look for their big stick nests, up to five feet across, on spires below Artist Point, Lookout Point and Grand View from late April to early September."},
+ osprey:{name:"Osprey",color:"#4A3B30",sum:"Rare here: this is one of two river canyons the park names as osprey nesting habitat, where they build on rock pinnacles in view of the rim; the park-wide population has declined, with 27 occupied nests monitored in 2023. Look for their big stick nests, up to five feet across, on spires below Artist Point, Lookout Point and Grand View from late April to early September."},
  bison:{name:"American bison",color:"#5A3E2B",sum:"Herds from nearby Hayden Valley graze the meadows south of the canyon and often walk the roads near Chittenden Bridge from spring through the fall rut. Stay at least 25 yards away."},
  elk:{name:"Elk",color:"#9A6A43",sum:"Graze the forest openings and meadows near both rims, mostly at dawn and dusk. Give them at least 25 yards, especially during the fall rut."},
  moose:{name:"Moose",color:"#4A3326",sum:"Occasionally seen in the wet forest and meadows along the North Rim Trail between Grand View and Inspiration Point."},
@@ -559,6 +559,7 @@ const anim={};
     const wt=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.22),fallMat);wt.position.set(0,h/2,-0.25);wf.add(wt);
     part(wf,box,"#C9A66B",0,h/2,-0.62,w+0.9,h+0.25,0.55,1.04);
     part(wf,box,"#E2C98F",0,h+0.1,-0.45,w+1.2,0.22,0.95,1.05);
+    {const ch=new THREE.Mesh(new THREE.BoxGeometry(w,0.06,1.6),fallMat);ch.position.set(0,h+0.24,-1.0);wf.add(ch);}
     for(let i=0;i<3;i++){part(wf,ico,i%2?"#D9B77A":"#C79A5B",-(w/2+0.55)-i*0.15,h*(0.75-i*0.22),-0.3+i*0.25,0.55,h*0.3,0.5);part(wf,ico,i%2?"#C79A5B":"#E0C48A",(w/2+0.55)+i*0.15,h*(0.72-i*0.2),-0.3+i*0.25,0.52,h*0.28,0.5);}
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,18),new THREE.MeshBasicMaterial({color:"#7FC4C9"}));pool.position.set(0,0.06,0.55);pool.scale.set(w*0.9+0.5,1,0.75);wf.add(pool);
     for(let i=0;i<2;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.45,0.55,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.14,0.45);wf.add(rg);rings.push(rg);}
@@ -911,7 +912,7 @@ const ANIMALS=[
  {k:"elk",path:[2764,2139,2625,1858],per:36},
  {k:"moose",path:[5145,4580,5688,4574],per:40},
  {k:"grizzly",path:[1776,-231,590,-1375],per:40},
- {k:"bear",path:[-2049,-759,-1514,272],per:38,ph:0.3},
+ {k:"bear",path:[4084,2458,4763,2716],per:38,ph:0.3},
  {k:"coyote",path:[3471,-495,3516,-403],per:26},
  {k:"squirrel",at:[129,919]},
  {k:"chipmunk",at:[118,-1481],hop:true},
@@ -961,7 +962,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 6.0, "B": 3.2, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.5, "B": 3.2, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
