@@ -1,0 +1,52 @@
+{
+ "name": "Historic Railroad Trail",
+ "folder": "lake-mead-railroad-tunnels",
+ "city": "Boulder City",
+ "area": "Boulder City",
+ "lat": 36.01099,
+ "lon": -114.79419,
+ "where": "Lake Mead National Recreation Area \u00b7 Boulder City, Nevada",
+ "high": "1,600 ft",
+ "blurb": "A level gravel walk on the old Hoover Dam construction railroad, through five tunnels above Lake Mead and down to the dam.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Historic Railroad Trail to Tunnel 1",
+   "mi": 2.5,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 30
+  },
+  {
+   "id": "B",
+   "name": "Historic Railroad Trail through the five tunnels",
+   "mi": 4.4,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "C",
+   "name": "Historic Railroad Trail to Hoover Dam",
+   "mi": 7.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 450
+  }
+ ],
+ "region": "Southwest",
+ "reg": "sw",
+ "state": "NV",
+ "status": "open: fee area ($25 per vehicle for 7 days); not recommended in summer heat",
+ "sources": [
+  "https://www.nps.gov/thingstodo/hike-the-historic-railroad-trail.htm",
+  "https://www.nps.gov/lake/learn/historic-railroad-tunnel.htm",
+  "https://www.nps.gov/lake/planyourvisit/upload/Lake-Mead-Hikes-3_22_2018.pdf",
+  "https://birdandhike.com/Hike/LAME/Railroad/_Railroad.htm",
+  "https://www.traillink.com/trail/historic-railroad-trail/",
+  "https://www.hikingproject.com/trail/7010999/historic-rr-tunnels-hoover-dam-bridge",
+  "https://www.nps.gov/lake/planyourvisit/fees.htm",
+  "https://www.nps.gov/lake/learn/nature/reptiles.htm",
+  "https://www.nps.gov/lake/learn/nature/mammals.htm"
+ ]
+}

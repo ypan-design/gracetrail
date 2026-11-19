@@ -1,0 +1,29 @@
+{
+ "name": "Lake Mead: Historic Railroad Trail",
+ "where": "Lake Mead National Recreation Area \u00b7 Boulder City, Nevada",
+ "href": "lake-mead-railroad-tunnels/",
+ "lat": 36.01099,
+ "lon": -114.79419,
+ "grp": "sw",
+ "reg": "sw",
+ "st": "NV",
+ "status": "",
+ "trails": [
+  [
+   "A",
+   "Historic Railroad Trail to Tunnel 1",
+   "2.5 mi round trip"
+  ],
+  [
+   "B",
+   "Historic Railroad Trail through the five tunnels",
+   "4.4 mi round trip"
+  ],
+  [
+   "C",
+   "Historic Railroad Trail to Hoover Dam",
+   "7.5 mi round trip"
+  ]
+ ],
+ "high": "1,600 ft"
+}

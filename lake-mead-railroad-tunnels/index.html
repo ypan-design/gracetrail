@@ -551,15 +551,15 @@ const anim={};
   // Lakeview Overlook (OSM) on the cliff above Tunnel 5: shade shelter
   {const q=G(9411,2033);[[-0.6,-0.6],[0.6,-0.6],[-0.6,0.6],[0.6,0.6]].forEach(([a,b])=>part(world,cyl,"#6B5A4A",q.x+a*0.5,q.y+0.35,q.z+b*0.5,0.04,0.7,0.04,0));part(world,box,"#B9AA92",q.x,q.y+0.72,q.z,0.8,0.1,0.8,1.06);}
   // Hoover Dam: curved concrete arch from the OSM outline, crest about 1,232 ft
-  {const P=[[16096,1770],[16221,1768],[16272,1685],[16306,1581],[16420,1567],[16490,1505],[16559,1441],[16619,1367],[16707,1323],[16755,1236],[16807,1153]];for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];const mx=(a[0]+b[0])/2,mn=(a[1]+b[1])/2;const s0=surf(mx,mn);const top=Wv(mx,mn,Math.max(1232,s0+90)),bot=Wv(mx,mn,Math.min(810,s0-300));const L=Math.hypot(b[0]-a[0],b[1]-a[1])*S;
-    const m=part(world,box,"#E3DDD0",top.x,(top.y+bot.y)/2,top.z,L+0.06,top.y-bot.y,0.7,1.04);m.rotation.y=Math.atan2(b[1]-a[1],b[0]-a[0]);}
+  {const P=[[16096,1770],[16221,1768],[16272,1685],[16306,1581],[16420,1567],[16490,1505],[16559,1441],[16619,1367],[16707,1323],[16755,1236],[16807,1153]];for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];const mx=(a[0]+b[0])/2,mn=(a[1]+b[1])/2;const s0=surf(mx,mn);const top=Wv(mx,mn,Math.max(1232,s0+150)),bot=Wv(mx,mn,Math.min(810,s0-300));const L=Math.hypot(b[0]-a[0],b[1]-a[1])*S;
+    const m=part(world,box,"#E3DDD0",top.x,(top.y+bot.y)/2,top.z,L+0.06,top.y-bot.y,0.7,1.04);rot(m,0,Math.atan2(b[1]-a[1],b[0]-a[0]),0);}
     }
   // four intake towers on the lake side (positions from the dam outline)
   [[16472,1909],[16620,1791],[16759,1665],[16907,1547]].forEach(([x,n])=>{const v=Wv(x,n,Math.min(1206,surf(x,n)));part(world,cyl,"#EDE7DA",v.x,v.y+0.7,v.z,0.22,1.6,0.22,1.06);part(world,cyl,"#C9C1B2",v.x,v.y+1.55,v.z,0.27,0.16,0.27,1.06);});
   // Mike O'Callaghan–Pat Tillman Memorial Bridge (OSM walkway): deck and arch over Black Canyon
-  {const a=[14166,1262],b=[16133,-133];let DK=1497;for(let i=0;i<=24;i++){const t=i/24;DK=Math.max(DK,surf(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t)+60);}const A=Wv(a[0],a[1],DK),B=Wv(b[0],b[1],DK);const L=A.distanceTo(B),rot=Math.atan2(b[1]-a[1],b[0]-a[0]);
-    const d=part(world,box,"#D8D3CA",(A.x+B.x)/2,A.y,(A.z+B.z)/2,L,0.35,1.0,1.04);d.rotation.y=rot;
-    const N=16;for(let i=0;i<=N;i++){const t=i/N,x=a[0]+(b[0]-a[0])*(0.1+0.8*t),n=a[1]+(b[1]-a[1])*(0.1+0.8*t);const y=DK-330+290*(1-Math.pow(2*t-1,2));if(y<surf(x,n))continue;const v=Wv(x,n,y);part(world,box,"#C9C3B8",v.x,v.y,v.z,0.8,0.55,0.9,1.04).rotation.y=rot;}}
+  {const a=[14166,1262],b=[16133,-133];let DK=1497;for(let i=0;i<=24;i++){const t=i/24;DK=Math.max(DK,surf(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t)+60);}const A=Wv(a[0],a[1],DK),B=Wv(b[0],b[1],DK);const L=A.distanceTo(B),ang=Math.atan2(b[1]-a[1],b[0]-a[0]);
+    const d=part(world,box,"#D8D3CA",(A.x+B.x)/2,A.y,(A.z+B.z)/2,L,0.35,1.0,1.04);rot(d,0,ang,0);
+    const N=16;for(let i=0;i<=N;i++){const t=i/N,x=a[0]+(b[0]-a[0])*(0.1+0.8*t),n=a[1]+(b[1]-a[1])*(0.1+0.8*t);const y=DK-330+290*(1-Math.pow(2*t-1,2));if(y<surf(x,n))continue;const v=Wv(x,n,y);rot(part(world,box,"#C9C3B8",v.x,v.y,v.z,0.8,0.55,0.9,1.04),0,ang,0);}}
 
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
