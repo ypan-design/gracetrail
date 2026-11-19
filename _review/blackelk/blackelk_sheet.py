@@ -174,7 +174,7 @@ cfg = dict(
     flora={'A': ['susan_be', 'hare_be', 'lily_be'], 'B': ['berg_be', 'hare_be', 'bear_be'], 'C': ['fire_be', 'lily_be', 'berg_be', 'bear_be', 'hare_be']},
     wild=['goat', 'bighorn', 'bison', 'deer', 'marmot', 'chipmunk', 'squirrel', 'snake', 'turtle', 'heron', 'osprey', 'eagle', 'nutcracker', 'woodpecker', 'vulture', 'hawk', 'bluebird'],
     wild_sum={
-     'goat': ('Mountain goat', 'Rare here: the Black Hills herd, about 120 goats, descends from a few released at Custer State Park in 1924, far from their native northern Rockies. Look on the summit rocks of Black Elk Peak and Little Devils Tower, and stay well back.'),
+     'goat': ('Mountain goat', 'Rare here: the Black Hills herd, about 120 goats, descends from goats brought to Custer State Park in 1924 that escaped their enclosure, far from their native range in the northern Rockies. Look on the summit rocks of Black Elk Peak and Little Devils Tower, and stay well back.'),
      'bighorn': ('Bighorn sheep', 'Bighorn sheep live on the granite cliffs of Custer State Park and are sometimes seen around the Needles and the Cathedral Spires.'),
      'bison': ('American bison', 'Custer State Park’s bison herd roams the park, and the park warns they are common along its trails. Stay at least 100 yards away.'),
      'deer': ('White-tailed deer', 'White-tailed and mule deer browse the pine and spruce woods around Sylvan Lake, most often at dawn and dusk.'),
