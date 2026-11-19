@@ -1,0 +1,37 @@
+{
+ "name": "Lost Mine Trail",
+ "folder": "big-bend-lost-mine",
+ "city": "Chisos Basin",
+ "area": "Big Bend National Park",
+ "state": "TX",
+ "region": "Southwest",
+ "lat": 29.2745,
+ "lon": -103.2864,
+ "where": "Chisos Mountains, Big Bend National Park, Texas",
+ "high": "7,825 ft",
+ "blurb": "Big Bend's classic Chisos hike to a ridge over Pine Canyon, plus the short Chisos Basin Loop and the climb to Emory Peak, the park's highest point.",
+ "trails": [
+  {"id": "A", "name": "Chisos Basin Loop", "mi": 2.0, "unit": "loop", "level": "Moderate", "gain_ft": 360},
+  {"id": "B", "name": "Lost Mine Trail", "mi": 4.8, "unit": "round trip", "level": "Moderate", "gain_ft": 1100},
+  {"id": "C", "name": "Emory Peak Trail", "mi": 10.0, "unit": "round trip", "level": "Strenuous", "gain_ft": 2500}
+ ],
+ "status": "Open. The planned 2026 Chisos Basin closure for lodge construction was cancelled; the basin restaurant is closed (food truck instead). Lost Mine Trailhead parking (about 15 cars) often fills by 8-9 a.m. November through April. No pets on trails.",
+ "sources": [
+  "https://home.nps.gov/bibe/planyourvisit/mountain_hikes.htm",
+  "https://www.nps.gov/places/lost-mine-trail.htm",
+  "https://www.nps.gov/thingstodo/hike-the-lost-mine-trail.htm",
+  "https://www.nps.gov/places/lost-mine-trail-stop-10.htm",
+  "https://www.nps.gov/places/lost-mine-trail-stop-23.htm",
+  "https://www.nps.gov/places/emory-peak-trail.htm",
+  "https://www.nps.gov/bibe/planyourvisit/conditions.htm",
+  "https://www.nps.gov/bibe/planyourvisit/construction-cancelled.htm",
+  "https://www.nps.gov/bibe/planyourvisit/paved-roads.htm",
+  "https://www.nps.gov/bibe/planyourvisit/birdwatching_chisosmts.htm",
+  "https://www.nps.gov/bibe/learn/nature/what-animal.htm",
+  "https://en.wikipedia.org/wiki/Emory_Peak",
+  "https://hikingwalking.com/destinations/tx/tx_parks/big_bend/lost_mine",
+  "https://hikingwalking.com/destinations/tx/tx_parks/big_bend/emory_peak",
+  "https://chihuahuandesert.org/2024/01/20/wildlife-of-our-big-backyard-sky-islands/",
+  "https://www.npsot.org/posts/early-fall-is-springtime-in-the-chisos-mountains/"
+ ]
+}
