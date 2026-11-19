@@ -250,6 +250,10 @@ const SPECIES={
 };
 const FLORA={"A":["springbeauty","troutlily","violet"],"B":["springbeauty","mtash","violet"],"C":["catawba","mtash","troutlily","springbeauty"]};
 const WILD={
+/* wildlife7:start */
+ flyingsquirrel:{name:"Carolina northern flying squirrel",color:"#8A7A66",sum:"Rare here: a federally endangered flying squirrel found only in the high spruce-fir and birch forests of a few southern Appalachian peaks. Active at night."},
+ junco:{name:"Dark-eyed junco",color:"#8A7A66",sum:"Slate-gray sparrow with white outer tail feathers; the most common bird on the high trails around Newfound Gap."},
+/* wildlife7:end */
  bear:{name:"Black bear",color:"#3E2C22",sum:"About 1,900 black bears live in the park and they range up to the state-line ridge. Stay at least 50 yards away, and never leave food unattended at Icewater Spring Shelter."},
  deer:{name:"White-tailed deer",color:"#B98A5E",sum:"Browses along the forest edges near Newfound Gap, mostly early and late in the day."},
  squirrel:{name:"Red squirrel",color:"#9A9A96",sum:"Called the “boomer” in the Smokies. A small, noisy squirrel of the spruce-fir forest that chatters at hikers along the AT."},
@@ -861,12 +865,15 @@ const B={
   g.userData.w=[wL,wR];return g;}
 };
 return B;})();
-Object.assign(BUILD,GENTLE);
-const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
-const SCALE={chipmunk:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+Object.assign(BUILD,GENTLE);/* wildlife7:start */if(!BUILD["flyingsquirrel"])BUILD["flyingsquirrel"]=function(){return BUILD["squirrel"].apply(this,arguments);};/* wildlife7:end */
+const BIRDC={/* wildlife7:start */junco:["#5A5E66", "#F2F2EE", null],/* wildlife7:end */hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const SCALE={chipmunk:2.0,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};/* wildlife7:start */if(!SCALE["flyingsquirrel"])SCALE["flyingsquirrel"]=1.8;/* wildlife7:end */
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
+/* wildlife7:start */
+ {k:"flyingsquirrel",at:[8350,4850],hop:true},
+/* wildlife7:end */
  {k:"bear",path:[3115,1297,4178,2848],per:32},
  {k:"bear",path:[12129,7766,12845,7964],per:34,ph:0.4},
  {k:"deer",path:[2374,1742,3095,2211],per:26},
@@ -890,7 +897,7 @@ ANIMALS.forEach((a,idx)=>{
 });
 // birds
 const birds=[];
-[["raven",-44,32,-30,8],["hawk",44,26,26,7],["raven",-36,35,40,7],["hawk",34,30,-44,6],["raven",0,38,-50,10],["hawk",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
+[["raven",-44,32,-30,8],["hawk",44,26,26,7],["raven",-36,35,40,7],["hawk",34,30,-44,6],["raven",0,38,-50,10],["hawk",-10,28,50,6],["raven",50,34,-10,9],["junco",-50,30,10,7]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
