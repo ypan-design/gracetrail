@@ -1,0 +1,55 @@
+{
+ "name": "Twin Falls",
+ "folder": "twin-falls-wa",
+ "city": "North Bend",
+ "area": "Olallie State Park",
+ "state": "WA",
+ "region": "Pacific Northwest",
+ "reg": "pnw",
+ "lat": 47.4526,
+ "lon": -121.7054,
+ "where": "Olallie State Park, I-90 exit 34, near North Bend, Washington",
+ "high": "about 1,390 ft",
+ "blurb": "Old-growth forest on the South Fork Snoqualmie River to the bridge over 135-foot Twin Falls, on up to the Iron Horse rail trail, plus a short walk to Weeks Falls.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Weeks Falls Interpretive Trail",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 30
+  },
+  {
+   "id": "B",
+   "name": "Twin Falls Trail",
+   "mi": 2.5,
+   "unit": "round trip",
+   "level": "Easy/Moderate",
+   "gain_ft": 500
+  },
+  {
+   "id": "C",
+   "name": "Twin Falls to the Palouse to Cascades Trail",
+   "mi": 4.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 900
+  }
+ ],
+ "status": "Partly closed. The Lower Twin Falls Viewpoint (104 steps and platform) has been closed since March 16, 2026, after storm damage; the rest of the Twin Falls Trail is open. Discover Pass required; park open 6:30 am to dusk.",
+ "rare": [],
+ "sources": [
+  "https://parks.wa.gov/find-parks/state-parks/olallie-state-park",
+  "https://parks.wa.gov/sites/default/files/2023-05/Olallie%20State%20Park%20Brochure.pdf",
+  "https://parks.wa.gov/find-parks/state-parks/palouse-cascades-state-park-trail",
+  "https://www.wta.org/go-hiking/hikes/twin-falls-state-park",
+  "https://www.mountaineers.org/activities/routes-places/twin-falls",
+  "https://www.hikingproject.com/trail/7079657/twin-falls-trail",
+  "https://hikingwithmybrother.com/twin-falls-to-iron-horse-trail.html",
+  "https://www.onxmaps.com/hiking/d7861jv1p6lm/twin-falls-hike-via-homestead-valley-trailhead",
+  "https://en.wikipedia.org/wiki/Olallie_State_Park",
+  "https://www.inaturalist.org/observations?nelat=47.458&nelng=-121.65&swlat=47.425&swlng=-121.71",
+  "https://www.openstreetmap.org/way/156017148"
+ ]
+}
