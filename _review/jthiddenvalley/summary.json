@@ -1,0 +1,57 @@
+{
+ "name": "Hidden Valley & Barker Dam",
+ "folder": "joshua-tree-hidden-valley",
+ "city": "Joshua Tree",
+ "area": "Joshua Tree National Park",
+ "state": "CA",
+ "region": "California",
+ "reg": "ca",
+ "lat": 34.0124,
+ "lon": -116.168,
+ "where": "Joshua Tree National Park, off Park Boulevard at Hidden Valley and Barker Dam Road, California",
+ "high": "4,340 ft",
+ "blurb": "Three short, nearly flat walks in the boulder country of Joshua Tree: the Hidden Valley loop, the Barker Dam loop and the trail to Bill Keys’ Wall Street Mill.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Hidden Valley Nature Trail",
+   "mi": 1.0,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 100
+  },
+  {
+   "id": "B",
+   "name": "Barker Dam Trail",
+   "mi": 1.1,
+   "unit": "loop",
+   "level": "Easy",
+   "gain_ft": 50
+  },
+  {
+   "id": "C",
+   "name": "Wall Street Mill Trail",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 115
+  }
+ ],
+ "status": "Open. No closures listed by the NPS for these trails in November 2026; no reservation or timed entry. $30 vehicle entrance fee; no water, no pets on trails.",
+ "sources": [
+  "https://www.nps.gov/jotr/planyourvisit/hiking.htm",
+  "https://www.nps.gov/places/wall-street-mill-trailhead.htm",
+  "https://www.nps.gov/jotr/planyourvisit/fees.htm",
+  "https://www.nps.gov/jotr/planyourvisit/basicinfo.htm",
+  "https://www.nps.gov/jotr/planyourvisit/conditions.htm",
+  "https://www.nps.gov/jotr/learn/news/joshua-tree-national-park-replaces-historic-marker.htm",
+  "https://www.hikingproject.com/trail/7016879/hidden-valley-nature-trail",
+  "https://www.hikingproject.com/trail/7017697/barker-dam-nature-trail",
+  "https://en.wikipedia.org/wiki/Barker_Dam_(California)",
+  "https://www.hikespeak.com/?p=10208",
+  "https://morethanjustparks.com/wall-street-mill/",
+  "https://modernhiker.com/?p=5406",
+  "https://www.weekendsherpa.com/stories/joshua-tree-s-barker-dam-hike-petroglyphs-and-world-famous-crochet-museum",
+  "https://naturalhistorywanderings.com/2013/04/20/joshua-tree-wildflower-bloom-update-42013"
+ ]
+}
