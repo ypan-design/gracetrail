@@ -1,0 +1,55 @@
+{
+ "name": "General Sherman Tree",
+ "folder": "sequoia-general-sherman",
+ "city": "Three Rivers",
+ "area": "Sequoia National Park (Giant Forest)",
+ "state": "CA",
+ "region": "California",
+ "lat": 36.5848,
+ "lon": -118.7509,
+ "where": "Giant Forest, off Wolverton Road · Sequoia National Park, California",
+ "high": "7,350 ft",
+ "blurb": "A paved walk down to the largest tree on Earth, the Congress Trail loop through the named giants of Giant Forest, and the quieter Trail of the Sequoias loop past Log Meadow and Circle Meadow.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "General Sherman Tree Main Trail",
+   "mi": 1.0,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 212
+  },
+  {
+   "id": "B",
+   "name": "Congress Trail",
+   "mi": 2.7,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 500
+  },
+  {
+   "id": "C",
+   "name": "Trail of the Sequoias Loop",
+   "mi": 7.0,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 1170
+  }
+ ],
+ "status": "Open. As of Nov 17, 2026 snow traction devices are required on all vehicles on the Generals Highway; the Sherman Tree road and main lot are not plowed in winter (park at the accessible lot on the highway), and trails may be snow-covered.",
+ "sources": [
+  "https://www.nps.gov/seki/learn/nature/sherman.htm",
+  "https://www.nps.gov/seki/planyourvisit/gfdayhikesum.htm",
+  "https://www.nps.gov/thingstodo/congress-trail.htm",
+  "https://www.nps.gov/seki/planyourvisit/road-conditions.htm",
+  "https://www.nps.gov/seki/planyourvisit/conditions.htm",
+  "https://www.nationalparkstraveler.org/2025/12/trails-ive-hiked-general-sherman-tree-trail",
+  "https://americansouthwest.net/california/sequoia/congress-trail.html",
+  "https://www.americansouthwest.net/california/sequoia/circle-meadow-loop.html",
+  "https://www.hikingproject.com/trail/7044282/giant-forest-loop-trail",
+  "https://www.thetrailmaster.com/trails/sequoia-deeper-into-giant-forest/",
+  "https://en.wikipedia.org/wiki/President_(tree)",
+  "https://en.wikipedia.org/wiki/Cattle_Cabin",
+  "https://en.wikipedia.org/wiki/Giant_Forest"
+ ]
+}
