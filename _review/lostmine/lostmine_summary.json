@@ -11,9 +11,30 @@
  "high": "7,825 ft",
  "blurb": "Big Bend's classic Chisos hike to a ridge over Pine Canyon, plus the short Chisos Basin Loop and the climb to Emory Peak, the park's highest point.",
  "trails": [
-  {"id": "A", "name": "Chisos Basin Loop", "mi": 2.0, "unit": "loop", "level": "Moderate", "gain_ft": 360},
-  {"id": "B", "name": "Lost Mine Trail", "mi": 4.8, "unit": "round trip", "level": "Moderate", "gain_ft": 1100},
-  {"id": "C", "name": "Emory Peak Trail", "mi": 10.0, "unit": "round trip", "level": "Strenuous", "gain_ft": 2500}
+  {
+   "id": "A",
+   "name": "Chisos Basin Loop",
+   "mi": 2.0,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 360
+  },
+  {
+   "id": "B",
+   "name": "Lost Mine Trail",
+   "mi": 4.8,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1100
+  },
+  {
+   "id": "C",
+   "name": "Emory Peak Trail",
+   "mi": 10.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 2500
+  }
  ],
  "status": "Open. The planned 2026 Chisos Basin closure for lodge construction was cancelled; the basin restaurant is closed (food truck instead). Lost Mine Trailhead parking (about 15 cars) often fills by 8-9 a.m. November through April. No pets on trails.",
  "sources": [
@@ -32,6 +53,9 @@
   "https://hikingwalking.com/destinations/tx/tx_parks/big_bend/lost_mine",
   "https://hikingwalking.com/destinations/tx/tx_parks/big_bend/emory_peak",
   "https://chihuahuandesert.org/2024/01/20/wildlife-of-our-big-backyard-sky-islands/",
-  "https://www.npsot.org/posts/early-fall-is-springtime-in-the-chisos-mountains/"
+  "https://www.npsot.org/posts/early-fall-is-springtime-in-the-chisos-mountains/",
+  "https://www.nps.gov/bibe/learn/nature/bears.htm",
+  "https://txtbba.tamu.edu/?p=734",
+  "https://www.nps.gov/bibe/learn/nature/vultures.htm"
  ]
 }
