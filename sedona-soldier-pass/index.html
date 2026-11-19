@@ -252,6 +252,11 @@ const SPECIES={
 };
 const FLORA={"A":["blackfoot","globemallow","engpear","manzanita"],"B":["manzanita","claretcup","engpear","paintbrush_az","blackfoot"],"C":["manzanita","paintbrush_az","claretcup","globemallow","blackfoot","engpear"]};
 const WILD={
+/* wildlife7:start */
+ scrubjay_sp:{name:"Woodhouse’s scrub-jay",color:"#4A78B0",sum:"A crestless blue-and-gray jay of the piñon-juniper woodland, seen along the Soldier Pass Trail."},
+ towhee_sp:{name:"Canyon towhee",color:"#8A7A6A",sum:"A plain brown sparrow-like bird that scratches for seeds on the ground under the junipers."},
+ thrasher_sp:{name:"Crissal thrasher",color:"#7A6E66",sum:"A gray-brown desert songbird with a long curved bill that sings from the tops of snags and shrubs."},
+/* wildlife7:end */
  javelina:{name:"Javelina",color:"#5E5852",sum:"Collared peccaries move in small herds through the juniper and cypress on Brins Mesa and along Soldier Wash, mostly at dawn and dusk. Keep dogs leashed."},
  quail:{name:"Gambel’s quail",color:"#7D8A9A",sum:"Plump gray quail with a black teardrop topknot. Coveys scurry across the trail near the trailheads and call from the brush."},
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Big-eared deer that browse the open juniper country early and late in the day, often near the washes below the pools."},
@@ -856,7 +861,7 @@ const B={
 };
 return B;})();
 Object.assign(BUILD,GENTLE);
-const BIRDC={vulture:["#2A2420", null, "#C8322C"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const BIRDC={/* wildlife7:start */scrubjay_sp:["#4A78B0", "#C9C4BA", null],towhee_sp:["#8A7A6A", "#B8A890", "#A0603A"],thrasher_sp:["#7A6E66", "#8C8078", "#5A3A2A"],/* wildlife7:end */vulture:["#2A2420", null, "#C8322C"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
 const SCALE={javelina:1.5,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
@@ -887,7 +892,7 @@ ANIMALS.forEach((a,idx)=>{
 });
 // birds
 const birds=[];
-[["raven",-44,32,-30,8],["hawk",44,26,26,7],["vulture",-36,35,40,7],["raven",34,30,-44,6],["hawk",0,38,-50,10],["vulture",-10,28,50,6],["raven",50,34,-10,9]].forEach((b,i)=>{
+[["raven",-44,32,-30,8],["hawk",44,26,26,7],["vulture",-36,35,40,7],["raven",34,30,-44,6],["hawk",0,38,-50,10],["vulture",-10,28,50,6],["raven",50,34,-10,9],["scrubjay_sp",-50,30,10,7],["towhee_sp",-24,33,-48,7],["thrasher_sp",-4,31,20,9]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
@@ -1160,6 +1165,22 @@ cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
 if(reduced)animate(6,0.016);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+/* rare-animals:start */
+(function(){try{
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
+  Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
+    birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
+      addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
+  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
+  const cd=document.getElementById("card");
+  if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+}catch(e){console.warn("rare",e);}})();
+/* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
 })();
 </script>
