@@ -103,9 +103,9 @@ A_ = lambda k, f, s=1, o=200: pa(p, R[k], [f], s, o)[0]
 def path(k, f, s=1, o=200, d=0.02): return js(A_(k, f, s, o) + A_(k, f + d, s, o))
 an = []
 an += [f'{{k:"elk",path:{js([12350, -5420, 12650, -5480])},per:40}}', f'{{k:"elk",path:{js([11050, -3780, 11350, -3860])},per:44,ph:0.4}}']
-an += [f'{{k:"dipper",at:[369,-927],hop:true}}', f'{{k:"dipper",at:[13625,-6462],hop:true}}']
+an += [f'{{k:"dipper",at:[369,-927],hop:true}}', f'{{k:"dipper",at:[13285,-6202],hop:true}}']
 an += [f'{{k:"newt",path:{path("C",.84,-1,90,.01)},per:60}}', f'{{k:"newt",path:{path("B",.30,1,80,.01)},per:60,ph:0.5}}']
-an += [f'{{k:"chipmunk",at:{js(A_("B",.15,1,110))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("C",.70,1,140))},hop:true}}']
+an += [f'{{k:"chipmunk",at:{js(A_("B",.15,1,110))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("C",.40,1,140))},hop:true}}']
 an += [f'{{k:"squirrel",at:{js(A_("C",.93,-1,160))},hop:true}}', f'{{k:"squirrel",at:{js(A_("B",.55,-1,150))},hop:true}}']
 an += [f'{{k:"snake",path:{path("A",.5,1,120,.06)},per:30}}', f'{{k:"snake",path:{path("C",.60,-1,120,.01)},per:32,ph:0.5}}']
 animals_js = '[\n ' + ',\n '.join(an) + '\n]'
