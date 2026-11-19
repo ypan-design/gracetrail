@@ -559,7 +559,6 @@ const anim={};
     const m=new THREE.Mesh(geo,fallMat);m.renderOrder=2;world.add(m);return m;}
   function pool(x,n,e,r){const v=Wv(x,n,Math.max(e,surf(x,n)+2));part(world,new THREE.CylinderGeometry(1,1,0.05,18),"#CFEFF2",v.x,v.y,v.z,r,1,r*0.8,1.03,false);}
   // rock walls of the gorge on both sides of the falls (solid volume)
-  [[1880,-2600,1.6],[1985,-2650,1.3],[1840,-2700,1.5],[2080,-2830,1.2],[2150,-2730,1.1]].forEach(([x,n,s])=>rock(x,n,s,"#8D8A82"));
   // Lower Twin Falls: one 135-ft plunge just below the bridge, river flowing west
   fall(1955,-2712,860,1830,-2622,712,90,18);pool(1800,-2600,705,1.5);
   // upper falls: stair-step cascades above the bridge, up to the OSM waterfall node
@@ -903,7 +902,7 @@ const B={
 return B;})();
 Object.assign(BUILD,GENTLE);
 const BIRDC={steller:["#24406E", null, "#1A1A1A"],owl:["#8A6F55", "#E8E0D2", "#8A6F55"],vulture:["#2A2420", null, "#C8322C"],hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
-const SCALE={elk:1.25,chipmunk:2.0,newt:2.6,dipper:2.4,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
+const SCALE={elk:1.25,chipmunk:2.0,newt:1.8,dipper:1.6,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
@@ -1062,7 +1061,7 @@ function portrait(kind,k){const key=kind+k;if(PCACHE[key])return PCACHE[key];
   let subj;
   if(kind==="animal"){if(isBird(k)){const [c,b,cp]=BIRDC[k];subj=BUILD.bird(c,b,cp);subj.scale.setScalar(2.6);subj.position.y=1.6;subj.rotation.set(0.25,0.4,0);}
     else if(k==="quail"){subj=new THREE.Group();[[0,0,0],[0.9,0,0.5],[-0.7,0,0.6]].forEach(([x,y,z])=>{const q=BUILD.quail();q.scale.setScalar(2.2);q.position.set(x,0,z);subj.add(q);});}
-    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,elk:1.66,moose:1.73,bison:1.66,bighorn:1.43,goat:1.39,marmot:1.16,pika:0.95,chipmunk:1.04,grizzly:1.19,alligator:1.39,turtle:1.04,turkey:1.22,javelina:1.39,armadillo:1.09,heron:1.3,egret:1.3,nene:1.09,fox:1.49,pronghorn:1.49,otter:1.22,beaver:1.22,dipper:0.87,newt:0.8}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
+    else{subj=BUILD[k]();subj.scale.setScalar({squirrel:2.2,snake:2.4,raccoon:1.6,lion:1.1,bear:1.0,deer:1.05,coyote:1.15,bobcat:1.3,elk:1.66,moose:1.73,bison:1.66,bighorn:1.43,goat:1.39,marmot:1.16,pika:0.95,chipmunk:1.04,grizzly:1.19,alligator:1.39,turtle:1.04,turkey:1.22,javelina:1.39,armadillo:1.09,heron:1.3,egret:1.3,nene:1.09,fox:1.49,pronghorn:1.49,otter:1.22,beaver:1.22,dipper:1.3,newt:1.16}[k]||1);if(k==="snake")subj.userData.segs.forEach((sg,i)=>{sg.position.set(-i*0.2,0.12,Math.sin(i*0.6)*0.2);sg.userData.hull.position.copy(sg.position);});}}
   else{subj=new THREE.Group();const r=rng(k.length*31);[[0,0,0],[1.5,0,0.7],[-1.4,0,0.6]].forEach(([x,y,z],i)=>{const grp=new THREE.Group();grp.position.set(x,0,z);grp.scale.setScalar(i?2.6:3.4);plant(k,(g2,c,m)=>{const me=new THREE.Mesh(FGEO[g2],pho(c));me.applyMatrix4(m);grp.add(me);},r);subj.add(grp);});}
   g.add(subj);
   const box=new THREE.Box3().setFromObject(subj);box.min.y=Math.min(box.min.y,0);const ctr=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
