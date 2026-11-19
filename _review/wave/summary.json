@@ -1,0 +1,68 @@
+{
+ "name": "The Wave & Wire Pass",
+ "folder": "the-wave",
+ "city": "Kanab",
+ "area": "Paria Canyon–Vermilion Cliffs Wilderness",
+ "state": "AZ",
+ "region": "Southwest",
+ "reg": "sw",
+ "lat": 37.01907,
+ "lon": -112.02478,
+ "where": "Wire Pass Trailhead, House Rock Valley Road, Vermilion Cliffs National Monument, on the Utah–Arizona line",
+ "high": "5,210 ft",
+ "blurb": "Through the Wire Pass slot to Buckskin Gulch, on into the Buckskin narrows, and across open slickrock to The Wave in Coyote Buttes North.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Wire Pass to Buckskin Gulch",
+   "mi": 3.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 170
+  },
+  {
+   "id": "B",
+   "name": "Buckskin Gulch narrows via Wire Pass",
+   "mi": 5.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 300
+  },
+  {
+   "id": "C",
+   "name": "The Wave (Coyote Buttes North)",
+   "mi": 6.4,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 600
+  }
+ ],
+ "status": "Permit required. The Wave is by lottery only (advanced lottery four months ahead or the geofenced daily lottery; up to 64 people a day, $7 per person); Wire Pass and Buckskin Gulch need a $6 day-use permit. House Rock Valley Road is dirt and can be impassable when wet; the BLM warns of extreme heat May–September and flash floods in the slots.",
+ "rare": [
+  {
+   "animal": "California condor",
+   "why": "Condors have been released in the Vermilion Cliffs National Monument since 1996 from a species that fell to 22 birds in the 1980s, and hikers have recorded them over Coyote Buttes and Wire Pass.",
+   "source": "https://www.blm.gov/blog/2026-10-15/celebrating-30-years-california-condor-recovery-vermilion-cliffs-national-monument"
+  }
+ ],
+ "sources": [
+  "https://www.blm.gov/programs/recreation/permits-and-passes/lotteries-and-permit-systems/arizona/coyote-buttes-north",
+  "https://recreation.gov/permits/274309",
+  "https://www.blm.gov/arizona/public-room/fact-sheet/coyote-buttes-north-daily-lottery-wave-faqs",
+  "https://www.blm.gov/visit/search-details/16450/2",
+  "https://blm.gov/visit/buckskin-gulch",
+  "https://www.blm.gov/node/10029",
+  "https://www.blm.gov/blog/2026-10-15/celebrating-30-years-california-condor-recovery-vermilion-cliffs-national-monument",
+  "https://www.blm.gov/sites/blm.gov/files/documents/files/Vermilion%20Cliffs%20National%20Monument%20Science%20Plan%20-%20Final.pdf",
+  "https://en.wikipedia.org/wiki/The_Wave,_Arizona",
+  "https://en.wikipedia.org/wiki/Vermilion_Cliffs_National_Monument",
+  "https://thewave.info/CoyoteButtesNorthCode/Map.html",
+  "https://www.americansouthwest.net/arizona/coyote_buttes/sites.html",
+  "https://hikingguy.com/hiking-trails/phoenix-hiking/the-wave-arizona-an-easy-guide/",
+  "https://www.hikingproject.com/trail/7047442/wire-pass-trail",
+  "https://liveandlethike.com/2021/06/04/buckskin-gulch-via-wire-pass-paria-canyon-vermilion-cliffs-wilderness-ut/",
+  "https://www.foxintheforest.net/wire-pass-buckskin-gulch/",
+  "https://www.hikearizona.com/decoder.php?ZTN=20503",
+  "https://api.inaturalist.org/v1/observations/species_counts?lat=37.008&lng=-112.012&radius=4"
+ ]
+}
