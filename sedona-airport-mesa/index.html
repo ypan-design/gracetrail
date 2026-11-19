@@ -549,10 +549,10 @@ const anim={};
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(-8,6,0.8);gate(-2659,-877,0.4);
   // Sedona Airport runway 03/21 (OSM aeroway=runway), drawn wider than life so it reads at this scale
-  {const a=G(-4147,-4294),b=G(-489,-716);const L=Math.hypot(b.x-a.x,b.z-a.z);const y=Math.max(a.y,b.y)+0.12;
-    const m=part(world,box,"#4A4A4D",(a.x+b.x)/2,y,(a.z+b.z)/2,L,0.3,0.9,1.04);m.rotation.y=-Math.atan2(b.z-a.z,b.x-a.x);
-    const c=part(world,box,"#F2EEE4",(a.x+b.x)/2,y+0.16,(a.z+b.z)/2,L*0.86,0.04,0.08,0);c.rotation.y=m.rotation.y;
-    const st=(t)=>{const s=part(world,box,"#F2EEE4",a.x+(b.x-a.x)*t,y+0.16,a.z+(b.z-a.z)*t,0.12,0.04,0.7,0);s.rotation.y=m.rotation.y;};st(0.03);st(0.97);}
+  {const xa=-4147,na=-4294,xb=-489,nb=-716,N=14;const a=G(xa,na),b=G(xb,nb);const L=Math.hypot(b.x-a.x,b.z-a.z),ang=-Math.atan2(b.z-a.z,b.x-a.x);
+    for(let i=0;i<N;i++){const t=(i+0.5)/N,q=G(xa+(xb-xa)*t,na+(nb-na)*t);const g=new THREE.Group();g.position.set(q.x,q.y,q.z);g.rotation.y=ang;world.add(g);
+      part(g,box,"#4A4A4D",0,0.08,0,L/N*1.03,0.4,0.9,1.04);part(g,box,"#F2EEE4",0,0.29,0,L/N*0.5,0.03,0.08,0);
+      if(i==0||i==N-1)part(g,box,"#F2EEE4",(i==0?-1:1)*L/N*0.4,0.29,0,0.1,0.03,0.7,0);}}
   house(-2818,-2102,1.3,-0.7);
   // Airport Mesa vortex: red-rock knob with a stone cairn on top (OSM viewpoint at the end of the Summit Trail)
   {const q=G(468,122);part(world,ico,"#B5532F",q.x,q.y+0.5,q.z,1.6,1.1,1.3);part(world,ico,"#C7643A",q.x+0.5,q.y+0.35,q.z+0.4,0.9,0.7,0.8);
@@ -569,7 +569,7 @@ const anim={};
   anim.water=anim.water||{fallTex:{offset:{y:0}},rings:[],mist:[]};
 })();
 
-TRAILS.forEach(T=>{const g={B:535}[T.id];if(g)T.gain=g;});
+TRAILS.forEach(T=>{const g={B:535,C:620}[T.id];if(g)T.gain=g;});
 // out-and-back: report the outbound mile for a stop
 mileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};
 /* ================= animals ================= */
