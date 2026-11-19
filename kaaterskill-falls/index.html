@@ -355,7 +355,7 @@ let MAXY=0;
     let c;
     if(mk<0.02)c=col(PAL.ground);else if(cd<140)c=col(PAL.riparian);
     else if(g>1.0&&south>-0.1&&mk>0.9)c=col(g>1.2?PAL.rockDeep:PAL.rock);
-    else if(me>2350&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
+    else if(me>2480&&south>-0.3)c=col(PAL.ridge);else if(south<-0.15)c=col(PAL.groundN);else c=col(PAL.ground);
     if(mk>0.02)c.offsetHSL(0,0,(r()-.5)*0.035);
     const W3=[A,B,Q].map(v=>Wv(v[0],v[1],v[2]));
     const e1=W3[1].clone().sub(W3[0]),e2=W3[2].clone().sub(W3[0]);if(e1.cross(e2).y<0){const t=W3[1];W3[1]=W3[2];W3[2]=t;}
@@ -547,20 +547,20 @@ const anim={};
   gate(14,1011,2.8);
   // Kaaterskill Falls: two tiers on Spruce Creek, water flowing west-northwest (OSM creek); upper tier at the Wikipedia point,
   // lower tier below the middle pool. Drawn exaggerated, with volume (water slab + rock wall behind).
-  const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
+  const fallTex=stripeTex("#9ED3E8","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.5);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex});
   const rings=[],mist=[];
   function fall(x,n,dx,dn,w,h,sc){const F=G(x,n);const d=new THREE.Vector3(dx,0,-dn).normalize();
     const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=Math.atan2(d.x,d.z);wf.scale.setScalar(sc);world.add(wf);
     const wt=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.22),fallMat);wt.position.set(0,h/2,-0.25);wf.add(wt);
-    part(wf,box,"#8F8B82",0,h/2,-0.62,w+0.9,h+0.25,0.55,1.04);
+    part(wf,box,"#6F6B64",0,h/2,-0.62,w+0.9,h+0.25,0.55,1.04);
     part(wf,box,"#A39E93",0,h+0.1,-0.45,w+1.2,0.22,0.95,1.05);
     for(let i=0;i<3;i++){part(wf,ico,i%2?"#9A958A":"#85817A",-(w/2+0.55)-i*0.15,h*(0.75-i*0.22),-0.3+i*0.25,0.55,h*0.3,0.5);part(wf,ico,i%2?"#85817A":"#9A958A",(w/2+0.55)+i*0.15,h*(0.72-i*0.2),-0.3+i*0.25,0.52,h*0.28,0.5);}
     const pool=new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.12,18),new THREE.MeshBasicMaterial({color:"#9CD3E0"}));pool.position.set(0,0.06,0.55);pool.scale.set(w*0.9+0.5,1,0.75);wf.add(pool);
     for(let i=0;i<2;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.45,0.55,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.14,0.45);wf.add(rg);rings.push(rg);}
     for(let i=0;i<4;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.16,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/4,x:(i%3-1)*0.35});}
     return wf;}
-  fall(-150,55,-1,0.3,0.8,3.8,1);
+  fall(-150,55,-1,0.3,1.1,3.8,1);
   fall(-330,100,-1,0.15,1.3,1.9,1);
   fall(-2030,-650,-0.7,-0.7,1.2,0.9,0.8);   // Bastion Falls at the Route 23A hairpin
   // viewing platform (deck on posts with railing), facing the falls
@@ -879,10 +879,10 @@ const animals=[];
 const ANIMALS=[
  {k:"bear",path:[-1655,-1971,-989,-2399],per:34},
  {k:"bear",path:[187,-1884,258,-945],per:36,ph:0.5},
- {k:"deer",path:[4275,-2887,4166,-2817],per:28},
+ {k:"deer",path:[3216,-2761,3792,-2947],per:28},
  {k:"deer",path:[1393,47,756,687],per:26,ph:0.4},
- {k:"turkey",path:[3745,-2626,3376,-2495],per:26},
- {k:"chipmunk",at:[247,309],hop:true},
+ {k:"turkey",path:[1911,-2549,1576,-2532],per:26},
+ {k:"chipmunk",at:[25,559],hop:true},
  {k:"chipmunk",at:[-194,-174],hop:true},
  {k:"chipmunk",at:[2536,-2729],hop:true}
 ];
@@ -930,7 +930,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 6.0, "B": 5.0, "C": 2.4}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.2, "B": 3.6, "C": 2.4}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

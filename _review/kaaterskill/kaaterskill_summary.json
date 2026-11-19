@@ -1,0 +1,53 @@
+{
+ "name": "Kaaterskill Falls",
+ "folder": "kaaterskill-falls",
+ "city": "Haines Falls",
+ "area": "Catskills",
+ "state": "NY",
+ "region": "Northeast",
+ "reg": "ne",
+ "lat": 42.19573,
+ "lon": -74.06322,
+ "where": "Kaaterskill Wild Forest, Catskill Park · Laurel House Road, Haines Falls, New York",
+ "high": "2,220 ft",
+ "blurb": "A two-tier, 260-foot waterfall at the head of Kaaterskill Clove: the viewing platform, the stone staircase to the pools, and the Escarpment Trail to Inspiration Point.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Kaaterskill Falls viewing platform",
+   "mi": 0.6,
+   "unit": "round trip",
+   "level": "Easy",
+   "gain_ft": 130
+  },
+  {
+   "id": "B",
+   "name": "Kaaterskill Falls Trail to the pools",
+   "mi": 1.4,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 250
+  },
+  {
+   "id": "C",
+   "name": "Escarpment Trail loop to Inspiration Point",
+   "mi": 3.9,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 519
+  }
+ ],
+ "status": "Open. The Molly Smith lot on Route 23A is closed and Route 23A pull-off parking is banned May–October; park at Laurel House Road, Schutt Road or North–South Lake. Kaaterskill Clove is closed from half an hour after sunset to half an hour before sunrise.",
+ "sources": [
+  "https://dec.ny.gov/places/kaaterskill-wild-forest",
+  "https://dec.ny.gov/things-to-do/hiking/catskill-backcountry-information",
+  "https://en.wikipedia.org/wiki/Kaaterskill_Falls",
+  "https://www.hikingproject.com/trail/7025604/kaaterskill-falls-trail",
+  "https://www.hikingproject.com/trail/7056777/easy-escarpment-trail-loop",
+  "https://secure.nynjtc.org/hike/print/2218",
+  "https://takeahike.us/kaaterskill-falls-inspiration-point-loop-escarpment-trail-catskill-park/",
+  "https://hikethehudsonvalley.com/kaaterskill-falls-ii-upper-trailhead/",
+  "https://catskillmountaineer.com/NSL-escarpment-southern.html",
+  "https://nyflora.org/?p=7767"
+ ]
+}
