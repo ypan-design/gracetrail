@@ -883,7 +883,7 @@ const SCALE={marmot:1.8,pika:2.2,bighorn:1.45,chipmunk:2.0,bear:1.7,deer:1.4,bob
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"bear",path:[132,1407,-497,1395],per:30},
+ {k:"bear",path:[-2690,-2247,-3128,-2133],per:30},
  {k:"bear",path:[-4242,-5296,-4787,-5942],per:34,ph:0.4},
  {k:"marmot",at:[-10324,-8578]},
  {k:"marmot",at:[-15609,-8811]},
@@ -892,7 +892,7 @@ const ANIMALS=[
  {k:"bighorn",path:[-12633,-9613,-12810,-9414],per:36},
  {k:"chipmunk",at:[-4049,-5080],hop:true},
  {k:"chipmunk",at:[-16034,-4017],hop:true},
- {k:"coyote",path:[-2232,-1697,-3356,-2836],per:26}
+ {k:"coyote",path:[-3890,-3446,-4079,-3989],per:26}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
