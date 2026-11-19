@@ -573,7 +573,7 @@ const anim={};
     const m=part(world,geo,rk.h>300?"#B9563B":"#C4644A",c0.x,c0.y,c0.z,1,1,1,1.02);});
   // Red Rocks Amphitheatre (opened 1941): stage at the east end, stone rows climbing west between Ship Rock and Creation Rock (exaggerated)
   {const ys=G(150,-40).y,yt=G(-400,-40).y,top=Math.max(yt,ys+1.6),X=x=>-120+(x+120)*1.25;
-   for(let i=0;i<11;i++){const x=110-i*50,L=(150+i*20)*1.15,q=G(X(x),-40),y=Math.max(ys+(top-ys)*i/10+0.3,q.y+0.35);
+   for(let i=0;i<11;i++){const x=110-i*50,L=(130+i*12),q=G(X(x),-40),y=Math.max(ys+(top-ys)*i/10+0.3,q.y+0.35);
      part(world,box,i%2?"#E6D8BE":"#D9C8A8",q.x,y-0.7,q.z,0.34,1.4,L*S,1.04);
      part(world,box,"#A3442E",q.x+0.12,y+0.03,q.z,0.08,0.06,L*S*0.92,0);}
    const s=G(X(165),-40),sy=Math.max(ys,s.y)+0.1;part(world,box,"#8E8A84",s.x,sy,s.z,1.0,0.5,2.2,1.04);
@@ -896,7 +896,7 @@ const ANIMALS=[
  {k:"lion",path:[-426,4042,-1264,4540],per:30,ph:0.3},
  {k:"bobcat",path:[80,-2336,128,-2435],per:24},
  {k:"snake",path:[1181,-1450,1114,-1538],per:30},
- {k:"snake",path:[-1049,1789,-1028,1741],per:30,ph:0.5},
+ {k:"snake",path:[-748,1278,-787,1124],per:30,ph:0.5},
  {k:"chipmunk",at:[-975,2363],hop:true},
  {k:"chipmunk",at:[-795,3806],hop:true},
  {k:"squirrel",at:[340,-909],hop:true},
@@ -940,7 +940,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":0.6,"A":0.5,"B":0.7,"C":0.4};
+const VIEWAZ={"all":3.75,"A":3.65,"B":3.85,"C":3.55};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
