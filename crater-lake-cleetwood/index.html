@@ -478,7 +478,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     if(inLake(x,n)){type=null;}else if(mk<0.25){type="conifer";p=0.05;}else if(g>1.15)type=null;else if(e>8500){type=tr()<.6?"conifer":null;p=0.1;}else{type=tr()<.9?"conifer":"shrub";p=0.3+cl*.25;}
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
-    inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
+    inst[type].push({v,s:(0.8+tr()*0.45)*0.6,ry:tr()*6.28});
   }
   const m4=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),pv=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),trunks=[];
   Object.entries(types).forEach(([k,T])=>{const list=inst[k];if(!list.length)return;
@@ -552,26 +552,27 @@ const anim={};
   function dome(x,n,s,c){const p=G(x,n);part(world,box,c||"#F1EDE4",p.x,p.y+0.7*s,p.z,3.2*s,1.4*s,1.6*s,1.05);part(world,new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x,p.y+1.4*s,p.z,0.8*s,0.8*s,0.8*s,1.05);
     [-1.1,1.1].forEach(dx=>part(world,new THREE.SphereGeometry(1,10,6,0,Math.PI*2,0,Math.PI/2),"#B8C2C4",p.x+dx*s,p.y+1.4*s,p.z,0.45*s,0.45*s,0.45*s,1.05));}
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
-  gate(-18509,1969,0.4);gate(18634,-3916,1.0);
+  [[-18509,1969,0.4],[18634,-3916,1.0]].forEach(([x,n,r])=>{const g=new THREE.Group();g.position.copy(G(x,n));g.rotation.y=r;g.scale.setScalar(0.4);world.add(g);
+   part(g,cyl,"#6B4F3A",-0.9,0.45,0,0.08,0.9,0.08);part(g,cyl,"#6B4F3A",0.9,0.45,0,0.08,0.9,0.08);part(g,box,"#E9E1D2",0,0.75,0,1.9,0.12,0.1,1.08);part(g,box,"#2D4A40",1.35,0.55,0.2,0.45,0.35,0.05,1.06);});
   // Watchman Lookout (1932): stone ground floor, glass lookout room, low hipped roof, east wing; drawn large
-  {const q=G(-19269,1088);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.0;g.scale.setScalar(1.9);world.add(g);
+  {const q=G(-19269,1088);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.0;g.scale.setScalar(0.75);world.add(g);
    part(g,box,"#8A847B",0,0.55,0,1.3,1.1,1.0,1.05);part(g,box,"#7A746B",0.95,0.4,0,0.7,0.8,0.8,1.05);
    part(g,box,"#5A4632",0,1.14,0,1.5,0.1,1.2,1.05);part(g,box,"#BFE3EE",0,1.5,0,1.36,0.62,1.06,1.05);
    [[-0.66,-0.51],[0.66,-0.51],[-0.66,0.51],[0.66,0.51]].forEach(([a,b])=>part(g,box,"#5A4632",a,1.5,b,0.08,0.62,0.08,1.05));
    const rf=part(g,new THREE.ConeGeometry(1.15,0.5,4),"#4A3A2C",0,2.06,0,1.15,1,0.95,1.05);rf.rotation.y=Math.PI/4;}
   // Mount Scott fire lookout on the summit, drawn large
-  {const q=G(22308,-6242);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(1.9);world.add(g);
+  {const q=G(22308,-6242);const g=new THREE.Group();g.position.copy(q);g.scale.setScalar(0.75);world.add(g);
    part(g,box,"#6E5236",0,0.45,0,1.1,0.9,1.1,1.05);part(g,box,"#5A4632",0,0.95,0,1.3,0.1,1.3,1.05);
    part(g,box,"#BFE3EE",0,1.3,0,1.16,0.6,1.16,1.05);
    [[-0.56,-0.56],[0.56,-0.56],[-0.56,0.56],[0.56,0.56]].forEach(([a,b])=>part(g,box,"#5A4632",a,1.3,b,0.08,0.6,0.08,1.05));
    const rf=part(g,new THREE.ConeGeometry(1.05,0.5,4),"#3E3A36",0,1.85,0,1,1,1,1.05);rf.rotation.y=Math.PI/4;}
   // Cleetwood boat dock: floating dock out from the landing (on the lake surface)
   {const a=G(3081,13272),b=G(2826,13051);const y=G(0,0).y+0.12;const d=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize();
-   const g=new THREE.Group();g.position.set(b.x+d.x*0.6,y,b.z+d.z*0.6);g.rotation.y=Math.atan2(d.x,d.z);world.add(g);
+   const g=new THREE.Group();g.position.set(b.x+d.x*0.15,y,b.z+d.z*0.15);g.rotation.y=Math.atan2(d.x,d.z);g.scale.setScalar(0.32);world.add(g);
    part(g,box,"#A08A6A",0,0.06,0.9,0.5,0.14,2.4,1.05);part(g,box,"#A08A6A",0,0.06,2.1,1.8,0.14,0.45,1.05);
    [-0.8,0.8].forEach(s=>part(g,box,"#5E4330",s,0.18,2.1,0.06,0.2,0.06,0));}
   // trail closed 2026-2028: orange barrier at the Cleetwood trailhead
-  {const q=G(4436,14458);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.7;g.scale.setScalar(1.6);world.add(g);
+  {const q=G(4436,14458);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.7;g.scale.setScalar(0.5);world.add(g);
    [-0.6,0.6].forEach(s=>part(g,box,"#F2F0EA",s,0.35,0,0.08,0.7,0.08,1.05));
    part(g,box,"#E8762B",0,0.55,0,1.4,0.16,0.06,1.05);part(g,box,"#F2F0EA",0,0.38,0,1.4,0.12,0.06,1.05);part(g,box,"#E8762B",0,0.22,0,1.4,0.1,0.06,1.05);}
 
@@ -900,22 +901,22 @@ const SCALE={pika:2.2,marmot:1.8,elk:1.25,fox:1.4,bear:1.7,deer:1.4,bobcat:1.45,
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
 const ANIMALS=[
- {k:"pika",at:[-20195,786]},
- {k:"pika",at:[21814,-7256]},
- {k:"marmot",at:[-19406,1347]},
- {k:"marmot",at:[21687,-7785]},
- {k:"squirrel",at:[-18793,1929],hop:true},
- {k:"squirrel",at:[4320,14450],hop:true},
- {k:"squirrel",at:[21892,-6688],hop:true},
- {k:"deer",path:[-18607,1066,-19438,828],per:30},
- {k:"deer",path:[3675,14335,3852,13297],per:30,ph:0.4},
- {k:"bear",path:[2387,13855,3429,13245],per:34},
- {k:"elk",path:[17820,-5063,17977,-6247],per:36},
- {k:"elk",path:[17648,-5531,17684,-6274],per:36,ph:0.3},
- {k:"fox",path:[19773,-7310,20410,-7347],per:26},
- {k:"coyote",path:[18348,-7589,19224,-8239],per:24,ph:0.5},
- {k:"bobcat",path:[20981,-8509,22098,-8654],per:28},
- {k:"lion",path:[2810,14073,2491,13677],per:34,ph:0.2}
+ {k:"pika",at:[-20195,786],s:1.10},
+ {k:"pika",at:[21814,-7256],s:1.10},
+ {k:"marmot",at:[-19406,1347],s:0.90},
+ {k:"marmot",at:[21687,-7785],s:0.90},
+ {k:"squirrel",at:[-18793,1929],hop:true,s:0.90},
+ {k:"squirrel",at:[4320,14450],hop:true,s:0.90},
+ {k:"squirrel",at:[21892,-6688],hop:true,s:0.90},
+ {k:"deer",path:[-18607,1066,-19438,828],per:30,s:0.70},
+ {k:"deer",path:[3675,14335,3852,13297],per:30,ph:0.4,s:0.70},
+ {k:"bear",path:[2387,13855,3429,13245],per:34,s:0.85},
+ {k:"elk",path:[17820,-5063,17977,-6247],per:36,s:0.62},
+ {k:"elk",path:[17648,-5531,17684,-6274],per:36,ph:0.3,s:0.62},
+ {k:"fox",path:[19773,-7310,20410,-7347],per:26,s:0.70},
+ {k:"coyote",path:[18348,-7589,19224,-8239],per:24,ph:0.5,s:0.68},
+ {k:"bobcat",path:[20981,-8509,22098,-8654],per:28,s:0.72},
+ {k:"lion",path:[2810,14073,2491,13677],per:34,ph:0.2,s:0.70}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
 ANIMALS.forEach((a,idx)=>{
@@ -961,7 +962,7 @@ function fitFor(v,az,el){
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 7.0, "B": 7.0, "C": 5.0}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 12.0, "B": 12.0, "C": 8.0}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}

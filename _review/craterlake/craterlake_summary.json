@@ -1,0 +1,64 @@
+{
+ "name": "Crater Lake: Cleetwood Cove, Watchman Peak and Mount Scott",
+ "folder": "crater-lake-cleetwood",
+ "city": "Crater Lake",
+ "area": "Crater Lake National Park",
+ "state": "OR",
+ "region": "pnw",
+ "lat": 42.9806,
+ "lon": -122.0828,
+ "where": "Crater Lake National Park, Oregon",
+ "high": "8,929 ft",
+ "blurb": "Three rim hikes around the deepest lake in the US: the Watchman lookout above Wizard Island, the steep Cleetwood Cove Trail down to the water, and Mount Scott, the park's highest peak.",
+ "status": "partly closed: Cleetwood Cove Trail (the only lake access) is closed for the 2026, 2027 and 2028 seasons for rehabilitation, with no boat tours; Rim Drive, the North Entrance Road and the road to Rim Village are closed for winter since November 1; Watchman and Mount Scott trails are snow-covered and unreachable by car until Rim Drive reopens (usually July).",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Watchman Peak",
+   "mi": 1.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 420
+  },
+  {
+   "id": "B",
+   "name": "Cleetwood Cove Trail",
+   "mi": 2.2,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 700
+  },
+  {
+   "id": "C",
+   "name": "Mount Scott",
+   "mi": 4.4,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1250
+  }
+ ],
+ "rare": [
+  "Red fox: Crater Lake's high-country red foxes are a montane population presumed to be Sierra Nevada red foxes, one of the rarest mammals in North America; park cameras first detected one here in 2011 and the park has studied them since. (https://www.biologicaldiversity.org/news/press_releases/2012/red-fox-06-19-2012.html)"
+ ],
+ "sources": [
+  "https://www.nps.gov/crla/planyourvisit/hiking.htm",
+  "https://www.nps.gov/crla/planyourvisit/cleetwood-cove.htm",
+  "https://www.nps.gov/crla/planyourvisit/cleetwood-cove-trail-and-marina-rehabilitation.htm",
+  "https://www.nps.gov/crla/planyourvisit/conditions.htm",
+  "https://www.nps.gov/crla/learn/nature/animals.htm",
+  "https://www.nps.gov/crla/learn/nature/mammals.htm",
+  "https://www.nps.gov/crla/learn/nature/birds.htm",
+  "https://www.nps.gov/crla/learn/nature/wildflowers.htm",
+  "https://craterlakeinstitute.com/?p=16947",
+  "https://www.craterlakeinstitute.com/what-to-do/planning-your-visit/hiking/trails-index/",
+  "https://www.oregonhikers.org/field_guide/Mount_Scott_Hike",
+  "https://en.wikipedia.org/wiki/Watchman_Lookout_Station",
+  "https://en.wikipedia.org/wiki/Mount_Scott_(Klamath_County,_Oregon)",
+  "https://www.americansouthwest.net/oregon/crater-lake/cleetwood-trail.html",
+  "https://americansouthwest.net/oregon/crater-lake/watchman-trail.html",
+  "https://swap.oregon.gov/sgcn/mazama-crater-lake-newt/",
+  "https://www.biologicaldiversity.org/news/press_releases/2012/red-fox-06-19-2012.html",
+  "https://www.craterlakeinstitute.com/crater-lake-new-archives/2018-2/2018-04/",
+  "https://deeparrival.com/news/crater-lake-east-rim-drive-closure-2026/"
+ ]
+}
