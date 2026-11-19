@@ -248,6 +248,13 @@ const SPECIES={
 };
 const FLORA={"A":["monkey","blacksage","buckwheat","lemonade"],"B":["monkey","lemonade","toyon","fern","poisonoak"],"C":["monkey","blacksage","buckwheat","lemonade","toyon","fern","poisonoak"]};
 const WILD={
+/* wildlife7:start */
+ rshawk:{name:"Red-shouldered hawk",color:"#8A7A66",sum:"A noisy hawk with rusty shoulders and a black-and-white banded tail. A pair has nested in a eucalyptus near Escondido Creek."},
+ cooper:{name:"Cooper's hawk",color:"#8A7A66",sum:"A crow-sized hawk with a long banded tail that hunts small birds through the oaks along the creek."},
+ raven:{name:"Common raven",color:"#8A7A66",sum:"A big black bird that rides the wind over the canyon ridges, often in pairs."},
+ rcsparrow:{name:"Rufous-crowned sparrow",color:"#8A7A66",sum:"Rare here: The southern California rufous-crowned sparrow, a state watch-list bird, was recorded on the sage-scrub slopes beside the trail in a 2018 survey. Look for a rusty cap and a white eye-ring."},
+ wrentit:{name:"Wrentit",color:"#8A7A66",sum:"A small, plain brown bird with a long cocked tail that stays hidden in the chaparral. Its bouncing-ball song is the common sound of the coastal scrub."},
+/* wildlife7:end */
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Big-eared deer that browse the canyon slopes, most often seen early and late in the day."},
  coyote:{name:"Coyote",color:"#A88B6A",sum:"Common in the Santa Monica Mountains, even along the houses on Winding Way. Often heard at dusk."},
  bobcat:{name:"Bobcat",color:"#C49A6C",sum:"A short-tailed wildcat that hunts rabbits and wood rats in the brush. Shy and rarely seen."},
@@ -261,6 +268,7 @@ const WILD={
 };
 
 const PHOTOS={"stop":{},"animal":{"deer":[{"f":"../photos/sp_deer_2.jpg","by":"LassenNPS","lic":"BY 2.0","src":"https://www.flickr.com/photos/61860846@N05/9401081133","t":"Pair of Mule Deer: Odocoileus hemionus californicus"}],"bobcat":[{"f":"../photos/sp_bobcat_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/14252467743","t":"Bobcat (Lynx rufus)"}],"coyote":[{"f":"../photos/sp_coyote_0.jpg","by":"Joshua Tree National Park","lic":"PDM 1.0","src":"https://www.flickr.com/photos/115357548@N08/15527431969","t":"Coyote (Canis latrans)"}],"raccoon":[{"f":"../photos/sp_raccoon_0.jpg","by":"Harlequeen","lic":"BY 2.0","src":"https://www.flickr.com/photos/27887748@N00/491727233","t":"Raccoon Cute Pose"}],"squirrel":[{"f":"../photos/sp_squirrel_1.jpg","by":"sonstroem","lic":"BY 2.0","src":"https://www.flickr.com/photos/96964826@N05/19792172568","t":"Western Gray Squirrel"}],"quail":[{"f":"../photos/sp_quail_2.jpg","by":"SidPix","lic":"BY 2.0","src":"https://www.flickr.com/photos/22357152@N02/6401999787","t":"California Quail"}],"snake":[{"f":"../photos/sp_snake_2.jpg","by":"Santa Monica Mountains National Recreation Area","lic":"PDM 1.0","src":"https://www.flickr.com/photos/38729417@N06/11970537744","t":"Southern Pacific Rattlesnake"}],"hawk":[{"f":"../photos/sp_hawk_2.jpg","by":"mark6mauno","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/98147195@N00/6604970029","t":"Buteo jamaicensis (Red-tailed Hawk)"}],"jay":[{"f":"../photos/sp_jay_1.jpg","by":"Becky Matsubara","lic":"BY 2.0","src":"https://www.flickr.com/photos/130819719@N05/30644196597","t":"California Scrub-Jay"}],"woodpecker":[{"f":"../photos/sp_woodpecker_1.jpg","by":"Mike's Birds","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/42646706@N02/16001926100","t":"Acorn Woodpecker with an Acorn"}]},"flower":{"monkey":[{"f":"../photos/sp_monkey_2.jpg","by":"Björn S...","lic":"BY-SA 2.0","src":"https://www.flickr.com/photos/40948266@N04/42902155992","t":"Sticky Monkey-Flower - Diplacus aurantiacus"}],"buckwheat":[{"f":"../photos/sp_buckwheat_1.jpg","by":"pellaea","lic":"BY 2.0","src":"https://www.flickr.com/photos/7147684@N03/4776487528","t":"California Buckwheat"}],"toyon":[{"f":"../photos/sp_toyon_1.jpg","by":"John Rusk","lic":"BY 2.0","src":"https://www.flickr.com/photos/12303842@N00/23303059776","t":"J20151125-0008—Heteromeles arbutifolia"}],"poisonoak":[{"f":"../photos/sp_poisonoak_2.jpg","by":"Awinch1001","lic":"CC BY 4.0","src":"https://commons.wikimedia.org/wiki/File:Toxicodendron_diversilobum_Wildcat_Canyon_preserve_5.jpg","t":"Toxicodendron diversilobum Wildcat Canyon preserve 5"}]}};
+/* wildlife7:start */if(WILD["hawk"])WILD["hawk"].sum="Circles over the canyon on warm air, with a brick-red tail. A pair nests on the rock face at Escondido Falls.";PHOTOS.animal["raven"]=[{"f": "../photos/sp_raven_1.jpg", "by": "Frank.Vassen", "lic": "BY 2.0", "src": "https://www.flickr.com/photos/42244964@N03/5357074718", "t": "Common raven"}];/* wildlife7:end */
 /* ================= terrain ================= */
 const X0=-1300,X1=4600,N0=-1250,N1=7100,STEP=50;
 const NX=Math.round((X1-X0)/STEP)+1,NN=Math.round((N1-N0)/STEP)+1;
@@ -849,7 +857,7 @@ const B={
 };
 return B;})();
 Object.assign(BUILD,GENTLE);
-const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const BIRDC={/* wildlife7:start */rshawk:["#8A4A2E", "#D9824E", null],cooper:["#5E6670", "#E9D6C4", "#2A2E36"],raven:["#262626", null, null],rcsparrow:["#8A7460", "#D8D2C6", "#A0482A"],wrentit:["#7A6656", "#B89A86", null],/* wildlife7:end */hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
 const SCALE={bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
@@ -877,7 +885,7 @@ ANIMALS.forEach((a,idx)=>{
 });
 // birds
 const birds=[];
-[["hawk",-44,32,-30,8],["jay",44,26,26,7],["woodpecker",-36,35,40,7],["hawk",34,30,-44,6],["jay",0,38,-50,10],["woodpecker",-10,28,50,6],["hawk",50,34,-10,9]].forEach((b,i)=>{
+[["hawk",-44,32,-30,8],["jay",44,26,26,7],["woodpecker",-36,35,40,7],["hawk",34,30,-44,6],["jay",0,38,-50,10],["woodpecker",-10,28,50,6],["hawk",50,34,-10,9],["rshawk",-50,30,10,7],["cooper",-24,33,-48,7],["raven",-4,31,20,9],["rcsparrow",44,26,26,7],["wrentit",34,30,-44,6]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
@@ -1150,6 +1158,22 @@ cur.az=goal.az;cur.el=goal.el;cur.zoom=goal.zoom;cur.target.copy(goal.target);
 if(reduced)animate(6,0.016);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
+/* rare-animals:start */
+(function(){try{
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
+  Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
+    birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
+      addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
+  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
+  const cd=document.getElementById("card");
+  if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+}catch(e){console.warn("rare",e);}})();
+/* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
 })();
 </script>
