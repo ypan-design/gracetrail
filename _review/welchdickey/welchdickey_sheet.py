@@ -77,7 +77,7 @@ pa = place_along
 def A_(k, f, s=1, o=400): return pa(p, UP[k], [f], s, o)[0]
 def path(k, f, s=1, o=450, d=0.05): return js(A_(k, f, s, o) + A_(k, f + d, s, o))
 an = []
-an += [f'{{k:"bear",path:{path("C",.47,-1,650,.04)},per:34}}']
+an += [f'{{k:"bear",path:{path("C",.82,1,650,.04)},per:34}}']
 an += [f'{{k:"squirrel",at:{js(A_("C",.33,1,300))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.8,-1,300))},hop:true}}']
 an += [f'{{k:"chipmunk",at:{js(A_("C",.12,-1,260))},hop:true}}', f'{{k:"chipmunk",at:{js(A_("B",.25,1,280))},hop:true}}']
 an += [f'{{k:"snake",path:{path("C",.62,1,320,.02)},per:30}}']
