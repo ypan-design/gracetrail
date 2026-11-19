@@ -254,6 +254,10 @@ const SPECIES={
 };
 const FLORA={"A":["saguaro","brittlebush","hedgehog","paloverde"],"B":["saguaro","brittlebush","creosote","hedgehog","buckhorn","desmarigold"],"C":["saguaro","creosote","paloverde","buckhorn","desmarigold","brittlebush"]};
 const WILD={
+/* wildlife7:start */
+ cactuswren_pp:{name:"Cactus wren",color:"#7A5E44",sum:"Arizona's state bird: a big, spotted wren with a harsh, chugging call that builds football-shaped nests in cholla."},
+ thrasher_pp:{name:"Curve-billed thrasher",color:"#8A7E72",sum:"A gray-brown desert bird with a long curved bill and orange eyes; its sharp 'whit-wheet' whistle carries across the buttes."},
+/* wildlife7:end */
  squirrel:{name:"Round-tailed ground squirrel",color:"#9A9A96",sum:"A small sandy-colored ground squirrel with a thin round tail, the mammal most often seen in Papago Park. It stands upright by its burrow beside the trails, most active in the cooler parts of the day."},
  quail:{name:"Gambel’s quail",color:"#7D8A9A",sum:"A plump desert quail with a forward-curling black topknot; males have a chestnut cap. Coveys run between the bushes around the buttes and along the golf course edge."},
  snake:{name:"California kingsnake",color:"#B49867",sum:"A glossy snake banded in dark brown and cream, often reported in the park. Not venomous; it eats other snakes, including rattlesnakes. Rattlesnakes live here too, so watch where you step."},
@@ -871,7 +875,7 @@ const B={
 };
 return B;})();
 Object.assign(BUILD,GENTLE);
-const BIRDC={hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
+const BIRDC={/* wildlife7:start */cactuswren_pp:["#7A5E44", "#EDE3D2", "#5A3E2A"],thrasher_pp:["#8A7E72", "#C8BCAE", null],/* wildlife7:end */hawk:["#A8572F","#F1E2CC",null],jay:["#3D78C4","#D9DEE3",null],raven:["#262626",null,null],woodpecker:["#1F1F1F","#F2F2EE","#C8322C"]};
 const SCALE={heron:1.6,egret:1.6,bear:1.7,deer:1.4,bobcat:1.45,coyote:1.35,lion:1.4,raccoon:1.3,squirrel:1.8,quail:1.8,snake:2.0};
 const animalGroup=new THREE.Group();world.add(animalGroup);
 const animals=[];
@@ -901,7 +905,7 @@ ANIMALS.forEach((a,idx)=>{
 });
 // birds
 const birds=[];
-[["hawk",-44,32,-30,8],["woodpecker",44,26,26,7],["hawk",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["woodpecker",-10,28,50,6],["hawk",50,34,-10,9]].forEach((b,i)=>{
+[["hawk",-44,32,-30,8],["woodpecker",44,26,26,7],["hawk",-36,35,40,7],["woodpecker",34,30,-44,6],["hawk",0,38,-50,10],["woodpecker",-10,28,50,6],["hawk",50,34,-10,9],["cactuswren_pp",-50,30,10,7],["thrasher_pp",-24,33,-48,7]].forEach((b,i)=>{
   const [c,belly,cap]=BIRDC[b[0]];const o=BUILD.bird(c,belly,cap);o.scale.setScalar(2.4);scene.add(o);birds.push({k:b[0],obj:o,cx:b[1],cy:b[2],cz:b[3],r:b[4],sp:(0.22+i*0.035)*(i%2?1:-1),ph:i*1.3,fl:i*0.7});});
 // clouds with varied shapes
 const clouds=[];(function(){const cg=new THREE.IcosahedronGeometry(1,2),hm=new THREE.MeshBasicMaterial({color:PAL.slabLine,side:THREE.BackSide});
