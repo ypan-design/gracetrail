@@ -1,0 +1,58 @@
+{
+ "name": "Mount Whitney",
+ "folder": "mount-whitney",
+ "city": "Lone Pine",
+ "area": "Inyo National Forest",
+ "state": "CA",
+ "region": "Eastern Sierra",
+ "lat": 36.5869,
+ "lon": -118.2401,
+ "where": "Whitney Portal, Inyo National Forest, near Lone Pine, California",
+ "high": "14,505 ft",
+ "blurb": "The Mount Whitney Trail from Whitney Portal: a permit-free hike to Lone Pine Lake, the climb to Trail Camp, and the full route to the highest summit in the contiguous United States.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Lone Pine Lake",
+   "mi": 5.6,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1900
+  },
+  {
+   "id": "B",
+   "name": "Trail Camp",
+   "mi": 12.0,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 3700
+  },
+  {
+   "id": "C",
+   "name": "Mount Whitney Trail to the summit",
+   "mi": 22.0,
+   "unit": "round trip",
+   "level": "Very strenuous",
+   "gain_ft": 6200
+  }
+ ],
+ "status": "Permit required: a wilderness permit is needed all year past Lone Pine Lake and for any overnight trip; Nov 2–Apr 30 permits are unlimited (no quota, book online up to 2 weeks ahead). Upper Whitney Portal Road usually closes for winter mid-November to late April, about 3 miles below the trailhead; expect snow and ice.",
+ "sources": [
+  "https://www.fs.usda.gov/r05/inyo/wilderness/mount-whitney",
+  "https://www.fs.usda.gov/media/122795",
+  "https://www.fs.usda.gov/media/122891",
+  "https://www.inyocounty.us/sites/default/files/2025-11/Additional%20Road%20status%20information%2011.26.25.pdf",
+  "https://www.inyocounty.us/sites/default/files/2026-08/Additional%20Road%20status%20information%2008.11.26.pdf",
+  "https://en.wikipedia.org/wiki/Mount_Whitney_Trail",
+  "https://www.hikingproject.com/trail/7025031/mount-whitney-trail",
+  "https://timberlinetrails.com/WhitneyMain.html",
+  "https://timberlinetrails.com/WhitneyHighCamp.html",
+  "https://modernhiker.com/?p=3184",
+  "https://hikingguy.com/hiking-trails/hikes-around-mt-whitney/lone-pine-lake-hike/",
+  "https://www.nps.gov/seki/learn/nature/alpine.htm",
+  "https://en.wikipedia.org/wiki/Polemonium_eximium",
+  "https://www.americansouthwest.net/california/eastern-sierra/north-fork-lone-pine-creek-trail.html",
+  "https://tedmuller.us/Outdoor/Hiking/2023/230920-MountWhitneyTrail.htm",
+  "https://sherpaguides.com/california/mountains/long_trails/mount_whitney.html"
+ ]
+}
