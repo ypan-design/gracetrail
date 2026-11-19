@@ -1,0 +1,66 @@
+{
+ "name": "Blood Mountain",
+ "folder": "blood-mountain",
+ "city": "Blairsville",
+ "area": "Chattahoochee National Forest",
+ "state": "GA",
+ "region": "Southeast",
+ "reg": "se",
+ "lat": 34.74154,
+ "lon": -83.92266,
+ "where": "Byron Reece trailhead on US 19/129 near Neel Gap, south of Blairsville, Georgia",
+ "high": "4,458 ft",
+ "blurb": "The highest point of the Appalachian Trail in Georgia, with a 1934 stone shelter on top: a walk to Flatrock Gap, the summit hike on the rerouted Byron Reece Trail, and the Freeman Trail loop around the mountain.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Byron Reece Trail to Flatrock Gap",
+   "mi": 3.1,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 750
+  },
+  {
+   "id": "B",
+   "name": "Blood Mountain via the Byron Reece Trail",
+   "mi": 4.8,
+   "unit": "round trip",
+   "level": "Strenuous",
+   "gain_ft": 1470
+  },
+  {
+   "id": "C",
+   "name": "Blood Mountain Loop via the Freeman Trail",
+   "mi": 7.0,
+   "unit": "loop",
+   "level": "Strenuous",
+   "gain_ft": 1780
+  }
+ ],
+ "status": "Open. The Byron Herbert Reece Trail was rerouted and reopened on June 6, 2026; the old route is closed and the new one meets the A.T. a quarter mile southwest of Flatrock Gap. The trailhead lot is small and fills early; no hiker parking at Walasi-Yi. Overnight campers between Jarrard Gap and Neel Gap need a hard-sided bear canister March 1 to June 1.",
+ "rare": [
+  {
+   "animal": "Chattahoochee slimy salamander",
+   "why": "It lives only in the Chattahoochee and Nantahala national forests of north Georgia and western North Carolina and is rated vulnerable by NatureServe; it is the most-recorded amphibian around these trails in iNaturalist.",
+   "source": "https://en.wikipedia.org/wiki/Chattahoochee_slimy_salamander"
+  }
+ ],
+ "notes": "Distances are measured on OSM along the 2026 reroute (OSM way 1546306916, 1.32 mi); no official post-reroute totals were published yet (GATC says the new trail is 1.2 mi, ATC says 1.4 mi). Pre-reroute guides list 4.3 mi for the summit and about 6 mi for the Freeman loop. Ruffed grouse and the Chattahoochee slimy salamander have no fauna.py model; both are added as small custom models through animals_js/extra_js. Animals documented (iNaturalist within 2.5 km, wilderness.net) but not modeled: copperhead (mentioned in the rattlesnake card), other salamanders (Ocoee, seal, blackbelly), dark-eyed junco, black-throated blue warbler, ovenbird, eastern towhee, barred owl. Summit shelter position is placed beside the OSM peak node (no OSM node for the shelter); its orientation follows the A.T. at the summit, not verified. Walasi-Yi Center is not modeled because it falls in the flattened outer band of the tile.",
+ "sources": [
+  "https://georgia-atclub.org/?p=16139",
+  "https://appalachiantrail.org/news-stories/byron-herbert-reece-trail-reroute/",
+  "https://appalachiantrail.org/trail-updates/georgia-byron-herbert-reece-side-trail-relocation/",
+  "https://appalachiantrail.org/hikes/blood-mountain-and-freeman-trail/",
+  "https://appalachiantrail.org/trail-updates/georgia-blood-mtn-parking-missing-person/",
+  "https://georgia-atclub.org/alerts/bear-resistant-canisters-required/",
+  "https://en.wikipedia.org/wiki/Blood_Mountain",
+  "https://en.wikipedia.org/wiki/Blood_Mountain_Wilderness",
+  "https://wilderness.net/visit-wilderness/?ID=62",
+  "https://sherpaguides.com/georgia/mountains/blue_ridge/eastern/blood_mountain.html",
+  "https://www.atlantatrails.com/hiking-trails/blood-mountain-loop-hiking-appalachian-trail-freeman-trail/",
+  "https://n2backpacking.com/hikes/georgia/appalachian-trail-woods-hole-shelter/",
+  "https://birdinghotspots.org/hotspot/L3838403",
+  "https://www.inaturalist.org/observations?lat=34.741&lng=-83.932&radius=2.5",
+  "https://en.wikipedia.org/wiki/Chattahoochee_slimy_salamander"
+ ]
+}

@@ -1,0 +1,29 @@
+{
+ "name": "Blood Mountain",
+ "where": "Chattahoochee National Forest · Georgia",
+ "href": "blood-mountain/",
+ "lat": 34.74154,
+ "lon": -83.92266,
+ "grp": "se",
+ "reg": "se",
+ "st": "GA",
+ "status": "",
+ "trails": [
+  [
+   "A",
+   "Byron Reece Trail to Flatrock Gap",
+   "3.1 mi round trip"
+  ],
+  [
+   "B",
+   "Blood Mountain via the Byron Reece Trail",
+   "4.8 mi round trip"
+  ],
+  [
+   "C",
+   "Blood Mountain Loop via the Freeman Trail",
+   "7 mi loop"
+  ]
+ ],
+ "high": "4,458 ft"
+}

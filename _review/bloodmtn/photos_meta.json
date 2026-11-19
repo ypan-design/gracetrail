@@ -1,0 +1,509 @@
+{
+ "sum": [
+  {
+   "f": "../photos/pl_bloodmtn_sum_0.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_001.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 001"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_sum_1.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_003.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 003"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_sum_2.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_004.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 004"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_sum_3.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_002.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 002"
+  }
+ ],
+ "sum2": [],
+ "slabs": [
+  {
+   "f": "../photos/pl_bloodmtn_slabs_0.jpg",
+   "by": "Thomson200",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Blood_Mountain_Georgia_2015.jpg",
+   "t": "Blood Mountain Georgia 2015"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_slabs_1.jpg",
+   "by": "Anish Patel",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Blood_Mountain_-_Georgia.jpg",
+   "t": "Blood Mountain - Georgia"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_slabs_2.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_003.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 003"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_slabs_3.jpg",
+   "by": "Public Lands Institute",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Public_Lands_Institute_-_Blood_Mountain_Wilderness_-_001.tif",
+   "t": "Public Lands Institute - Blood Mountain Wilderness - 001"
+  }
+ ],
+ "fg": [],
+ "freeman": [
+  {
+   "f": "../photos/pl_bloodmtn_freeman_0.jpg",
+   "by": "Allen Lyons",
+   "lic": "CC BY 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Freeman_Trail_Terrain_-_panoramio.jpg",
+   "t": "Freeman Trail Terrain - panoramio"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_freeman_1.jpg",
+   "by": "Allen Lyons",
+   "lic": "CC BY 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Signpost_for_Freeman-AT_west_intersection._-_panoramio.jpg",
+   "t": "Signpost for Freeman-AT west intersection. - panoramio"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_freeman_2.jpg",
+   "by": "Allen Lyons",
+   "lic": "CC BY 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:The_view_from_Freeman-AT_east_intersection_-_panoramio.jpg",
+   "t": "The view from Freeman-AT east intersection - panoramio"
+  }
+ ],
+ "br": [],
+ "slaughter": [],
+ "walasi": [
+  {
+   "f": "../photos/pl_bloodmtn_walasi_0.jpg",
+   "by": "Gwringle",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Walasi-Yi_Inn,_Neels_Gap,_GA.JPG",
+   "t": "Walasi-Yi Inn, Neels Gap, GA"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_walasi_1.jpg",
+   "by": "Gwringle",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Walasi-Yi_Inn,_Neels_Gap,_GA,_Front.JPG",
+   "t": "Walasi-Yi Inn, Neels Gap, GA, Front"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_walasi_2.jpg",
+   "by": "Gwringle",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Walasi-Yi_Inn,_Neels_Gap,_GA_Fall.JPG",
+   "t": "Walasi-Yi Inn, Neels Gap, GA Fall"
+  },
+  {
+   "f": "../photos/pl_bloodmtn_walasi_3.jpg",
+   "by": "Zeete",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Walasi-Yi_Center,_Neels_Gap,_GA_-_Appalachian_Trail_passage.jpg",
+   "t": "Walasi-Yi Center, Neels Gap, GA - Appalachian Trail passage"
+  }
+ ],
+ "sp:bm_catawba": [
+  {
+   "f": "../photos/sp_bm_catawba_0.jpg",
+   "by": "Kritzolina",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_%27Catawbiense_Grandiflorum%27_im_botanischen_Garten_M%C3%BCnchen-Nymphenburg_03.jpg",
+   "t": "Rhododendron 'Catawbiense Grandiflorum' im botanischen Garten M\u00fcnchen-Nymphenburg 03"
+  },
+  {
+   "f": "../photos/sp_bm_catawba_1.jpg",
+   "by": "Chrumps",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_catawbiense.jpg",
+   "t": "Rhododendron catawbiense"
+  },
+  {
+   "f": "../photos/sp_bm_catawba_2.jpg",
+   "by": "Marc-Lautenbacher",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_flower_in_Canada_(Rhododendron_catawbiense).jpg",
+   "t": "Rhododendron flower in Canada (Rhododendron catawbiense)"
+  },
+  {
+   "f": "../photos/sp_bm_catawba_3.jpg",
+   "by": "Kritzolina",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Rhododendron_%27Catawbiense_Grandiflorum%27_im_botanischen_Garten_M%C3%BCnchen-Nymphenburg_01.jpg",
+   "t": "Rhododendron 'Catawbiense Grandiflorum' im botanischen Garten M\u00fcnchen-Nymphenburg 01"
+  }
+ ],
+ "sp:bm_laurel": [
+  {
+   "f": "../photos/sp_bm_laurel_0.jpg",
+   "by": "Juliancolton",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Kalmia_latifolia_in_early_morning_light.jpg",
+   "t": "Kalmia latifolia in early morning light"
+  },
+  {
+   "f": "../photos/sp_bm_laurel_1.jpg",
+   "by": "Alex Abair",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Kalmia_latifolia_flower_buds_510033500.jpg",
+   "t": "Kalmia latifolia flower buds 510033500"
+  },
+  {
+   "f": "../photos/sp_bm_laurel_2.jpg",
+   "by": "Alex Abair",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Kalmia_latifolia_flower_buds_510033567.jpg",
+   "t": "Kalmia latifolia flower buds 510033567"
+  },
+  {
+   "f": "../photos/sp_bm_laurel_3.jpg",
+   "by": "Alex Abair",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Kalmia_latifolia_395473195.jpg",
+   "t": "Kalmia latifolia 395473195"
+  }
+ ],
+ "sp:bm_iris": [
+  {
+   "f": "../photos/sp_bm_iris_0.jpg",
+   "by": "U.S. Fish and Wildlife Service Southeast Region",
+   "lic": "Public domain",
+   "src": "https://commons.wikimedia.org/wiki/File:Iris_cristata_by_Todd_Crabtree_(8497631633).jpg",
+   "t": "Iris cristata by Todd Crabtree (8497631633)"
+  },
+  {
+   "f": "../photos/sp_bm_iris_1.jpg",
+   "by": "Barnes Dr Thomas G, U.S. Fish and Wildlife Service",
+   "lic": "Public domain",
+   "src": "https://commons.wikimedia.org/wiki/File:Dwarf_crested_iris_iris_cristata_purple_flower.jpg",
+   "t": "Dwarf crested iris iris cristata purple flower"
+  },
+  {
+   "f": "../photos/sp_bm_iris_2.jpg",
+   "by": "Photo by David J. Stang",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Iris_cristata_14zz.jpg",
+   "t": "Iris cristata 14zz"
+  },
+  {
+   "f": "../photos/sp_bm_iris_3.jpg",
+   "by": "Photo by David J. Stang",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Iris_cristata_8zz.jpg",
+   "t": "Iris cristata 8zz"
+  }
+ ],
+ "sp:bm_ladyslipper": [
+  {
+   "f": "../photos/sp_bm_ladyslipper_0.jpg",
+   "by": "\u0421\u0421\u0421\u0420",
+   "lic": "CC BY-SA 2.5 ca",
+   "src": "https://commons.wikimedia.org/wiki/File:Cypripedium_acaule_-_Henvey_Inlet1.jpg",
+   "t": "Cypripedium acaule - Henvey Inlet1"
+  },
+  {
+   "f": "../photos/sp_bm_ladyslipper_1.jpg",
+   "by": "Sasata (edited by Noodle snacks",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Cypripedium_acaule_-_Sasata_edit1.jpg",
+   "t": "Cypripedium acaule - Sasata edit1"
+  },
+  {
+   "f": "../photos/sp_bm_ladyslipper_2.jpg",
+   "by": "\u0421\u0421\u0421\u0420",
+   "lic": "CC BY-SA 2.5 ca",
+   "src": "https://commons.wikimedia.org/wiki/File:Cypripedium_acaule_-_Henvey_Inlet2.jpg",
+   "t": "Cypripedium acaule - Henvey Inlet2"
+  },
+  {
+   "f": "../photos/sp_bm_ladyslipper_3.jpg",
+   "by": "\u0421\u0421\u0421\u0420",
+   "lic": "CC BY-SA 2.5 ca",
+   "src": "https://commons.wikimedia.org/wiki/File:Cypripedium_acaule_-_Henvey_Inlet.jpg",
+   "t": "Cypripedium acaule - Henvey Inlet"
+  }
+ ],
+ "sp:bm_vasey": [
+  {
+   "f": "../photos/sp_bm_vasey_0.jpg",
+   "by": "Halpaugh at en.wikipedia.",
+   "lic": "Public domain",
+   "src": "https://commons.wikimedia.org/wiki/File:Trillium_vaseyi,_The_Sugarlands,_Great_Smoky_Mountains_National_Park,_Tennessee_-_20070326.jpg",
+   "t": "Trillium vaseyi, The Sugarlands, Great Smoky Mountains National Park, Tennessee - 20070326"
+  },
+  {
+   "f": "../photos/sp_bm_vasey_1.jpg",
+   "by": "Francine Riez",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Trillium_vaseyi_-_20070425.jpg",
+   "t": "Trillium vaseyi - 20070425"
+  },
+  {
+   "f": "../photos/sp_bm_vasey_2.jpg",
+   "by": "Jason Hollinger",
+   "lic": "CC BY 2.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Vaseys_Trillium_(4750636619).jpg",
+   "t": "Vaseys Trillium (4750636619)"
+  },
+  {
+   "f": "../photos/sp_bm_vasey_3.jpg",
+   "by": "US Forest Service - Southern Region",
+   "lic": "Public domain",
+   "src": "https://commons.wikimedia.org/wiki/File:Trillium_vaseyi_(17148857861).jpg",
+   "t": "Trillium vaseyi (17148857861)"
+  }
+ ],
+ "sp:bm_grouse": [
+  {
+   "f": "../photos/sp_bm_grouse_0.jpg",
+   "by": "Rhododendrites",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Ruffed_grouse_(80585).jpg",
+   "t": "Ruffed grouse (80585)"
+  },
+  {
+   "f": "../photos/sp_bm_grouse_1.jpg",
+   "by": "Rhododendrites",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Ruffed_grouse_(80685).jpg",
+   "t": "Ruffed grouse (80685)"
+  },
+  {
+   "f": "../photos/sp_bm_grouse_2.jpg",
+   "by": "Rhododendrites",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Ruffed_grouse_(80655).jpg",
+   "t": "Ruffed grouse (80655)"
+  },
+  {
+   "f": "../photos/sp_bm_grouse_3.jpg",
+   "by": "Mdf Original uploader at en.wikipedia was Mad Tinman at en.wikipedia",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Bonasa-umbellus-001edit1.jpg",
+   "t": "Bonasa-umbellus-001edit1"
+  }
+ ],
+ "sp:bm_slimysal": [
+  {
+   "f": "../photos/sp_bm_slimysal_0.jpg",
+   "by": "Leila Dasher",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Chattahoochee_slimy_salamander_(Plethodon_chattahoochee).jpg",
+   "t": "Chattahoochee slimy salamander (Plethodon chattahoochee)"
+  },
+  {
+   "f": "../photos/sp_bm_slimysal_1.jpg",
+   "by": "Leila Dasher",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Plethodon_chattahoochee_242363874.jpg",
+   "t": "Plethodon chattahoochee 242363874"
+  },
+  {
+   "f": "../photos/sp_bm_slimysal_2.jpg",
+   "by": "DiegoH",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Plethodon_chattahoochee_270018759.jpg",
+   "t": "Plethodon chattahoochee 270018759"
+  },
+  {
+   "f": "../photos/sp_bm_slimysal_3.jpg",
+   "by": "Leila Dasher",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Plethodon_chattahoochee_242363835.jpg",
+   "t": "Plethodon chattahoochee 242363835"
+  }
+ ],
+ "sp:bm_timber": [
+  {
+   "f": "../photos/sp_bm_timber_0.jpg",
+   "by": "Jonathunder",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:C_horridus.JPG",
+   "t": "C horridus"
+  },
+  {
+   "f": "../photos/sp_bm_timber_1.jpg",
+   "by": "Evan M. Raskin",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Crotalus_horridus_132726068.jpg",
+   "t": "Crotalus horridus 132726068"
+  },
+  {
+   "f": "../photos/sp_bm_timber_2.jpg",
+   "by": "Riley Stanton",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Crotalus_horridus_Stanton_1.jpg",
+   "t": "Crotalus horridus Stanton 1"
+  },
+  {
+   "f": "../photos/sp_bm_timber_3.jpg",
+   "by": "evangrimes",
+   "lic": "CC BY 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Crotalus_horridus_155851094.jpg",
+   "t": "Crotalus horridus 155851094"
+  }
+ ],
+ "sp:bm_rshawk": [
+  {
+   "f": "../photos/sp_bm_rshawk_0.jpg",
+   "by": "Frank Schulenburg",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Juvenile_buteo_lineatus_elegans,_Presidio.jpg",
+   "t": "Juvenile buteo lineatus elegans, Presidio"
+  },
+  {
+   "f": "../photos/sp_bm_rshawk_1.jpg",
+   "by": "Paul Danese",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:20241109_red_shouldered_hawk_gay_city_PD202852.jpg",
+   "t": "20241109 red shouldered hawk gay city PD202852"
+  },
+  {
+   "f": "../photos/sp_bm_rshawk_2.jpg",
+   "by": "Paul Danese",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:20240908_red_shouldered_hawk_south_meadows_PD203015.jpg",
+   "t": "20240908 red shouldered hawk south meadows PD203015"
+  },
+  {
+   "f": "../photos/sp_bm_rshawk_3.jpg",
+   "by": "Acroterion",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Buteo_lineatus_MD1.jpg",
+   "t": "Buteo lineatus MD1"
+  }
+ ],
+ "sp:bm_bvulture": [
+  {
+   "f": "../photos/sp_bm_bvulture_0.jpg",
+   "by": "Mdf",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Coragyps-atratus-001.jpg",
+   "t": "Coragyps-atratus-001"
+  },
+  {
+   "f": "../photos/sp_bm_bvulture_1.jpg",
+   "by": "Charles J. Sharp",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Black_vulture_(Coragyps_atratus)_head.JPG",
+   "t": "Black vulture (Coragyps atratus) head"
+  },
+  {
+   "f": "../photos/sp_bm_bvulture_2.jpg",
+   "by": "Mdf",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Coragyps-atratus-002.jpg",
+   "t": "Coragyps-atratus-002"
+  },
+  {
+   "f": "../photos/sp_bm_bvulture_3.jpg",
+   "by": "Cayambe",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Coragyps_atratus_brasiliensis_Black_vulture_Bel%C3%A9m_01.jpg",
+   "t": "Coragyps atratus brasiliensis Black vulture Bel\u00e9m 01"
+  }
+ ],
+ "sp:bm_graysq": [
+  {
+   "f": "../photos/sp_bm_graysq_0.jpg",
+   "by": "Wilfredor",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Sciurus_carolinensis_(gray_morph)_on_a_rock,_Jardin_universitaire_Roger-Van_den_Hende,_Quebec_City.jpg",
+   "t": "Sciurus carolinensis (gray morph) on a rock, Jardin universitaire Roger-Van den Hende, Quebec City"
+  },
+  {
+   "f": "../photos/sp_bm_graysq_1.jpg",
+   "by": "Wilfredor",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Melanistic_Sciurus_carolinensis_at_Jardin_botanique_Roger-Van_den_Hende.jpg",
+   "t": "Melanistic Sciurus carolinensis at Jardin botanique Roger-Van den Hende"
+  },
+  {
+   "f": "../photos/sp_bm_graysq_2.jpg",
+   "by": "Diliff",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Eastern_Grey_Squirrel_in_St_James%27s_Park,_London_-_Nov_2006_edit.jpg",
+   "t": "Eastern Grey Squirrel in St James's Park, London - Nov 2006 edit"
+  },
+  {
+   "f": "../photos/sp_bm_graysq_3.jpg",
+   "by": "Charles J. Sharp",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Grey_squirrel_(Sciurus_carolinensis)_02.jpg",
+   "t": "Grey squirrel (Sciurus carolinensis) 02"
+  }
+ ],
+ "sp:bm_raccoon": [
+  {
+   "f": "../photos/sp_bm_raccoon_0.jpg",
+   "by": "Darkone",
+   "lic": "CC BY-SA 2.5",
+   "src": "https://commons.wikimedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg",
+   "t": "Raccoon (Procyon lotor) 2"
+  },
+  {
+   "f": "../photos/sp_bm_raccoon_1.jpg",
+   "by": "BS Thurner Hof",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Procyon_lotor_7_-_am_Wasser.jpg",
+   "t": "Procyon lotor 7 - am Wasser"
+  },
+  {
+   "f": "../photos/sp_bm_raccoon_2.jpg",
+   "by": "Rhododendrites",
+   "lic": "CC BY-SA 4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Raccoon_in_Central_Park_(35264).jpg",
+   "t": "Raccoon in Central Park (35264)"
+  },
+  {
+   "f": "../photos/sp_bm_raccoon_3.jpg",
+   "by": "Darkone (talk \u00b7 contribs)",
+   "lic": "CC BY-SA 2.5",
+   "src": "https://commons.wikimedia.org/wiki/File:Raccoon_(Procyon_lotor)_3.jpg",
+   "t": "Raccoon (Procyon lotor) 3"
+  }
+ ],
+ "sp:bm_boxturtle": [
+  {
+   "f": "../photos/sp_bm_boxturtle_0.jpg",
+   "by": "\u201cJonathan Zander (Digon3)\"",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Florida_Box_Turtle_Digon3.jpg",
+   "t": "Florida Box Turtle Digon3"
+  },
+  {
+   "f": "../photos/sp_bm_boxturtle_1.jpg",
+   "by": "Jarek Tuszy\u0144ski",
+   "lic": "CC BY-SA 3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Eastern_Box_Turtle_8679.jpg",
+   "t": "Eastern Box Turtle 8679"
+  },
+  {
+   "f": "../photos/sp_bm_boxturtle_2.jpg",
+   "by": "Jasper Shide",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Terrapene_carolina_ssp._carolina_-_Eastern_Box_Turtle_(6-01-23)_01.jpg",
+   "t": "Terrapene carolina ssp. carolina - Eastern Box Turtle (6-01-23) 01"
+  },
+  {
+   "f": "../photos/sp_bm_boxturtle_3.jpg",
+   "by": "Jasper Shide",
+   "lic": "CC0",
+   "src": "https://commons.wikimedia.org/wiki/File:Terrapene_carolina_ssp._carolina_-_Eastern_Box_Turtle_(6-01-23)_06.jpg",
+   "t": "Terrapene carolina ssp. carolina - Eastern Box Turtle (6-01-23) 06"
+  }
+ ]
+}
