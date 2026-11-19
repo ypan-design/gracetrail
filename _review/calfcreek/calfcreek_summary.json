@@ -1,0 +1,60 @@
+{
+ "name": "Lower Calf Creek Falls",
+ "folder": "lower-calf-creek-falls",
+ "city": "Escalante",
+ "area": "Escalante",
+ "state": "UT",
+ "region": "Southwest",
+ "reg": "sw",
+ "lat": 37.79883,
+ "lon": -111.41209,
+ "where": "Grand Staircase-Escalante National Monument (BLM), Utah Highway 12 between Escalante and Boulder, Utah",
+ "high": "6,510 ft",
+ "blurb": "A sandy canyon walk past ancient granaries and pictographs to 126-foot Lower Calf Creek Falls, a slickrock scramble to Upper Calf Creek Falls, and Escalante River fords to a natural bridge.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Upper Calf Creek Falls",
+   "mi": 2.0,
+   "unit": "round trip",
+   "level": "Hard",
+   "gain_ft": 560
+  },
+  {
+   "id": "B",
+   "name": "Escalante Natural Bridge and Cliff House Arch",
+   "mi": 4.2,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 130
+  },
+  {
+   "id": "C",
+   "name": "Lower Calf Creek Falls",
+   "mi": 6.0,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 390
+  }
+ ],
+ "status": "Open. $5 day-use fee per vehicle at Calf Creek Recreation Area (Interagency passes accepted); BLM warns of rockfall at the Lower Calf Creek Falls pool (June 2025).",
+ "rare": [],
+ "sources": [
+  "https://www.blm.gov/visit/lower-calf-creek-falls-trail",
+  "https://www.blm.gov/visit/calf-creek-recreation-area-day-use-site",
+  "https://blm.gov/visit/calf-creek-recreation-area-campground",
+  "https://www.blm.gov/announcement/video-blm-warns-dangerous-falling-rocks-lower-calf-creek-falls",
+  "https://www.npshistory.com/publications/blm/grand-staircase-escalante/brochures/calf-creek-falls.pdf",
+  "https://www.grandcanyontrust.org/?p=14378",
+  "https://www.hikingwalking.com/destinations/ut/ut_sc/escalante/lower_calf_creek/lower_calf_creek_detail",
+  "https://roadtripryan.com/go/t/utah/escalante/lowercalfcreek",
+  "https://www.americansouthwest.net/utah/grand_staircase_escalante/lower_calf_creek.html",
+  "https://www.visitutah.com/places-to-go/parks-outdoors/grand-staircase-escalante/hiking/upper-calf-creek-falls",
+  "https://www.americansouthwest.net/utah/grand_staircase_escalante/upper_calf_creek.html",
+  "https://visitutah.com/places-to-go/parks-outdoors/grand-staircase-escalante/hiking/escalante-natural-bridge",
+  "https://www.visitutah.com/articles/escalante-river-canyon-trail",
+  "https://hikingproject.com/gem/580/escalante-natural-bridge",
+  "https://www.roadtripryan.com/go/t/utah/escalante/100-hands-panel",
+  "https://www.inaturalist.org/observations?lat=37.81&lng=-111.418&radius=2.5&iconic_taxa=Mammalia,Aves"
+ ]
+}
