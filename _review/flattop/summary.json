@@ -1,0 +1,65 @@
+{
+ "name": "Flattop Mountain",
+ "folder": "flattop-mountain-ak",
+ "city": "Anchorage",
+ "area": "Chugach State Park",
+ "state": "AK",
+ "region": "Alaska & Hawaiʻi",
+ "reg": "ah",
+ "lat": 61.1035,
+ "lon": -149.6813,
+ "where": "Glen Alps Trailhead, Chugach State Park, Anchorage, Alaska",
+ "high": "3,510 ft",
+ "blurb": "Alaska’s most climbed summit above Anchorage, with the short Blueberry Loop and the newer trail to Little O’Malley Peak from the same trailhead.",
+ "trails": [
+  {
+   "id": "A",
+   "name": "Blueberry Loop",
+   "mi": 1.5,
+   "unit": "loop",
+   "level": "Moderate",
+   "gain_ft": 320
+  },
+  {
+   "id": "B",
+   "name": "Flattop Mountain Trail",
+   "mi": 3.4,
+   "unit": "round trip",
+   "level": "Difficult",
+   "gain_ft": 1300
+  },
+  {
+   "id": "C",
+   "name": "Little O’Malley Peak",
+   "mi": 4.5,
+   "unit": "round trip",
+   "level": "Moderate",
+   "gain_ft": 1500
+  }
+ ],
+ "status": "Open. No closures posted for these trails (Alaska State Parks, November 2026). Day-use parking fee ($5 or annual pass). In winter Flattop is avalanche-prone and icy and Toilsome Road may need 4WD or winter tires.",
+ "rare": [
+  {
+   "animal": "Moose",
+   "why": "Every September and October dozens of moose gather for the rut in the South Fork Campbell Creek valley below the Powerline Pass Trail, a famous local gathering that draws crowds of watchers.",
+   "source": "https://www.alaska.org/detail/moose-viewing-at-powerline-pass"
+  }
+ ],
+ "sources": [
+  "https://dnr.alaska.gov/parks/maps/flattopmountaintrailguide.pdf",
+  "https://dnr.alaska.gov/parks/brochures/hillsidebrochure.pdf",
+  "https://dnr.alaska.gov/parks/aspunits/chugach/glenalps.htm",
+  "https://dnr.alaska.gov/parks/aspunits/chugach/recops.htm",
+  "https://dnr.alaska.gov/parks/asp/curevnts.htm",
+  "https://www.anchorage.net/trail/blueberry-loop/62f2b6fe5f0f5f47f4c99760/",
+  "https://www.anchorage.net/trail/little-omalley-peak-trail/636085504c15ab7f116ea553/",
+  "https://adn.com/outdoors-adventure/2022/06/14/move-over-flattop-little-omalley-peak-may-now-be-anchorages-most-accessible-hike",
+  "https://www.hikingproject.com/trail/7091161/little-omalley-out-and-back",
+  "https://alaska.org/detail/flattop-mountain",
+  "https://www.alaska.org/detail/moose-viewing-at-powerline-pass",
+  "https://www.alaska.org/guide/anchorage-wildlife-viewing-spots",
+  "https://en.wikipedia.org/wiki/Flattop_Mountain_(Alaska)",
+  "https://en.wikipedia.org/wiki/Chugach_State_Park",
+  "https://www.inaturalist.org/observations?nelat=61.112&nelng=-149.60&swlat=61.080&swlng=-149.71"
+ ]
+}

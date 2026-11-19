@@ -481,7 +481,7 @@ const nearTrail=v=>{const i=Math.floor(v.x/1.6),j=Math.floor(v.z/1.6);for(let a=
     else if(g>1.0)type=null;
     else if(cd<230){type=tr()<.5?"conifer":"shrub";p=0.25;}
     else{type=tr()<.6?"conifer":"shrub";p=0.12+cl*.15;}
-    if(type&&e>2450)type=(e<2700&&tr()<.35)?"shrub":null;
+    if(type&&e>2350)type=(e<2600&&tr()<.35)?"shrub":null;
     if(!type||tr()>p||inst[type].length>420)continue;
     const v=Wv(x,n,e);if(nearTrail(v))continue;
     inst[type].push({v,s:0.8+tr()*0.45,ry:tr()*6.28});
@@ -893,16 +893,16 @@ const animals=[];
 const ANIMALS=[
  {k:"moose",path:[4309,-528,4511,-154],per:40},
  {k:"moose",path:[1075,-2755,862,-2190],per:38,ph:0.5},
- {k:"grizzly",path:[6118,743,4828,-230],per:40},
+ {k:"grizzly",path:[4042,-174,4217,-236],per:40},
  {k:"bear",path:[488,-1553,546,-820],per:36,ph:0.3},
  {k:"bighorn",at:[2537,-4526]},
  {k:"bighorn",at:[6736,162]},
  {k:"squirrel",at:[869,-3732],hop:true},
  {k:"squirrel",at:[6362,996],hop:true},
- {k:"pika",at:[1558,-3703],hop:true},
+ {k:"pika",at:[2029,-5007],hop:true},
  {k:"pika",at:[6186,125],hop:true},
  {k:"coyote",path:[299,-1296,642,-1588],per:26},
- {k:"bobcat",path:[2738,35,2233,242],per:30,ph:0.6},
+ {k:"bobcat",path:[2619,-926,4119,-742],per:30,ph:0.6},
  {k:"fox",path:[1243,-1526,1371,-1742],per:24,ph:0.2}
 ];
 /* spread animals: no two groups closer than sp */(function(){const sp=Math.min(650,Math.max(240,0.065*Math.max(C.x1-C.x0,C.n1-C.n0)));const P=[];ANIMALS.forEach((a,i)=>{if(a.label)return;const src=a.at||a.path;if(!src)return;let x=src[0],n=src[1];for(let t=0;t<18&&P.some(p=>Math.hypot(p[0]-x,p[1]-n)<sp);t++){const ang=t*0.9+i,r=sp*(1+t/6);const nx=src[0]+Math.cos(ang)*r,nn=src[1]+Math.sin(ang)*r;if(H(nx,nn)>0.8&&qOf(nx,nn)<0.86){x=nx;n=nn;}}const dx=x-src[0],dn=n-src[1];if(a.at)a.at=[x,n];else a.path=a.path.map((v,k)=>v+(k%2?dn:dx));P.push([x,n]);});})();
@@ -943,13 +943,13 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":2.9,"A":3.0,"B":1.95,"C":0.25};
+const VIEWAZ={"all":2.9,"A":3.0,"B":1.95,"C":0.35};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();
   const pts=viewPoints(v);let mu=1e9,Mu=-1e9,mv=1e9,Mv=-1e9;pts.forEach(p=>{const u=p.dot(right),vv=p.dot(up);mu=Math.min(mu,u);Mu=Math.max(Mu,u);mv=Math.min(mv,vv);Mv=Math.max(Mv,vv);});
   const pad=v==="all"?1:1.25,du=(Mu-mu)*pad,dv=(Mv-mv)*pad,aw=Math.max(80,W-m.l-m.r),ah=Math.max(80,Hh-m.t-m.b);
-  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 4.0, "B": 3.0, "C": 2.6}[v]||2.4));
+  let zoom=Math.min(aw*VIEW/(du*Hh),ah*VIEW/(dv*Hh));if(v!=="all")zoom=Math.min(zoom,fitFor("all",VIEWAZ.all,0.58).zoom*({"A": 3.0, "B": 3.0, "C": 2.6}[v]||2.4));
   const wpp=VIEW/(Hh*zoom),target=new THREE.Vector3().copy(right).multiplyScalar((mu+Mu)/2).addScaledVector(up,(mv+Mv)/2).addScaledVector(right,-(m.l-m.r)/2*wpp).addScaledVector(up,(m.t-m.b)/2*wpp);
   return {zoom,target};}
 function fitGoal(){if(!stage.clientWidth||!stage.clientHeight)return;const f=fitFor(view,goal.az,goal.el);goal.zoom=f.zoom;goal.target.copy(f.target);}
