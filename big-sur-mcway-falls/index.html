@@ -256,7 +256,7 @@ const SPECIES={
  douglasiris:{name:"Douglas iris",latin:"Iris douglasiana",color:"#7B6FD0",shape:"cup",bloom:[3,4,5],sum:"A coastal iris with lavender to purple flowers veined in white, in clumps on grassy bluffs and open slopes in spring.",rule:(d,e,g,s)=>e>20&&e<1200&&g<0.7&&d>150},
  ceanothus:{name:"Blueblossom",latin:"Ceanothus thyrsiflorus",color:"#8C86D9",shape:"dome",bloom:[3,4,5],sum:"A coastal wild lilac covered in fragrant clusters of pale blue flowers in spring, on the chaparral slopes the Ewoldsen Trail climbs through.",rule:(d,e,g,s)=>s>0.0&&d>250&&e>200}
 };
-const FLORA={"A":["fuchsia","douglasiris","monkey"],"B":["douglasiris","monkey","fuchsia","wcolumbine"],"C":["sorrel","wcolumbine","ceanothus","yucca","monkey"]};
+const FLORA={"A":["fuchsia","douglasiris","monkey"],"B":["douglasiris","monkey","fuchsia"],"C":["sorrel","wcolumbine","ceanothus","yucca","monkey"]};
 const WILD={
  deer:{name:"Black-tailed deer",color:"#B98A5E",sum:"The coastal form of the mule deer. Browses along the Ewoldsen Trail and the canyon edges early and late in the day."},
  squirrel:{name:"California ground squirrel",color:"#9A9A96",sum:"Common around the parking lot, picnic tables and overlook paths. Please don’t feed it."},
@@ -564,8 +564,8 @@ const anim={};
   function rock(x,n,s,c){const p=G(x,n);part(world,ico,c||PAL.stone,p.x,p.y+0.4*s,p.z,1.3*s,0.9*s,1.1*s);}
   gate(473,359,0.5);gate(-6863,6665,-0.3);
   // McWay Falls: drops west from the cliff lip onto the beach of McWay Cove (OSM creek mouth), drawn tall so it reads
-  {const top=G(-567,-314),F=G(-627,-314);const h=Math.max(top.y-F.y,0.6)+3.2;
-  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=-Math.PI/2;world.add(wf);
+  {const top=G(-567,-314),F=G(-627,-314);const h=Math.max(top.y-F.y,0.6)+2.6;
+  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=-Math.PI/2;wf.scale.setScalar(0.5);world.add(wf);
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.6);
   const fallMat=new THREE.MeshBasicMaterial({map:fallTex,side:THREE.DoubleSide});
   const pl=new THREE.Mesh(new THREE.PlaneGeometry(0.9,h),fallMat);pl.position.set(0,h/2,-0.55);wf.add(pl);
@@ -574,27 +574,27 @@ const anim={};
   const rings=[];for(let i=0;i<3;i++){const rg=new THREE.Mesh(new THREE.RingGeometry(0.5,0.62,24),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.1);wf.add(rg);rings.push(rg);}
   const mist=[];for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,6),new THREE.MeshBasicMaterial({color:"#FFFFFF",transparent:true}));wf.add(m);mist.push({m,ph:i/7,x:(i%3-1)*0.4});}
   // Canyon Falls: smaller cascade in the side canyon (end of the OSM Canyon Trail), facing down-canyon (southwest)
-  const cf=new THREE.Group();cf.position.copy(G(1604,1580));cf.rotation.y=Math.atan2(-0.7,0.7);world.add(cf);
+  const cf=new THREE.Group();cf.position.copy(G(1604,1580));cf.rotation.y=Math.atan2(-0.7,0.7);cf.scale.setScalar(0.6);world.add(cf);
   const pl2=new THREE.Mesh(new THREE.PlaneGeometry(0.55,2.4),fallMat);pl2.position.set(0,1.2,-0.4);cf.add(pl2);
   part(cf,ico,PAL.rockDeep,-0.8,1.1,-0.6,0.6,1.3,0.6);part(cf,ico,PAL.rock,0.8,1.0,-0.6,0.6,1.2,0.6);part(cf,ico,"#5E7A4A",0,2.5,-0.7,0.9,0.4,0.6);
   anim.water={fallTex,rings,mist};}
   // Saddle Rock: the rock knob at the mouth of McWay Cove (OSM peak), exaggerated
-  {const q=G(-806,-349);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;world.add(g);
+  {const q=G(-806,-349);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;g.scale.setScalar(0.45);world.add(g);
    part(g,ico,"#8A8274",0,0.9,0,2.0,1.6,1.4);part(g,ico,"#7A7266",1.3,0.7,0.2,1.1,1.2,1.0);part(g,ico,"#958C7E",-1.2,0.6,-0.2,1.0,1.0,0.9);part(g,ico,"#6E675C",0.3,2.0,0.1,0.9,0.7,0.8);}
   // pedestrian tunnel under Highway 1: concrete portals on both sides of the road
-  {const g=new THREE.Group();g.position.copy(G(-18,19));g.rotation.y=0.15;world.add(g);g.scale.setScalar(1.4);
+  {const g=new THREE.Group();g.position.copy(G(-18,19));g.rotation.y=0.15;world.add(g);g.scale.setScalar(0.4);
    [-1.1,1.1].forEach(dx=>{part(g,box,"#CFC8BA",dx,0.7,-0.75,0.35,1.4,0.4,1.06);part(g,box,"#CFC8BA",dx,0.7,0.75,0.35,1.4,0.4,1.06);part(g,box,"#BDB5A6",dx,1.55,0,0.4,0.35,1.95,1.06);part(g,box,"#2A2622",dx,0.65,0,0.08,1.2,1.1,0);});
    part(g,box,"#7A746A",0,1.78,0,2.6,0.12,2.4,1.04);}
   // Pelton wheel house on McWay Creek (OSM node)
-  {const g=new THREE.Group();g.position.copy(G(335,212));g.rotation.y=0.6;world.add(g);g.scale.setScalar(1.3);
+  {const g=new THREE.Group();g.position.copy(G(335,212));g.rotation.y=0.6;world.add(g);g.scale.setScalar(0.42);
    part(g,box,"#8C6845",0,0.55,0,1.4,1.1,1.0,1.05);const r=part(g,roof,"#6E5A48",0,1.35,0,1.0,0.6,1.05,1.06);rot(r,0,Math.PI/2,0);
    const w=part(g,new THREE.TorusGeometry(0.55,0.09,6,16),"#5C5650",0.95,0.6,0,1,1,1,1.05);rot(w,0,Math.PI/2,0);part(g,cyl,"#5C5650",0.95,0.6,0,0.05,0.5,0.05,0);}
   // Waterfall House site: stone terrace of the 1940 house, now the overlook, with a bench
-  {const q=G(-778,436);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.55;world.add(g);g.scale.setScalar(1.3);
+  {const q=G(-763,436);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.55;world.add(g);g.scale.setScalar(0.45);
    part(g,box,"#B9AE9A",0,0.25,0,2.6,0.5,1.8,1.05);part(g,box,"#A39782",0,0.75,-0.85,2.6,0.5,0.15,1.05);part(g,box,"#A39782",-1.25,0.75,0,0.15,0.5,1.8,1.05);
    part(g,box,"#9C7653",0.4,0.72,0.3,1.0,0.08,0.32,1.06);part(g,box,"#9C7653",0.4,0.95,0.15,1.0,0.35,0.06,1.06);}
   // Partington tunnel: a rock knob with a plank-lined opening, trail runs north-south through it
-  {const q=G(-7548,6165);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.25;world.add(g);g.scale.setScalar(1.3);
+  {const q=G(-7548,6165);const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.25;world.add(g);g.scale.setScalar(0.6);
    part(g,ico,"#8A8274",-1.1,0.9,0,1.2,1.3,1.6);part(g,ico,"#7E776B",1.1,0.9,0,1.2,1.3,1.6);part(g,ico,"#958C7E",0,1.9,0,1.6,0.8,1.6);
    part(g,box,"#9C7653",0,0.65,0,1.0,1.3,2.2,1.05);part(g,box,"#2A2622",0,0.6,0,0.75,1.1,2.25,0);}
   // Partington Cove: fenced ledge with a bench
@@ -918,7 +918,6 @@ const animals=[];
 const ANIMALS=[
  {k:"deer",path:[2004,2073,1750,2681],per:28},
  {k:"deer",path:[1966,5073,2019,4485],per:30,ph:0.4},
- {k:"squirrel",at:[-280,-3],hop:true},
  {k:"squirrel",at:[-7436,6318],hop:true},
  {k:"squirrel",at:[800,4060],hop:true},
  {k:"bobcat",path:[1307,1967,1897,1314],per:32,ph:0.2},
@@ -1004,7 +1003,7 @@ const STOP={};STOPS.forEach(s=>{s.v=G(s.x,s.n,0.6);STOP[s.id]=s;});
 function viewPoints(v){
   if(v==="all"){const p=[];boundary.forEach((b,i)=>{const X=(b.x-cx)*S,Z=-(b.n-cn)*S;p.push(new THREE.Vector3(X,-BAND-BASEH,Z),new THREE.Vector3(X,0,Z));});p.push(new THREE.Vector3(0,MAXY*0.8,0));return p;}
   const T=TR[v],p=[];T.world.forEach((q,i)=>{if(i%3===0)p.push(q.clone(),q.clone().add(new THREE.Vector3(0,3,0)));});ORDER[v].forEach(id=>p.push(STOP[id].v.clone()));return p;}
-const VIEWAZ={"all":-0.75,"A":-0.75,"B":-0.9,"C":-0.6};
+const VIEWAZ={"all":-0.75,"A":-0.75,"B":-0.3,"C":-0.6};
 function fitFor(v,az,el){
   const W=stage.clientWidth,Hh=stage.clientHeight,m=margins();
   const fwd=dirOf(az,el).negate(),right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize(),up=new THREE.Vector3().crossVectors(right,fwd).normalize();

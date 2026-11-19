@@ -135,7 +135,7 @@ OT2 = sea_pt(-7500, 5900, -0.8, -0.6, 200)
 print('otters', OT1, OT2)
 an = []
 an += [f'{{k:"deer",path:{path("C",.18,-1,420)},per:28}}', f'{{k:"deer",path:{path("C",.72,1,450)},per:30,ph:0.4}}']
-an += [f'{{k:"squirrel",at:{js(A_("A",.32,1,160))},hop:true}}', f'{{k:"squirrel",at:{js(A_("B",.18,1,200))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.45,-1,260))},hop:true}}']
+an += [f'{{k:"squirrel",at:{js(A_("B",.18,1,200))},hop:true}}', f'{{k:"squirrel",at:{js(A_("C",.45,-1,260))},hop:true}}']
 an += [f'{{k:"bobcat",path:{path("C",.86,-1,380)},per:32,ph:0.2}}']
 an += [f'{{k:"turkey",at:{js(A_("C",.55,-1,380))},flock:3}}']
 an += [f'{{k:"quail",at:{js(A_("B",.42,-1,220))},flock:3}}']
@@ -152,8 +152,8 @@ species = ['fuchsia', 'monkey', 'yucca'] + list(species_extra)
 
 lm = f'''  gate({LOT[0] + 30},{LOT[1] + 40},0.5);gate({TH_B[0] - 40},{TH_B[1] - 30},-0.3);
   // McWay Falls: drops west from the cliff lip onto the beach of McWay Cove (OSM creek mouth), drawn tall so it reads
-  {{const top=G({FALLS[0]},{FALLS[1]}),F=G({FALLS[0] - 60},{FALLS[1]});const h=Math.max(top.y-F.y,0.6)+3.2;
-  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=-Math.PI/2;world.add(wf);
+  {{const top=G({FALLS[0]},{FALLS[1]}),F=G({FALLS[0] - 60},{FALLS[1]});const h=Math.max(top.y-F.y,0.6)+2.6;
+  const wf=new THREE.Group();wf.position.copy(F);wf.rotation.y=-Math.PI/2;wf.scale.setScalar(0.5);world.add(wf);
   const fallTex=stripeTex("#E4F6F6","#FFFFFF",64,128,22,9,14);fallTex.repeat.set(1,1.6);
   const fallMat=new THREE.MeshBasicMaterial({{map:fallTex,side:THREE.DoubleSide}});
   const pl=new THREE.Mesh(new THREE.PlaneGeometry(0.9,h),fallMat);pl.position.set(0,h/2,-0.55);wf.add(pl);
@@ -162,27 +162,27 @@ lm = f'''  gate({LOT[0] + 30},{LOT[1] + 40},0.5);gate({TH_B[0] - 40},{TH_B[1] - 
   const rings=[];for(let i=0;i<3;i++){{const rg=new THREE.Mesh(new THREE.RingGeometry(0.5,0.62,24),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true,side:THREE.DoubleSide}}));rg.rotation.x=-Math.PI/2;rg.position.set(0,0.1,0.1);wf.add(rg);rings.push(rg);}}
   const mist=[];for(let i=0;i<7;i++){{const m=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,6),new THREE.MeshBasicMaterial({{color:"#FFFFFF",transparent:true}}));wf.add(m);mist.push({{m,ph:i/7,x:(i%3-1)*0.4}});}}
   // Canyon Falls: smaller cascade in the side canyon (end of the OSM Canyon Trail), facing down-canyon (southwest)
-  const cf=new THREE.Group();cf.position.copy(G({CF[0] + 20},{CF[1] + 20}));cf.rotation.y=Math.atan2(-0.7,0.7);world.add(cf);
+  const cf=new THREE.Group();cf.position.copy(G({CF[0] + 20},{CF[1] + 20}));cf.rotation.y=Math.atan2(-0.7,0.7);cf.scale.setScalar(0.6);world.add(cf);
   const pl2=new THREE.Mesh(new THREE.PlaneGeometry(0.55,2.4),fallMat);pl2.position.set(0,1.2,-0.4);cf.add(pl2);
   part(cf,ico,PAL.rockDeep,-0.8,1.1,-0.6,0.6,1.3,0.6);part(cf,ico,PAL.rock,0.8,1.0,-0.6,0.6,1.2,0.6);part(cf,ico,"#5E7A4A",0,2.5,-0.7,0.9,0.4,0.6);
   anim.water={{fallTex,rings,mist}};}}
   // Saddle Rock: the rock knob at the mouth of McWay Cove (OSM peak), exaggerated
-  {{const q=G({SADDLE[0]},{SADDLE[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;world.add(g);
+  {{const q=G({SADDLE[0]},{SADDLE[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.4;g.scale.setScalar(0.45);world.add(g);
    part(g,ico,"#8A8274",0,0.9,0,2.0,1.6,1.4);part(g,ico,"#7A7266",1.3,0.7,0.2,1.1,1.2,1.0);part(g,ico,"#958C7E",-1.2,0.6,-0.2,1.0,1.0,0.9);part(g,ico,"#6E675C",0.3,2.0,0.1,0.9,0.7,0.8);}}
   // pedestrian tunnel under Highway 1: concrete portals on both sides of the road
-  {{const g=new THREE.Group();g.position.copy(G({TUN[0]},{TUN[1]}));g.rotation.y=0.15;world.add(g);g.scale.setScalar(1.4);
+  {{const g=new THREE.Group();g.position.copy(G({TUN[0]},{TUN[1]}));g.rotation.y=0.15;world.add(g);g.scale.setScalar(0.4);
    [-1.1,1.1].forEach(dx=>{{part(g,box,"#CFC8BA",dx,0.7,-0.75,0.35,1.4,0.4,1.06);part(g,box,"#CFC8BA",dx,0.7,0.75,0.35,1.4,0.4,1.06);part(g,box,"#BDB5A6",dx,1.55,0,0.4,0.35,1.95,1.06);part(g,box,"#2A2622",dx,0.65,0,0.08,1.2,1.1,0);}});
    part(g,box,"#7A746A",0,1.78,0,2.6,0.12,2.4,1.04);}}
   // Pelton wheel house on McWay Creek (OSM node)
-  {{const g=new THREE.Group();g.position.copy(G({PELTON[0]},{PELTON[1]}));g.rotation.y=0.6;world.add(g);g.scale.setScalar(1.3);
+  {{const g=new THREE.Group();g.position.copy(G({PELTON[0]},{PELTON[1]}));g.rotation.y=0.6;world.add(g);g.scale.setScalar(0.42);
    part(g,box,"#8C6845",0,0.55,0,1.4,1.1,1.0,1.05);const r=part(g,roof,"#6E5A48",0,1.35,0,1.0,0.6,1.05,1.06);rot(r,0,Math.PI/2,0);
    const w=part(g,new THREE.TorusGeometry(0.55,0.09,6,16),"#5C5650",0.95,0.6,0,1,1,1,1.05);rot(w,0,Math.PI/2,0);part(g,cyl,"#5C5650",0.95,0.6,0,0.05,0.5,0.05,0);}}
   // Waterfall House site: stone terrace of the 1940 house, now the overlook, with a bench
-  {{const q=G({WH[0] - 40},{WH[1] + 10});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.55;world.add(g);g.scale.setScalar(1.3);
+  {{const q=G({WH[0] - 25},{WH[1] + 10});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.55;world.add(g);g.scale.setScalar(0.45);
    part(g,box,"#B9AE9A",0,0.25,0,2.6,0.5,1.8,1.05);part(g,box,"#A39782",0,0.75,-0.85,2.6,0.5,0.15,1.05);part(g,box,"#A39782",-1.25,0.75,0,0.15,0.5,1.8,1.05);
    part(g,box,"#9C7653",0.4,0.72,0.3,1.0,0.08,0.32,1.06);part(g,box,"#9C7653",0.4,0.95,0.15,1.0,0.35,0.06,1.06);}}
   // Partington tunnel: a rock knob with a plank-lined opening, trail runs north-south through it
-  {{const q=G({PTUN[0]},{PTUN[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.25;world.add(g);g.scale.setScalar(1.3);
+  {{const q=G({PTUN[0]},{PTUN[1]});const g=new THREE.Group();g.position.copy(q);g.rotation.y=0.25;world.add(g);g.scale.setScalar(0.6);
    part(g,ico,"#8A8274",-1.1,0.9,0,1.2,1.3,1.6);part(g,ico,"#7E776B",1.1,0.9,0,1.2,1.3,1.6);part(g,ico,"#958C7E",0,1.9,0,1.6,0.8,1.6);
    part(g,box,"#9C7653",0,0.65,0,1.0,1.3,2.2,1.05);part(g,box,"#2A2622",0,0.6,0,0.75,1.1,2.25,0);}}
   // Partington Cove: fenced ledge with a bench
@@ -215,7 +215,7 @@ cfg = dict(
     title='McWay Falls', aria='McWay Falls, Partington Cove and the Ewoldsen Trail in Julia Pfeiffer Burns State Park, Big Sur', h1='McWay Falls',
     canyons=canyons, trails=trails, stops=stops, order=order,
     species=species, species_extra=species_extra,
-    flora={'A': ['fuchsia', 'douglasiris', 'monkey'], 'B': ['douglasiris', 'monkey', 'fuchsia', 'wcolumbine'], 'C': ['sorrel', 'wcolumbine', 'ceanothus', 'yucca', 'monkey']},
+    flora={'A': ['fuchsia', 'douglasiris', 'monkey'], 'B': ['douglasiris', 'monkey', 'fuchsia'], 'C': ['sorrel', 'wcolumbine', 'ceanothus', 'yucca', 'monkey']},
     wild=['deer', 'squirrel', 'bobcat', 'turkey', 'quail', 'otter', 'condor', 'eagle', 'peregrine', 'hawk', 'vulture', 'steller', 'gull'],
     wild_sum={
      'deer': ('Black-tailed deer', 'The coastal form of the mule deer. Browses along the Ewoldsen Trail and the canyon edges early and late in the day.'),
@@ -244,7 +244,7 @@ cfg = dict(
            'B': [('Partington Cove · Modern Hiker', 'https://modernhiker.com/hike/partington-cove/'), ('Partington Cove Trail · Hikespeak', 'https://www.hikespeak.com/trails/partington-cove-big-sur/')],
            'C': [('Ewoldsen Loop · Hiking Project', 'https://hikingproject.com/trail/7003425/ewoldsen-loop'), ('Monterey District park status · CA State Parks', 'https://www.parks.ca.gov/?page_id=21284')]},
     extra_js='TRAILS.forEach(T=>{const g={A:50,B:275,C:1430}[T.id];if(g)T.gain=g;});\n// out-and-back: report the outbound mile for a stop\nmileOf=function(T,x,n){let b=null;T.pts.forEach(p=>{const d=Math.hypot(p.x-x,p.n-n);if(!b||d<b.d)b={d,m:p.m,e:p.e};});if(!b||b.d>=260)return null;const f=T.pts.find(p=>Math.hypot(p.x-x,p.n-n)<b.d+60);return {d:b.d,m:f.m,e:f.e};};',
-    viewaz={'all': -0.75, 'A': -0.75, 'B': -0.9, 'C': -0.6},
+    viewaz={'all': -0.75, 'A': -0.75, 'B': -0.3, 'C': -0.6},
     zoomcap={'A': 5.0, 'B': 4.5, 'C': 3.0},
     stop_photos=stop_photos, flower_photos=PH.get('flower', {}), animal_photos=PH.get('animal', {}),
 )
