@@ -252,6 +252,9 @@ const STOPS=[{"id":"1","trails":["A","B"],"x":-3554,"n":2415,"name":"Echo Canyon
  {"id":"C5","trails":["C"],"x":612,"n":-218,"name":"Summit ridge","desc":"The last stretch is a Class 2 scramble on solid rock along the ridgeline, with steep drop-offs on both sides and one false summit."}];
 const ORDER={"A":["1","2","A1","A2"],"B":["1","2","B1","B2","B3","B4","3"],"C":["C1","C2","C3","C4","C5","3"]};
 const SPECIES={
+/* plants7:start */
+ cholla_cb:{name:"Jumping cholla",latin:"Cylindropuntia fulgida",color:"#D9C27A",shape:"pad",bloom:[5, 6, 7],fruit:[],avoid:true,sum:"Avoid: jumping cholla's barbed spines detach at the lightest brush and lodge in skin, shoes and dogs' paws. It is a pale, fuzzy-looking, branching cactus of linked segments; stay on the trail and flick stuck pieces off with a comb, not your fingers.",rule:(d,e,g,s)=>s>-0.2&&g<1.2},
+/* plants7:end */
  saguaro:{name:"Saguaro",latin:"Carnegiea gigantea",color:"#F4F0E2",shape:"spike",bloom:[4,5,6],fruit:[6,7],sum:"The tall branching cactus of the Sonoran Desert, Arizona’s state wildflower. Waxy white flowers open at night on the arm tips in late spring, followed by red fruit.",rule:(d,e,g,s)=>s>0.0&&g>0.1&&g<0.8},
  brittlebush:{name:"Brittlebush",latin:"Encelia farinosa",color:"#F2C230",shape:"dome",bloom:[2,3,4],sum:"A rounded silver-leaved shrub that turns the lower slopes bright yellow with daisies in early spring.",rule:(d,e,g,s)=>s>-0.2&&g<0.7},
  ocotillo:{name:"Ocotillo",latin:"Fouquieria splendens",color:"#E0472B",shape:"spike",bloom:[3,4,5],sum:"Whip-like spiny stems that leaf out after rain and carry red flower clusters at the tips in spring; hummingbirds visit them.",rule:(d,e,g,s)=>s>0.1&&g>0.2},
@@ -260,6 +263,7 @@ const SPECIES={
  paloverde:{name:"Foothill palo verde",latin:"Parkinsonia microphylla",color:"#E9D33A",shape:"dome",bloom:[4,5],sum:"A small green-barked tree of rocky foothills, covered in pale yellow flowers in spring. Young saguaros often grow in its shade.",rule:(d,e,g,s)=>g<0.6}
 };
 const FLORA={"A":["saguaro","brittlebush","paloverde","hedgehog"],"B":["saguaro","barrel","hedgehog","brittlebush","ocotillo"],"C":["saguaro","ocotillo","barrel","paloverde","brittlebush"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("cholla_cb"))FLORA["A"].push("cholla_cb");if(FLORA["B"]&&!FLORA["B"].includes("cholla_cb"))FLORA["B"].push("cholla_cb");if(FLORA["C"]&&!FLORA["C"].includes("cholla_cb"))FLORA["C"].push("cholla_cb");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  prairiefalcon_cb:{name:"Prairie falcon",color:"#8A7A66",sum:"Rare here: prairie falcons nest on high cliff ledges of the mountain, and parts of it are sometimes closed to hikers and climbers to protect the nests."},
@@ -1263,18 +1267,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
