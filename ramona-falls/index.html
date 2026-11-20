@@ -242,6 +242,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-229,"n":-48,"name":"Ramona Fa
  {"id":"C3","trails":["C"],"x":22888,"n":-4062,"name":"Sandy River overlook","desc":"The maintained trail ends near 6,000 feet above the Sandy River canyon, with Mount Hood, Reid Glacier and Illumination Rock close ahead. An old continuation climbs 0.7 mile more to campsites near 6,200 feet. Snow usually covers the ridge from October through June."}];
 const ORDER={"A":["1","2"],"B":["1","2","3","4","5","6"],"C":["1","2","3","4","5","C1","C2","C3","6"]};
 const SPECIES={
+/* plants7:start */
+ devilsclub_rf:{name:"Devil's club",latin:"Oplopanax horridus",color:"#C8402E",shape:"fern",bloom:[5, 6],fruit:[8, 9],avoid:true,sum:"Avoid: grows along the Timberline Trail past the Yocum Ridge junction, with huge maple-like leaves and thick stems covered in sharp spines that break off in skin. Red berry clusters in late summer.",rule:(d,e,g,s)=>s<0.2},
+/* plants7:end */
  rhodo_rf:{name:"Pacific rhododendron",latin:"Rhododendron macrophyllum",color:"#E68AB8",shape:"dome",bloom:[5,6,7],sum:"Oregon’s state flower: an evergreen shrub with big clusters of pink blooms. Lines long stretches of the loop in early summer under the firs and hemlocks.",rule:(d,e,g,s)=>e<4300&&g<0.8},
  pens_rf:{name:"Penstemon",latin:"Penstemon spp.",color:"#7B4FB8",shape:"tube",bloom:[6,7,8],sum:"Bright purple patches of tubular flowers on the sandy, gravelly banks above the Sandy River in summer, and on rocky openings higher up.",rule:(d,e,g,s)=>d<900&&g<0.7},
  bunch_rf:{name:"Bunchberry",latin:"Cornus unalaschkensis",color:"#F4F2EA",shape:"cup",bloom:[5,6,7],sum:"A low dogwood of the shady forest floor: four white bracts over a whorl of leaves, then a bunch of red berries in late summer.",rule:(d,e,g,s)=>e<4800&&g<0.6&&d>200},
@@ -251,6 +254,7 @@ const SPECIES={
  lupine_rf:{name:"Lupine",latin:"Lupinus spp.",color:"#5B6FD0",shape:"spike",bloom:[6,7,8],sum:"Blue-purple flower spikes over palm-like leaves, in the high meadows near the end of the Yocum Ridge Trail in July.",rule:(d,e,g,s)=>e>5100&&g<0.8}
 };
 const FLORA={"A":["rhodo_rf","pens_rf","bunch_rf"],"B":["rhodo_rf","pens_rf","bunch_rf"],"C":["rhodo_rf","bunch_rf","buck_rf","wall_rf","paint_rf","lupine_rf"]};
+/* plants7:start */if(FLORA["C"]&&!FLORA["C"].includes("devilsclub_rf"))FLORA["C"].push("devilsclub_rf");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  goat_rf:{name:"Mountain goat",color:"#F2EFE6",sum:"Rare here: mountain goats were wiped out on Mount Hood long ago; in recent years lone goats have been seen again high on Yocum Ridge, most likely wanderers from the herd moved to Mount Jefferson."},
@@ -524,7 +528,7 @@ const flowerGroups={},clusters=[];
       while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
         if(qOf(x,n)>0.85)continue;
         const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
-        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(distToTrail(T,x,n)<40)continue;
         const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
         plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
         clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
@@ -1194,18 +1198,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
