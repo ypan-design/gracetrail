@@ -253,6 +253,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":92,"n":196,"name":"Tennessee V
  {"id":"C3","trails":["C"],"x":-11292,"n":259,"name":"Muir Beach","desc":"A sandy beach where Redwood Creek meets the ocean, with a parking lot and picnic area. Turn around here and return the same way."}];
 const ORDER={"A":["1","2","3","4","A1","A2"],"B":["1","B1","B2","B3","B4","B5","5","4","3","2"],"C":["1","2","3","4","5","C1","C2","C3"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_tv:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[3, 4, 5],fruit:[7, 8, 9],avoid:true,sum:"Avoid: the park service asks hikers on the Tennessee Valley Trail to keep an eye out for it. Leaves of three, glossy and red in summer and fall, often mixed into the coyote brush; bare winter stems still cause a rash.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  sagebrush:{name:"California sagebrush",latin:"Artemisia californica",color:"#C9CFA0",shape:"dome",bloom:[8,9,10],sum:"A soft, gray-green shrub with a strong sweet smell, the base of coastal sage scrub. Tiny pale flowers in late summer.",rule:(d,e,g,s)=>e>12&&d>100},
  coyotebrush:{name:"Coyote brush",latin:"Baccharis pilularis",color:"#EDEBD6",shape:"dome",bloom:[9,10,11,12],sum:"The tough, bright-green evergreen shrub that covers much of the headlands. Fuzzy white flower heads appear in fall, when little else is blooming.",rule:(d,e,g,s)=>e>15&&d>90},
  blupine:{name:"Silver bush lupine",latin:"Lupinus albifrons",color:"#8C7FD8",shape:"spike",bloom:[3,4,5,6],sum:"A silvery shrub with spikes of blue-violet pea flowers in spring. In the Marin Headlands it feeds the caterpillars of the endangered mission blue butterfly.",rule:(d,e,g,s)=>e>40&&d>120&&s>-0.1},
@@ -261,6 +264,7 @@ const SPECIES={
  checker:{name:"Checkerbloom",latin:"Sidalcea malviflora",color:"#E17FB0",shape:"cup",bloom:[3,4,5,6],sum:"Small pink, hollyhock-like flowers on low stems in the coastal grassland, opening in spring sun.",rule:(d,e,g,s)=>e>20&&d>100&&g<0.6}
 };
 const FLORA={"A":["coyotebrush","poppy","checker","sagebrush"],"B":["blupine","sagebrush","monkey","coyotebrush","poppy"],"C":["sagebrush","monkey","blupine","coyotebrush","checker"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonoak_tv"))FLORA["A"].push("poisonoak_tv");if(FLORA["B"]&&!FLORA["B"].includes("poisonoak_tv"))FLORA["B"].push("poisonoak_tv");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_tv"))FLORA["C"].push("poisonoak_tv");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  grayfox:{name:"Gray fox",color:"#8A8A86",sum:"Small grizzled fox of the Marin Headlands brush that can climb trees. Mostly out at night."},
@@ -1324,18 +1328,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};

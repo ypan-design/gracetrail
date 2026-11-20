@@ -244,12 +244,16 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":316,"n":337,"name":"Visitor Ce
  {"id":"C4","trails":["C"],"x":-3158,"n":-548,"name":"St. Louis Canyon","desc":"A deep box canyon whose waterfall free-falls about 80 feet, one of the two tallest in the park. Flows best in spring and early summer; often dry by mid-summer, frozen in winter."}];
 const ORDER={"A":["1","A1","2","3"],"B":["1","B1","B2","B3","3","2"],"C":["1","C1","C2","C3","C4"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_sr:{name:"Poison ivy",latin:"Toxicodendron radicans",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: the Illinois DNR trail guide says poison ivy is found in all areas of the park. Three leaflets, as a low plant or a hairy vine on trees, with greenish-white berries in fall; the oil causes an itchy rash, so wash skin and gear after contact.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  harebell_sr:{name:"Harebell",latin:"Campanula rotundifolia",color:"#8C86E0",shape:"cup",bloom:[6,7,8,9],sum:"Nodding violet-blue bells on thin stems, growing from cracks in the sandstone bluffs. The Campanula Trail is named for it.",rule:(d,e,g,s)=>g>0.35&&d>60},
  bluebells_sr:{name:"Virginia bluebells",latin:"Mertensia virginica",color:"#6F8FE0",shape:"tube",bloom:[4,5],sum:"Clusters of pink buds that open into sky-blue trumpets, carpeting the moist woods and canyon floors in April and May.",rule:(d,e,g,s)=>g>0.03&&g<0.5&&d<500},
  yew_sr:{name:"Canada yew",latin:"Taxus canadensis",color:"#C8322C",shape:"berry",bloom:[4],fruit:[7,8,9],sum:"A low, sprawling evergreen shrub with flat needles and red berry-like cones, a northern plant that survives here on cool, shaded canyon walls.",rule:(d,e,g,s)=>g>0.3&&s<0.1},
  holly_sr:{name:"Mountain holly",latin:"Ilex mucronata",color:"#D8323C",shape:"berry",bloom:[5,6],fruit:[8,9],sum:"A rare northern shrub in Illinois, with small pale flowers and red berries in late summer, found on the park’s sandstone.",rule:(d,e,g,s)=>g>0.25&&s<0.2&&d>100}
 };
 const FLORA={"A":["harebell_sr","yew_sr","bluebells_sr"],"B":["bluebells_sr","harebell_sr","yew_sr","holly_sr"],"C":["bluebells_sr","yew_sr","harebell_sr","holly_sr"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_sr"))FLORA["A"].push("poisonivy_sr");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_sr"))FLORA["B"].push("poisonivy_sr");if(FLORA["C"]&&!FLORA["C"].includes("poisonivy_sr"))FLORA["C"].push("poisonivy_sr");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  pelican:{name:"American white pelican",color:"#8A7A66",sum:"Huge white birds with black wingtips; thousands gather on the Illinois River to fish from spring through fall."},
@@ -1213,18 +1217,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
