@@ -238,6 +238,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":7,"n":-1,"name":"Winding Way l
  {"id":"5","trails":["B","C"],"x":-40,"n":5869,"name":"Lower Escondido Falls","desc":"The end of the public trail, about 1.8 miles from the lot: a roughly 50-foot fall over a mossy travertine wall into a small pool. Above it the much taller upper falls, about 150 feet, are on land that is not open to the public; MRCA asks hikers not to climb the steep, rope-hung use-trail. Both tiers run mainly after winter rain and can be a trickle in dry months."}];
 const ORDER={"A":["1","2","3"],"B":["1","2","4","5"],"C":["1","2","3","4","5"]};
 const SPECIES={
+/* plants7:start */
+ poisonhemlock_ef:{name:"Poison hemlock",latin:"Conium maculatum",color:"#F2EBC9",shape:"spike",bloom:[3, 4, 5, 6],fruit:[],avoid:true,sum:"Avoid: A tall, ferny-leaved weed with smooth hollow stems blotched with purple and flat umbrellas of tiny white flowers. Every part is deadly if eaten; it grows in partial shade in the canyon, so don't pick or handle it.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  monkey:{name:"Bush monkeyflower",latin:"Diplacus aurantiacus",color:"#F29A2E",shape:"cup",bloom:[3,4,5,6,7],sum:"A sticky-leaved shrub covered in orange trumpet flowers on sunny slopes in spring.",rule:(d,e,g,s)=>s>0.05&&d>120},
  blacksage:{name:"Black sage",latin:"Salvia mellifera",color:"#D9D2EE",shape:"spike",bloom:[3,4,5,6],sum:"A dark-leaved, strongly scented sage of coastal slopes, with whorls of pale lavender flowers stacked up the stems. A top honey plant.",rule:(d,e,g,s)=>s>0.0&&d>140},
  buckwheat:{name:"California buckwheat",latin:"Eriogonum fasciculatum",color:"#F5E6DC",shape:"dome",bloom:[4,5,6,7,8,9,10],sum:"Round clusters of tiny white-pink flowers that dry to rust brown in fall. Important food for native bees.",rule:(d,e,g,s)=>s>-0.1&&d>160},
@@ -247,6 +250,7 @@ const SPECIES={
  poisonoak:{name:"Poison oak",latin:"Toxicodendron diversilobum",color:"#C9D98A",shape:"berry",bloom:[3,4,5],sum:"Shiny leaves in threes, green in spring and red by late summer; bare stems in winter still cause the rash. Common along the creek on the way to the falls. Do not touch it.",rule:(d,e,g,s)=>d<260}
 };
 const FLORA={"A":["monkey","blacksage","buckwheat","lemonade"],"B":["monkey","lemonade","toyon","fern","poisonoak"],"C":["monkey","blacksage","buckwheat","lemonade","toyon","fern","poisonoak"]};
+/* plants7:start */if(SPECIES["poisonoak"]){SPECIES["poisonoak"].avoid=true;SPECIES["poisonoak"].sum="Avoid: Shiny leaves in threes, green in spring and red by late summer; even the bare winter stems cause an itchy rash. It grows in partial shade along the creek on the way to the falls, so stay on the path and don't brush against it.";}if(FLORA["B"]&&!FLORA["B"].includes("poisonhemlock_ef"))FLORA["B"].push("poisonhemlock_ef");if(FLORA["C"]&&!FLORA["C"].includes("poisonhemlock_ef"))FLORA["C"].push("poisonhemlock_ef");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  rshawk:{name:"Red-shouldered hawk",color:"#8A7A66",sum:"A noisy hawk with rusty shoulders and a black-and-white banded tail. A pair has nested in a eucalyptus near Escondido Creek."},
@@ -1160,18 +1164,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};

@@ -246,6 +246,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":236,"n":137,"name":"Exit Glaci
  {"id":"C5","trails":["C"],"x":-13422,"n":-3089,"name":"End of the trail","desc":"A rocky knob at 3,527 ft, 3.9 miles from the register, looking over the Harding Icefield, about 700 square miles of ice broken only by rock peaks called nunataks."}];
 const ORDER={"A":["1","A1","A2"],"B":["1","2","3","B1","B2"],"C":["1","2","3","C1","C2","C3","C4","C5"]};
 const SPECIES={
+/* plants7:start */
+ devilsclub_eg:{name:"Devil's club",latin:"Oplopanax horridus",color:"#C8402E",shape:"fern",bloom:[6, 7],fruit:[8, 9],avoid:true,sum:"Avoid: Huge maple-like leaves on thick stems covered in sharp yellow spines, with a cone of red berries in late summer. The spines lodge in skin and can cause rashes; it grows in moist woods along the Glacier View trail and in the alder thickets above.",rule:(d,e,g,s)=>s<0.2},
+/* plants7:end */
  fireweed:{name:"Fireweed",latin:"Chamaenerion angustifolium",color:"#D2459A",shape:"spike",bloom:[7,8],sum:"Tall spikes of magenta flowers that open from the bottom up through summer. Alaskans say when the top flowers bloom, summer is almost over.",rule:(d,e,g,s)=>e<1900&&g<0.8},
  salmonberry:{name:"Salmonberry",latin:"Rubus spectabilis",color:"#E8743B",shape:"berry",bloom:[5,6],fruit:[7,8],sum:"A thorny shrub with pink flowers in spring and orange-red raspberry-like berries in summer. Dense thickets line the lower Harding Icefield Trail, and bears feed in them.",rule:(d,e,g,s)=>e<1500&&d<1600},
  cowparsnip:{name:"Cow parsnip",latin:"Heracleum maximum",color:"#F4F1E4",shape:"dome",bloom:[6,7],sum:"A head-high plant with huge leaves and flat white flower umbrellas, common in the lush lower forest. The sap can burn skin in sunlight.",rule:(d,e,g,s)=>e<1600&&g<0.9},
@@ -254,6 +257,7 @@ const SPECIES={
  heather:{name:"Mountain heather",latin:"Phyllodoce and Cassiope",color:"#E487B8",shape:"berry",bloom:[6,7],sum:"Low evergreen mats with tiny pink or white bells that fill the meadows above the trees. Very fragile; stay on the trail.",rule:(d,e,g,s)=>e>1500&&e<3500&&g<1.0}
 };
 const FLORA={"A":["fireweed","cowparsnip","salmonberry"],"B":["fireweed","salmonberry","cowparsnip"],"C":["salmonberry","cowparsnip","columbine","nlupine","heather","fireweed"]};
+/* plants7:start */if(SPECIES["cowparsnip"]){SPECIES["cowparsnip"].avoid=true;SPECIES["cowparsnip"].sum="Avoid: A head-high plant with huge maple-like leaves and flat white flower umbrellas, common along the trails in the lush lower forest. Its sap plus sunlight causes itching and burn-like blisters that can last for months; don't brush it with bare skin.";}if(FLORA["A"]&&!FLORA["A"].includes("devilsclub_eg"))FLORA["A"].push("devilsclub_eg");if(FLORA["C"]&&!FLORA["C"].includes("devilsclub_eg"))FLORA["C"].push("devilsclub_eg");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  wolverine:{name:"Wolverine",color:"#3E2E24",sum:"Rare here: A shy, wide-ranging member of the weasel family that few people ever see. Hikers photographed one on the Harding Icefield Trail in summer 2024."},
@@ -1184,18 +1188,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
