@@ -240,6 +240,9 @@ const STOPS=[{"id":"1","trails":["B","C"],"x":-13,"n":6,"name":"Twin Falls Trail
  {"id":"A2","trails":["A"],"x":14134,"n":-6998,"name":"Weeks Falls Viewpoint","desc":"The 77-foot Weeks Falls, a run of cascades over rock ledges on the South Fork Snoqualmie River, about half a mile upstream from the picnic area. The viewpoint is wheelchair accessible from the small Weeks Falls Trailhead lot."}];
 const ORDER={"A":["A1","A2"],"B":["1","2","3","4"],"C":["1","2","3","4","C1"]};
 const SPECIES={
+/* plants7:start */
+ devilsclub_tf:{name:"Devil's club",latin:"Oplopanax horridus",color:"#C8402E",shape:"fern",bloom:[5, 6],fruit:[8, 9],avoid:true,sum:"Avoid: grows in wet, shady spots by the river and side creeks. Huge maple-like leaves on stems covered in sharp barbed spines that break off in skin; don't grab it for balance on slippery steps.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  salmonberry_tf:{name:"Salmonberry",latin:"Rubus spectabilis",color:"#D84A86",shape:"berry",bloom:[3,4,5,6,7],sum:"The berry the park is named for: Olallie is the Chinook Jargon word for salmonberry. Magenta flowers in spring, then orange-to-red berries in early summer along the river.",rule:(d,e,g,s)=>d<500&&g<0.9},
  trillium_tf:{name:"Pacific trillium",latin:"Trillium ovatum",color:"#F7F3EA",shape:"cup",bloom:[3,4,5],sum:"Three white petals over three broad leaves, turning pink with age. Look on the river side of the trail in spring.",rule:(d,e,g,s)=>d<900&&g<0.8&&s<0.1},
  skunk_tf:{name:"Western skunk cabbage",latin:"Lysichiton americanus",color:"#F2D23A",shape:"spike",bloom:[3,4],sum:"A bright yellow hood around a green spike, rising from the mud in early spring, with a musky smell. Grows in the swampy patch near the start of the Twin Falls Trail.",rule:(d,e,g,s)=>d<220&&g<0.35},
@@ -248,6 +251,7 @@ const SPECIES={
  maidenhair_tf:{name:"Western maidenhair fern",latin:"Adiantum aleuticum",color:"#5E9E4A",shape:"fern",bloom:[],sum:"Delicate fan-shaped fronds on black stems, in walls along the wet, rocky banks of the Twin Falls Trail.",rule:(d,e,g,s)=>d<600&&g>0.3}
 };
 const FLORA={"A":["salmonberry_tf","skunk_tf","corydalis_tf","bleeding_tf"],"B":["trillium_tf","maidenhair_tf","skunk_tf","salmonberry_tf","bleeding_tf"],"C":["trillium_tf","maidenhair_tf","corydalis_tf","salmonberry_tf"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("devilsclub_tf"))FLORA["A"].push("devilsclub_tf");if(FLORA["B"]&&!FLORA["B"].includes("devilsclub_tf"))FLORA["B"].push("devilsclub_tf");if(FLORA["C"]&&!FLORA["C"].includes("devilsclub_tf"))FLORA["C"].push("devilsclub_tf");/* plants7:end */
 const WILD={
  elk:{name:"Elk",color:"#9A6A43",sum:"A herd of elk lives in the valley. They are seen in the open ground near the South Fork Picnic Area and along Homestead Valley Road, mostly early and late in the day. Give them plenty of room."},
  chipmunk:{name:"Townsend's chipmunk",color:"#B77A45",sum:"A dark, striped chipmunk of wet Northwest forests and the mammal most often photographed on these trails. Look on logs and mossy rocks beside the path."},
@@ -1214,18 +1218,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
