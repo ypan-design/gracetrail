@@ -245,6 +245,10 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-289,"n":480,"name":"Main entr
  {"id":"C3","trails":["C"],"x":-1997,"n":4319,"name":"Fern Creek Trail","desc":"The trail follows Fern Creek back down to the Main Trail, the banks thick with ferns."}];
 const ORDER={"A":["1","2","3","4","A1"],"B":["1","2","3","4","5","6","B1","B2"],"C":["1","2","C1","C2","C3","6","5","4","3"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_mw:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[3, 4, 5],fruit:[8, 9, 10],avoid:true,sum:"Avoid: the park asks visitors not to touch poison oak, which grows at Muir Woods, mostly in the sunnier edges and slopes off the redwood floor. Leaves of three with glossy, red-tinged leaflets; bare stems in winter still cause a rash.",rule:(d,e,g,s)=>true},
+ nettle_mw:{name:"Stinging nettle",latin:"Urtica dioica",color:"#7FA35A",shape:"spike",bloom:[5, 6, 7, 8],fruit:[],avoid:true,sum:"Avoid: the park warns visitors not to touch stinging nettle, a tall plant of damp ground near Redwood Creek. Toothed, heart-shaped leaves in opposite pairs on square stems; fine hairs sting and burn on contact.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  swordfern:{name:"Western sword fern",latin:"Polystichum munitum",color:"#3F7F3A",shape:"fern",bloom:[],sum:"The big evergreen fern that carpets the redwood floor. Each leaflet has a small thumb near the base, like the hilt of a sword.",rule:(d,e,g,s)=>d<900&&s<0.3},
  sorrel:{name:"Redwood sorrel",latin:"Oxalis oregana",color:"#F2C9D6",shape:"cup",bloom:[3,4,5,6,7,8],sum:"Clover-like leaves that fold down in direct sun, with small pink-white flowers. Black-tailed deer graze it.",rule:(d,e,g,s)=>d<700&&s<0.2},
  trillium:{name:"Western trillium",latin:"Trillium ovatum",color:"#F4F1EA",shape:"cup",bloom:[2,3,4],sum:"Three broad leaves and one three-petaled white flower that turns pink to purple as it ages. Among the first blooms of the year under the redwoods.",rule:(d,e,g,s)=>d<600&&s<0.1},
@@ -253,6 +257,7 @@ const SPECIES={
  azalea:{name:"Western azalea",latin:"Rhododendron occidentale",color:"#F6E7EE",shape:"dome",bloom:[4,5,6],sum:"A creekside shrub with clusters of fragrant white flowers marked with a yellow blotch.",rule:(d,e,g,s)=>d<250}
 };
 const FLORA={"A":["swordfern","sorrel","trillium","azalea"],"B":["swordfern","sorrel","trillium","adder","azalea"],"C":["swordfern","huckleberry","sorrel","adder","trillium"]};
+/* plants7:start */if(FLORA["B"]&&!FLORA["B"].includes("poisonoak_mw"))FLORA["B"].push("poisonoak_mw");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_mw"))FLORA["C"].push("poisonoak_mw");if(FLORA["A"]&&!FLORA["A"].includes("nettle_mw"))FLORA["A"].push("nettle_mw");if(FLORA["B"]&&!FLORA["B"].includes("nettle_mw"))FLORA["B"].push("nettle_mw");if(FLORA["C"]&&!FLORA["C"].includes("nettle_mw"))FLORA["C"].push("nettle_mw");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  spottedowl_mu:{name:"Northern spotted owl",color:"#6A5040",sum:"Rare here: a federally threatened owl that nests in Muir Woods; the park has monitored its territories since 1997 as a sign of forest health. If you find a fledgling on the ground, keep your distance."},
@@ -1161,18 +1166,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
