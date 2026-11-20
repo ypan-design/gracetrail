@@ -242,6 +242,9 @@ const STOPS=[{"id":"1","trails":["B","C","A"],"x":-5,"n":-6,"name":"Sandstone Pe
  {"id":"C2","trails":["C"],"x":-7469,"n":849,"name":"Inspiration Point","desc":"A short side path to a rocky overlook with a Boy Scout memorial and a view south to the coast."}];
 const ORDER={"A":["1","2","A1","5","6"],"B":["1","2","3","4"],"C":["1","2","3","4","C1","C2","5","6"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_sp:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[3, 4, 5],fruit:[7, 8, 9],avoid:true,sum:"Avoid: hikers report a lot of poison oak around Split Rock and on the side path toward Balanced Rock. Leaves of three with glossy, lobed leaflets that turn red in summer and fall; the bare stems in winter still cause a rash.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  monkey:{name:"Bush monkeyflower",latin:"Diplacus aurantiacus",color:"#F29A2E",shape:"cup",bloom:[3,4,5,6,7],sum:"A sticky-leaved shrub covered in orange trumpet flowers on sunny slopes in spring.",rule:(d,e,g,s)=>s>0.05&&d>120},
  yucca:{name:"Chaparral yucca",latin:"Hesperoyucca whipplei",color:"#FFF4CF",shape:"yucca",bloom:[4,5,6],sum:"A spiky rosette that sends up one tall stalk of cream flowers, then dies. Old stalks stay standing for years.",rule:(d,e,g,s)=>s>0.2&&g>0.3&&d>240},
  blacksage:{name:"Black sage",latin:"Salvia mellifera",color:"#D9D2EE",shape:"spike",bloom:[3,4,5,6],sum:"A dark-leaved, strongly scented sage of coastal slopes, with whorls of pale lavender flowers stacked up the stems. A top honey plant.",rule:(d,e,g,s)=>s>0.0&&d>140},
@@ -251,6 +254,7 @@ const SPECIES={
  fuchsia:{name:"California fuchsia",latin:"Epilobium canum",color:"#E2412B",shape:"tube",bloom:[8,9,10,11],sum:"Scarlet tube flowers on rocky banks, a favorite of hummingbirds. It blooms late, when the rest of the hillside has dried out.",rule:(d,e,g,s)=>d>90&&d<800&&g>0.2}
 };
 const FLORA={"A":["yucca","blacksage","redshank","monkey","buckwheat"],"B":["monkey","toyon","fuchsia","yucca","blacksage"],"C":["redshank","yucca","monkey","fuchsia","buckwheat","toyon"]};
+/* plants7:start */if(FLORA["B"]&&!FLORA["B"].includes("poisonoak_sp"))FLORA["B"].push("poisonoak_sp");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_sp"))FLORA["C"].push("poisonoak_sp");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  grayfox:{name:"Gray fox",color:"#8A8A86",sum:"A small grizzled fox that can climb trees. The park says to look for gray foxes at Circle X at twilight."},
@@ -1161,18 +1165,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
