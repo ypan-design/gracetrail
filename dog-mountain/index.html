@@ -243,6 +243,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-402,"n":-7,"name":"Dog Mounta
  {"id":"C2","trails":["C"],"x":-2799,"n":1511,"name":"Old Loggers’ Trail junction","desc":"Near the bottom of the Augspurger Trail, the Old Loggers’ Trail heads east to the Dog Mountain Trail. Stay right on the Augspurger Trail for the last stretch to the trailhead."}];
 const ORDER={"A":["1","2","3"],"B":["1","2","B1","4","5","6","7","3"],"C":["1","2","3","4","5","6","7","C1","C2"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_dm:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[4, 5],fruit:[7, 8, 9],avoid:true,sum:"Avoid: grows in the woods along the first 0.7 mile from the trailhead; stay on the trail. Leaves of three, glossy and often red-tinged; bare stems still cause a rash.",rule:(d,e,g,s)=>s<0.2},
+/* plants7:end */
  balsam_dm:{name:"Northwest balsamroot",latin:"Balsamorhiza deltoidea",color:"#F2C230",shape:"dome",bloom:[4,5,6],sum:"Big yellow sunflower-like heads over large arrow-shaped leaves. It covers the open upper slopes and summit meadow of Dog Mountain from late April into early June; the bloom is why the spring permits exist.",rule:(d,e,g,s)=>e>1300&&g<0.9},
  paint_dm:{name:"Harsh paintbrush",latin:"Castilleja hispida",color:"#E2472B",shape:"spike",bloom:[4,5,6],sum:"Hairy red-orange bracts that look like brush tips dipped in paint, mixed in with the balsamroot in the summit meadows.",rule:(d,e,g,s)=>e>1500&&g<0.9},
  lupine_dm:{name:"Columbia Gorge lupine",latin:"Lupinus latifolius var. thompsonianus",color:"#6E6FD0",shape:"spike",bloom:[4,5,6],sum:"Spikes of blue-purple pea flowers over palm-like leaves, along the trail edges and in the meadows.",rule:(d,e,g,s)=>e>600&&g<1.0},
@@ -251,6 +254,7 @@ const SPECIES={
  calypso_dm:{name:"Fairy slipper",latin:"Calypso bulbosa",color:"#D57FC0",shape:"tube",bloom:[3,4,5],sum:"A small pink orchid with a single leaf, in the shady conifer forest along the Augspurger Trail in late winter and spring.",rule:(d,e,g,s)=>e>300&&e<2200&&s<0}
 };
 const FLORA={"A":["lupine_dm","balsam_dm","calypso_dm"],"B":["balsam_dm","paint_dm","lupine_dm","larkspur_dm","choco_dm"],"C":["balsam_dm","paint_dm","lupine_dm","larkspur_dm","choco_dm","calypso_dm"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonoak_dm"))FLORA["A"].push("poisonoak_dm");if(FLORA["B"]&&!FLORA["B"].includes("poisonoak_dm"))FLORA["B"].push("poisonoak_dm");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_dm"))FLORA["C"].push("poisonoak_dm");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  rattler:{name:"Northern Pacific rattlesnake",color:"#8C7A5A",sum:"Hikers regularly report rattlesnakes on the lower, sunnier part of the trail. Watch where you step and give them room."},
@@ -1162,18 +1166,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};

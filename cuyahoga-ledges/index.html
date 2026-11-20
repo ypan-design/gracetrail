@@ -243,6 +243,9 @@ const STOPS=[{"id":"A1","trails":["A"],"x":1386,"n":2021,"name":"Happy Days Lodg
  {"id":"C2","trails":["C"],"x":-1789,"n":-171,"name":"Pine Grove","desc":"The Pine Grove Trail is named for the pines planted along it. It loops through planted pines, hemlock, oak and other hardwoods, with patches of prairie grasses."}];
 const ORDER={"A":["A1","A2","A3"],"B":["B1","1","2","3","4"],"C":["C1","2","3","4","1","C2"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_cv:{name:"Poison ivy",latin:"Toxicodendron radicans",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: the park warns it grows along woodland edges and stream banks. Three glossy, pointed leaflets (red in spring and fall); hairy vines climb trees, and they still cause a rash in winter.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  cv_skunkcabbage:{name:"Skunk cabbage",latin:"Symplocarpus foetidus",color:"#7A3B2E",shape:"cup",bloom:[2,3],sum:"The first flower of the year, often in mid-February: a mottled maroon hood that warms itself enough to melt snow, in wet ground along Haskell Run. Big green leaves follow.",rule:(d,e,g,s)=>d<140&&g<0.4},
  cv_springbeauty:{name:"Spring beauty",latin:"Claytonia virginica",color:"#F7D9E6",shape:"cup",bloom:[3,4,5],sum:"One of the first woodland flowers of spring: small white to pink flowers with darker pink veins, in loose carpets before the trees leaf out.",rule:(d,e,g,s)=>d<500&&g<0.45},
  cv_bloodroot:{name:"Bloodroot",latin:"Sanguinaria canadensis",color:"#FFFFFF",shape:"cup",bloom:[3,4],sum:"A single white flower with a gold center, wrapped in a lobed leaf, early in spring. The broken root bleeds orange-red sap.",rule:(d,e,g,s)=>d<600&&g<0.5&&s<0.2},
@@ -251,6 +254,7 @@ const SPECIES={
  cv_aster:{name:"New England aster",latin:"Symphyotrichum novae-angliae",color:"#7B4FB0",shape:"dome",bloom:[8,9,10],sum:"Tall purple asters with gold centers that light up the park’s fields and clearings in late summer and fall.",rule:(d,e,g,s)=>d>150&&g<0.15}
 };
 const FLORA={"A":["cv_skunkcabbage","cv_springbeauty","cv_trillium","cv_bloodroot"],"B":["cv_springbeauty","cv_bloodroot","cv_trillium","cv_geranium"],"C":["cv_springbeauty","cv_bloodroot","cv_trillium","cv_geranium","cv_aster"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_cv"))FLORA["A"].push("poisonivy_cv");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_cv"))FLORA["B"].push("poisonivy_cv");if(FLORA["C"]&&!FLORA["C"].includes("poisonivy_cv"))FLORA["C"].push("poisonivy_cv");/* plants7:end */
 const WILD={
  deer:{name:"White-tailed deer",color:"#B98A5E",sum:"Common in the park. Look along the edges of the fields and the playfield on the plateau early and late in the day."},
  coyote:{name:"Coyote",color:"#A88B6A",sum:"Lives throughout the valley. Mostly heard at night; now and then one crosses a trail or field at dawn or dusk."},
@@ -1182,18 +1186,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
