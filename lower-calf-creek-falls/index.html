@@ -243,6 +243,9 @@ const STOPS=[{"id":"A1","trails":["A"],"x":-7382,"n":22089,"name":"Upper Calf Cr
  {"id":"C4","trails":["C"],"x":-2259,"n":10990,"name":"Lower Calf Creek Falls","desc":"A 126-foot waterfall pouring down a moss-streaked wall into a pool with a sandy beach. Rocks fall from the overhanging cliff without warning and can land well out in the pool and on the shore; BLM warned visitors in June 2025 after boulders narrowly missed swimmers."}];
 const ORDER={"A":["A1","A2","A3"],"B":["B1","B2","B3"],"C":["C1","C2","C3","C4"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_cc:{name:"Western poison ivy",latin:"Toxicodendron rydbergii",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: abundant on the lower path to the base of Upper Calf Creek Falls, where it grows 3 to 4 feet tall, and along the Escalante River route. Woody stems with leaves of three, large and shiny green, turning red in fall; small whitish berries.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  pear_cc:{name:"Prickly pear",latin:"Opuntia spp.",color:"#F2C94A",shape:"pad",bloom:[5,6],sum:"Flat, spiny pads with yellow to pink flowers in late spring. Shallow roots and water-storing pads let it live on the dry benches above the creek.",rule:(d,e,g,s)=>d>220&&g<0.5},
  rabbit_cc:{name:"Rubber rabbitbrush",latin:"Ericameria nauseosa",color:"#E9C23A",shape:"dome",bloom:[8,9,10],sum:"A gray-green shrub of sandy flats that turns bright yellow in late summer and fall. Native peoples used it for dye.",rule:(d,e,g,s)=>d>260&&g<0.4},
  skunk_cc:{name:"Skunkbush sumac",latin:"Rhus trilobata",color:"#D4553A",shape:"berry",bloom:[4,5],fruit:[6,7,8],sum:"A shrub with three-lobed leaves and sticky red berries, named for the smell of its crushed leaves. Its berries and branches were valued by Native Americans.",rule:(d,e,g,s)=>d<600&&g<0.6},
@@ -251,6 +254,7 @@ const SPECIES={
  horsetail_cc:{name:"Horsetail",latin:"Equisetum spp.",color:"#5F8F4A",shape:"fern",bloom:[],sum:"Jointed green stems in wet ground by the creek, a plant family as old as the dinosaurs. Pioneers used its gritty stems to scour pots.",rule:(d,e,g,s)=>d<140}
 };
 const FLORA={"A":["pear_cc","rabbit_cc","mahonia_cc"],"B":["rabbit_cc","skunk_cc","horsetail_cc","pear_cc"],"C":["pear_cc","skunk_cc","mahonia_cc","dogwood_cc","horsetail_cc","rabbit_cc"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_cc"))FLORA["A"].push("poisonivy_cc");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_cc"))FLORA["B"].push("poisonivy_cc");/* plants7:end */
 const WILD={
  beaver:{name:"American beaver",color:"#6A4A30",sum:"Beavers dam Calf Creek on the way to the lower falls; look for the ponds, marsh, a lodge and gnawed stumps. They live along the Escalante River too. Most active at dawn and dusk."},
  deer:{name:"Mule deer",color:"#B98A5E",sum:"Browses the sagebrush benches and creek bottoms in the early morning and evening."},
@@ -524,7 +528,7 @@ const flowerGroups={},clusters=[];
       while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
         if(qOf(x,n)>0.85)continue;
         const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
-        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(distToTrail(T,x,n)<40)continue;
         const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
         plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
         clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
@@ -1199,18 +1203,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
