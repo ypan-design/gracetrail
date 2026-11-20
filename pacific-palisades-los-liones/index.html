@@ -244,6 +244,9 @@ const STOPS=[{"id":"1","trails":["A","C"],"x":63,"n":8,"name":"Los Leones trailh
  {"id":"10","trails":["B","C"],"x":-4183,"n":4318,"name":"Parker Mesa Overlook","desc":"The end of the spur, at about 1,525 feet. Benches face Santa Monica Bay from Palos Verdes to Malibu, with Pacific Palisades, Temescal Ridge and downtown inland. Popular at sunset; bring a light for the walk down.","key":"OV"}];
 const ORDER={"A":["1","2","3","4"],"B":["B1","4","5","6","7","8","9","10"],"C":["1","2","3","4","5","6","7","8","9","10"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_ll:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[3, 4, 5],fruit:[8, 9, 10],avoid:true,sum:"Avoid: LA County's trail guide warns of poison oak on the Los Leones Trail, where dense canyon brush can spill over the path. Leaves of three with glossy, red-tinged leaflets going up the branch; bare stems in winter still cause a rash, so wear long sleeves and pants.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  bigpod:{name:"Bigpod ceanothus",latin:"Ceanothus megacarpus",color:"#F4F2EA",shape:"dome",bloom:[1,2,3,4],sum:"The dominant chaparral shrub of the coastal Santa Monica Mountains, white with tiny fragrant flowers in late winter. The Los Leones Trail climbs through a thicket of it.",rule:(d,e,g,s)=>s>-0.1&&d>180&&e>350},
  laurelsumac:{name:"Laurel sumac",latin:"Malosma laurina",color:"#F2EEE0",shape:"dome",bloom:[5,6,7],sum:"A big rounded shrub with glossy, taco-shaped leaves on reddish stems and dense plumes of tiny white flowers in early summer. Common on the coastal slopes of the Santa Monica Mountains.",rule:(d,e,g,s)=>d>100&&e<1300},
  monkey:{name:"Bush monkeyflower",latin:"Diplacus aurantiacus",color:"#F29A2E",shape:"cup",bloom:[3,4,5,6,7],sum:"A sticky-leaved shrub covered in orange trumpet flowers on sunny slopes in spring.",rule:(d,e,g,s)=>s>0.05&&d>120},
@@ -253,6 +256,7 @@ const SPECIES={
  yucca:{name:"Chaparral yucca",latin:"Hesperoyucca whipplei",color:"#FFF4CF",shape:"yucca",bloom:[4,5,6],sum:"A spiky rosette that sends up one tall stalk of cream flowers, then dies. Old stalks stay standing for years.",rule:(d,e,g,s)=>s>0.2&&g>0.3&&d>240}
 };
 const FLORA={"A":["bigpod","laurelsumac","monkey","toyon","sagebrush"],"B":["blacksage","sagebrush","yucca","monkey","laurelsumac"],"C":["bigpod","laurelsumac","blacksage","yucca","toyon","monkey"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonoak_ll"))FLORA["A"].push("poisonoak_ll");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_ll"))FLORA["C"].push("poisonoak_ll");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  grayfox_ll:{name:"Gray fox",color:"#7A7470",sum:"A small grizzled fox of the Santa Monica Mountains that can climb trees. Mostly out at night along the brushy canyon edges."},
@@ -1161,18 +1165,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
