@@ -245,6 +245,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-58,"n":2,"name":"Zion Canyon 
  {"id":"C5","trails":["C"],"x":3809,"n":6610,"name":"Canyon Junction","desc":"The trail crosses Pine Creek, passes under the road bridge and ends beside the Canyon Junction shuttle stop (stop 3), where the Zion–Mount Carmel Highway meets Zion Canyon Scenic Drive."}];
 const ORDER={"A":["1","A1","A2"],"B":["1","B1","B2","B3","B4"],"C":["1","C1","C2","C3","C4","C5"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_zw:{name:"Western poison ivy",latin:"Toxicodendron rydbergii",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: Zion's nature notes say it grows where a seep crosses the Watchman Trail. Leaves of three, glossy green turning red in fall, with whitish berries; bare winter stems still cause a rash.",rule:(d,e,g,s)=>d<900},
+/* plants7:end */
  datura:{name:"Sacred datura",latin:"Datura wrightii",color:"#F4F1E6",shape:"cup",bloom:[5,6,7,8,9,10],sum:"Large white trumpet flowers that open in the cool of the evening and wilt in the day’s heat, on sandy flats of the canyon floor. Every part is poisonous.",rule:(d,e,g,s)=>d>120&&g<0.35&&e<4300},
  marigold:{name:"Desert marigold",latin:"Baileya multiradiata",color:"#F6D02F",shape:"dome",bloom:[3,4,5,6,7,8,9,10],sum:"Woolly gray leaves and bright yellow daisies on long stems, blooming in early spring after rain and again through summer along sandy trail edges.",rule:(d,e,g,s)=>d>140&&g<0.3&&e<4400},
  slickpaint:{name:"Slickrock paintbrush",latin:"Castilleja scabrida",color:"#E2462E",shape:"spike",bloom:[3,4,5],sum:"Bright red-orange bracts tucked into cracks in bare sandstone, at its best in early to mid April.",rule:(d,e,g,s)=>d>200&&g>0.3},
@@ -253,6 +256,7 @@ const SPECIES={
  sego:{name:"Sego lily",latin:"Calochortus nuttallii",color:"#F5F0E6",shape:"cup",bloom:[4,5,6],sum:"Three white petals with a purple-and-yellow center on a slender stem, in sandy, open ground among sagebrush in late spring. Utah’s state flower.",rule:(d,e,g,s)=>d>160&&g<0.4&&e<4800}
 };
 const FLORA={"A":["datura","marigold","datil","sego"],"B":["slickpaint","claretcup","datil","marigold"],"C":["datura","marigold","sego","datil"]};
+/* plants7:start */if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_zw"))FLORA["B"].push("poisonivy_zw");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  scrubjay_zn:{name:"Western scrub-jay",color:"#8A7A66",sum:"A blue-and-gray jay with no crest, common in the brush along the Pa'rus Trail and the river."},
@@ -1175,18 +1179,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
