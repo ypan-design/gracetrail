@@ -247,6 +247,9 @@ const STOPS=[{"id":"1","trails":["B","C"],"x":14,"n":30,"name":"Angel’s Rest T
  {"id":"C6","trails":["C"],"x":10626,"n":2322,"name":"Mist Creek crossing","desc":"About half a mile past the spring the trail crosses Mist Creek on a log bridge, then passes the lower Foxglove Trail junction. From here it is roughly 2 miles of gentle trail back to the Angel’s Rest junction."}];
 const ORDER={"A":["A1","A2","A3","A4"],"B":["1","2","3","4"],"C":["1","2","3","4","C1","C2","C3","C4","C5","C6"]};
 const SPECIES={
+/* plants7:start */
+ poisonoak_ar:{name:"Pacific poison oak",latin:"Toxicodendron diversilobum",color:"#C8402E",shape:"berry",bloom:[4, 5],fruit:[8, 9, 10],avoid:true,sum:"Avoid: Oregon Hikers lists poison oak on Angel's Rest, and hikers report it growing into the trail on the upper climb below the bluff. Leaves of three with glossy, red-tinged leaflets; bare stems in winter still cause a rash.",rule:(d,e,g,s)=>s>-0.2&&g<1.2},
+/* plants7:end */
  camas_ar:{name:"Common camas",latin:"Camassia quamash",color:"#6F6BD8",shape:"spike",bloom:[4,5],sum:"Spikes of star-shaped blue-violet flowers. The meadow on the Bridal Veil Overlook Loop turns blue with camas in mid-April; its bulbs were a staple food for the Gorge’s native peoples.",rule:(d,e,g,s)=>e<320&&g<0.45},
  larkspur_ar:{name:"Menzies’ larkspur",latin:"Delphinium menziesii",color:"#3A44C4",shape:"spike",bloom:[4,5,6],sum:"Deep blue-purple spurred flowers on slender stems. Larkspur edges the trail on the open, rocky slopes below Angel’s Rest in late spring.",rule:(d,e,g,s)=>e>300&&g>0.25&&g<1.1},
  columbine_ar:{name:"Western columbine",latin:"Aquilegia formosa",color:"#E0452E",shape:"tube",bloom:[5,6,7],sum:"Nodding red-and-yellow flowers with long spurs, a hummingbird favorite, on moist rocky banks and trail edges in late spring.",rule:(d,e,g,s)=>e>150&&d<800&&g>0.2},
@@ -256,6 +259,7 @@ const SPECIES={
  swordfern_ar:{name:"Western sword fern",latin:"Polystichum munitum",color:"#5E9E4A",shape:"fern",bloom:[],sum:"Big evergreen clumps of stiff, dark green fronds under the Douglas-firs, bigleaf maples and alders.",rule:(d,e,g,s)=>e>60&&g<1.0}
 };
 const FLORA={"A":["camas_ar","swordfern_ar","thimble_ar"],"B":["larkspur_ar","columbine_ar","bleeding_ar","thimble_ar","swordfern_ar"],"C":["larkspur_ar","columbine_ar","bleeding_ar","candy_ar","thimble_ar","swordfern_ar"]};
+/* plants7:start */if(FLORA["B"]&&!FLORA["B"].includes("poisonoak_ar"))FLORA["B"].push("poisonoak_ar");if(FLORA["C"]&&!FLORA["C"].includes("poisonoak_ar"))FLORA["C"].push("poisonoak_ar");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  pika_ar:{name:"American pika",color:"#8C7B6B",sum:"Rare here: pikas usually live high in mountain rockslides, but in the Gorge they live in talus near sea level. Listen for their squeak from the rocky slope off the trail."},
@@ -1201,18 +1205,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
