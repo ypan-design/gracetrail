@@ -244,6 +244,9 @@ const STOPS=[{"id":"1","trails":["A","C"],"x":4112,"n":1725,"name":"Campbell’s
  {"id":"C6","trails":["C"],"x":-8553,"n":6806,"name":"Trail’s End trailhead","desc":"The west end of the main trail, at 1712 Camp Craft Road. Paid street parking from 8 a.m. to 8 p.m.; cars parked on Camp Craft Road itself can be towed. Two composting restrooms nearby."}];
 const ORDER={"C":["C1","1","C2","C3","C4","2","3","C5","C6"],"A":["A1","1"],"B":["B1","2","3"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_bc:{name:"Poison ivy",latin:"Toxicodendron radicans",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: poison ivy grows just off the path along Barton Creek; its oil causes an itchy rash. Look for leaves of three on a vine, shrub or ground cover; stay on the trail.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  cedarsage:{name:"Cedar sage",latin:"Salvia roemeriana",color:"#D7263D",shape:"tube",bloom:[3,4,5,6],sum:"A low sage with round leaves and slender scarlet flowers, growing in the shade of juniper and oak along the greenbelt. Hummingbirds visit it in spring.",rule:(d,e,g,s)=>d>60&&g<0.9&&s<0.3},
  mtlaurel:{name:"Texas mountain laurel",latin:"Dermatophyllum secundiflorum",color:"#7A4FB0",shape:"berry",bloom:[2,3,4],sum:"An evergreen shrub or small tree whose drooping purple flower clusters smell like grape soda in early spring. The red seeds in its pods are poisonous.",rule:(d,e,g,s)=>d>120&&g>0.1&&g<1.0},
  turkscap:{name:"Turk’s cap",latin:"Malvaviscus arboreus var. drummondii",color:"#D8392B",shape:"tube",bloom:[5,6,7,8,9,10,11],sum:"A shade-loving shrub with red hibiscus-like flowers that never fully open. Common in the creekside woods; hummingbirds and butterflies use it all summer.",rule:(d,e,g,s)=>d<500&&g<0.6},
@@ -253,6 +256,7 @@ const SPECIES={
  rupicola:{name:"Twist-leaf yucca",latin:"Yucca rupicola",color:"#F1EBCF",shape:"yucca",bloom:[4,5,6],sum:"A low yucca of the Hill Country whose leaves twist as they age. It sends up a stalk of creamy bell flowers in late spring on rocky slopes.",rule:(d,e,g,s)=>d>150&&g>0.15&&s>-0.1}
 };
 const FLORA={"A":["turkscap","cedarsage","mtlaurel","firewheel"],"B":["cedarsage","redbuckeye","mtlaurel","turkscap","rupicola"],"C":["cedarsage","mtlaurel","turkscap","redbuckeye","firewheel","twistflower","rupicola"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_bc"))FLORA["A"].push("poisonivy_bc");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_bc"))FLORA["B"].push("poisonivy_bc");if(FLORA["C"]&&!FLORA["C"].includes("poisonivy_bc"))FLORA["C"].push("poisonivy_bc");/* plants7:end */
 const WILD={
  coyote:{name:"Coyote",color:"#A88B6A",sum:"The animal most often reported on the greenbelt. Usually seen alone at dawn or dusk on the trail or in the dry creek bed; keep dogs leashed."},
  fox:{name:"Gray fox",color:"#C9682E",sum:"A small grizzled fox that can climb trees. Active mostly at night in the wooded draws; trail cameras catch it often."},
@@ -528,7 +532,7 @@ const flowerGroups={},clusters=[];
       while(got<want&&tries<5000){tries++;const p=T.pts[Math.floor(r()*T.pts.length)];const x=p.x+(r()-.5)*500,n=p.n+(r()-.5)*500;
         if(qOf(x,n)>0.85)continue;
         const e=surf(x,n),gx=(surf(x+40,n)-surf(x-40,n))/80,gn=(surf(x,n+40)-surf(x,n-40))/80,g=Math.hypot(gx,gn),s=g>1e-4?gn/g:0;
-        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(nearTrail(v))continue;
+        if(!sp.rule(creekDist(x,n),e,g,s))continue;const v=Wv(x,n,e);if(distToTrail(T,x,n)<40)continue;
         const B=new THREE.Matrix4().compose(v,new THREE.Quaternion(),new THREE.Vector3(FS,FS,FS));
         plant(k,(g2,c,m)=>{const key=g2+"|"+c;(buckets[key]||(buckets[key]={g:g2,c,list:[]})).list.push(B.clone().multiply(m));},r);
         clusters.push({k,trail:T.id,x,n,v,dist:distToTrail(T,x,n)});got++;}});
@@ -1192,18 +1196,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
