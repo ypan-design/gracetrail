@@ -244,6 +244,9 @@ const STOPS=[{"id":"1","trails":["A","B"],"x":2198,"n":-2205,"name":"Visitor cen
  {"id":"C5","trails":["C"],"x":-960,"n":-4306,"name":"Family campground","desc":"The descent ends at the family campground, then follows the lake back to the parking area. The campground is closed for construction of two new shower houses; check with the park."}];
 const ORDER={"A":["1","A1","A2"],"B":["1","B1","B2","B3"],"C":["C1","C2","C3","C4","C5"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_hr:{name:"Poison ivy",latin:"Toxicodendron radicans",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: trail guides list it as a hazard on the Hanging Rock hike. Leaves of three on a vine or low shrub, often climbing trees; whitish berries in fall, and bare vines still cause a rash.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  hr_laurel:{name:"Mountain laurel",latin:"Kalmia latifolia",color:"#F1C9D6",shape:"dome",bloom:[5,6],sum:"Evergreen shrub of the dry oak and pine ridges. Clusters of white to pink cup-shaped flowers line the trails in late spring.",rule:(d,e,g,s)=>d>150&&g<1.0},
  hr_rhodo:{name:"Rhododendron",latin:"Rhododendron sp.",color:"#F3D6E2",shape:"dome",bloom:[6,7],sum:"Dense evergreen thickets shade Indian Creek on the way to the falls, with clusters of pale pink to white flowers in early summer.",rule:(d,e,g,s)=>d<260},
  hr_pinxter:{name:"Pinxter azalea",latin:"Rhododendron periclymenoides",color:"#F2A9C8",shape:"dome",bloom:[4,5],sum:"A deciduous azalea with fragrant pink, long-stamened flowers that open on bare branches in spring, in the oak forest of the slopes.",rule:(d,e,g,s)=>d<700&&e<2300},
@@ -252,6 +255,7 @@ const SPECIES={
  hr_firepink:{name:"Fire pink",latin:"Silene virginica",color:"#D7263D",shape:"tube",bloom:[4,5,6],sum:"Scarlet five-petaled flowers with notched tips on rocky, open woods and road banks, visited by hummingbirds.",rule:(d,e,g,s)=>d>150&&g>0.2}
 };
 const FLORA={"A":["hr_rhodo","hr_laurel","hr_galax","hr_pinxter"],"B":["hr_laurel","hr_slipper","hr_pinxter","hr_firepink"],"C":["hr_laurel","hr_galax","hr_slipper","hr_firepink","hr_rhodo"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_hr"))FLORA["A"].push("poisonivy_hr");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_hr"))FLORA["B"].push("poisonivy_hr");if(FLORA["C"]&&!FLORA["C"].includes("poisonivy_hr"))FLORA["C"].push("poisonivy_hr");/* plants7:end */
 const WILD={
 /* wildlife7:start */
  copperhead:{name:"Copperhead",color:"#9A6A45",sum:"A copper-and-tan banded venomous snake of the rocky, wooded slopes. It avoids people; watch where you step and put your hands."},
@@ -1202,18 +1206,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};

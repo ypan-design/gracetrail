@@ -247,6 +247,9 @@ const STOPS=[{"id":"1","trails":["A","B","C"],"x":-164,"n":-3,"name":"Lower Town
  {"id":"C3","trails":["C"],"x":3098,"n":4541,"name":"100-Pounder Battery","desc":"A 100-pounder Parrott rifle stood here from 1863 on the highest and widest gun platform on the mountain, able to fire more than two miles in every direction. Soldiers hauled the 9,700-pound tube up 1,200 vertical feet. Past it the trail drops steeply over loose rock."}];
 const ORDER={"A":["1","A1","A2","A3","A4","A5"],"B":["1","2","3","4","5","6"],"C":["1","2","3","4","5","C1","C2","C3","6"]};
 const SPECIES={
+/* plants7:start */
+ poisonivy_hf:{name:"Poison ivy",latin:"Toxicodendron radicans",color:"#EDE6CF",shape:"berry",bloom:[5, 6],fruit:[8, 9, 10],avoid:true,sum:"Avoid: the park warns hikers they may meet it on the trails. Leaves of three on a vine or low shrub, often climbing trees with hairy rootlets; whitish berries in fall, and bare vines still cause a rash.",rule:(d,e,g,s)=>true},
+/* plants7:end */
  bluebell_hf:{name:"Virginia bluebells",latin:"Mertensia virginica",color:"#6E8FD8",shape:"tube",bloom:[4],sum:"Nodding clusters of sky-blue bells, pink in bud, carpeting the moist woods and river floodplains in April.",rule:(d,e,g,s)=>d<700&&e<360&&g<0.5},
  violet_hf:{name:"Bird-foot violet",latin:"Viola pedata",color:"#8D7AD6",shape:"cup",bloom:[4,5],sum:"A large, flat-faced violet named for its finely cut leaves, shaped like a bird’s foot. Look on dry, sunny, rocky ground in the woods in spring.",rule:(d,e,g,s)=>d>500&&g>0.2&&s>0},
  sunflower_hf:{name:"Woodland sunflower",latin:"Helianthus strumosus",color:"#F2C230",shape:"dome",bloom:[7,8,9],sum:"Yellow daisy-like flowers on tall stems at the edges of the forest in late summer.",rule:(d,e,g,s)=>d>300&&e>350},
@@ -254,6 +257,7 @@ const SPECIES={
  joepye_hf:{name:"Joe-Pye weed",latin:"Eutrochium purpureum",color:"#C98DB3",shape:"dome",bloom:[7,8,9],sum:"A tall plant, often taller than a person, with domed heads of dusty-pink flowers along the riverbanks in late summer.",rule:(d,e,g,s)=>d<450&&e<340}
 };
 const FLORA={"A":["bluebell_hf","violet_hf","aster_hf"],"B":["bluebell_hf","joepye_hf","aster_hf","sunflower_hf"],"C":["violet_hf","sunflower_hf","joepye_hf"]};
+/* plants7:start */if(FLORA["A"]&&!FLORA["A"].includes("poisonivy_hf"))FLORA["A"].push("poisonivy_hf");if(FLORA["B"]&&!FLORA["B"].includes("poisonivy_hf"))FLORA["B"].push("poisonivy_hf");if(FLORA["C"]&&!FLORA["C"].includes("poisonivy_hf"))FLORA["C"].push("poisonivy_hf");/* plants7:end */
 const WILD={
  deer:{name:"White-tailed deer",color:"#B98A5E",sum:"Browses the oak woods on Maryland Heights and Camp Hill, most often seen early and late in the day."},
  chipmunk:{name:"Eastern chipmunk",color:"#B77A45",sum:"A small striped ground squirrel that darts among the rocks and old stone walls of the Civil War forts."},
@@ -1218,18 +1222,24 @@ requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fitGoal());
 /* rare-animals:start */
 (function(){try{
-  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}";document.head.appendChild(st);
+  const st=document.createElement("style");st.textContent=".kn.rare .tx{background:#FFF3D1;color:#6E4A00;font-style:normal;font-weight:600;border:1px solid #E7B347;box-shadow:0 1px 6px rgba(231,179,71,.35)}.kn.rare .tx::before{content:'\\2605\\00a0';color:#D8951A}.rare-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FFF3D1;color:#6E4A00;border:1px solid #E7B347;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=animal] li.rare > button::after{content:'\\00a0\\2605 Rare';font-size:10.5px;font-weight:600;color:#B87A0C}.kn.avoid .tx{background:#FDE7E2;color:#8A2416;font-style:normal;font-weight:600;border:1px solid #E0806A;box-shadow:0 1px 6px rgba(224,128,106,.35)}.kn.avoid .tx::before{content:'\\26A0\\00a0';color:#C8402E}.avoid-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:#FDE7E2;color:#8A2416;border:1px solid #E0806A;border-radius:999px;padding:2px 9px;margin:0 0 6px}#pbody .list[data-kind=flower] li.avoid > button::after{content:'\\00a0\\26A0 Avoid';font-size:10.5px;font-weight:600;color:#C8402E}";document.head.appendChild(st);
   const isRare=k=>!!(WILD[k]&&(WILD[k].rare||/^\s*Rare here:/i.test(WILD[k].sum||"")));
   Object.keys(WILD).forEach(k=>{if(isRare(k)){WILD[k].rare=true;WILD[k].sum=(WILD[k].sum||"").replace(/^\s*Rare here:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
   if(typeof birds!=="undefined"&&typeof addLabel==="function"&&!LABELS.some(o=>String(o.key).startsWith("b-"))){const seen={};const tv=TRAILS.map(T=>T.id);
     birds.forEach(b=>{if(seen[b.k]||!WILD[b.k]||!b.obj)return;seen[b.k]=1;const item={kind:"animal",k:b.k,a:null,pos:()=>b.obj.position.clone()};
       addLabel({key:"b-"+b.k,kind:"animal",badge:`<span class="bd ic">${wIcon(b.k)}</span>`,text:WILD[b.k].name,views:tv,pos:item.pos,item});});}
   LABELS.forEach(o=>{if(o.item&&o.item.kind==="animal"&&isRare(o.item.k)&&o.el)o.el.classList.add("rare");});
-  const mark=()=>document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+  const isAvoid=k=>!!(typeof SPECIES!=="undefined"&&SPECIES[k]&&(SPECIES[k].avoid||/^\s*Avoid:/i.test(SPECIES[k].sum||"")));
+  if(typeof SPECIES!=="undefined")Object.keys(SPECIES).forEach(k=>{if(isAvoid(k)){SPECIES[k].avoid=true;SPECIES[k].sum=(SPECIES[k].sum||"").replace(/^\s*Avoid:\s*/i,"").replace(/^./,c=>c.toUpperCase());}});
+  LABELS.forEach(o=>{if(o.item&&o.item.kind==="flower"&&isAvoid(o.item.k)&&o.el)o.el.classList.add("avoid");});
+  const mark=()=>{document.querySelectorAll('#pbody .list[data-kind="animal"] li[data-k]').forEach(li=>{if(isRare(li.dataset.k))li.classList.add("rare");});
+    document.querySelectorAll('#pbody .list[data-kind="flower"] li[data-k]').forEach(li=>{if(isAvoid(li.dataset.k))li.classList.add("avoid");});};
   mark();const pb=document.getElementById("pbody");if(pb)new MutationObserver(mark).observe(pb,{childList:true,subtree:true});
   const cd=document.getElementById("card");
   if(cd)new MutationObserver(()=>{try{if(cardItem&&cardItem.kind==="animal"&&isRare(cardItem.k)&&!cd.querySelector(".rare-badge")){
-    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="rare-badge">★ Rare here</span>');}
+    if(cardItem&&cardItem.kind==="flower"&&isAvoid(cardItem.k)&&!cd.querySelector(".avoid-badge")){
+    const h=cd.querySelector("h4");if(h)h.insertAdjacentHTML("beforebegin",'<span class="avoid-badge">⚠ Avoid</span>');}}catch(e){}}).observe(cd,{childList:true,subtree:true});
 }catch(e){console.warn("rare",e);}})();
 /* rare-animals:end */
 window.__atlas={select,goal,cur,openCard,toggleDetail,LABELS,animals,clusters,STOP,fitGoal};
